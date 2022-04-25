@@ -1,14 +1,19 @@
-type ProjectStatus = 'NEW' | "IN_PROGRESS" | "COMPLETED" | "CANCELED"
+enum TProjectStatus {
+    NEW = 'NEW',
+    IN_PROGRESS = "IN_PROGRESS",
+    COMPLETED = "COMPLETED",
+    CANCELED = "CANCELED",
+}
 
-type Project = {
+type TProject = {
     id: string
     title: string
-    startDate: string | null
+    startDate: string
     endDate: string | null
-    status: ProjectStatus
+    status: TProjectStatus
 }
 
 export {
-    Project,
-    ProjectStatus
+    TProject,
+    TProjectStatus
 }

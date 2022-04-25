@@ -55,9 +55,8 @@ const Button = styled.button`
                 border-color: ${colors.SECONDARY};
 
                 &:hover {
-                    background-color: ${colors.SECONDARY};
-                    color: ${colors.SECONDARY};
-                    border-color: ${colors.SECONDARY};
+                    color: ${colors.PRIMARY};
+                    border-color: ${colors.PRIMARY};
                 }
             `
         } if (variation === 'alert') {
@@ -66,9 +65,8 @@ const Button = styled.button`
                 border-color: ${colors.ALERT};
 
                 &:hover {
-                    background-color: ${colors.ALERT};
-                    color: ${colors.ALERT};
-                    border-color: ${colors.ALERT};
+                    color: ${colors.PRIMARY};
+                    border-color: ${colors.PRIMARY};
                 }
             `
         }
