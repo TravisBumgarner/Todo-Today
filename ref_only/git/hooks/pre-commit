@@ -1,0 +1,5 @@
+cd frontend
+npm run precommit
+
+cd ../backend
+npm run precommit
