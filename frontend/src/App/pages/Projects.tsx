@@ -2,19 +2,27 @@ import React from 'react'
 
 import { Project } from 'sharedTypes'
 
-const FAKE_PROJECTS: Project[] = [
+const rows: Project[] = [
     {
-        id: "uniquwekjsadfjiwuqfhwef",
+        id: "1",
         title: "PTO",
-        description: "Vacation, etc.",
         status: "IN_PROGRESS",
         startDate: null,
-        endDate: null
+        endDate: null,
+    },
+    {
+        id: "2",
+        title: "Sick Time",
+        status: "IN_PROGRESS",
+        startDate: null,
+        endDate: null,
     }
 ]
 
 const Projects = () => {
-    return <div>Projects</div>
+    return <div style={{ height: 400, width: '100%' }}>
+        hi
+    </div>
 }
 
 export default Projects
