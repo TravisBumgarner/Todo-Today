@@ -12,7 +12,6 @@ import LabelAndInput from './LabelAndInput'
 import DropdownMenu from './DropdownMenu'
 import Divider from './Divider'
 import ButtonWrapper from './ButtonWrapper'
-import LanguageDropdown from './LanguageDropdown'
 import Icon from './Icon'
 
 export {
@@ -30,6 +29,5 @@ export {
     DropdownMenu,
     Divider,
     ButtonWrapper,
-    LanguageDropdown,
     Icon
 }

@@ -1,14 +1,12 @@
-import moment from 'moment'
+import { ProjectStatus } from '../sharedTypes'
 
-const lookupByDate = (key: moment.Moment) => {
-    return key.format('YYYY-MM-DD')
-}
-
-const areDatesEqual = (a: moment.Moment, b: moment.Moment) => {
-    return lookupByDate(a) === lookupByDate(b)
+const projectStatusLookup: Record<ProjectStatus, string> = {
+    "CANCELED": "Canceled",
+    "COMPLETED": "Completed",
+    "IN_PROGRESS": "In Progress",
+    "NEW": "New"
 }
 
 export {
-    lookupByDate,
-    areDatesEqual
+    projectStatusLookup
 }

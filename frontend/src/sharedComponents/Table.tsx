@@ -4,11 +4,9 @@ import colors from './colors'
 
 const Table = styled.table`
     padding: 1rem;
-    border-collapse: collapse;
-    border-radius: 1em;
     border-collapse: separate;
     border-spacing: 0;
-    background-color: ${colors.PRIMARY.lightest};   
+    background-color: ${colors.SECONDARY};   
     width: 100%;
 `
 
@@ -23,18 +21,18 @@ const TableBody = styled.tbody`
 const TableRow = styled.tr`
     padding: 10px;
     &:nth-child(2n+1){
-        background-color: ${colors.PRIMARY.lightest};   
+        background-color: ${colors.SECONDARY};   
     }
 
     &:nth-child(2n){
-        background-color: ${colors.PRIMARY.lighten};   
+        background-color: ${colors.SECONDARY};   
     }
     
 `
 
 const TableHeaderCell = styled.th`
-    background-color: ${colors.PRIMARY.lighten};
-    color: ${colors.PRIMARY.darkest}; 
+    background-color: ${colors.SECONDARY};
+    color: ${colors.PRIMARY}; 
     padding: 10px;
     text-align: left;
     width: ${({ width }: { width: string }) => width};
@@ -42,7 +40,7 @@ const TableHeaderCell = styled.th`
 `
 const TableBodyCell = styled.td`
     padding: 10px;
-    color: ${colors.PRIMARY.darkest};
+    color: ${colors.PRIMARY};
 `
 
 export {

@@ -9,5 +9,6 @@ type Project = {
 }
 
 export {
-    Project
+    Project,
+    ProjectStatus
 }

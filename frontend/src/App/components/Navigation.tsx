@@ -1,53 +1,34 @@
 import React from 'react'
-import {
-    Link as RouterLink,
-    LinkProps as RouterLinkProps,
-} from 'react-router-dom';
-import ListItem from '@mui/material/ListItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import List from '@mui/material/List';
+import styled from 'styled-components'
 
+import { StyledNavLink } from 'sharedComponents'
 
-interface ListItemLinkProps {
-    icon?: React.ReactElement;
-    primary: string;
-    to: string;
-}
+const StyledNav = styled.ul`
+    list-style: none;
+    margin: 0;
+    padding: 1rem;
 
-const ListItemLink = (props: ListItemLinkProps) => {
-    const { icon, primary, to } = props;
+    li {
+        padding: 10px;
+    }
+`
 
-    const renderLink = React.useMemo(
-        () =>
-            React.forwardRef<HTMLAnchorElement, Omit<RouterLinkProps, 'to'>>(function Link(
-                itemProps,
-                ref,
-            ) {
-                return <RouterLink to={to} ref={ref} {...itemProps} role={undefined} />;
-            }),
-        [to],
-    );
-
-    return (
-        <li>
-            <ListItem button component={renderLink}>
-                {icon ? <ListItemIcon>{icon}</ListItemIcon> : null}
-                <ListItemText primary={primary} />
-            </ListItem>
-        </li>
-    );
-}
+const ALWAYS_VISIBLE_LINKS = [
+    { text: 'Today', to: '/' },
+    { text: 'Projects', to: '/projects' },
+]
 
 const Navigation = () => {
     return (
-        <>
-            <List aria-label="main mailbox folders">
-                <ListItemLink to="/" primary="Today" />
-                <ListItemLink to="/projects" primary="Projects" />
-            </List>
-        </>
+        <div style={{ position: 'relative' }}>
+            <StyledNav >
+                {ALWAYS_VISIBLE_LINKS.map(({ text, to }) => (
+                    <li key={to}>
+                        <StyledNavLink addWeightForActiveLink to={to} text={text} />
+                    </li>
+                ))}
+            </StyledNav>
+        </div>
     )
 }
-
 export default Navigation

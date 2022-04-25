@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import colors from './colors'
 
 type ButtonProps = {
-    variation: 'primary' | 'secondary' | 'tertiary' | 'alert' | 'disabled'
+    variation: 'primary' | 'secondary' | 'alert' | 'disabled'
     disabled?: boolean
     fullWidth?: boolean
     alignRight?: boolean
@@ -14,7 +14,6 @@ const Button = styled.button`
     font-family: 'Comfortaa', cursive;
     font-size: 1rem;
     border: 2px solid;
-    border-radius: 1rem;
     padding: 0.5rem 1rem;
     background-color: transparent;
     font-weight: 700;
@@ -28,13 +27,13 @@ const Button = styled.button`
     ${({ variation, disabled }: ButtonProps) => {
         if (disabled) {
             return `
-                color: ${colors.DISABLED.base};
-                border-color: ${colors.DISABLED.base};
+                color: ${colors.DISABLED};
+                border-color: ${colors.DISABLED};
 
                 &:hover {
-                    background-color: ${colors.DISABLED.lighten};
-                    color: ${colors.DISABLED.darken};
-                    border-color: ${colors.DISABLED.darken};
+                    background-color: ${colors.DISABLED};
+                    color: ${colors.DISABLED};
+                    border-color: ${colors.DISABLED};
                     cursor: not-allowed;
                 }
             `
@@ -42,46 +41,34 @@ const Button = styled.button`
 
         if (variation === 'primary') {
             return `
-                color: ${colors.PRIMARY.base};
-                border-color: ${colors.PRIMARY.base};
+                color: ${colors.PRIMARY};
+                border-color: ${colors.PRIMARY};
 
                 &:hover {
-                    color: ${colors.PRIMARY.darken};
-                    border-color: ${colors.PRIMARY.darken};
-                    background-color: ${colors.PRIMARY.lighten};
+                    color: ${colors.ALERT};
+                    border-color: ${colors.ALERT};
                 }
             `
         } if (variation === 'secondary') {
             return `
-                color: ${colors.SECONDARY.base};
-                border-color: ${colors.SECONDARY.base};
+                color: ${colors.SECONDARY};
+                border-color: ${colors.SECONDARY};
 
                 &:hover {
-                    background-color: ${colors.SECONDARY.lighten};
-                    color: ${colors.SECONDARY.darken};
-                    border-color: ${colors.SECONDARY.darken};
-                }
-            `
-        } if (variation === 'tertiary') {
-            return `
-                color: ${colors.TERTIARY.base};
-                border-color: ${colors.TERTIARY.base};
-
-                &:hover {
-                    background-color: ${colors.TERTIARY.lighten};
-                    color: ${colors.TERTIARY.darken};
-                    border-color: ${colors.TERTIARY.darken};
+                    background-color: ${colors.SECONDARY};
+                    color: ${colors.SECONDARY};
+                    border-color: ${colors.SECONDARY};
                 }
             `
         } if (variation === 'alert') {
             return `
-                color: ${colors.ALERT.base};
-                border-color: ${colors.ALERT.base};
+                color: ${colors.ALERT};
+                border-color: ${colors.ALERT};
 
                 &:hover {
-                    background-color: ${colors.ALERT.lighten};
-                    color: ${colors.ALERT.darken};
-                    border-color: ${colors.ALERT.darken};
+                    background-color: ${colors.ALERT};
+                    color: ${colors.ALERT};
+                    border-color: ${colors.ALERT};
                 }
             `
         }

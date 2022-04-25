@@ -1,9 +1,10 @@
 import React from 'react'
-import Button from '@mui/material/Button';
+
+import { Paragraph } from 'sharedComponents';
 
 
 const Today = () => {
-    return <div>Today</div>
+    return <Paragraph>Today</Paragraph>
 }
 
 export default Today

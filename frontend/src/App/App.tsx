@@ -2,7 +2,7 @@ import { flexbox } from '@mui/system';
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom'
 
-
+import Theme from 'theme'
 import { Navigation, Router } from './components'
 
 
@@ -22,6 +22,7 @@ const App = () => {
 const InjectedApp = () => {
   return (
     <BrowserRouter>
+      <Theme.GlobalStyle />
       <App />
     </BrowserRouter>
   )

@@ -7,12 +7,11 @@ const Input = styled.input`
     font-family: 'Comfortaa', cursive;
     font-size: 1rem;
     border: 2px solid;
-    border-radius: 1rem;
     padding: 0.5rem 1rem;
     background-color: transparent;
     font-weight: 700;
-    color: ${colors.PRIMARY.base};
-    border-color: ${colors.PRIMARY.base};
+    color: ${colors.PRIMARY};
+    border-color: ${colors.PRIMARY};
     width: 100%;
     box-sizing: border-box;
 `
@@ -21,12 +20,11 @@ const TextArea = styled.textarea`
     font-family: 'Comfortaa', cursive;
     font-size: 1rem;
     border: 2px solid;
-    border-radius: 1rem;
     padding: 0.5rem 1rem;
     background-color: transparent;
     font-weight: 700;
-    color: ${colors.PRIMARY.base};
-    border-color: ${colors.PRIMARY.base};
+    color: ${colors.PRIMARY};
+    border-color: ${colors.PRIMARY};
     width: 100%;
     box-sizing: border-box;
 `
@@ -37,7 +35,7 @@ const Label = styled.label`
     padding: 0.5rem 1rem;
     background-color: transparent;
     font-weight: 700;
-    color: ${colors.PRIMARY.base};
+    color: ${colors.PRIMARY};
 `
 
 const LabelAndInputWrapper = styled.div`

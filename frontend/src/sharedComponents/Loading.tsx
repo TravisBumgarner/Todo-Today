@@ -1,8 +1,8 @@
 import styled from 'styled-components'
 import React from 'react'
 
-import logo from '../static/logo.png'
 import { Heading } from '.'
+import Paragraph from './Paragraph'
 
 const ROTATION_TIME_INCREMENT = 15
 const TIME_TO_NOT_ROTATE = 50
@@ -58,7 +58,7 @@ const Loading = ({ fullscreen }: LoadingProps) => {
 
     return (
         <LoadingWrapper fullscreen={fullscreen}>
-            <img style={{ transform: `rotate(${rotation}deg)` }} alt="logo" src={logo} />
+            <Paragraph style={{ transform: `rotate(${rotation}deg)` }}>Loading</Paragraph>
             <Heading.H1>One moment please!</Heading.H1>
         </LoadingWrapper>
     )

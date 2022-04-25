@@ -7,14 +7,13 @@ const StyledNav = styled.ul`
     z-index: 998;
     position: absolute;
     width: 240px;
-    border-radius: 1rem;
     right: 0;
     display: ${({ showMenu }: { showMenu: boolean }) => (showMenu ? 'block' : 'none')};
     list-style: none;
     flex-direction: row;
     padding: 1rem;
-    background-color: ${colors.DARKNESS.base};
-    border: 4px solid ${colors.DARKNESS.lighten};
+    background-color: ${colors.SECONDARY};
+    border: 2px solid ${colors.ALERT};
     margin: 0.5rem;
 
     ${Button} {
@@ -41,7 +40,7 @@ const DropdownMenu = ({ title, children }: DropdownMenuProps) => {
 
     return (
         <div style={{ position: 'relative' }}>
-            <Button variation="secondary" onClick={() => setShowMenu(!showMenu)}>{title}</Button>
+            <Button variation="primary" onClick={() => setShowMenu(!showMenu)}>{title}</Button>
             <StyledNav showMenu={showMenu}>
                 {children.map((child, index) => <li key={index}>{child}</li>)} {/* eslint-disable-line */}
             </StyledNav>
