@@ -4,7 +4,7 @@ import colors from './colors'
 
 type ButtonProps = {
     variation: 'FOREGROUND_PRIMARY' | 'BACKGROUND_PRIMARY' | 'FOREGROUND_ALERT' | 'FOREGROUND_DISABLED'
-    FOREGROUND_DISABLED?: boolean
+    disabled?: boolean
     fullWidth?: boolean
     alignRight?: boolean
 
@@ -24,16 +24,13 @@ const Button = styled.button`
 
     ${({ fullWidth }: ButtonProps) => (fullWidth ? 'width: 100%;' : '')}
 
-    ${({ variation, FOREGROUND_DISABLED }: ButtonProps) => {
-        if (FOREGROUND_DISABLED) {
+    ${({ variation, disabled }: ButtonProps) => {
+        if (disabled) {
             return `
                 color: ${colors.FOREGROUND_DISABLED};
                 border-color: ${colors.FOREGROUND_DISABLED};
 
                 &:hover {
-                    background-color: ${colors.FOREGROUND_DISABLED};
-                    color: ${colors.FOREGROUND_DISABLED};
-                    border-color: ${colors.FOREGROUND_DISABLED};
                     cursor: not-allowed;
                 }
             `

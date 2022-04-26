@@ -11,12 +11,13 @@
       "baseUrl": ".",
       "resolveJsonModule": true,
       "esModuleInterop": true,
+      "strictNullChecks": true,
       "paths": {
         "*": ["src/types/*"],
         "sharedComponents": ["src/sharedComponents"],
-        "sharedTypes": ["src/sharedTypes/index.ts"],
+        "sharedTypes": ["src/sharedTypes.ts"],
         "theme": ["src/theme.js"],
-        "utilities": ["src/utilities"],
+        "utilities": ["src/utilities.ts"],
       }
     }
   }

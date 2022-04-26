@@ -13,7 +13,7 @@ const StyledNav = styled.ul`
     flex-direction: row;
     padding: 1rem;
     background-color: ${colors.BACKGROUND_PRIMARY};
-    border: 2px solid ${colors.FOREGROUND_ALERT};
+    border: 2px solid ${colors.FOREGROUND_PRIMARY};
     margin: 0.5rem;
 
     ${Button} {

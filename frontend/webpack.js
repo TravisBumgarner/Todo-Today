@@ -21,9 +21,9 @@ module.exports = {
     extensions: ['.tsx', '.ts', '.js'],
     alias: {
       sharedComponents: path.resolve(__dirname, 'src/sharedComponents/'),
-      sharedTypes: path.resolve(__dirname, 'src/sharedTypes/index.ts'),
+      sharedTypes: path.resolve(__dirname, 'src/sharedTypes.ts'),
       theme: path.resolve(__dirname, 'src/theme.tsx'),
-      utilities: path.resolve(__dirname, 'src/utilities/'),
+      utilities: path.resolve(__dirname, 'src/utilities.ts'),
     },
   },
   devServer: {

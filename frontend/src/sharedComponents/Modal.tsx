@@ -51,7 +51,8 @@ const Modal = ({
                 borderRadius: '1.5em',
                 backgroundColor: colors.BACKGROUND_PRIMARY,
                 position: 'static',
-                maxWidth: '80vw'
+                maxWidth: '80vw',
+                minWidth: '500px'
             },
         }}
     >

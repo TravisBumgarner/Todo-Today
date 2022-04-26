@@ -17,7 +17,7 @@ const LoadingWrapper = styled.div`
     justify-content: center;
     flex-direction: column;
 
-    ${({ fullscreen }: { fullscreen: boolean }) => (fullscreen ? `
+    ${({ fullscreen }: { fullscreen?: boolean }) => (fullscreen ? `
         width: 100vw;
         position:fixed;
         top: 0;
