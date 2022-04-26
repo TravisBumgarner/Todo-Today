@@ -13,7 +13,7 @@ const H2 = styled.h2`
 `
 
 const H3 = styled.h3`
-    color: ${colors.BACKGROUND_PRIMARY};
+    color: ${colors.FOREGROUND_PRIMARY};
 `
 
 export { H1, H2, H3 }
