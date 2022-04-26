@@ -10,8 +10,8 @@ const Input = styled.input`
     padding: 0.5rem 1rem;
     background-color: transparent;
     font-weight: 700;
-    color: ${colors.PRIMARY};
-    border-color: ${colors.PRIMARY};
+    color: ${colors.FOREGROUND_PRIMARY};
+    border-color: ${colors.FOREGROUND_PRIMARY};
     width: 100%;
     box-sizing: border-box;
 `
@@ -23,8 +23,8 @@ const TextArea = styled.textarea`
     padding: 0.5rem 1rem;
     background-color: transparent;
     font-weight: 700;
-    color: ${colors.PRIMARY};
-    border-color: ${colors.PRIMARY};
+    color: ${colors.FOREGROUND_PRIMARY};
+    border-color: ${colors.FOREGROUND_PRIMARY};
     width: 100%;
     box-sizing: border-box;
 `
@@ -35,7 +35,7 @@ const Label = styled.label`
     padding: 0.5rem 1rem;
     background-color: transparent;
     font-weight: 700;
-    color: ${colors.PRIMARY};
+    color: ${colors.FOREGROUND_PRIMARY};
 `
 
 const LabelAndInputWrapper = styled.div`

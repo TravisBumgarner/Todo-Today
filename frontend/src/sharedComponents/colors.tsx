@@ -1,11 +1,13 @@
-const PRIMARY = '#ffffff'
-const SECONDARY = '#1b1b1b'
-const DISABLED = '#767676'
-const ALERT = '#ff3f85'
+const FOREGROUND_PRIMARY = '#7bc3ff'
+const FOREGROUND_ALERT = '#ff3f85'
+const FOREGROUND_DISABLED = '#767676'
+
+const BACKGROUND_PRIMARY = '#1b1b1b'
+
 
 export default {
-    PRIMARY,
-    SECONDARY,
-    ALERT,
-    DISABLED
+    FOREGROUND_PRIMARY,
+    BACKGROUND_PRIMARY,
+    FOREGROUND_ALERT,
+    FOREGROUND_DISABLED
 }

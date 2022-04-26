@@ -12,8 +12,8 @@ const StyledNav = styled.ul`
     list-style: none;
     flex-direction: row;
     padding: 1rem;
-    background-color: ${colors.SECONDARY};
-    border: 2px solid ${colors.ALERT};
+    background-color: ${colors.BACKGROUND_PRIMARY};
+    border: 2px solid ${colors.FOREGROUND_ALERT};
     margin: 0.5rem;
 
     ${Button} {
@@ -40,7 +40,7 @@ const DropdownMenu = ({ title, children }: DropdownMenuProps) => {
 
     return (
         <div style={{ position: 'relative' }}>
-            <Button variation="primary" onClick={() => setShowMenu(!showMenu)}>{title}</Button>
+            <Button variation="FOREGROUND_PRIMARY" onClick={() => setShowMenu(!showMenu)}>{title}</Button>
             <StyledNav showMenu={showMenu}>
                 {children.map((child, index) => <li key={index}>{child}</li>)} {/* eslint-disable-line */}
             </StyledNav>

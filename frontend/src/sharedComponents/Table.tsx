@@ -8,7 +8,7 @@ const Table = styled.table`
     border-collapse: separate;
     border-spacing: 0;
     width: 100%;
-    border: 2px solid ${colors.PRIMARY}
+    border: 2px solid ${colors.FOREGROUND_PRIMARY}
 `
 
 const TableHeader = styled.thead`
@@ -23,28 +23,28 @@ const TableRow = styled.tr`
     padding: 10px;
 
     &:nth-child(2n+1){
-        background-color: ${colors.SECONDARY};   
+        background-color: ${colors.BACKGROUND_PRIMARY};   
     }
 
     &:nth-child(2n){
-        background-color: ${colors.SECONDARY};   
+        background-color: ${colors.BACKGROUND_PRIMARY};   
     }
     
 `
 
 const TableHeaderCell = styled.th`
-    background-color: ${colors.SECONDARY};
-    color: ${colors.PRIMARY}; 
-    border-bottom: 2px solid ${colors.PRIMARY};
+    background-color: ${colors.BACKGROUND_PRIMARY};
+    color: ${colors.FOREGROUND_PRIMARY}; 
+    border-bottom: 2px solid ${colors.FOREGROUND_PRIMARY};
     padding: 10px;
     text-align: left;
     width: ${({ width }: { width: string }) => width};
     
 `
 const TableBodyCell = styled.td`
-    border-bottom: 2px solid ${colors.PRIMARY};
+    border-bottom: 2px solid ${colors.FOREGROUND_PRIMARY};
     padding: 10px;
-    color: ${colors.PRIMARY};
+    color: ${colors.FOREGROUND_PRIMARY};
 `
 
 export {

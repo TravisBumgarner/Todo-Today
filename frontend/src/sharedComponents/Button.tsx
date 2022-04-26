@@ -3,8 +3,8 @@ import styled from 'styled-components'
 import colors from './colors'
 
 type ButtonProps = {
-    variation: 'primary' | 'secondary' | 'alert' | 'disabled'
-    disabled?: boolean
+    variation: 'FOREGROUND_PRIMARY' | 'BACKGROUND_PRIMARY' | 'FOREGROUND_ALERT' | 'FOREGROUND_DISABLED'
+    FOREGROUND_DISABLED?: boolean
     fullWidth?: boolean
     alignRight?: boolean
 
@@ -24,49 +24,49 @@ const Button = styled.button`
 
     ${({ fullWidth }: ButtonProps) => (fullWidth ? 'width: 100%;' : '')}
 
-    ${({ variation, disabled }: ButtonProps) => {
-        if (disabled) {
+    ${({ variation, FOREGROUND_DISABLED }: ButtonProps) => {
+        if (FOREGROUND_DISABLED) {
             return `
-                color: ${colors.DISABLED};
-                border-color: ${colors.DISABLED};
+                color: ${colors.FOREGROUND_DISABLED};
+                border-color: ${colors.FOREGROUND_DISABLED};
 
                 &:hover {
-                    background-color: ${colors.DISABLED};
-                    color: ${colors.DISABLED};
-                    border-color: ${colors.DISABLED};
+                    background-color: ${colors.FOREGROUND_DISABLED};
+                    color: ${colors.FOREGROUND_DISABLED};
+                    border-color: ${colors.FOREGROUND_DISABLED};
                     cursor: not-allowed;
                 }
             `
         }
 
-        if (variation === 'primary') {
+        if (variation === 'FOREGROUND_PRIMARY') {
             return `
-                color: ${colors.PRIMARY};
-                border-color: ${colors.PRIMARY};
+                color: ${colors.FOREGROUND_PRIMARY};
+                border-color: ${colors.FOREGROUND_PRIMARY};
 
                 &:hover {
-                    color: ${colors.ALERT};
-                    border-color: ${colors.ALERT};
+                    color: ${colors.FOREGROUND_ALERT};
+                    border-color: ${colors.FOREGROUND_ALERT};
                 }
             `
-        } if (variation === 'secondary') {
+        } if (variation === 'BACKGROUND_PRIMARY') {
             return `
-                color: ${colors.SECONDARY};
-                border-color: ${colors.SECONDARY};
+                color: ${colors.BACKGROUND_PRIMARY};
+                border-color: ${colors.BACKGROUND_PRIMARY};
 
                 &:hover {
-                    color: ${colors.PRIMARY};
-                    border-color: ${colors.PRIMARY};
+                    color: ${colors.FOREGROUND_PRIMARY};
+                    border-color: ${colors.FOREGROUND_PRIMARY};
                 }
             `
-        } if (variation === 'alert') {
+        } if (variation === 'FOREGROUND_ALERT') {
             return `
-                color: ${colors.ALERT};
-                border-color: ${colors.ALERT};
+                color: ${colors.FOREGROUND_ALERT};
+                border-color: ${colors.FOREGROUND_ALERT};
 
                 &:hover {
-                    color: ${colors.PRIMARY};
-                    border-color: ${colors.PRIMARY};
+                    color: ${colors.FOREGROUND_PRIMARY};
+                    border-color: ${colors.FOREGROUND_PRIMARY};
                 }
             `
         }

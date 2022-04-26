@@ -61,8 +61,8 @@ const AddProjectModal = ({ showModal, setShowModal }: AddProjectModalProps) => {
                 />
                 <ButtonWrapper right={
                     [
-                        <Button variation="primary" onClick={() => setShowModal(false)}>Cancel</Button>,
-                        <Button variation="alert" onClick={() => console.log('save')}>Save</Button>
+                        <Button variation="FOREGROUND_PRIMARY" onClick={() => setShowModal(false)}>Cancel</Button>,
+                        <Button variation="FOREGROUND_ALERT" onClick={() => console.log('save')}>Save</Button>
                     ]
                 }
                 />
@@ -85,7 +85,7 @@ const Projects = () => {
     }
 
     const actions = [
-        <Button fullWidth key="edit" variation="primary" onClick={handleEdit}>Edit</Button>
+        <Button fullWidth key="edit" variation="FOREGROUND_PRIMARY" onClick={handleEdit}>Edit</Button>
     ]
 
 
@@ -116,7 +116,7 @@ const Projects = () => {
                     ))}
                 </Table.TableBody>
             </Table.Table>
-            <Button fullWidth key="edit" variation="primary" onClick={() => setShowAddProjectModal(true)}>Add Project</Button>
+            <Button fullWidth key="edit" variation="FOREGROUND_PRIMARY" onClick={() => setShowAddProjectModal(true)}>Add Project</Button>
             <AddProjectModal showModal={showAddProjectModal} setShowModal={setShowAddProjectModal} />
         </>
     )
