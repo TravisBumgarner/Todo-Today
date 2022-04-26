@@ -1,6 +1,8 @@
 # PR-1
 
-- [ ] Setup Add Project
+- [x] Setup Add Project
+- [x] Setup Edit Project
+- [ ] Setup Add/Edit Tasks
 
 # Things to Noodle On
 

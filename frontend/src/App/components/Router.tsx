@@ -1,7 +1,7 @@
 import React from 'react'
 import { Routes, Route } from 'react-router'
 
-import { Projects, Today } from '../pages'
+import { Projects, Today, Tasks } from '../pages'
 
 const Router = () => {
     return (
@@ -13,6 +13,10 @@ const Router = () => {
             <Route
                 path="/projects"
                 element={<Projects />}
+            />
+            <Route
+                path="/tasks"
+                element={<Tasks />}
             />
         </Routes>
     )

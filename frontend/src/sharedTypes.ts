@@ -15,6 +15,20 @@ type TProject = {
     status: TProjectStatus
 }
 
+enum TTaskStatus {
+    NEW = 'NEW',
+    IN_PROGRESS = "IN_PROGRESS",
+    COMPLETED = "COMPLETED",
+    CANCELED = "CANCELED",
+}
+
+type TTask = {
+    id: string
+    projectId: string
+    title: string
+    status: TTaskStatus
+}
+
 type EnumTypeString<TEnum extends string> =
     { [key in string]: TEnum | string; }
 
@@ -29,5 +43,7 @@ type EnumType<TEnum extends string | number> =
 export {
     TProject,
     TProjectStatus,
+    TTask,
+    TTaskStatus,
     EnumType
 }
