@@ -1,25 +1,10 @@
 import React from 'react'
 
-import { TProject, TProjectStatus } from 'sharedTypes'
+import { TProject } from 'sharedTypes'
 import { Button, Heading } from 'sharedComponents'
-import { AddProjectModal, EditProjectModal, ProjectsTable } from './components'
+import { AddProjectModal, ProjectsTable } from './components'
 
-const FAKE_PROJECTS: Record<string, TProject> = {
-    '1': {
-        id: "1",
-        title: "PTO",
-        status: TProjectStatus.IN_PROGRESS,
-        startDate: null,
-        endDate: null,
-    },
-    '2': {
-        id: "2",
-        title: "Sick Time",
-        status: TProjectStatus.IN_PROGRESS,
-        startDate: null,
-        endDate: null,
-    }
-}
+import { FAKE_PROJECTS } from '../../fakeData'
 
 const Projects = () => {
     const [showAddProjectModal, setShowAddProjectModal] = React.useState<boolean>(false)

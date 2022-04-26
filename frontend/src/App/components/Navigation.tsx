@@ -16,7 +16,7 @@ const StyledNav = styled.ul`
 const ALWAYS_VISIBLE_LINKS = [
     { text: 'Today', to: '/' },
     { text: 'Projects', to: '/projects' },
-    { text: 'Tasks', to: '/tasks' },
+    { text: 'Tasks by Project', to: '/tasks' },
 ]
 
 const Navigation = () => {

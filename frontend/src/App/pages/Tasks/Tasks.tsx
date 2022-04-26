@@ -2,23 +2,10 @@ import React from 'react'
 
 import { Heading } from 'sharedComponents'
 import { TTaskStatus, TTask } from 'sharedTypes'
+import { FAKE_TASKS, FAKE_PROJECTS } from '../../fakeData'
 
-const FAKE_TASKS: Record<string, TTask> = {
-    '1': {
-        id: "1",
-        title: "PTO",
-        status: TTaskStatus.NEW,
-        projectId: "1"
-    },
-    '2': {
-        id: "2",
-        title: "Sick Time",
-        status: TTaskStatus.IN_PROGRESS,
-        projectId: "1"
-    }
-}
 
-const Projects = () => {
+const Tasks = () => {
     const [showAddTaskModal, setShowAddTaskModal] = React.useState<boolean>(false)
     return (
         <>
@@ -27,4 +14,4 @@ const Projects = () => {
     )
 }
 
-export default Projects
+export default Tasks
