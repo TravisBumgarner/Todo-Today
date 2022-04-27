@@ -3,18 +3,22 @@ import React from 'react';
 import { BrowserRouter } from 'react-router-dom'
 
 import Theme from 'theme'
-import { Navigation, Router } from './components'
+import { Navigation, Router, Header } from './components'
 
 
 const App = () => {
   return (
-    <div style={{ display: 'flex' }}>
-      <div style={{ width: '20%' }}>
-        <Navigation />
+    <div>
+      <Header />
+      <div style={{ display: 'flex' }}>
+        <div style={{ width: '20%' }}>
+          <Navigation />
+        </div>
+        <div style={{ width: '80%' }}>
+          <Router />
+        </div>
       </div>
-      <div style={{ width: '80%' }}>
-        <Router />
-      </div>
+
     </div>
   )
 }

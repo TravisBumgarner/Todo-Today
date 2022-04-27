@@ -8,8 +8,7 @@ const H1 = styled.h1`
 
 const H2 = styled.h2`
     color: ${colors.FOREGROUND_PRIMARY};
-    padding: 1rem;
-    margin: 1rem;
+    margin: 1rem 0;
 `
 
 const H3 = styled.h3`
