@@ -46,8 +46,8 @@ type AddTodoItem = {
     payload: {todoListItem: TTodoListItem, selectedDate: string}
 }
 
-type EditTodoItem = {
-    type: 'EDIT_TODO_ITEM'
+type EditTodoListItem = {
+    type: 'EDIT_TODO_LIST_ITEM'
     payload: {todoListItem: TTodoListItem, selectedDate: string}
 }
 
@@ -58,7 +58,7 @@ type Action =
     | AddTask
     | EditTask
     | AddTodoItem
-    | EditTodoItem
+    | EditTodoListItem
     | AddTodoList
 
 const context = React.createContext(
@@ -91,7 +91,7 @@ const reducer = (state: State, action: Action): State => {
         case 'ADD_TODO_ITEM': {
             return state
         }
-        case 'EDIT_TODO_ITEM': {
+        case 'EDIT_TODO_LIST_ITEM': {
             const updatedTodoListForDate = [...state.todoList[action.payload.selectedDate]]
                 .filter(({taskId}) => taskId !== action.payload.todoListItem.taskId)
             updatedTodoListForDate.push(action.payload.todoListItem)
