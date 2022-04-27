@@ -1,14 +1,14 @@
 import React from 'react'
 import { Routes, Route } from 'react-router'
 
-import { Projects, Today, Tasks } from '../pages'
+import { Projects, TodoList, Tasks } from '../pages'
 
 const Router = () => {
     return (
         <Routes>
             <Route
                 path="/"
-                element={<Today />}
+                element={<TodoList />}
             />
             <Route
                 path="/projects"

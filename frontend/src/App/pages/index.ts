@@ -1,9 +1,9 @@
 import Projects from './Projects'
-import Today from './TodoList/Today'
+import TodoList from './TodoList/TodoList'
 import Tasks from './Tasks'
 
 export {
     Projects,
-    Today,
+    TodoList,
     Tasks
 }

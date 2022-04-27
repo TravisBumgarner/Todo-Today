@@ -1,3 +1,3 @@
-import Today from './Today'
+import TodoList from './TodoList'
 
-export default Today
+export default TodoList
