@@ -4,6 +4,8 @@
 - [x] Setup Edit Project
 - [x] Setup Add/Edit Tasks
 - [x] Add Header
+- [x] Add context
+
 # Things to Noodle On
 
 - What to do with Projects Like PTO / Vacation

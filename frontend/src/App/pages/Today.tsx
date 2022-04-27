@@ -1,10 +1,24 @@
 import React from 'react'
 
-import { Paragraph } from 'sharedComponents';
+import { TProject } from 'sharedTypes'
+import { Button, Heading } from 'sharedComponents'
+// import { AddProjectModal, ProjectsTable } from './components'
+
+// import { FAKE_PROJECTS } from '../../fakeData'
+
+const Projects = () => {
+    // const [showAddProjectModal, setShowAddProjectModal] = React.useState<boolean>(false)
+    // const [projects, setProjects] = React.useState<Record<string, TProject>>({...FAKE_PROJECTS})
 
 
-const Today = () => {
-    return <Paragraph>Today</Paragraph>
+    return (
+        <>
+            <Heading.H2>Today</Heading.H2>
+            {/* <ProjectsTable projects={projects} setProjects={setProjects} /> */}
+            {/* <Button fullWidth key="edit" variation="FOREGROUND_PRIMARY" onClick={() => setShowAddProjectModal(true)}>Add Project</Button> */}
+            {/* <AddProjectModal showModal={showAddProjectModal} setShowModal={setShowAddProjectModal} setProjects={setProjects} /> */}
+        </>
+    )
 }
 
-export default Today
+export default Projects

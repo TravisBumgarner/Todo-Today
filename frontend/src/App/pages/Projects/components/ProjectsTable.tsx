@@ -4,14 +4,11 @@ import { Button, DropdownMenu, Table } from 'sharedComponents'
 import { TProject } from 'sharedTypes'
 import EditProjectModal from './EditProjectModal'
 import { formatDateDisplayString, projectStatusLookup } from 'utilities'
+import {context} from "Context"
 
+const ProjectsTable = () => {
+    const { dispatch, state } = React.useContext(context)
 
-type ProjectsTableProps = {
-    projects: Record<string, TProject>
-    setProjects: React.Dispatch<React.SetStateAction<Record<string, TProject>>>
-}
-
-const ProjectsTable = ({ projects, setProjects }: ProjectsTableProps) => {
     const [selectedProjectId, setSelectedProjectId] = React.useState<string | null>(null)
 
     return (
@@ -28,7 +25,7 @@ const ProjectsTable = ({ projects, setProjects }: ProjectsTableProps) => {
                     </Table.TableRow>
                 </Table.TableHeader>
                 <Table.TableBody>
-                    {Object.values(projects).map(({ title, status, startDate, endDate, id }) => (
+                    {Object.values(state.projects).map(({ title, status, startDate, endDate, id }) => (
                         <Table.TableRow key={id}>
                             <Table.TableBodyCell>{title}</Table.TableBodyCell>
                             <Table.TableBodyCell>{projectStatusLookup[status]}</Table.TableBodyCell>
@@ -49,8 +46,7 @@ const ProjectsTable = ({ projects, setProjects }: ProjectsTableProps) => {
                 <EditProjectModal
                     showModal={selectedProjectId !== null}
                     setShowModal={() => setSelectedProjectId(null)}
-                    project={projects[selectedProjectId]}
-                    setProjects={setProjects}
+                    selectedProjectId={selectedProjectId}
                 />
                 ) : 
                 (null)

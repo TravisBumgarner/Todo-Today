@@ -3,15 +3,19 @@ import moment, { Moment } from 'moment'
 
 import { Button, Modal, ButtonWrapper, LabelAndInput } from 'sharedComponents'
 import { TProject, TProjectStatus } from 'sharedTypes'
+import {context } from 'Context'
 
 type EditProjectModalProps = {
-    project: TProject
+    selectedProjectId: TProject['id']
     showModal: boolean
     setShowModal: (showModal: boolean) => void
-    setProjects: React.Dispatch<React.SetStateAction<Record<string, TProject>>>
 }
 
-const EditProjectModal = ({ showModal, setShowModal, setProjects, project }: EditProjectModalProps) => {
+const EditProjectModal = ({ showModal, setShowModal, selectedProjectId }: EditProjectModalProps) => {
+    const { dispatch, state } = React.useContext(context)
+
+    const project = state.projects[selectedProjectId]
+
     const [title, setTitle] = React.useState<string>(project.title)
     const [startDate, setStartDate] = React.useState<Moment | null>(project.startDate ? moment(project.startDate) : null)
     const [endDate, setEndDate] = React.useState<Moment | null>(project.endDate ? moment(project.endDate) : null)
@@ -27,7 +31,7 @@ const EditProjectModal = ({ showModal, setShowModal, setProjects, project }: Edi
             id: project.id
         }
         
-        setProjects(prev => ({...prev, [project.id]: {...editedProject}}))
+        dispatch({type: "EDIT_PROJECT", payload: editedProject})
         setShowModal(false)
     }
 

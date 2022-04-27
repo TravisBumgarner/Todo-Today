@@ -1,16 +1,18 @@
 import React from 'react'
 import moment, { Moment } from 'moment'
 
+import { context } from 'Context'
 import { Button, DropdownMenu, Table, Heading, Modal, ButtonWrapper, LabelAndInput } from 'sharedComponents'
 import { TProject, TProjectStatus } from 'sharedTypes'
 
 type AddProjectModalProps = {
     showModal: boolean
     setShowModal: (showModal: boolean) => void
-    setProjects: React.Dispatch<React.SetStateAction<Record<string, TProject>>>
 }
 
-const AddProjectModal = ({ showModal, setShowModal, setProjects }: AddProjectModalProps) => {
+const AddProjectModal = ({ showModal, setShowModal }: AddProjectModalProps) => {
+    const { dispatch } = React.useContext(context)
+
     const [title, setTitle] = React.useState<string>('')
     const [startDate, setStartDate] = React.useState<Moment>(moment())
     const [endDate, setEndDate] = React.useState<Moment>(moment())
@@ -24,7 +26,7 @@ const AddProjectModal = ({ showModal, setShowModal, setProjects }: AddProjectMod
             id: `${Math.random()}`
         }
 
-        setProjects(prev => ({...prev, id: {...newProject} }))
+        dispatch({type: "ADD_PROJECT", payload: newProject})
         setShowModal(false)
     }
 
@@ -58,7 +60,7 @@ const AddProjectModal = ({ showModal, setShowModal, setProjects }: AddProjectMod
                 <ButtonWrapper right={
                     [
                         <Button key="cancel" variation="FOREGROUND_PRIMARY" onClick={() => setShowModal(false)}>Cancel</Button>,
-                        <Button key="save"variation="FOREGROUND_ALERT" onClick={handleSubmit}>Save</Button>
+                        <Button key="save" variation="FOREGROUND_ALERT" onClick={handleSubmit}>Save</Button>
                     ]
                 }
                 />

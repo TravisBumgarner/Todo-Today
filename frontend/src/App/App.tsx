@@ -4,9 +4,13 @@ import { BrowserRouter } from 'react-router-dom'
 
 import Theme from 'theme'
 import { Navigation, Router, Header } from './components'
+import Context, {context} from 'Context'
 
 
 const App = () => {
+  const { dispatch, state } = React.useContext(context)
+
+  console.log(state)
   return (
     <div>
       <Header />
@@ -27,7 +31,9 @@ const InjectedApp = () => {
   return (
     <BrowserRouter>
       <Theme.GlobalStyle />
-      <App />
+      <Context>
+        <App />
+      </Context>
     </BrowserRouter>
   )
 }

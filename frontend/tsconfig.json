@@ -16,8 +16,10 @@
         "*": ["src/types/*"],
         "sharedComponents": ["src/sharedComponents"],
         "sharedTypes": ["src/sharedTypes.ts"],
-        "theme": ["src/theme.js"],
+        "theme": ["src/theme.tsx"],
         "utilities": ["src/utilities.ts"],
+        "Context": ["src/Context.tsx"],
+
       }
     }
   }
