@@ -3,7 +3,7 @@ import moment from 'moment'
 
 import { Button, Heading, Paragraph } from 'sharedComponents'
 import { TTodoListItem } from 'sharedTypes'
-import { TodoListTable } from './components'
+import { TodoListTable, ManageTodoListItemsModal} from './components'
 import { formatDateKeyLookup } from 'utilities'
 import { context } from 'Context'
 
@@ -24,6 +24,7 @@ const TodoToday = () => {
     const { state, dispatch } = React.useContext(context)
     const [selectedDate, setSelectedDate] = React.useState<moment.Moment>(moment())
     const [isLoading, setIsLoading] = React.useState<boolean>(false)
+    const [showManagementModal, setShowManagementModal] = React.useState<boolean>(false)
 
     const getPreviousDay = () => {
         setSelectedDate(moment(selectedDate).subtract(1, 'day'))
@@ -54,9 +55,11 @@ const TodoToday = () => {
             <Heading.H2>{selectedDate.format('dddd, MMMM Do YYYY')}</Heading.H2>
             <Button onClick={getPreviousDay} variation='FOREGROUND_PRIMARY'>Previous Day</Button>
             <Button onClick={getNextDay} variation='FOREGROUND_PRIMARY'>Next Day</Button>
+            <Button onClick={() => setShowManagementModal(true)} variation='FOREGROUND_PRIMARY'>Manage Tasks</Button>
             {
                 Object.keys(todoListItemsByProjectId).map(projectId => <TodoListTable selectedDate={selectedDate} key={projectId} projectId={projectId} todoListItems={todoListItemsByProjectId[projectId]} />)
             }
+            <ManageTodoListItemsModal selectedDate={selectedDate} showModal={showManagementModal} setShowModal={setShowManagementModal}/>
         </>
     )
 }

@@ -9,6 +9,9 @@
 - [x] Load from Store
 - [x] Get rid of set state for managing state changes
 - [x] Add today view
+- [x] Remove todo list items
+- [ ] Add todo list items
+    - [ ] Figure out why checking an item in the Today view doesn't update state
 
 Next PR
 

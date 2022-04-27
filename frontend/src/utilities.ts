@@ -1,5 +1,5 @@
 import moment from 'moment'
-import { TProjectStatus } from 'sharedTypes'
+import { TProjectStatus, TTask} from 'sharedTypes'
 
 const projectStatusLookup: Record<TProjectStatus, string> = {
     "CANCELED": "Canceled",
@@ -29,10 +29,23 @@ const formatDurationDisplayString = (rawMinutes: number) => {
     return paddedHours + ':' + paddedMinutes
 }
 
+const bucketTasksByProject = (tasks: TTask[]): Record<string, TTask[]> => {
+    return tasks.reduce((accumulator, curr) => {
+        if (!(curr.projectId in accumulator)) {
+            accumulator[curr.projectId] = []
+        }
+
+        accumulator[curr.projectId].push(curr)
+
+        return accumulator
+    }, {} as Record<string, TTask[]>)
+}
+
 
 export {
     projectStatusLookup,
     formatDateDisplayString,
     formatDateKeyLookup,
-    formatDurationDisplayString
+    formatDurationDisplayString,
+    bucketTasksByProject
 }

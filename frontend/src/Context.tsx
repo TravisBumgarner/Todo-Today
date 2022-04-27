@@ -48,7 +48,7 @@ type RemoveTodoListItem = {
 
 type EditTodoListItem = {
     type: 'EDIT_TODO_LIST_ITEM'
-    payload: { todoListItem: TTodoListItem, selectedDate: string }
+    payload: { selectedDate: string, isChecked: boolean, taskId: string, projectId: string, duration: number}
 }
 
 
@@ -96,9 +96,10 @@ const reducer = (state: State, action: Action): State => {
 
         }
         case 'EDIT_TODO_LIST_ITEM': {
+            console.log('state', action)
             const updatedTodoListForDate = [...state.todoList[action.payload.selectedDate]]
-                .filter(({ taskId }) => taskId !== action.payload.todoListItem.taskId)
-            updatedTodoListForDate.push(action.payload.todoListItem)
+                .filter(({ taskId }) => taskId !== action.payload.taskId)
+            updatedTodoListForDate.push({projectId: action.payload.projectId, taskId: action.payload.taskId, duration: 0})
 
             return { ...state, todoList: { ...state.todoList, [action.payload.selectedDate]: updatedTodoListForDate } }
         }

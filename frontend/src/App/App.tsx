@@ -4,9 +4,11 @@ import { BrowserRouter } from 'react-router-dom'
 import Theme from 'theme'
 import { Navigation, Router, Header } from './components'
 import Context, {context} from 'Context'
+import { LabelAndInput } from 'sharedComponents';
 
 const App = () => {
   const { dispatch, state } = React.useContext(context)
+  console.log(state.todoList['2022-04-27'])
   return (
     <div>
       <Header />

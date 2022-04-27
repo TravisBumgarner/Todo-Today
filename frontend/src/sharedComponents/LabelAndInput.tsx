@@ -72,24 +72,32 @@ const LabelAndInputWrapper = styled.div`
 type GenericProps = {
     name: string
     label: string
-    handleChange: (value: string) => void
     value: string
 }
 
 type InputProps = {
     inputType?: 'password' | 'date'
+    handleChange: (value: string) => void
 }
 
 type TextAreaProps = {
     inputType: 'textarea'
+    handleChange: (value: string) => void
+}
+
+type CheckboxProps = {
+    inputType: 'checkbox'
+    options: { label: string, name: string, value: string | number, checked: boolean }[]
+    handleChange: (value: {name: string, checked: boolean}) => void
 }
 
 type SelectProps = {
     inputType: 'select'
-    options: EnumType<string> | {label: string, value: string | number}[]
+    options: EnumType<string> | { label: string, value: string | number }[]
+    handleChange: (value: string) => void
 }
 
-type LabelAndInputProps = GenericProps & (SelectProps | TextAreaProps | InputProps)
+type LabelAndInputProps = GenericProps & (SelectProps | TextAreaProps | InputProps | CheckboxProps)
 
 const LabelAndInput = (props: LabelAndInputProps) => {
     let InputElement: JSX.Element
@@ -104,11 +112,30 @@ const LabelAndInput = (props: LabelAndInputProps) => {
             <Select id={name} value={value} onChange={(event) => handleChange(event.target.value)}>
                 {
                     Array.isArray(options)
-                    ? options.map(({label, value}) => <option key={label} value={value}>{label}</option>)
-                    : Object.values(options).map(option => <option key={option} value={option}>{projectStatusLookup[option as TProjectStatus]}</option>)
+                        ? options.map(({ label, value }) => <option key={label} value={value}>{label}</option>)
+                        : Object.values(options).map(option => <option key={option} value={option}>{projectStatusLookup[option as TProjectStatus]}</option>)
                 }
-                
+
             </Select>
+        )
+    }
+    else if (props.inputType === 'checkbox') {
+        const { options, name, value, handleChange } = props
+        InputElement = (
+            <div>
+                {options.map(option => (
+                    <div key={option.name}>
+                        <input
+                            type="checkbox"
+                            name={option.name}
+                            value={option.name}
+                            checked={option.checked}
+                            onChange={(event) => handleChange({name: option.name, checked: event.target.checked})}
+                        />
+                        <label htmlFor={option.name}>{option.label}</label>
+                    </div>
+                ))}
+            </div>
         )
     }
     else {

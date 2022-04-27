@@ -1,11 +1,10 @@
 import React from 'react'
+import moment from 'moment'
 
 import { Button, DropdownMenu, Heading, LabelAndInput, Table } from 'sharedComponents'
-import { TProject, TTask, TTodoListItem } from 'sharedTypes'
-// import EditProjectModal from './EditProjectModal'
-import { formatDateDisplayString, formatDateKeyLookup, projectStatusLookup, formatDurationDisplayString } from 'utilities'
+import { TTodoListItem } from 'sharedTypes'
+import { formatDateKeyLookup, projectStatusLookup } from 'utilities'
 import { context } from "Context"
-import moment from 'moment'
 
 type TodoListTableProps = {
     projectId: string,
@@ -117,13 +116,11 @@ const AVAILABLE_DURATIONS = [
 const TodoListTable = ({ projectId, todoListItems, selectedDate }: TodoListTableProps) => {
     const { dispatch, state } = React.useContext(context)
 
-    const [selectedTaskId, setSelectedTaskId] = React.useState<string | null>(null)
     const project = state.projects[projectId]
     const tasksAndDurations = todoListItems.map(({ taskId, duration }) => ({ ...state.tasks[taskId], duration }))
     
     return (
         <>
-
             <Heading.H3>{project.title}</Heading.H3>
             <Table.Table>
                 <Table.TableHeader>
@@ -148,7 +145,9 @@ const TodoListTable = ({ projectId, todoListItems, selectedDate }: TodoListTable
                                         value={`${duration}`}
                                         options={AVAILABLE_DURATIONS}
                                         inputType="select"
-                                        handleChange={(value: string) => dispatch({ type: "EDIT_TODO_LIST_ITEM", payload: { todoListItem: { projectId, taskId: id, duration: parseInt(value, 10) }, selectedDate: formatDateKeyLookup(selectedDate) } })}
+                                        handleChange={(value) => {
+                                            dispatch({ type: "EDIT_TODO_LIST_ITEM", payload: {  isChecked: true, projectId, taskId: id, duration: parseInt(value, 10), selectedDate: formatDateKeyLookup(selectedDate) } })}
+                                        }
                                     /></Table.TableBodyCell>
                                 <Table.TableBodyCell>
                                     <DropdownMenu title="Actions">{

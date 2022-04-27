@@ -2,20 +2,8 @@ import { context } from 'Context'
 import React from 'react'
 
 import {  Heading } from 'sharedComponents'
-import { TTask } from 'sharedTypes'
 import {  TasksTable } from './components'
-
-const bucketTasksByProject = (tasks: TTask[]): Record<string, TTask[]> => {
-    return tasks.reduce((accumulator, curr) => {
-        if (!(curr.projectId in accumulator)) {
-            accumulator[curr.projectId] = []
-        }
-
-        accumulator[curr.projectId].push(curr)
-
-        return accumulator
-    }, {} as Record<string, TTask[]>)
-}
+import { bucketTasksByProject } from 'utilities'
 
 const Tasks = () => {
     const { state } = React.useContext(context)

@@ -47,12 +47,12 @@ const Modal = ({
                 backgroundColor: colors.BACKGROUND_PRIMARY
             },
             content: {
-                borderColor: colors.FOREGROUND_PRIMARY,
-                borderRadius: '1.5em',
+                border: `${colors.FOREGROUND_PRIMARY} solid 2px`,
                 backgroundColor: colors.BACKGROUND_PRIMARY,
                 position: 'static',
                 maxWidth: '80vw',
-                minWidth: '500px'
+                minWidth: '500px',
+                borderRadius: 0
             },
         }}
     >
