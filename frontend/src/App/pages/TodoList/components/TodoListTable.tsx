@@ -152,7 +152,7 @@ const TodoListTable = ({ projectId, todoListItems, selectedDate }: TodoListTable
                                     /></Table.TableBodyCell>
                                 <Table.TableBodyCell>
                                     <DropdownMenu title="Actions">{
-                                        [<Button fullWidth key="edit" variation="FOREGROUND_PRIMARY" onClick={() => setSelectedTaskId(id)}>Edit</Button>]
+                                        [<Button fullWidth key="remove" variation="FOREGROUND_PRIMARY" onClick={() => dispatch({type: "REMOVE_TODO_LIST_ITEM", payload: {taskId: id, selectedDate: formatDateKeyLookup(selectedDate)}})}>Remove</Button>]
                                     }</DropdownMenu>
 
                                 </Table.TableBodyCell>

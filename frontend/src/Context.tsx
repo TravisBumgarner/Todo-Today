@@ -5,10 +5,10 @@ import { TProject, TTask, TTodoList, TTodoListItem } from 'sharedTypes'
 import dataStore from './dataStore.json'
 
 type State = {
-  projects: Record<string, TProject>
-  tasks: Record<string, TTask>
-  todoList: Record<string, {projectId: string, taskId: string, duration: number}[]>
-  
+    projects: Record<string, TProject>
+    tasks: Record<string, TTask>
+    todoList: Record<string, { projectId: string, taskId: string, duration: number }[]>
+
 }
 
 
@@ -41,14 +41,14 @@ type EditTask = {
     payload: TTask
 }
 
-type AddTodoItem = {
-    type: 'ADD_TODO_ITEM'
-    payload: {todoListItem: TTodoListItem, selectedDate: string}
+type RemoveTodoListItem = {
+    type: 'REMOVE_TODO_LIST_ITEM'
+    payload: { taskId: string, selectedDate: string }
 }
 
 type EditTodoListItem = {
     type: 'EDIT_TODO_LIST_ITEM'
-    payload: {todoListItem: TTodoListItem, selectedDate: string}
+    payload: { todoListItem: TTodoListItem, selectedDate: string }
 }
 
 
@@ -57,8 +57,8 @@ type Action =
     | EditProject
     | AddTask
     | EditTask
-    | AddTodoItem
     | EditTodoListItem
+    | RemoveTodoListItem
     | AddTodoList
 
 const context = React.createContext(
@@ -72,31 +72,35 @@ const context = React.createContext(
 )
 
 const reducer = (state: State, action: Action): State => {
-    
+
     switch (action.type) {
         case 'ADD_TODO_LIST': {
             console.log('action', action)
-            return {...state, todoList: {...state.todoList, [action.payload.date]: []}}
+            return { ...state, todoList: { ...state.todoList, [action.payload.date]: [] } }
         }
         case 'ADD_PROJECT':
         case 'EDIT_PROJECT': {
-            const updatedProjects = {...state.projects, [action.payload.id]: action.payload}
-            return {...state, projects: updatedProjects  }
+            const updatedProjects = { ...state.projects, [action.payload.id]: action.payload }
+            return { ...state, projects: updatedProjects }
         }
-        case 'ADD_TASK': 
+        case 'ADD_TASK':
         case 'EDIT_TASK': {
-            const updatedTasks = {...state.tasks, [action.payload.id]: action.payload}
-            return {...state, tasks: updatedTasks  }
+            const updatedTasks = { ...state.tasks, [action.payload.id]: action.payload }
+            return { ...state, tasks: updatedTasks }
         }
-        case 'ADD_TODO_ITEM': {
-            return state
+        case 'REMOVE_TODO_LIST_ITEM': {
+            const updatedTodoListForDate = [...state.todoList[action.payload.selectedDate]]
+                .filter(({ taskId }) => taskId !== action.payload.taskId)
+
+                return { ...state, todoList: { ...state.todoList, [action.payload.selectedDate]: updatedTodoListForDate } }
+
         }
         case 'EDIT_TODO_LIST_ITEM': {
             const updatedTodoListForDate = [...state.todoList[action.payload.selectedDate]]
-                .filter(({taskId}) => taskId !== action.payload.todoListItem.taskId)
+                .filter(({ taskId }) => taskId !== action.payload.todoListItem.taskId)
             updatedTodoListForDate.push(action.payload.todoListItem)
-            
-            return {...state, todoList: {...state.todoList, [action.payload.selectedDate]: updatedTodoListForDate}  }
+
+            return { ...state, todoList: { ...state.todoList, [action.payload.selectedDate]: updatedTodoListForDate } }
         }
         default: {
             console.log(action)
