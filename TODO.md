@@ -2,7 +2,7 @@
 
 - [x] Setup Add Project
 - [x] Setup Edit Project
-- [ ] Setup Add/Edit Tasks
+- [x] Setup Add/Edit Tasks
 - [x] Add Header
 # Things to Noodle On
 

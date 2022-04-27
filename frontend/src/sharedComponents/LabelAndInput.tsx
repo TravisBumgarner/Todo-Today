@@ -99,10 +99,9 @@ const LabelAndInput = (props: LabelAndInputProps) => {
         InputElement = <TextArea rows={5} autoComplete="on" name={name} onChange={(event) => handleChange(event.target.value)} value={value} />
     }
     else if (props.inputType === 'select') {
-        const { options } = props
-        console.log(options)
+        const { options, name, value, handleChange } = props
         InputElement = (
-            <Select id="browsers">
+            <Select id={name} value={value} onChange={(event) => handleChange(event.target.value)}>
                 {Object.values(options).map(option => <option key={option} value={option}>{projectStatusLookup[option as TProjectStatus]}</option>)}
                 
             </Select>

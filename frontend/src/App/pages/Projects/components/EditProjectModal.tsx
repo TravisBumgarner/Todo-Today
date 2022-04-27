@@ -15,21 +15,18 @@ const EditProjectModal = ({ showModal, setShowModal, setProjects, project }: Edi
     const [title, setTitle] = React.useState<string>(project.title)
     const [startDate, setStartDate] = React.useState<Moment | null>(project.startDate ? moment(project.startDate) : null)
     const [endDate, setEndDate] = React.useState<Moment | null>(project.endDate ? moment(project.endDate) : null)
-    const [stats, setStatus] = React.useState<TProjectStatus>(project.status)
+    const [status, setStatus] = React.useState<TProjectStatus>(project.status)
     const [submitDisabled, setSubmitDisabled] = React.useState<boolean>(true)
 
     const handleSubmit = () => {
-        console.log('before submit', startDate, endDate)
         const editedProject = {
             title,
             startDate: startDate ? moment(startDate) : null,
             endDate: endDate ? moment(endDate) : null,
-            status: TProjectStatus.NEW,
+            status,
             id: project.id
         }
         
-        console.log(editedProject)
-
         setProjects(prev => ({...prev, [project.id]: {...editedProject}}))
         setShowModal(false)
     }

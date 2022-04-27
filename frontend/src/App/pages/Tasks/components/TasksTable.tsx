@@ -1,8 +1,8 @@
 import React from 'react'
 
-import { Button, Heading, Table } from 'sharedComponents'
+import { Button, Heading, Table, DropdownMenu} from 'sharedComponents'
 import { TProject, TTask } from 'sharedTypes'
-// import EditProjectModal from './EditProjectModal'
+import EditTaskModal from './EditTaskModal'
 import AddTaskModal from './AddTaskModal'
 import { projectStatusLookup } from 'utilities'
 
@@ -15,6 +15,8 @@ type TasksTableProps = {
 
 const TasksTable = ({ tasks, project, setTasks}: TasksTableProps) => {
     const [showAddTaskModal, setShowAddTaskModal] = React.useState<boolean>(false)
+    const [selectedTaskId, setSelectedTaskId] = React.useState<string | null>(null)
+
 
     return (
         <>
@@ -33,9 +35,9 @@ const TasksTable = ({ tasks, project, setTasks}: TasksTableProps) => {
                             <Table.TableBodyCell>{title}</Table.TableBodyCell>
                             <Table.TableBodyCell>{projectStatusLookup[status]}</Table.TableBodyCell>
                             <Table.TableBodyCell>
-                                {/* <DropdownMenu title="Actions">{
-                                    // [<Button fullWidth key="edit" variation="FOREGROUND_PRIMARY" onClick={() => setSelectedProjectId(id)}>Edit</Button>]
-                                }</DropdownMenu> */}
+                                <DropdownMenu title="Actions">{
+                                    [<Button fullWidth key="edit" variation="FOREGROUND_PRIMARY" onClick={() => setSelectedTaskId(id)}>Edit</Button>]
+                                }</DropdownMenu>
                                 
                             </Table.TableBodyCell>
                         </Table.TableRow>
@@ -44,17 +46,18 @@ const TasksTable = ({ tasks, project, setTasks}: TasksTableProps) => {
             </Table.Table>
             <Button fullWidth key="edit" variation="FOREGROUND_PRIMARY" onClick={() => setShowAddTaskModal(true)}>Add Task to {project.title}</Button>
             <AddTaskModal showModal={showAddTaskModal} project={project} setShowModal={setShowAddTaskModal} setTasks={setTasks} />
-            {/* { selectedProjectId ? 
+            { selectedTaskId ? 
                 (
-                <EditProjectModal
-                    showModal={selectedProjectId !== null}
-                    setShowModal={() => setSelectedProjectId(null)}
-                    project={projects[selectedProjectId]}
-                    setProjects={setProjects}
+                <EditTaskModal
+                    showModal={selectedTaskId !== null}
+                    setShowModal={() => setSelectedTaskId(null)}
+                    task={tasks.find(({id}) => id === selectedTaskId) as TTask}
+                    setTasks={setTasks}
+                    project={project}
                 />
                 ) : 
                 (null)
-            } */}
+            }
         </>
     )
 }

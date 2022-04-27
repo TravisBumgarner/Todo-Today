@@ -24,7 +24,6 @@ const Tasks = () => {
         <>
             <Heading.H2>Tasks</Heading.H2>
             {Object.keys(tasks).map(projectId => {
-                console.log(projectId, tasks[projectId])
                 return (
                     <TasksTable setTasks={setTasks} project={FAKE_PROJECTS[projectId]} tasks={tasks[projectId]} />
                 )
