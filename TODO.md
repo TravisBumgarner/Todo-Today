@@ -5,6 +5,9 @@
 - [x] Setup Add/Edit Tasks
 - [x] Add Header
 - [x] Add context
+- [x] Get rid of fake data
+- [ ] Save/Load Store
+- [x] Get rid of set state for managing state changes
 
 # Things to Noodle On
 

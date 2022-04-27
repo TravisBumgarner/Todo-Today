@@ -1,9 +1,9 @@
+import { context } from 'Context'
 import React from 'react'
 
-import { Button, Heading } from 'sharedComponents'
-import { TTaskStatus, TTask } from 'sharedTypes'
-import { FAKE_TASKS, FAKE_PROJECTS } from '../../fakeData'
-import { AddTaskModal, TasksTable } from './components'
+import {  Heading } from 'sharedComponents'
+import { TTask } from 'sharedTypes'
+import {  TasksTable } from './components'
 
 const bucketTasksByProject = (tasks: TTask[]): Record<string, TTask[]> => {
     return tasks.reduce((accumulator, curr) => {
@@ -18,14 +18,16 @@ const bucketTasksByProject = (tasks: TTask[]): Record<string, TTask[]> => {
 }
 
 const Tasks = () => {
-    const [tasks, setTasks] = React.useState<Record<string, TTask[]>>(bucketTasksByProject(Object.values(FAKE_TASKS)))
+    const { state } = React.useContext(context)
+    
+    const tasks = bucketTasksByProject(Object.values(state.tasks))
     
     return (
         <>
             <Heading.H2>Tasks</Heading.H2>
             {Object.keys(tasks).map(projectId => {
                 return (
-                    <TasksTable setTasks={setTasks} project={FAKE_PROJECTS[projectId]} tasks={tasks[projectId]} />
+                    <TasksTable key={projectId} project={state.projects[projectId]} tasks={tasks[projectId]} />
                 )
             })}
 

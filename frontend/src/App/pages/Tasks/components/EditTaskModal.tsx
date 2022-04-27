@@ -1,3 +1,4 @@
+import { context } from 'Context'
 import React from 'react'
 
 import { Button, Modal, ButtonWrapper, LabelAndInput } from 'sharedComponents'
@@ -6,12 +7,15 @@ import { TProject, TTask, TTaskStatus } from 'sharedTypes'
 type EditTaskModalProps = {
     showModal: boolean
     project: TProject
-    task: TTask
+    taskId: TTask['id']
     setShowModal: (showModal: boolean) => void
-    setTasks: React.Dispatch<React.SetStateAction<Record<string, TTask[]>>>
 }
 
-const EditTaskModal = ({ showModal, setShowModal, setTasks, project, task }: EditTaskModalProps) => {
+const EditTaskModal = ({ showModal, setShowModal, project, taskId }: EditTaskModalProps) => {
+    const { dispatch, state } = React.useContext(context)
+
+    const task = state.tasks[taskId]
+
     const [title, setTitle] = React.useState<string>(task.title)
     const [status, setStatus] = React.useState<TTaskStatus>(task.status)
     const [submitDisabled, setSubmitDisabled] = React.useState<boolean>(true)
@@ -24,12 +28,7 @@ const EditTaskModal = ({ showModal, setShowModal, setTasks, project, task }: Edi
             projectId: project.id
         }
 
-        setTasks(prev => {
-            const modifiedTasksArray = [...prev[project.id].filter(({ id }) => id !== task.id)]
-            modifiedTasksArray.push(editedTask)
-            const modifiedTasks = { ...prev, [project.id]: modifiedTasksArray }
-            return modifiedTasks
-        })
+        dispatch({type: "EDIT_TASK", payload: editedTask})
         setShowModal(false)
     }
     

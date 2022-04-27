@@ -4,8 +4,6 @@ import { TProject } from 'sharedTypes'
 import { Button, Heading } from 'sharedComponents'
 // import { AddProjectModal, ProjectsTable } from './components'
 
-// import { FAKE_PROJECTS } from '../../fakeData'
-
 const Projects = () => {
     // const [showAddProjectModal, setShowAddProjectModal] = React.useState<boolean>(false)
     // const [projects, setProjects] = React.useState<Record<string, TProject>>({...FAKE_PROJECTS})

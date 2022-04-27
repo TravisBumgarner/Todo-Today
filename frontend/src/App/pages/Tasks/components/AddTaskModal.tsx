@@ -1,17 +1,18 @@
 import React from 'react'
-import moment, { Moment } from 'moment'
 
-import { Button, DropdownMenu, Table, Heading, Modal, ButtonWrapper, LabelAndInput } from 'sharedComponents'
+import { Button, Modal, ButtonWrapper, LabelAndInput } from 'sharedComponents'
 import { TProject, TTask, TTaskStatus } from 'sharedTypes'
+import { context } from 'Context'
 
 type AddTaskModalProps = {
     showModal: boolean
     project: TProject
     setShowModal: (showModal: boolean) => void
-    setTasks: React.Dispatch<React.SetStateAction<Record<string, TTask[]>>>
 }
 
-const AddTaskModal = ({ showModal, setShowModal, setTasks, project }: AddTaskModalProps) => {
+const AddTaskModal = ({ showModal, setShowModal, project }: AddTaskModalProps) => {
+    const { dispatch } = React.useContext(context)
+
     const [title, setTitle] = React.useState<string>('')
 
     const handleSubmit = () => {
@@ -22,11 +23,7 @@ const AddTaskModal = ({ showModal, setShowModal, setTasks, project }: AddTaskMod
             projectId: project.id
         }
 
-        setTasks(prev => {
-            const modifiedTasks = { ...prev } 
-            modifiedTasks[project.id].push(newTask)
-            return modifiedTasks
-        })
+        dispatch({type: "ADD_TASK", payload: newTask})
         setShowModal(false)
     }
 

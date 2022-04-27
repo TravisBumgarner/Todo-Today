@@ -1,31 +1,15 @@
 import React from 'react'
 
-import { TProject, TProjectStatus } from 'sharedTypes'
+import { TProject, TProjectStatus, TTask, TTaskStatus } from 'sharedTypes'
+import dataStore from './dataStore.json'
 
 type State = {
   projects: Record<string, TProject>
+  tasks: Record<string, TTask>
 }
-
-const FAKE_PROJECTS: Record<string, TProject> = {
-    '1': {
-        id: "1",
-        title: "PTO",
-        status: TProjectStatus.IN_PROGRESS,
-        startDate: null,
-        endDate: null,
-    },
-    '2': {
-        id: "2",
-        title: "Sick Time",
-        status: TProjectStatus.IN_PROGRESS,
-        startDate: null,
-        endDate: null,
-    }
-}
-
 
 const EMPTY_STATE: State = {
-    projects: {...FAKE_PROJECTS}
+    ...dataStore as State
 }
 
 type AddProject = {
@@ -38,10 +22,22 @@ type EditProject = {
     payload: TProject
 }
 
+type AddTask = {
+    type: 'ADD_TASK'
+    payload: TTask
+}
+
+type EditTask = {
+    type: 'EDIT_TASK'
+    payload: TTask
+}
+
 
 type Action =
     | AddProject
     | EditProject
+    | AddTask
+    | EditTask
 
 const context = React.createContext(
     {
@@ -55,13 +51,15 @@ const context = React.createContext(
 
 const reducer = (state: State, action: Action): State => {
     switch (action.type) {
-        case 'ADD_PROJECT': {
-            const updatedProjects = {...state.projects, [action.payload.id]: action.payload}
-            return {...state, projects: updatedProjects  }
-        }
+        case 'ADD_PROJECT':
         case 'EDIT_PROJECT': {
             const updatedProjects = {...state.projects, [action.payload.id]: action.payload}
             return {...state, projects: updatedProjects  }
+        }
+        case 'ADD_TASK': 
+        case 'EDIT_TASK': {
+            const updatedTasks = {...state.tasks, [action.payload.id]: action.payload}
+            return {...state, tasks: updatedTasks  }
         }
         default: {
             console.log(`Swallowing action: ${JSON.stringify(action)}`)

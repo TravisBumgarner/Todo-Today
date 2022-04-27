@@ -10,10 +10,9 @@ import { projectStatusLookup } from 'utilities'
 type TasksTableProps = {
     tasks: TTask[]
     project: TProject
-    setTasks: React.Dispatch<React.SetStateAction<Record<string, TTask[]>>>
 }
 
-const TasksTable = ({ tasks, project, setTasks}: TasksTableProps) => {
+const TasksTable = ({ tasks, project}: TasksTableProps) => {
     const [showAddTaskModal, setShowAddTaskModal] = React.useState<boolean>(false)
     const [selectedTaskId, setSelectedTaskId] = React.useState<string | null>(null)
 
@@ -45,14 +44,13 @@ const TasksTable = ({ tasks, project, setTasks}: TasksTableProps) => {
                 </Table.TableBody>
             </Table.Table>
             <Button fullWidth key="edit" variation="FOREGROUND_PRIMARY" onClick={() => setShowAddTaskModal(true)}>Add Task to {project.title}</Button>
-            <AddTaskModal showModal={showAddTaskModal} project={project} setShowModal={setShowAddTaskModal} setTasks={setTasks} />
+            <AddTaskModal showModal={showAddTaskModal} project={project} setShowModal={setShowAddTaskModal} />
             { selectedTaskId ? 
                 (
                 <EditTaskModal
                     showModal={selectedTaskId !== null}
                     setShowModal={() => setSelectedTaskId(null)}
-                    task={tasks.find(({id}) => id === selectedTaskId) as TTask}
-                    setTasks={setTasks}
+                    taskId={selectedTaskId}
                     project={project}
                 />
                 ) : 
