@@ -7,8 +7,6 @@ import Context, {context} from 'Context'
 
 const App = () => {
   const { dispatch, state } = React.useContext(context)
-
-  console.log(state)
   return (
     <div>
       <Header />

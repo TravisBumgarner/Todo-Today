@@ -120,8 +120,7 @@ const TodoListTable = ({ projectId, todoListItems, selectedDate }: TodoListTable
     const [selectedTaskId, setSelectedTaskId] = React.useState<string | null>(null)
     const project = state.projects[projectId]
     const tasksAndDurations = todoListItems.map(({ taskId, duration }) => ({ ...state.tasks[taskId], duration }))
-    // const [duration, setDuration] = React.useState('0');
-
+    
     return (
         <>
 

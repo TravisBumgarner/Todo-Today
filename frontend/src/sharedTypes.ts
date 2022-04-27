@@ -29,6 +29,10 @@ type TTask = {
     status: TTaskStatus
 }
 
+type TTodoList = {
+    date: string
+}
+
 type TTodoListItem = {
     duration: number
     projectId: string
@@ -52,5 +56,6 @@ export {
     TTask,
     TTaskStatus,
     TTodoListItem,
-    EnumType
+    TTodoList,
+    EnumType,
 }

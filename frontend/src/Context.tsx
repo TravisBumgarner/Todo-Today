@@ -1,7 +1,7 @@
 import moment from 'moment'
 import React from 'react'
 
-import { TProject, TTask, TTodoListItem } from 'sharedTypes'
+import { TProject, TTask, TTodoList, TTodoListItem } from 'sharedTypes'
 import dataStore from './dataStore.json'
 
 type State = {
@@ -14,24 +14,12 @@ type State = {
 
 const EMPTY_STATE: State = {
     ...dataStore,
-    todoList: {
-        '2022-04-27': [{
-            duration: 0,
-            projectId: '1',
-            taskId: '1'
-        },
-        {
-            duration: 15,
-            projectId: '1',
-            taskId: '2'
-        }],
-        '2022-04-28': [{
-            duration: 0,
-            projectId: '1',
-            taskId: '1'
-        }],
-    }
 } as State
+
+type AddTodoList = {
+    type: 'ADD_TODO_LIST'
+    payload: TTodoList
+}
 
 type AddProject = {
     type: 'ADD_PROJECT'
@@ -71,6 +59,7 @@ type Action =
     | EditTask
     | AddTodoItem
     | EditTodoItem
+    | AddTodoList
 
 const context = React.createContext(
     {
@@ -83,7 +72,12 @@ const context = React.createContext(
 )
 
 const reducer = (state: State, action: Action): State => {
+    
     switch (action.type) {
+        case 'ADD_TODO_LIST': {
+            console.log('action', action)
+            return {...state, todoList: {...state.todoList, [action.payload.date]: []}}
+        }
         case 'ADD_PROJECT':
         case 'EDIT_PROJECT': {
             const updatedProjects = {...state.projects, [action.payload.id]: action.payload}
