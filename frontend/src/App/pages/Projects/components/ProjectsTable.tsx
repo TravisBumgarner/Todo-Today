@@ -20,7 +20,7 @@ const ProjectsTable = ({ projects, setProjects }: ProjectsTableProps) => {
             <Table.Table>
                 <Table.TableHeader>
                     <Table.TableRow>
-                        <Table.TableHeaderCell width="35%" scope="col">Title</Table.TableHeaderCell>
+                        <Table.TableHeaderCell width="35%" scope="col">Project</Table.TableHeaderCell>
                         <Table.TableHeaderCell width="15%" scope="col">Status</Table.TableHeaderCell>
                         <Table.TableHeaderCell width="15%" scope="col">Start Date</Table.TableHeaderCell>
                         <Table.TableHeaderCell width="15%" scope="col">End Date</Table.TableHeaderCell>

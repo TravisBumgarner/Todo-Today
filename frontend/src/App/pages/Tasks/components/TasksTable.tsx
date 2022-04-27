@@ -1,26 +1,28 @@
 import React from 'react'
 
-import { Button, DropdownMenu, Table } from 'sharedComponents'
-import { TTask } from 'sharedTypes'
+import { Button, Heading, Table } from 'sharedComponents'
+import { TProject, TTask } from 'sharedTypes'
 // import EditProjectModal from './EditProjectModal'
+import AddTaskModal from './AddTaskModal'
 import { projectStatusLookup } from 'utilities'
 
 
 type TasksTableProps = {
     tasks: TTask[]
-    // setProjects: React.Dispatch<React.SetStateAction<Record<string, TTask>>>
+    project: TProject
+    setTasks: React.Dispatch<React.SetStateAction<Record<string, TTask[]>>>
 }
 
-const TasksTable = ({ tasks }: TasksTableProps) => {
-    // const [selectedProjectId, setSelectedProjectId] = React.useState<string | null>(null)
+const TasksTable = ({ tasks, project, setTasks}: TasksTableProps) => {
+    const [showAddTaskModal, setShowAddTaskModal] = React.useState<boolean>(false)
 
     return (
         <>
-
+             <Heading.H3>{project.title}</Heading.H3>
             <Table.Table>
                 <Table.TableHeader>
                     <Table.TableRow>
-                        <Table.TableHeaderCell width="35%" scope="col">Title</Table.TableHeaderCell>
+                        <Table.TableHeaderCell width="35%" scope="col">Task</Table.TableHeaderCell>
                         <Table.TableHeaderCell width="15%" scope="col">Status</Table.TableHeaderCell>
                         <Table.TableHeaderCell width="20%" scope="col">Actions</Table.TableHeaderCell>
                     </Table.TableRow>
@@ -40,6 +42,8 @@ const TasksTable = ({ tasks }: TasksTableProps) => {
                     ))}
                 </Table.TableBody>
             </Table.Table>
+            <Button fullWidth key="edit" variation="FOREGROUND_PRIMARY" onClick={() => setShowAddTaskModal(true)}>Add Task to {project.title}</Button>
+            <AddTaskModal showModal={showAddTaskModal} project={project} setShowModal={setShowAddTaskModal} setTasks={setTasks} />
             {/* { selectedProjectId ? 
                 (
                 <EditProjectModal

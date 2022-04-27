@@ -35,7 +35,6 @@ const TextArea = styled.textarea`
 const Label = styled.label`
     font-family: 'Comfortaa', cursive;
     font-size: 1rem;
-    padding: 0.5rem 1rem;
     background-color: transparent;
     font-weight: 700;
     color: ${colors.FOREGROUND_PRIMARY};
