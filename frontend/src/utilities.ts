@@ -16,8 +16,23 @@ const formatDateDisplayString = (date: moment.Moment | null): string => {
     return date.format('YYYY-MM-DD')
 }
 
+const formatDateKeyLookup = (date: moment.Moment): string => {
+    return date.format('YYYY-MM-DD')
+}
+
+const formatDurationDisplayString = (rawMinutes: number) => {
+    var hours = Math.floor(rawMinutes / 60)
+    var minutes = rawMinutes % 60
+
+    const paddedHours = hours < 10 ? '0' + hours : hours
+    const paddedMinutes = minutes < 10 ? '0' + minutes : minutes
+    return paddedHours + ':' + paddedMinutes
+}
+
 
 export {
     projectStatusLookup,
-    formatDateDisplayString
+    formatDateDisplayString,
+    formatDateKeyLookup,
+    formatDurationDisplayString
 }

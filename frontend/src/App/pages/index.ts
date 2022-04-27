@@ -1,5 +1,5 @@
 import Projects from './Projects'
-import Today from './Today'
+import Today from './TodoList/Today'
 import Tasks from './Tasks'
 
 export {

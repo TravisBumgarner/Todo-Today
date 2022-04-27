@@ -72,8 +72,8 @@ const LabelAndInputWrapper = styled.div`
 type GenericProps = {
     name: string
     label: string
-    value: string
     handleChange: (value: string) => void
+    value: string
 }
 
 type InputProps = {
@@ -86,7 +86,7 @@ type TextAreaProps = {
 
 type SelectProps = {
     inputType: 'select'
-    options: EnumType<string>
+    options: EnumType<string> | {label: string, value: string | number}[]
 }
 
 type LabelAndInputProps = GenericProps & (SelectProps | TextAreaProps | InputProps)
@@ -102,7 +102,11 @@ const LabelAndInput = (props: LabelAndInputProps) => {
         const { options, name, value, handleChange } = props
         InputElement = (
             <Select id={name} value={value} onChange={(event) => handleChange(event.target.value)}>
-                {Object.values(options).map(option => <option key={option} value={option}>{projectStatusLookup[option as TProjectStatus]}</option>)}
+                {
+                    Array.isArray(options)
+                    ? options.map(({label, value}) => <option key={label} value={value}>{label}</option>)
+                    : Object.values(options).map(option => <option key={option} value={option}>{projectStatusLookup[option as TProjectStatus]}</option>)
+                }
                 
             </Select>
         )

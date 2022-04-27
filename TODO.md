@@ -6,8 +6,19 @@
 - [x] Add Header
 - [x] Add context
 - [x] Get rid of fake data
-- [ ] Save/Load Store
+- [x] Load from Store
 - [x] Get rid of set state for managing state changes
+- [x] Add today view
+
+Next PR
+
+- [ ] Add a Reports Generator
+- [ ] Add User Settings
+    - [ ] Add themes (colors, rounded corners)
+    - [ ] Locale Preferences
+- [ ] Add Saving 
+- [ ] Add electron
+
 
 # Things to Noodle On
 

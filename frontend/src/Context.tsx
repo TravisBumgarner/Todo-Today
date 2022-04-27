@@ -1,16 +1,37 @@
+import moment from 'moment'
 import React from 'react'
 
-import { TProject, TProjectStatus, TTask, TTaskStatus } from 'sharedTypes'
+import { TProject, TTask, TTodoListItem } from 'sharedTypes'
 import dataStore from './dataStore.json'
 
 type State = {
   projects: Record<string, TProject>
   tasks: Record<string, TTask>
+  todoList: Record<string, {projectId: string, taskId: string, duration: number}[]>
+  
 }
 
+
 const EMPTY_STATE: State = {
-    ...dataStore as State
-}
+    ...dataStore,
+    todoList: {
+        '2022-04-27': [{
+            duration: 0,
+            projectId: '1',
+            taskId: '1'
+        },
+        {
+            duration: 15,
+            projectId: '1',
+            taskId: '2'
+        }],
+        '2022-04-28': [{
+            duration: 0,
+            projectId: '1',
+            taskId: '1'
+        }],
+    }
+} as State
 
 type AddProject = {
     type: 'ADD_PROJECT'
@@ -32,12 +53,24 @@ type EditTask = {
     payload: TTask
 }
 
+type AddTodoItem = {
+    type: 'ADD_TODO_ITEM'
+    payload: {todoListItem: TTodoListItem, selectedDate: string}
+}
+
+type EditTodoItem = {
+    type: 'EDIT_TODO_ITEM'
+    payload: {todoListItem: TTodoListItem, selectedDate: string}
+}
+
 
 type Action =
     | AddProject
     | EditProject
     | AddTask
     | EditTask
+    | AddTodoItem
+    | EditTodoItem
 
 const context = React.createContext(
     {
@@ -61,7 +94,18 @@ const reducer = (state: State, action: Action): State => {
             const updatedTasks = {...state.tasks, [action.payload.id]: action.payload}
             return {...state, tasks: updatedTasks  }
         }
+        case 'ADD_TODO_ITEM': {
+            return state
+        }
+        case 'EDIT_TODO_ITEM': {
+            const updatedTodoListForDate = [...state.todoList[action.payload.selectedDate]]
+                .filter(({taskId}) => taskId !== action.payload.todoListItem.taskId)
+            updatedTodoListForDate.push(action.payload.todoListItem)
+            
+            return {...state, todoList: {...state.todoList, [action.payload.selectedDate]: updatedTodoListForDate}  }
+        }
         default: {
+            console.log(action)
             console.log(`Swallowing action: ${JSON.stringify(action)}`)
             return state
         }

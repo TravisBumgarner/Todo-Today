@@ -29,6 +29,12 @@ type TTask = {
     status: TTaskStatus
 }
 
+type TTodoListItem = {
+    duration: number
+    projectId: string
+    taskId: string
+}
+
 type EnumTypeString<TEnum extends string> =
     { [key in string]: TEnum | string; }
 
@@ -45,5 +51,6 @@ export {
     TProjectStatus,
     TTask,
     TTaskStatus,
+    TTodoListItem,
     EnumType
 }
