@@ -53,6 +53,8 @@ const bucketTasksByProject = (projects: Record<string, TProject>  , tasks: Recor
     return accumulator
 }
 
+const sumArray = (arr: number[]) => arr.reduce((partialSum, a) => partialSum + a, 0)
+
 
 export {
     projectStatusLookup,
@@ -60,5 +62,6 @@ export {
     formatDateKeyLookup,
     formatDurationDisplayString,
     bucketTasksByProject,
-    dateFormatLookup
+    dateFormatLookup,
+    sumArray
 }

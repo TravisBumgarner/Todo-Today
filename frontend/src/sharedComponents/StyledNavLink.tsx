@@ -3,7 +3,7 @@ import styled, { ThemedStyledProps } from 'styled-components'
 
 const StyledNavLink = styled(NavLink)`
     color: ${(props) => {
-        return props.theme.FOREGROUND_TEXT
+        return props.theme.PRIMARY_BUTTON
     } };
 
 `

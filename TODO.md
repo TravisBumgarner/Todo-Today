@@ -11,7 +11,9 @@ Next PR
     - [ ] As JSON
 - [ ] Add other things you might want to track in a day
 - [ ] How to handle 'reoccurring projects' such as PTO and Sick time 
-
+- [ ] More settings
+     - [ ] What's your work date
+     - [ ] When would you like reminders?
 
 # Things to Noodle On
 

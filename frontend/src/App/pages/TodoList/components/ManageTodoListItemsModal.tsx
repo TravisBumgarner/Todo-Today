@@ -19,7 +19,6 @@ const LabelInDisguise = styled.p`
     background-color: transparent;
     font-weight: 700;
     color: #7bc3ff;
-
 `
 
 const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: ManageTodoListItemsModalProps) => {

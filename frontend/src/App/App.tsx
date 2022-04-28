@@ -32,6 +32,7 @@ const BackgroundComponent = styled.div`
 `
 const App = () => {
   const { dispatch, state } = React.useContext(context)
+  console.log(state)
   return (
     <ThemeProvider theme={THEMES[state.settings.colorTheme]}>
       <Theme.GlobalStyle />
@@ -49,7 +50,6 @@ const App = () => {
 const InjectedApp = () => {
   return (
     <BrowserRouter>
-
       <Context>
         <App />
       </Context>
