@@ -3,6 +3,7 @@ import React from 'react'
 
 import { Button, Modal, ButtonWrapper, LabelAndInput } from 'sharedComponents'
 import { TProject, TTask, TTaskStatus } from 'sharedTypes'
+import {projectStatusLookup} from 'utilities'
 
 type EditTaskModalProps = {
     showModal: boolean
@@ -50,7 +51,8 @@ const EditTaskModal = ({ showModal, setShowModal, project, taskId }: EditTaskMod
                     name="status"
                     value={status}
                     options={TTaskStatus}
-                    inputType="select"
+                    optionLabels={projectStatusLookup}
+                    inputType="select-enum"
                     handleChange={(status: TTaskStatus) => setStatus(status)}
                 />
                 <ButtonWrapper right={

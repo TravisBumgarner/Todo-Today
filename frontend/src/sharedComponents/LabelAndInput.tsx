@@ -105,13 +105,20 @@ type CheckboxProps = {
     handleChange: (value: { value: string | number, checked: boolean }) => void
 }
 
-type SelectProps = {
-    inputType: 'select'
-    options: EnumType<string> | { label: string, value: string | number }[]
+type SelectEnumProps = {
+    inputType: 'select-enum'
+    options: EnumType<string>
+    optionLabels: Record<string, string>,
     handleChange: (value: string) => void
 }
 
-type LabelAndInputProps = GenericProps & (SelectProps | TextAreaProps | InputProps | CheckboxProps)
+type SelectArrayProps = {
+    inputType: 'select-array'
+    options: { label: string, value: string | number }[]
+    handleChange: (value: string) => void
+}
+
+type LabelAndInputProps = GenericProps & (SelectEnumProps | SelectArrayProps | TextAreaProps | InputProps | CheckboxProps)
 
 const LabelAndInput = (props: LabelAndInputProps) => {
     let InputElement: JSX.Element
@@ -120,16 +127,23 @@ const LabelAndInput = (props: LabelAndInputProps) => {
         const { name, handleChange, value } = props
         InputElement = <TextArea rows={5} autoComplete="on" name={name} onChange={(event) => handleChange(event.target.value)} value={value} />
     }
-    else if (props.inputType === 'select') {
+    else if (props.inputType === 'select-enum') {
+        const { options, name, value, handleChange, optionLabels } = props
+        InputElement = (
+            <Select id={name} value={value} onChange={(event) => handleChange(event.target.value)}>
+                {
+                    Object.values(options).map(option => <option key={option} value={option}>{optionLabels[option]}</option>)
+                }
+            </Select>
+        )
+    }
+    else if (props.inputType === 'select-array') {
         const { options, name, value, handleChange } = props
         InputElement = (
             <Select id={name} value={value} onChange={(event) => handleChange(event.target.value)}>
                 {
-                    Array.isArray(options)
-                        ? options.map(({ label, value }) => <option key={label} value={value}>{label}</option>)
-                        : Object.values(options).map(option => <option key={option} value={option}>{projectStatusLookup[option as TProjectStatus]}</option>)
+                    options.map(({ label, value }) => <option key={label} value={value}>{label}</option>)
                 }
-
             </Select>
         )
     }

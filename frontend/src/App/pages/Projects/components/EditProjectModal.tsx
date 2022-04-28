@@ -4,6 +4,7 @@ import moment, { Moment } from 'moment'
 import { Button, Modal, ButtonWrapper, LabelAndInput } from 'sharedComponents'
 import { TProject, TProjectStatus } from 'sharedTypes'
 import {context } from 'Context'
+import { projectStatusLookup } from 'utilities'
 
 type EditProjectModalProps = {
     selectedProjectId: TProject['id']
@@ -67,7 +68,8 @@ const EditProjectModal = ({ showModal, setShowModal, selectedProjectId }: EditPr
                     name="status"
                     value={status}
                     options={TProjectStatus}
-                    inputType="select"
+                    optionLabels={projectStatusLookup}
+                    inputType="select-enum"
                     handleChange={(status: TProjectStatus) => setStatus(status)}
                 />
                 <ButtonWrapper right={

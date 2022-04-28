@@ -2,10 +2,10 @@ import moment from 'moment'
 import { TProject, TProjectStatus, TTask} from 'sharedTypes'
 
 const projectStatusLookup: Record<TProjectStatus, string> = {
-    "CANCELED": "Canceled",
-    "COMPLETED": "Completed",
-    "IN_PROGRESS": "In Progress",
-    "NEW": "New"
+    [TProjectStatus.CANCELED]: "Canceled",
+    [TProjectStatus.COMPLETED]: "Completed",
+    [TProjectStatus.IN_PROGRESS]: "In Progress",
+    [TProjectStatus.NEW]: "New"
 }
 
 const formatDateDisplayString = (date: moment.Moment | null): string => {

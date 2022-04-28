@@ -1,17 +1,14 @@
-import moment from 'moment'
 import React from 'react'
 
-import { TProject, TTask, TTodoList, TTodoListItem } from 'sharedTypes'
-import { TodoList } from './App/pages'
+import { TProject, TSettings, TTask, TTodoList } from 'sharedTypes'
 import dataStore from './dataStore.json'
 
 type State = {
     projects: Record<string, TProject>
     tasks: Record<string, TTask>
     todoList: Record<string, { projectId: string, taskId: string, duration: number }[]>
-
+    settings: TSettings
 }
-
 
 const EMPTY_STATE: State = {
     ...dataStore,
@@ -52,6 +49,10 @@ type EditTodoListItem = {
     payload: { selectedDate: string, isChecked: boolean, taskId: string, projectId: string, duration: number }
 }
 
+type EditUserSettings = {
+    type: 'EDIT_USER_SETTINGS',
+    payload: TSettings
+}
 
 type Action =
     | AddProject
@@ -61,6 +62,7 @@ type Action =
     | ToggleTodoListItemToSelectedDate
     | EditTodoListItem
     | AddTodoList
+    | EditUserSettings
 
 const context = React.createContext(
     {
@@ -107,6 +109,9 @@ const reducer = (state: State, action: Action): State => {
             updatedTodoListForDate.push({ projectId: action.payload.projectId, taskId: action.payload.taskId, duration: action.payload.duration })
 
             return { ...state, todoList: { ...state.todoList, [action.payload.selectedDate]: updatedTodoListForDate } }
+        }
+        case 'EDIT_USER_SETTINGS': {
+            return {...state, settings: {...action.payload}}
         }
         default: {
             console.log(`Swallowing action: ${JSON.stringify(action)}`)

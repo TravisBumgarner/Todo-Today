@@ -39,6 +39,23 @@ type TTodoListItem = {
     taskId: string
 }
 
+enum TDateFormat {
+    A = 'A',
+    B = 'B',
+    C = 'C',
+    D = 'D',
+} 
+
+enum TWeekStart {
+    MONDAY = 'MONDAY',
+    SUNDAY = 'SUNDAY'
+}
+
+type TSettings = {
+    dateFormat: TDateFormat
+    weekStart: TWeekStart
+}
+
 type EnumTypeString<TEnum extends string> =
     { [key in string]: TEnum | string; }
 
@@ -58,4 +75,7 @@ export {
     TTodoListItem,
     TTodoList,
     EnumType,
+    TSettings,
+    TDateFormat,
+    TWeekStart
 }

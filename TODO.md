@@ -15,13 +15,16 @@
     - [ ] ~~Convert today's date to perhaps a dictionary of dictionaries?~~
 - [x] Bug Fixing
 - [x] Setup Display for when there's no data for a TodoList date, tasks for a project, etc. Perhaps a big empty box that says "GEt to doing, add a thing!"
+- [ ] Add User Settings
+    - [ ] Add themes (colors, rounded corners)
+    - [x] Locale Preferences
+    - [x] Hook user settings into context
+    - [ ] Hook user settings up to rest of app.
 
 Next PR
 
 - [ ] Add a Reports Generator
-- [ ] Add User Settings
-    - [ ] Add themes (colors, rounded corners)
-    - [ ] Locale Preferences
+
 - [ ] Add electron
 - [ ] Add Saving 
 

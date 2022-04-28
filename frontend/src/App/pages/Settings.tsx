@@ -1,54 +1,69 @@
 import React from 'react'
 import moment, { Moment } from 'moment'
 
-import { Heading, LabelAndInput } from 'sharedComponents'
+import { TSettings, TDateFormat, TWeekStart } from 'sharedTypes'
+import { Button, ButtonWrapper, Heading, LabelAndInput } from 'sharedComponents'
 import { context } from 'Context'
 
-const dateFormatForUser = (format: 'a' | 'b' | 'c' | 'd', date: Moment) => {
+const dateFormatForUser = (format: TDateFormat, date: Moment) => {
     return {
-        'a': `${moment(date).format('MMMM Do YYYY')} (Month Day Year)`,
-        'b': `${moment(date).format('MMMM Do')} (Month Day)`,
-        'c': `${moment(date).format('MM/DD/YY')} (Month/Day/Year)`,
-        'd': `${moment(date).format('DD/MM/YY')} (Day/Month/Year)`,
+        [TDateFormat.A]: `${moment(date).format('MMMM Do YYYY')} (Month Day Year)`,
+        [TDateFormat.B]: `${moment(date).format('MMMM Do')} (Month Day)`,
+        [TDateFormat.C]: `${moment(date).format('MM/DD/YY')} (Month/Day/Year)`,
+        [TDateFormat.D]: `${moment(date).format('DD/MM/YY')} (Day/Month/Year)`,
     }[format]
-    
-    
 }
 
 const Settings = () => {
     const { state, dispatch } = React.useContext(context)
+    const [weekStart, setWeekStart] = React.useState<TWeekStart>(state.settings.weekStart)
+    const [dateFormat, setDateFormat] = React.useState<TDateFormat>(state.settings.dateFormat)
+    const [submitDisabled, setSubmitDisabled] = React.useState<boolean>(true)
 
-    const [weekStart, setWeekStart] = React.useState<string>('sunday')
-    const [preferredDateFormat, setPreferredDateFormat] = React.useState<string>('a')
+    const handleSubmit = () => {
+        console.log('dispatching', weekStart, dateFormat)
+        dispatch({type: "EDIT_USER_SETTINGS", payload: {weekStart, dateFormat}})
+        setSubmitDisabled(true)
+    }
 
+    const weekStartOptionLabels: Record<TWeekStart, string> = {
+        [TWeekStart.MONDAY]: 'Monday',
+        [TWeekStart.SUNDAY]: 'Sunday',
+    }
+
+    const dateFormatOptionLabels: Record<TDateFormat, string> = {
+        [TDateFormat.A]: dateFormatForUser(TDateFormat.A, moment()),
+        [TDateFormat.B]: dateFormatForUser(TDateFormat.B, moment()),
+        [TDateFormat.C]: dateFormatForUser(TDateFormat.C, moment()),
+        [TDateFormat.D]: dateFormatForUser(TDateFormat.D, moment()),
+    }
 
     return (
         <>
             <Heading.H2>Settings</Heading.H2>
+            <form onChange={() => setSubmitDisabled(false)}>
             <LabelAndInput
-                inputType="select"
+                inputType="select-enum"
                 name='weekStart'
                 label="Week starts on"
                 value={weekStart}
-                handleChange={(value: string) => setWeekStart(value)}
-                options={[
-                    { label: "Monday", value: "monday" },
-                    { label: "Sunday", value: "sunday" }
-                ]}
+                handleChange={(value: TWeekStart) => setWeekStart(value)}
+                options={TWeekStart}
+                optionLabels={weekStartOptionLabels}
             />
             <LabelAndInput
-                inputType="select"
-                name='preferredDateFormat'
+                inputType="select-enum"
+                name='dateFormat'
                 label="Preferred Date Format"
-                value={preferredDateFormat}
-                handleChange={(value: string) => setPreferredDateFormat(value)}
-                options={[
-                    { label: dateFormatForUser('a', moment()), value: "a" },
-                    { label: dateFormatForUser('b', moment()), value: "a" },
-                    { label: dateFormatForUser('c', moment()), value: "b" },
-                    { label: dateFormatForUser('d', moment()), value: "d" },
-                ]}
+                value={dateFormat}
+                handleChange={(value: TDateFormat) => setDateFormat(value)}
+                options={TDateFormat}
+                optionLabels={dateFormatOptionLabels}
             />
+            <ButtonWrapper fullWidth={
+                <Button type="button" fullWidth disabled={submitDisabled} key="edit" variation="PRIMARY_BUTTON" onClick={handleSubmit}>Submit</Button>
+            }/>
+            </form>
         </>
     )
 }

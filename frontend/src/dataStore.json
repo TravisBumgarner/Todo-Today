@@ -1,5 +1,9 @@
 {
     "projects": {},
     "tasks": {},
-    "todoList": {}
+    "todoList": {},
+    "settings": {
+        "dateFormat": "D",
+        "weekStart": "MONDAY"
+    }
 }

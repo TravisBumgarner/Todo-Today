@@ -144,7 +144,7 @@ const TodoListTable = ({ projectId, todoListItems, selectedDate }: TodoListTable
                                         name="duration"
                                         value={`${duration}`}
                                         options={AVAILABLE_DURATIONS}
-                                        inputType="select"
+                                        inputType="select-array"
                                         handleChange={(value) => {
                                             dispatch({ type: "EDIT_TODO_LIST_ITEM", payload: {  isChecked: true, projectId, taskId: id, duration: parseInt(value, 10), selectedDate: formatDateKeyLookup(selectedDate) } })}
                                         }
