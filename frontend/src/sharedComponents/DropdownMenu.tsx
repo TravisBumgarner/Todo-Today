@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import { Button, colors } from 'sharedComponents'
+import { Button } from 'sharedComponents'
 
 const StyledNav = styled.ul`
     z-index: 998;
@@ -12,8 +12,8 @@ const StyledNav = styled.ul`
     list-style: none;
     flex-direction: row;
     padding: 1rem;
-    background-color: ${colors.BACKGROUND_PRIMARY};
-    border: 2px solid ${colors.FOREGROUND_TEXT};
+    background-color: ${({theme}) => theme.BACKGROUND_PRIMARY };
+    border: 2px solid ${({theme}) => theme.FOREGROUND_TEXT };
     margin: 0.5rem;
 
     ${Button} {

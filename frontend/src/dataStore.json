@@ -4,6 +4,7 @@
     "todoList": {},
     "settings": {
         "dateFormat": "D",
-        "weekStart": "MONDAY"
+        "weekStart": "MONDAY",
+        "colorTheme": "BEACH"
     }
 }

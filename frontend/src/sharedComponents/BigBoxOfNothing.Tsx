@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 import Button from './Button'
-import colors from './colors'
 
 import Paragraph from './Paragraph'
 
@@ -14,7 +13,7 @@ type BigBoxOfNothingProps = {
 }
 
 const BigBoxOfNothingWrapper = styled.div`
-    border: 2px solid ${colors.FOREGROUND_TEXT};
+    border: 2px solid ${({theme}) => theme.FOREGROUND_TEXT };
     display: flex;
     align-items: center;
     justify-content: center;

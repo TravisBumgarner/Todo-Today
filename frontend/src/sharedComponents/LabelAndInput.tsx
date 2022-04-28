@@ -1,9 +1,7 @@
 import styled from 'styled-components'
 import React from 'react'
 
-import colors from './colors'
-import { EnumType, TProjectStatus } from 'sharedTypes'
-import { projectStatusLookup } from 'utilities'
+import { EnumType } from 'sharedTypes'
 
 const Input = styled.input`
     font-family: 'Comfortaa', cursive;
@@ -12,8 +10,8 @@ const Input = styled.input`
     padding: 0.5rem 1rem;
     background-color: transparent;
     font-weight: 700;
-    color: ${colors.FOREGROUND_TEXT};
-    border-color: ${colors.FOREGROUND_TEXT};
+    color: ${({theme}) => theme.FOREGROUND_TEXT };
+    border-color: ${({theme}) => theme.FOREGROUND_TEXT };
     width: 100%;
     box-sizing: border-box;
     color-scheme: dark;
@@ -21,14 +19,14 @@ const Input = styled.input`
 
 const Checkbox = styled.input`
     color-scheme: dark;
-    accent-color: ${colors.FOREGROUND_TEXT};
+    accent-color: ${({theme}) => theme.FOREGROUND_TEXT };
 `
 
 const CheckboxLabel = styled.label`
     font-family: 'Comfortaa', cursive;
     font-size: 1rem;
     font-weight: 700;
-    color: ${colors.FOREGROUND_TEXT};
+    color: ${({theme}) => theme.FOREGROUND_TEXT };
     /* margin-left: 0.25rem; */
 `
 
@@ -39,8 +37,8 @@ const TextArea = styled.textarea`
     padding: 0.5rem 1rem;
     background-color: transparent;
     font-weight: 700;
-    color: ${colors.FOREGROUND_TEXT};
-    border-color: ${colors.FOREGROUND_TEXT};
+    color: ${({theme}) => theme.FOREGROUND_TEXT };
+    border-color: ${({theme}) => theme.FOREGROUND_TEXT };
     width: 100%;
     box-sizing: border-box;
 `
@@ -50,7 +48,7 @@ const Label = styled.label`
     font-size: 1rem;
     background-color: transparent;
     font-weight: 700;
-    color: ${colors.FOREGROUND_TEXT};
+    color: ${({theme}) => theme.FOREGROUND_TEXT };
     margin: 0.5rem 0;
 `
 
@@ -61,8 +59,8 @@ const Select = styled.select`
     padding: 0.5rem 1rem;
     background-color: transparent;
     font-weight: 700;
-    color: ${colors.FOREGROUND_TEXT};
-    border-color: ${colors.FOREGROUND_TEXT};
+    color: ${({theme}) => theme.FOREGROUND_TEXT };
+    border-color: ${({theme}) => theme.FOREGROUND_TEXT };
     width: 100%;
     box-sizing: border-box;
     color-scheme: dark;

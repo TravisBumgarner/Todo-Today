@@ -1,34 +1,34 @@
+import { TThemeConstants } from 'sharedTypes'
 import styled from 'styled-components'
-
-import colors from './colors'
 
 type ButtonProps = {
     variation: 'PRIMARY_BUTTON' | 'ALERT_BUTTON'
     disabled?: boolean
     fullWidth?: boolean
     alignRight?: boolean
-
+    theme: TThemeConstants
 }
 
-const Button = styled.button`
+const Button = styled.button<ButtonProps>`
     font-family: 'Comfortaa', cursive;
     font-size: 1rem;
     border: 2px solid;
     padding: 0.5rem 1rem;
     background-color: transparent;
     font-weight: 700;
-
+    
     &:hover {
     cursor: pointer;
     }
 
-    ${({ fullWidth }: ButtonProps) => (fullWidth ? 'width: 100%;' : '')}
+    ${({ fullWidth }) => (fullWidth ? 'width: 100%;' : '')}
 
-    ${({ variation, disabled }: ButtonProps) => {
+    ${({ variation, disabled, theme }) => {
+        console.log(theme.ALERT_BUTTON)
         if (disabled) {
             return `
-                color: ${colors.FOREGROUND_DISABLED};
-                border-color: ${colors.FOREGROUND_DISABLED};
+                color: ${theme.FOREGROUND_DISABLED};
+                border-color: ${theme.FOREGROUND_DISABLED};
 
                 &:hover {
                     cursor: not-allowed;
@@ -38,25 +38,27 @@ const Button = styled.button`
 
         if (variation === 'PRIMARY_BUTTON') {
             return `
-                color: ${colors.PRIMARY_BUTTON};
-                border-color: ${colors.PRIMARY_BUTTON};
+                color: ${theme.PRIMARY_BUTTON};
+                border-color: ${theme.PRIMARY_BUTTON};
 
                 &:hover {
-                    color: ${colors.ALERT_BUTTON};
-                    border-color: ${colors.ALERT_BUTTON};
+                    color: ${theme.ALERT_BUTTON};
+                    border-color: ${theme.ALERT_BUTTON};
                 }
             `
-        } if (variation === 'ALERT_BUTTON') {
+        } 
+        
+        if (variation === 'ALERT_BUTTON') {
             return `
-                color: ${colors.ALERT_BUTTON};
-                border-color: ${colors.ALERT_BUTTON};
+                color: ${theme.ALERT_BUTTON};
+                border-color: ${theme.ALERT_BUTTON};
 
                 &:hover {
-                    color: ${colors.PRIMARY_BUTTON};
-                    border-color: ${colors.PRIMARY_BUTTON};
+                    color: ${theme.PRIMARY_BUTTON};
+                    border-color: ${theme.PRIMARY_BUTTON};
                 }
             `
-        }
+        } 
     }}
 `
 

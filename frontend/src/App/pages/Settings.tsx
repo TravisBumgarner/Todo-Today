@@ -1,16 +1,17 @@
 import React from 'react'
 import moment, { Moment } from 'moment'
 
-import { TSettings, TDateFormat, TWeekStart } from 'sharedTypes'
+import { TAvailableThemes, TDateFormat, TWeekStart } from 'sharedTypes'
 import { Button, ButtonWrapper, Heading, LabelAndInput } from 'sharedComponents'
 import { context } from 'Context'
+import {dateFormatLookup} from 'utilities'
 
 const dateFormatForUser = (format: TDateFormat, date: Moment) => {
     return {
-        [TDateFormat.A]: `${moment(date).format('MMMM Do YYYY')} (Month Day Year)`,
-        [TDateFormat.B]: `${moment(date).format('MMMM Do')} (Month Day)`,
-        [TDateFormat.C]: `${moment(date).format('MM/DD/YY')} (Month/Day/Year)`,
-        [TDateFormat.D]: `${moment(date).format('DD/MM/YY')} (Day/Month/Year)`,
+        [TDateFormat.A]: `${moment(date).format(dateFormatLookup[TDateFormat.A])} `,
+        [TDateFormat.B]: `${moment(date).format((dateFormatLookup[TDateFormat.B]))}`,
+        [TDateFormat.C]: `${moment(date).format((dateFormatLookup[TDateFormat.C]))} (Month/Day/Year)`,
+        [TDateFormat.D]: `${moment(date).format((dateFormatLookup[TDateFormat.D]))} (Day/Month/Year)`,
     }[format]
 }
 
@@ -22,7 +23,7 @@ const Settings = () => {
 
     const handleSubmit = () => {
         console.log('dispatching', weekStart, dateFormat)
-        dispatch({type: "EDIT_USER_SETTINGS", payload: {weekStart, dateFormat}})
+        dispatch({type: "EDIT_USER_SETTINGS", payload: { colorTheme: TAvailableThemes.BEACH, weekStart, dateFormat}})
         setSubmitDisabled(true)
     }
 

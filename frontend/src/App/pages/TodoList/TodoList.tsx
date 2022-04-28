@@ -4,7 +4,7 @@ import moment from 'moment'
 import { BigBoxOfNothing, Button, ButtonWrapper, Heading, Paragraph } from 'sharedComponents'
 import { TTodoListItem } from 'sharedTypes'
 import { TodoListTable, ManageTodoListItemsModal } from './components'
-import { formatDateKeyLookup } from 'utilities'
+import { formatDateDisplayString, formatDateKeyLookup } from 'utilities'
 import { context } from 'Context'
 
 const groupItemsByProjectId = (todoListItems: TTodoListItem[]) => {
@@ -63,7 +63,7 @@ const TodoToday = () => {
 
     return (
         <>
-            <Heading.H2>{selectedDate.format('dddd, MMMM Do YYYY')}</Heading.H2>
+            <Heading.H2>{formatDateDisplayString(selectedDate)}</Heading.H2>
             <ButtonWrapper
                 left={[
                     <Button onClick={getPreviousDay} variation='PRIMARY_BUTTON'>Previous Day</Button>,

@@ -19,7 +19,7 @@
     - [ ] Add themes (colors, rounded corners)
     - [x] Locale Preferences
     - [x] Hook user settings into context
-    - [ ] Hook user settings up to rest of app.
+    - [x] Hook user settings up to rest of app.
 
 Next PR
 

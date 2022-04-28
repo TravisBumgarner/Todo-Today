@@ -1,21 +1,18 @@
 import { NavLink } from 'react-router-dom'
 import React from 'react'
-
-import colors from './colors'
+import styled from 'styled-components'
 
 type StyledNavLinkProps = {
     to: string
     text: string
     addWeightForActiveLink?: boolean
-    color?: string
 }
 
-const StyledNavLink = ({ to, text, addWeightForActiveLink, color }: StyledNavLinkProps) => {
+const StyledNavLink = ({ to, text, addWeightForActiveLink }: StyledNavLinkProps) => {
     return (
         <NavLink
             style={({ isActive }) => ({
                 fontWeight: addWeightForActiveLink && isActive ? 700 : 100,
-                color: color || colors.FOREGROUND_TEXT,
             })}
             to={to}
         >
@@ -24,4 +21,11 @@ const StyledNavLink = ({ to, text, addWeightForActiveLink, color }: StyledNavLin
     )
 }
 
-export default StyledNavLink
+const DoubleStyledNavLink = styled(StyledNavLink)`
+    color: ${(props) => {
+        console.log(props)
+        return `${props.theme.FOREGROUND_TEXT };`
+    }}
+`
+
+export default DoubleStyledNavLink

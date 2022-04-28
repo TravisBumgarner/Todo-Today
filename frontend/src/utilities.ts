@@ -1,5 +1,8 @@
+import React from 'react'
+
+import { context } from 'Context'
 import moment from 'moment'
-import { TProject, TProjectStatus, TTask} from 'sharedTypes'
+import { TDateFormat, TProject, TProjectStatus, TTask} from 'sharedTypes'
 
 const projectStatusLookup: Record<TProjectStatus, string> = {
     [TProjectStatus.CANCELED]: "Canceled",
@@ -8,12 +11,21 @@ const projectStatusLookup: Record<TProjectStatus, string> = {
     [TProjectStatus.NEW]: "New"
 }
 
+const dateFormatLookup = {
+    [TDateFormat.A]: 'dddd MMMM Do YYYY',
+    [TDateFormat.B]: 'dddd MMMM Do',
+    [TDateFormat.C]: 'MM/DD/YY',
+    [TDateFormat.D]: 'DD/MM/YY',
+}
+
 const formatDateDisplayString = (date: moment.Moment | null): string => {
+    const {state} = React.useContext(context)
+
     if (date === null) {
         return ''
     }
 
-    return date.format('YYYY-MM-DD')
+    return date.format(dateFormatLookup[state.settings.dateFormat])
 }
 
 const formatDateKeyLookup = (date: moment.Moment): string => {
@@ -49,5 +61,6 @@ export {
     formatDateDisplayString,
     formatDateKeyLookup,
     formatDurationDisplayString,
-    bucketTasksByProject
+    bucketTasksByProject,
+    dateFormatLookup
 }

@@ -5,7 +5,6 @@ import styled from 'styled-components'
 
 type IconProps = {
     name: 'mic' | 'delete' | 'close'
-    color: string
     onClick?: () => void
 }
 
@@ -13,18 +12,22 @@ const Button = styled.button`
     border:0;
     background-color: transparent;
     cursor: pointer;
+
+    > span {
+        color: ${({theme}) => theme.FOREGROUND_TEXT };
+    }
 `
 
-const Icon = ({ name, color, onClick }: IconProps) => {
+const Icon = ({ name, onClick }: IconProps) => {
     return (
         onClick ? (
             <Button onClick={onClick} type="button">
-                <span style={{ color }} className="material-symbols-outlined">
+                <span className="material-symbols-outlined">
                     {name}
                 </span>
             </Button>
         ) : (
-            <span style={{ color }} className="material-symbols-outlined">
+            <span className="material-symbols-outlined">
                 {name}
             </span>
         )
