@@ -4,7 +4,7 @@ import moment, { Moment } from 'moment'
 import { TColorTheme, TDateFormat, TColor, TWeekStart } from 'sharedTypes'
 import { Button, ButtonWrapper, Heading, LabelAndInput } from 'sharedComponents'
 import { context } from 'Context'
-import {dateFormatLookup} from 'utilities'
+import { dateFormatLookup } from 'utilities'
 import { ThemeContext } from 'styled-components'
 
 const dateFormatForUser = (format: TDateFormat, date: Moment) => {
@@ -24,7 +24,7 @@ const Settings = () => {
     const [submitDisabled, setSubmitDisabled] = React.useState<boolean>(true)
 
     const handleSubmit = () => {
-        dispatch({type: "EDIT_USER_SETTINGS", payload: { colorTheme, weekStart, dateFormat}})
+        dispatch({ type: "EDIT_USER_SETTINGS", payload: { colorTheme, weekStart, dateFormat } })
         setSubmitDisabled(true)
     }
 
@@ -41,9 +41,9 @@ const Settings = () => {
     }
 
     const colorThemeOptionLabels: Record<TColorTheme, string> = {
+        [TColorTheme.BEACH]: 'Beach',
         [TColorTheme.FIRE_AND_ICE]: 'Fire & Ice',
         [TColorTheme.NEWSPAPER]: 'Newspaper',
-        [TColorTheme.BEACH]: 'Beach',
         [TColorTheme.SUNSET]: 'Sunset',
     }
 
@@ -51,36 +51,36 @@ const Settings = () => {
         <>
             <Heading.H2>Settings</Heading.H2>
             <form onChange={() => setSubmitDisabled(false)}>
-            <LabelAndInput
-                inputType="select-enum"
-                name='weekStart'
-                label="Week starts on"
-                value={weekStart}
-                handleChange={(value: TWeekStart) => setWeekStart(value)}
-                options={TWeekStart}
-                optionLabels={weekStartOptionLabels}
-            />
-            <LabelAndInput
-                inputType="select-enum"
-                name='dateFormat'
-                label="Preferred Date Format"
-                value={dateFormat}
-                handleChange={(value: TDateFormat) => setDateFormat(value)}
-                options={TDateFormat}
-                optionLabels={dateFormatOptionLabels}
-            />
-                        <LabelAndInput
-                inputType="select-enum"
-                name='colorTheme'
-                label="Theme"
-                value={colorTheme}
-                handleChange={(value: TColorTheme) => seTColor(value)}
-                options={TColorTheme}
-                optionLabels={colorThemeOptionLabels}
-            />
-            <ButtonWrapper fullWidth={
-                <Button type="button" fullWidth disabled={submitDisabled} key="edit" variation="PRIMARY_BUTTON" onClick={handleSubmit}>Submit</Button>
-            }/>
+                <LabelAndInput
+                    inputType="select-enum"
+                    name='weekStart'
+                    label="Week starts on"
+                    value={weekStart}
+                    handleChange={(value: TWeekStart) => setWeekStart(value)}
+                    options={TWeekStart}
+                    optionLabels={weekStartOptionLabels}
+                />
+                <LabelAndInput
+                    inputType="select-enum"
+                    name='dateFormat'
+                    label="Preferred Date Format"
+                    value={dateFormat}
+                    handleChange={(value: TDateFormat) => setDateFormat(value)}
+                    options={TDateFormat}
+                    optionLabels={dateFormatOptionLabels}
+                />
+                <LabelAndInput
+                    inputType="select-enum"
+                    name='colorTheme'
+                    label="Theme"
+                    value={colorTheme}
+                    handleChange={(value: TColorTheme) => seTColor(value)}
+                    options={TColorTheme}
+                    optionLabels={colorThemeOptionLabels}
+                />
+                <ButtonWrapper fullWidth={
+                    <Button type="button" fullWidth disabled={submitDisabled} key="edit" variation="PRIMARY_BUTTON" onClick={handleSubmit}>Submit</Button>
+                } />
             </form>
         </>
     )
