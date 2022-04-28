@@ -75,8 +75,8 @@ const crunchTheNumbers = (datesToCrunch: Record<string, TTodoListItem[]>) => {
 
 const Reports = () => {
     const { state } = React.useContext(context)
-    const [startDate, setStartDate] = React.useState<Moment>(moment().subtract(1, 'days'))
-    const [endDate, setEndDate] = React.useState<Moment>(moment().add(1, 'days'))
+    const [startDate, setStartDate] = React.useState<Moment>(moment().subtract(5, 'days'))
+    const [endDate, setEndDate] = React.useState<Moment>(moment().add(5, 'days'))
     const [selectedDate, setSelectedDate] = React.useState<Moment>(moment())
     const [crunchedNumbers, setCrunchedNumbers] = React.useState<Record<string, Record<string, number>>>({})
     

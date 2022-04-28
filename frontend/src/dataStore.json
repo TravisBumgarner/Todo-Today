@@ -45,10 +45,29 @@
                 "duration": 15,
                 "projectId": "1",
                 "taskId": "2"
+            }, {
+                "duration": 3,
+                "projectId": "1",
+                "taskId": "2"
+            },
+            {
+                "duration": 5,
+                "projectId": "1",
+                "taskId": "5"
             }
         ],
         "2022-04-28": [{
-            "duration": 0,
+            "duration": 100,
+            "projectId": "1",
+            "taskId": "1"
+        }],
+        "2022-04-29": [{
+            "duration": 5,
+            "projectId": "1",
+            "taskId": "1"
+        }],
+        "2022-04-30": [{
+            "duration": 2,
             "projectId": "1",
             "taskId": "1"
         }]

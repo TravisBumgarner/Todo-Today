@@ -58,9 +58,10 @@ const ReportsTable = ({crunchedNumbers, startDate, endDate}: ReportTableProps) =
                     <Table.TableRow>
                         <Table.TableHeaderCell scope="col">Project</Table.TableHeaderCell>
                         <Table.TableHeaderCell  scope="col">Total</Table.TableHeaderCell>
-                        <Table.TableHeaderCell style={{textAlign: 'center'}} colSpan={dateColumns.length} scope="col">Daily Breakdown</Table.TableHeaderCell>
+                        <Table.TableHeaderCell style={{textAlign: 'center'}} colSpan={dateColumns.length + 1} scope="col">Daily Breakdown</Table.TableHeaderCell>
                     </Table.TableRow>
                     <Table.TableRow>
+                    <Table.TableHeaderCell scope="col"></Table.TableHeaderCell>
                         <Table.TableHeaderCell width="40%" scope="col"></Table.TableHeaderCell>
                         {
                             dateColumns.map(date => <Table.TableHeaderCell width="10%" scope="col">{date}</Table.TableHeaderCell>)
@@ -72,6 +73,7 @@ const ReportsTable = ({crunchedNumbers, startDate, endDate}: ReportTableProps) =
                         return (
                             <Table.TableRow>
                                 <Table.TableBodyCell>{state.projects[projectId].title}</Table.TableBodyCell>
+                                <Table.TableBodyCell>total</Table.TableBodyCell>
                                 {
                                     dateColumns.map(date => <Table.TableBodyCell>{getDuration(crunchedNumbers, date, projectId)}</Table.TableBodyCell>)
                                 }
