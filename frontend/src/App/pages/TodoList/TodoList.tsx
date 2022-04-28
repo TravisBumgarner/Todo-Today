@@ -19,11 +19,18 @@ const groupItemsByProjectId = (todoListItems: TTodoListItem[]) => {
     return output
 }
 
-const TodoToday = () => {
+const TodoList = () => {
     const { state, dispatch } = React.useContext(context)
     const [selectedDate, setSelectedDate] = React.useState<moment.Moment>(moment())
     const [isLoading, setIsLoading] = React.useState<boolean>(true)
     const [showManagementModal, setShowManagementModal] = React.useState<boolean>(false)
+
+    React.useEffect(() => {
+        if (!Object.keys(state.todoList).includes(formatDateKeyLookup(selectedDate))) {
+            dispatch({ type: "ADD_TODO_LIST", payload: { date: formatDateKeyLookup(selectedDate) } })
+        }
+        setIsLoading(false)
+    }, [formatDateKeyLookup(selectedDate)])
 
     const getPreviousDay = () => {
         setSelectedDate(moment(selectedDate).subtract(1, 'day'))
@@ -33,13 +40,6 @@ const TodoToday = () => {
         setSelectedDate(moment(selectedDate).add(1, 'day'))
         setIsLoading(true)
     }
-
-    React.useEffect(() => {
-        if (!Object.keys(state.todoList).includes(formatDateKeyLookup(selectedDate))) {
-            dispatch({ type: "ADD_TODO_LIST", payload: { date: formatDateKeyLookup(selectedDate) } })
-        }
-        setIsLoading(false)
-    }, [formatDateKeyLookup(selectedDate)])
 
     if (isLoading) {
         return (
@@ -63,14 +63,13 @@ const TodoToday = () => {
 
     return (
         <>
-            <Heading.H2>{formatDateDisplayString(selectedDate)}</Heading.H2>
+            <Heading.H2>{formatDateDisplayString(state.settings.dateFormat, selectedDate)}</Heading.H2>
             <ButtonWrapper
                 left={[
-                    <Button onClick={getPreviousDay} variation='PRIMARY_BUTTON'>Previous Day</Button>,
-                    <Button onClick={getNextDay} variation='PRIMARY_BUTTON'>Next Day</Button>]}
-                right={[<Button onClick={() => setShowManagementModal(true)} variation='PRIMARY_BUTTON'>Manage Tasks</Button>]}
+                    <Button key="previous" onClick={getPreviousDay} variation='PRIMARY_BUTTON'>Previous Day</Button>,
+                    <Button key="next" onClick={getNextDay} variation='PRIMARY_BUTTON'>Next Day</Button>]}
+                right={[<Button key="manage" onClick={() => setShowManagementModal(true)} variation='PRIMARY_BUTTON'>Manage Tasks</Button>]}
             />
-
 
             {
                 Object.keys(todoListItemsByProjectId).length == 0
@@ -82,4 +81,4 @@ const TodoToday = () => {
     )
 }
 
-export default TodoToday
+export default TodoList

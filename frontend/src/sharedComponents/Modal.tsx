@@ -40,9 +40,8 @@ const ModalWrapper = styled.div`
 `
 
 const Modal = ({
-    children, showModal, closeModal, contentLabel, ...rest
+    children, showModal, closeModal, contentLabel
 }: ModalProps) => {
-    console.log(rest)
     return <ReactModal
         isOpen={showModal}
         onBackgroundClick={closeModal}

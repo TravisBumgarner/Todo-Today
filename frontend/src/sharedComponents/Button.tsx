@@ -24,7 +24,6 @@ const Button = styled.button<ButtonProps>`
     ${({ fullWidth }) => (fullWidth ? 'width: 100%;' : '')}
 
     ${({ variation, disabled, theme }) => {
-        console.log(theme.ALERT_BUTTON)
         if (disabled) {
             return `
                 color: ${theme.FOREGROUND_DISABLED};

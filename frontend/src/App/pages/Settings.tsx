@@ -22,7 +22,6 @@ const Settings = () => {
     const [submitDisabled, setSubmitDisabled] = React.useState<boolean>(true)
 
     const handleSubmit = () => {
-        console.log('dispatching', weekStart, dateFormat)
         dispatch({type: "EDIT_USER_SETTINGS", payload: { colorTheme: TAvailableThemes.BEACH, weekStart, dateFormat}})
         setSubmitDisabled(true)
     }

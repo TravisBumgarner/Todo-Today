@@ -18,14 +18,12 @@ const dateFormatLookup = {
     [TDateFormat.D]: 'DD/MM/YY',
 }
 
-const formatDateDisplayString = (date: moment.Moment | null): string => {
-    const {state} = React.useContext(context)
-
+const formatDateDisplayString = (dateFormat: TDateFormat, date: moment.Moment | null): string => {
     if (date === null) {
         return ''
     }
 
-    return date.format(dateFormatLookup[state.settings.dateFormat])
+    return date.format(dateFormatLookup[dateFormat])
 }
 
 const formatDateKeyLookup = (date: moment.Moment): string => {

@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import { useLocation } from 'react-router-dom'
 
 import { StyledNavLink } from 'sharedComponents'
 
@@ -22,13 +23,20 @@ const ALWAYS_VISIBLE_LINKS = [
     { text: 'Settings', to: '/settings' }
 ]
 
+const NavLi = styled.li`
+    font-weight: ${(props: {isActive: boolean}) => {
+        return props.isActive ? 700 : 100
+    } };
+`
+
 const Navigation = () => {
+    const location = useLocation()
     return (
         <StyledNav >
             {ALWAYS_VISIBLE_LINKS.map(({ text, to }) => (
-                <li key={to}>
-                    <StyledNavLink addWeightForActiveLink to={to} text={text} />
-                </li>
+                <NavLi key={to} isActive={location.pathname === to}>
+                    <StyledNavLink to={to}>{text}</StyledNavLink>
+                </NavLi>
             ))}
         </StyledNav>
     )
