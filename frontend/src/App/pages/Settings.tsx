@@ -1,10 +1,11 @@
 import React from 'react'
 import moment, { Moment } from 'moment'
 
-import { TAvailableThemes, TDateFormat, TWeekStart } from 'sharedTypes'
+import { TColorTheme, TDateFormat, TColor, TWeekStart } from 'sharedTypes'
 import { Button, ButtonWrapper, Heading, LabelAndInput } from 'sharedComponents'
 import { context } from 'Context'
 import {dateFormatLookup} from 'utilities'
+import { ThemeContext } from 'styled-components'
 
 const dateFormatForUser = (format: TDateFormat, date: Moment) => {
     return {
@@ -19,10 +20,11 @@ const Settings = () => {
     const { state, dispatch } = React.useContext(context)
     const [weekStart, setWeekStart] = React.useState<TWeekStart>(state.settings.weekStart)
     const [dateFormat, setDateFormat] = React.useState<TDateFormat>(state.settings.dateFormat)
+    const [colorTheme, seTColor] = React.useState<TColorTheme>(state.settings.colorTheme)
     const [submitDisabled, setSubmitDisabled] = React.useState<boolean>(true)
 
     const handleSubmit = () => {
-        dispatch({type: "EDIT_USER_SETTINGS", payload: { colorTheme: TAvailableThemes.BEACH, weekStart, dateFormat}})
+        dispatch({type: "EDIT_USER_SETTINGS", payload: { colorTheme, weekStart, dateFormat}})
         setSubmitDisabled(true)
     }
 
@@ -36,6 +38,13 @@ const Settings = () => {
         [TDateFormat.B]: dateFormatForUser(TDateFormat.B, moment()),
         [TDateFormat.C]: dateFormatForUser(TDateFormat.C, moment()),
         [TDateFormat.D]: dateFormatForUser(TDateFormat.D, moment()),
+    }
+
+    const colorThemeOptionLabels: Record<TColorTheme, string> = {
+        [TColorTheme.FIRE_AND_ICE]: 'Fire & Ice',
+        [TColorTheme.NEWSPAPER]: 'Newspaper',
+        [TColorTheme.BEACH]: 'Beach',
+        [TColorTheme.SUNSET]: 'Sunset',
     }
 
     return (
@@ -59,6 +68,15 @@ const Settings = () => {
                 handleChange={(value: TDateFormat) => setDateFormat(value)}
                 options={TDateFormat}
                 optionLabels={dateFormatOptionLabels}
+            />
+                        <LabelAndInput
+                inputType="select-enum"
+                name='colorTheme'
+                label="Theme"
+                value={colorTheme}
+                handleChange={(value: TColorTheme) => seTColor(value)}
+                options={TColorTheme}
+                optionLabels={colorThemeOptionLabels}
             />
             <ButtonWrapper fullWidth={
                 <Button type="button" fullWidth disabled={submitDisabled} key="edit" variation="PRIMARY_BUTTON" onClick={handleSubmit}>Submit</Button>

@@ -1,8 +1,8 @@
-import { TAvailableThemes, TThemeConstants } from 'sharedTypes'
+import { TColorTheme, TColor } from 'sharedTypes'
 
 
 
-const THEMES: Record<TAvailableThemes, TThemeConstants> = {
+const THEMES: Record<TColorTheme, TColor> = {
     FIRE_AND_ICE: {
         FOREGROUND_TEXT: '#7bc3ff',
         PRIMARY_BUTTON: '#7bff7f',

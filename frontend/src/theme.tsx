@@ -1,8 +1,8 @@
 import { createGlobalStyle } from 'styled-components'
 
-import { TThemeConstants } from 'sharedTypes'
+import { TColor } from 'sharedTypes'
 
-const GlobalStyle = createGlobalStyle<{theme: TThemeConstants}>`
+const GlobalStyle = createGlobalStyle<{theme: TColor}>`
     html {
         font-size: 16px;
         font-weight: 400;

@@ -1,4 +1,4 @@
-import { TThemeConstants } from 'sharedTypes'
+import { TColor } from 'sharedTypes'
 import styled from 'styled-components'
 
 type ButtonProps = {
@@ -6,7 +6,7 @@ type ButtonProps = {
     disabled?: boolean
     fullWidth?: boolean
     alignRight?: boolean
-    theme: TThemeConstants
+    theme: TColor
 }
 
 const Button = styled.button<ButtonProps>`

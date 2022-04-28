@@ -51,14 +51,14 @@ enum TWeekStart {
     SUNDAY = 'SUNDAY'
 }
 
-enum TAvailableThemes {
+enum TColorTheme {
     FIRE_AND_ICE = 'FIRE_AND_ICE',
     NEWSPAPER = 'NEWSPAPER',
     BEACH = 'BEACH',
     SUNSET = 'SUNSET'
 }
 
-type TThemeConstants = {
+type TColor = {
     FOREGROUND_TEXT: string,
     PRIMARY_BUTTON: string,
     ALERT_BUTTON: string
@@ -69,7 +69,7 @@ type TThemeConstants = {
 type TSettings = {
     dateFormat: TDateFormat
     weekStart: TWeekStart
-    colorTheme: TAvailableThemes
+    colorTheme: TColorTheme
 }
 
 type EnumTypeString<TEnum extends string> =
@@ -94,6 +94,6 @@ export {
     TSettings,
     TDateFormat,
     TWeekStart,
-    TAvailableThemes,
-    TThemeConstants
+    TColorTheme,
+    TColor
 }
