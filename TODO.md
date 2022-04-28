@@ -1,10 +1,10 @@
-# PR-2
+# PR-2 - Let's get to Using It
 
-- [ ] Add a Reports Generator
+- [x] Add a Reports Generator
+- [ ] Add electron
 
 Next PR
 
-- [ ] Add electron
 - [ ] Add Saving 
 - [ ] Add external export
     - [ ] As CSV
