@@ -55,8 +55,8 @@ const EditTaskModal = ({ showModal, setShowModal, project, taskId }: EditTaskMod
                 />
                 <ButtonWrapper right={
                     [
-                        <Button key="cancel" variation="FOREGROUND_PRIMARY" onClick={() => setShowModal(false)}>Cancel</Button>,
-                        <Button key="save" disabled={submitDisabled} variation="FOREGROUND_ALERT" onClick={handleSubmit}>Save</Button>
+                        <Button key="cancel" variation="PRIMARY_BUTTON" onClick={() => setShowModal(false)}>Cancel</Button>,
+                        <Button key="save" disabled={submitDisabled} variation="ALERT_BUTTON" onClick={handleSubmit}>Save</Button>
                     ]
                 }
                 />

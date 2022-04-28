@@ -12,22 +12,19 @@ const ButtonWrapperWrapper = styled.div`
 
     div {
         width: calc(100% / 2);
-        ${Button}{
-            margin: 0.5rem;
-        }
     }
 
     div:nth-child(1) {
         text-align: left;
         ${Button}{
-            margin: 0.5rem;
+            margin-right: 0.5rem;
         }
     }
 
     div:nth-child(2){
         text-align: right;
         ${Button}{
-            margin: 0.5rem;
+            margin-left: 0.5rem;
         }
     }
 

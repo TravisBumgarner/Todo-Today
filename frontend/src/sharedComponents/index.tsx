@@ -13,6 +13,7 @@ import DropdownMenu from './DropdownMenu'
 import Divider from './Divider'
 import ButtonWrapper from './ButtonWrapper'
 import Icon from './Icon'
+import BigBoxOfNothing from './BigBoxOfNothing'
 
 export {
     Loading,
@@ -30,4 +31,5 @@ export {
     Divider,
     ButtonWrapper,
     Icon,
+    BigBoxOfNothing
 }

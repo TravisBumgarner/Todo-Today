@@ -7,7 +7,7 @@ type ParagraphProps = {
 }
 
 const Paragraph = styled.p`
-    ${({ color }: ParagraphProps) => `color: ${color || colors.FOREGROUND_PRIMARY};`}
+    ${({ color }: ParagraphProps) => `color: ${color || colors.FOREGROUND_TEXT};`}
     line-height: 1.5
 `
 

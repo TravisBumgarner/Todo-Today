@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import colors from './colors'
 
 type ButtonProps = {
-    variation: 'FOREGROUND_PRIMARY' | 'BACKGROUND_PRIMARY' | 'FOREGROUND_ALERT' | 'FOREGROUND_DISABLED'
+    variation: 'PRIMARY_BUTTON' | 'ALERT_BUTTON'
     disabled?: boolean
     fullWidth?: boolean
     alignRight?: boolean
@@ -36,34 +36,24 @@ const Button = styled.button`
             `
         }
 
-        if (variation === 'FOREGROUND_PRIMARY') {
+        if (variation === 'PRIMARY_BUTTON') {
             return `
-                color: ${colors.FOREGROUND_PRIMARY};
-                border-color: ${colors.FOREGROUND_PRIMARY};
+                color: ${colors.PRIMARY_BUTTON};
+                border-color: ${colors.PRIMARY_BUTTON};
 
                 &:hover {
-                    color: ${colors.FOREGROUND_ALERT};
-                    border-color: ${colors.FOREGROUND_ALERT};
+                    color: ${colors.ALERT_BUTTON};
+                    border-color: ${colors.ALERT_BUTTON};
                 }
             `
-        } if (variation === 'BACKGROUND_PRIMARY') {
+        } if (variation === 'ALERT_BUTTON') {
             return `
-                color: ${colors.BACKGROUND_PRIMARY};
-                border-color: ${colors.BACKGROUND_PRIMARY};
+                color: ${colors.ALERT_BUTTON};
+                border-color: ${colors.ALERT_BUTTON};
 
                 &:hover {
-                    color: ${colors.FOREGROUND_PRIMARY};
-                    border-color: ${colors.FOREGROUND_PRIMARY};
-                }
-            `
-        } if (variation === 'FOREGROUND_ALERT') {
-            return `
-                color: ${colors.FOREGROUND_ALERT};
-                border-color: ${colors.FOREGROUND_ALERT};
-
-                &:hover {
-                    color: ${colors.FOREGROUND_PRIMARY};
-                    border-color: ${colors.FOREGROUND_PRIMARY};
+                    color: ${colors.PRIMARY_BUTTON};
+                    border-color: ${colors.PRIMARY_BUTTON};
                 }
             `
         }

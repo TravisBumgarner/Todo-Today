@@ -42,8 +42,8 @@ const AddTaskModal = ({ showModal, setShowModal, project }: AddTaskModalProps) =
                 />
                 <ButtonWrapper right={
                     [
-                        <Button key="cancel" variation="FOREGROUND_PRIMARY" onClick={() => setShowModal(false)}>Cancel</Button>,
-                        <Button disabled={title.length === 0} key="save" variation="FOREGROUND_ALERT" onClick={handleSubmit}>Save</Button>
+                        <Button key="cancel" variation="PRIMARY_BUTTON" onClick={() => setShowModal(false)}>Cancel</Button>,
+                        <Button disabled={title.length === 0} key="save" variation="ALERT_BUTTON" onClick={handleSubmit}>Save</Button>
                     ]
                 }
                 />

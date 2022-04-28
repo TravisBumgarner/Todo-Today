@@ -14,7 +14,7 @@
     - [x] Figure out why checking an item in the Today view doesn't update state
     - [ ] ~~Convert today's date to perhaps a dictionary of dictionaries?~~
 - [x] Bug Fixing
-
+- [x] Setup Display for when there's no data for a TodoList date, tasks for a project, etc. Perhaps a big empty box that says "GEt to doing, add a thing!"
 
 Next PR
 
@@ -22,8 +22,8 @@ Next PR
 - [ ] Add User Settings
     - [ ] Add themes (colors, rounded corners)
     - [ ] Locale Preferences
-- [ ] Add Saving 
 - [ ] Add electron
+- [ ] Add Saving 
 
 
 # Things to Noodle On

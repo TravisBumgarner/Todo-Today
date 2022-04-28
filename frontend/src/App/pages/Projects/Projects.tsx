@@ -10,7 +10,7 @@ const Projects = () => {
         <>
             <Heading.H2>Projects</Heading.H2>
             <ProjectsTable />
-            <Button fullWidth key="edit" variation="FOREGROUND_PRIMARY" onClick={() => setShowAddProjectModal(true)}>Add Project</Button>
+            <Button fullWidth key="edit" variation="PRIMARY_BUTTON" onClick={() => setShowAddProjectModal(true)}>Add Project</Button>
             <AddProjectModal showModal={showAddProjectModal} setShowModal={setShowAddProjectModal} />
         </>
     )

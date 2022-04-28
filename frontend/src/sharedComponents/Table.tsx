@@ -8,7 +8,7 @@ const Table = styled.table`
     border-collapse: separate;
     border-spacing: 0;
     width: 100%;
-    border: 2px solid ${colors.FOREGROUND_PRIMARY}
+    border: 2px solid ${colors.FOREGROUND_TEXT}
 `
 
 const TableHeader = styled.thead`
@@ -34,17 +34,17 @@ const TableRow = styled.tr`
 
 const TableHeaderCell = styled.th`
     background-color: ${colors.BACKGROUND_PRIMARY};
-    color: ${colors.FOREGROUND_PRIMARY}; 
-    border-bottom: 2px solid ${colors.FOREGROUND_PRIMARY};
+    color: ${colors.FOREGROUND_TEXT}; 
+    border-bottom: 2px solid ${colors.FOREGROUND_TEXT};
     padding: 10px;
     text-align: left;
     width: ${({ width }: { width: string }) => width};
     
 `
 const TableBodyCell = styled.td`
-    border-bottom: 2px solid ${colors.FOREGROUND_PRIMARY};
+    border-bottom: 2px solid ${colors.FOREGROUND_TEXT};
     padding: 10px;
-    color: ${colors.FOREGROUND_PRIMARY};
+    color: ${colors.FOREGROUND_TEXT};
 `
 
 export {

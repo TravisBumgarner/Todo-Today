@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Button, DropdownMenu, Table } from 'sharedComponents'
+import { BigBoxOfNothing, Button, DropdownMenu, Table } from 'sharedComponents'
 import { TProject } from 'sharedTypes'
 import EditProjectModal from './EditProjectModal'
 import { formatDateDisplayString, projectStatusLookup } from 'utilities'
@@ -10,6 +10,10 @@ const ProjectsTable = () => {
     const { dispatch, state } = React.useContext(context)
 
     const [selectedProjectId, setSelectedProjectId] = React.useState<string | null>(null)
+
+    if(Object.values(state.projects).length === 0){
+        return <BigBoxOfNothing message="Create a project and get going!" />
+    }
 
     return (
         <>
@@ -33,7 +37,7 @@ const ProjectsTable = () => {
                             <Table.TableBodyCell>{formatDateDisplayString(endDate)}</Table.TableBodyCell>
                             <Table.TableBodyCell>
                                 <DropdownMenu title="Actions">{
-                                    [<Button fullWidth key="edit" variation="FOREGROUND_PRIMARY" onClick={() => setSelectedProjectId(id)}>Edit</Button>]
+                                    [<Button fullWidth key="edit" variation="PRIMARY_BUTTON" onClick={() => setSelectedProjectId(id)}>Edit</Button>]
                                 }</DropdownMenu>
                                 
                             </Table.TableBodyCell>

@@ -18,13 +18,13 @@ const HeaderWrapper = styled.div`
     justify-content: space-between;
     svg {
         cursor: pointer;
-        fill: ${colors.FOREGROUND_PRIMARY};
+        fill: ${colors.FOREGROUND_TEXT};
         position: relative;
         right: -13px;
         top: -14px;
 
     &:hover {
-        fill: ${colors.FOREGROUND_PRIMARY};
+        fill: ${colors.FOREGROUND_TEXT};
         }
     }
     `
@@ -47,7 +47,7 @@ const Modal = ({
                 backgroundColor: colors.BACKGROUND_PRIMARY
             },
             content: {
-                border: `${colors.FOREGROUND_PRIMARY} solid 2px`,
+                border: `${colors.FOREGROUND_TEXT} solid 2px`,
                 backgroundColor: colors.BACKGROUND_PRIMARY,
                 position: 'static',
                 maxWidth: '80vw',
@@ -59,7 +59,7 @@ const Modal = ({
         <ModalWrapper>
             <HeaderWrapper>
                 <Heading.H1>{contentLabel}</Heading.H1>
-                <Icon name="close" color={colors.FOREGROUND_PRIMARY} onClick={closeModal} />
+                <Icon name="close" color={colors.FOREGROUND_TEXT} onClick={closeModal} />
             </HeaderWrapper>
             {children}
         </ModalWrapper>

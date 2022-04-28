@@ -1,15 +1,14 @@
 import React from 'react'
 import moment from 'moment'
 
-import { Button, Heading, Paragraph } from 'sharedComponents'
+import { BigBoxOfNothing, Button, ButtonWrapper, Heading, Paragraph } from 'sharedComponents'
 import { TTodoListItem } from 'sharedTypes'
-import { TodoListTable, ManageTodoListItemsModal} from './components'
+import { TodoListTable, ManageTodoListItemsModal } from './components'
 import { formatDateKeyLookup } from 'utilities'
 import { context } from 'Context'
 
 const groupItemsByProjectId = (todoListItems: TTodoListItem[]) => {
     const output: Record<string, TTodoListItem[]> = {}
-    console.log("I get to here")
     todoListItems.forEach(({ duration, projectId, taskId }) => {
         if (!(projectId in output)) {
             output[projectId] = []
@@ -43,25 +42,42 @@ const TodoToday = () => {
     }, [formatDateKeyLookup(selectedDate)])
 
     if (isLoading) {
-        console.log('isLoading', isLoading)
         return (
             <Paragraph>One sec...</Paragraph>
         )
     }
-    console.log(state)
+
     const todoListItems = state.todoList[formatDateKeyLookup(selectedDate) as keyof typeof state.todoList]
     const todoListItemsByProjectId = groupItemsByProjectId(todoListItems)
+
+    const TodoListTables = Object
+        .keys(todoListItemsByProjectId)
+        .map(projectId => <TodoListTable
+            selectedDate={selectedDate}
+            key={projectId}
+            projectId={projectId}
+            todoListItems={todoListItemsByProjectId[projectId]}
+        />
+        )
+
 
     return (
         <>
             <Heading.H2>{selectedDate.format('dddd, MMMM Do YYYY')}</Heading.H2>
-            <Button onClick={getPreviousDay} variation='FOREGROUND_PRIMARY'>Previous Day</Button>
-            <Button onClick={getNextDay} variation='FOREGROUND_PRIMARY'>Next Day</Button>
-            <Button onClick={() => setShowManagementModal(true)} variation='FOREGROUND_PRIMARY'>Manage Tasks</Button>
+            <ButtonWrapper
+                left={[
+                    <Button onClick={getPreviousDay} variation='PRIMARY_BUTTON'>Previous Day</Button>,
+                    <Button onClick={getNextDay} variation='PRIMARY_BUTTON'>Next Day</Button>]}
+                right={[<Button onClick={() => setShowManagementModal(true)} variation='PRIMARY_BUTTON'>Manage Tasks</Button>]}
+            />
+
+
             {
-                Object.keys(todoListItemsByProjectId).map(projectId => <TodoListTable selectedDate={selectedDate} key={projectId} projectId={projectId} todoListItems={todoListItemsByProjectId[projectId]} />)
+                Object.keys(todoListItemsByProjectId).length == 0
+                    ? (<BigBoxOfNothing message="Click the Manage Tasks button above to get started!" />)
+                    : (TodoListTables)
             }
-            <ManageTodoListItemsModal selectedDate={selectedDate} showModal={showManagementModal} setShowModal={setShowManagementModal}/>
+            <ManageTodoListItemsModal selectedDate={selectedDate} showModal={showManagementModal} setShowModal={setShowManagementModal} />
         </>
     )
 }

@@ -1,56 +1,5 @@
 {
-    "projects": {
-        "1": {
-            "id": "1",
-            "title": "PTO",
-            "status": "IN_PROGRESS",
-            "startDate": null,
-            "endDate": null
-        },
-        "2": {
-            "id": "2",
-            "title": "Sick Time",
-            "status": "IN_PROGRESS",
-            "startDate": null,
-            "endDate": null
-        }
-    },
-    "tasks": {
-        "1": {
-            "id": "1",
-            "title": "Create a web app",
-            "status": "NEW",
-            "projectId": "1"
-        },
-        "2": {
-            "id": "2",
-            "title": "Fix the previous project",
-            "status": "IN_PROGRESS",
-            "projectId": "1"
-        },
-        "3": {
-            "id": "3",
-            "title": "Covid",
-            "status": "IN_PROGRESS",
-            "projectId": "2"
-        }
-    },
-    "todoList": {
-        "2022-04-27": [{
-                "duration": 0,
-                "projectId": "1",
-                "taskId": "1"
-            },
-            {
-                "duration": 15,
-                "projectId": "1",
-                "taskId": "2"
-            }
-        ],
-        "2022-04-28": [{
-            "duration": 0,
-            "projectId": "1",
-            "taskId": "1"
-        }]
-    }
+    "projects": {},
+    "tasks": {},
+    "todoList": {}
 }
