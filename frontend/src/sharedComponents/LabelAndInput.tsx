@@ -51,6 +51,7 @@ const Label = styled.label`
     background-color: transparent;
     font-weight: 700;
     color: ${colors.FOREGROUND_TEXT};
+    margin: 0.5rem 0;
 `
 
 const Select = styled.select`
@@ -68,7 +69,7 @@ const Select = styled.select`
 `
 
 const LabelAndInputWrapper = styled.div`
-    margin: 0.5rem 0;
+    margin: 2rem 0;
 
     ${Label}{
         display: block;

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Routes, Route } from 'react-router'
 
-import { Projects, TodoList, Tasks } from '../pages'
+import { Projects, TodoList, Tasks, Settings } from '../pages'
 
 const Router = () => {
     return (
@@ -17,6 +17,10 @@ const Router = () => {
             <Route
                 path="/tasks"
                 element={<Tasks />}
+            />
+            <Route
+                path="/settings"
+                element={<Settings />}
             />
         </Routes>
     )

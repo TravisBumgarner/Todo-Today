@@ -3,12 +3,14 @@ import styled from 'styled-components'
 import Button from './Button'
 
 type ButtonWrapperProps = {
+    fullWidth?: JSX.Element
     left?: JSX.Element[]
     right?: JSX.Element[]
 }
 
 const ButtonWrapperWrapper = styled.div`
     display: flex;
+    margin: 2rem 0;
 
     div {
         width: calc(100% / 2);
@@ -30,11 +32,18 @@ const ButtonWrapperWrapper = styled.div`
 
 `
 
-const ButtonWrapper = ({ left, right }: ButtonWrapperProps) => {
+const ButtonWrapper = ({ left, right, fullWidth }: ButtonWrapperProps) => {
     return (
         <ButtonWrapperWrapper>
-            <div>{left}</div>
-            <div>{right}</div>
+            {fullWidth
+                ? fullWidth 
+                : <>
+                    <div>{left}</div>
+                    <div>{right}</div>
+                </>
+
+            }
+
         </ButtonWrapperWrapper>
     )
 }

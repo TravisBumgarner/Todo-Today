@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Button, Heading } from 'sharedComponents'
+import { Button, ButtonWrapper, Heading } from 'sharedComponents'
 import { AddProjectModal, ProjectsTable } from './components'
 
 const Projects = () => {
@@ -10,7 +10,10 @@ const Projects = () => {
         <>
             <Heading.H2>Projects</Heading.H2>
             <ProjectsTable />
-            <Button fullWidth key="edit" variation="PRIMARY_BUTTON" onClick={() => setShowAddProjectModal(true)}>Add Project</Button>
+            <ButtonWrapper fullWidth={
+                <Button fullWidth key="edit" variation="PRIMARY_BUTTON" onClick={() => setShowAddProjectModal(true)}>Add Project</Button>
+            }/>
+            
             <AddProjectModal showModal={showAddProjectModal} setShowModal={setShowAddProjectModal} />
         </>
     )

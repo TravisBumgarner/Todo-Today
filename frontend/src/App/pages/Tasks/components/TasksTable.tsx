@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Button, Heading, Table, DropdownMenu, BigBoxOfNothing } from 'sharedComponents'
+import { Button, Heading, Table, DropdownMenu, BigBoxOfNothing, ButtonWrapper } from 'sharedComponents'
 import { TProject, TTask } from 'sharedTypes'
 import EditTaskModal from './EditTaskModal'
 import AddTaskModal from './AddTaskModal'
@@ -51,7 +51,10 @@ const TasksTable = ({ tasks, project }: TasksTableProps) => {
                     ? (<BigBoxOfNothing message="Create a tasks and get going!" />)
                     : (TasksTableOnly)
             }
-            <Button fullWidth key="edit" variation="PRIMARY_BUTTON" onClick={() => setShowAddTaskModal(true)}>Add Task to {project.title}</Button>
+            <ButtonWrapper fullWidth={
+                <Button fullWidth key="edit" variation="PRIMARY_BUTTON" onClick={() => setShowAddTaskModal(true)}>Add Task to {project.title}</Button>
+            } />
+
             <AddTaskModal showModal={showAddTaskModal} project={project} setShowModal={setShowAddTaskModal} />
             {selectedTaskId ?
                 (

@@ -1,8 +1,9 @@
 import React from 'react'
 import moment from 'moment'
+import styled from 'styled-components'
 
 import { context } from 'Context'
-import { Modal, Paragraph, LabelAndInput } from 'sharedComponents'
+import { Modal, Paragraph, LabelAndInput, BigBoxOfNothing, Heading } from 'sharedComponents'
 import { bucketTasksByProject, formatDateKeyLookup } from 'utilities'
 import { TTask } from 'sharedTypes'
 
@@ -11,6 +12,15 @@ type ManageTodoListItemsModalProps = {
     setShowModal: (showModal: boolean) => void
     selectedDate: moment.Moment
 }
+
+const LabelInDisguise = styled.p`
+    font-family: 'Comfortaa',cursive;
+    font-size: 1rem;
+    background-color: transparent;
+    font-weight: 700;
+    color: #7bc3ff;
+
+`
 
 const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: ManageTodoListItemsModalProps) => {
     const { state, dispatch } = React.useContext(context)
@@ -37,6 +47,15 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
             <>
                 <Paragraph>Select tasks to add to the todo list.</Paragraph>
                 {Object.keys(tasksByProject).map(projectId => {
+                    if (tasksByProject[projectId].length === 0) {
+                        return (
+                            <>
+                                <LabelInDisguise>{state.projects[projectId].title}</LabelInDisguise>
+                                <BigBoxOfNothing message='This project has no tasks. :(' />
+                            </>
+                        )
+                    }
+
                     return (
                         <div key={projectId}>
                             <LabelAndInput
