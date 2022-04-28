@@ -16,7 +16,7 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
     const { state, dispatch } = React.useContext(context)
 
     const handleSubmit = () => {
-        console.log('hi')
+        console.log('handleSubmit')
     }
 
     const tasksByProject = bucketTasksByProject(Object.values(state.tasks))
@@ -25,13 +25,12 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
         return tasks.map(({ title, id, projectId }) => ({
             label: title,
             name: title,
-            value: title,
+            value: id,
             checked: state // I'm sorry for having written this lol. 
                 .todoList[formatDateKeyLookup(selectedDate)]
                 .some((todoListItem) => todoListItem.taskId === id && todoListItem.projectId === projectId)
         }))
     }
-
 
     return (
         <Modal
@@ -42,15 +41,15 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
             <>
                 <Paragraph>Hi.</Paragraph>
                 {Object.keys(tasksByProject).map(projectId => {
+                    console.log(mapTasksToCheckboxItems(tasksByProject[projectId]))
                     return (
                         <div key={projectId}>
                             <ul>
                                 <LabelAndInput
-                                    handleChange={({ name, checked }) => {
-                                        console.log('payload', { duration: 0, selectedDate: formatDateKeyLookup(selectedDate), taskId: name, isChecked: checked, projectId })
+                                    handleChange={({ value, checked }) => {
                                         dispatch({
-                                            type: "EDIT_TODO_LIST_ITEM",
-                                            payload: { duration: 0, selectedDate: formatDateKeyLookup(selectedDate), taskId: name, isChecked: checked, projectId }
+                                            type: "TOGGLE_TODO_LIST_ITEM_FOR_SELECTED_DATE",
+                                            payload: {shouldExistOnSelectedDate: checked, projectId, taskId: `${value}`, selectedDate: formatDateKeyLookup(selectedDate) }
                                         })
                                     }
                                     }

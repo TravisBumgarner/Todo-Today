@@ -88,7 +88,7 @@ type TextAreaProps = {
 type CheckboxProps = {
     inputType: 'checkbox'
     options: { label: string, name: string, value: string | number, checked: boolean }[]
-    handleChange: (value: {name: string, checked: boolean}) => void
+    handleChange: (value: {value: string | number , checked: boolean}) => void
 }
 
 type SelectProps = {
@@ -128,9 +128,9 @@ const LabelAndInput = (props: LabelAndInputProps) => {
                         <input
                             type="checkbox"
                             name={option.name}
-                            value={option.name}
+                            value={option.value}
                             checked={option.checked}
-                            onChange={(event) => handleChange({name: option.name, checked: event.target.checked})}
+                            onChange={(event) => handleChange({value: option.value, checked: event.target.checked})}
                         />
                         <label htmlFor={option.name}>{option.label}</label>
                     </div>

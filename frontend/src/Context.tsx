@@ -2,6 +2,7 @@ import moment from 'moment'
 import React from 'react'
 
 import { TProject, TTask, TTodoList, TTodoListItem } from 'sharedTypes'
+import { TodoList } from './App/pages'
 import dataStore from './dataStore.json'
 
 type State = {
@@ -46,9 +47,14 @@ type RemoveTodoListItem = {
     payload: { taskId: string, selectedDate: string }
 }
 
+type ToggleTodoListItemToSelectedDate = {
+    type: 'TOGGLE_TODO_LIST_ITEM_FOR_SELECTED_DATE'
+    payload: { shouldExistOnSelectedDate: boolean, projectId: string, taskId: string, selectedDate: string }
+}
+
 type EditTodoListItem = {
     type: 'EDIT_TODO_LIST_ITEM'
-    payload: { selectedDate: string, isChecked: boolean, taskId: string, projectId: string, duration: number}
+    payload: { selectedDate: string, isChecked: boolean, taskId: string, projectId: string, duration: number }
 }
 
 
@@ -57,6 +63,7 @@ type Action =
     | EditProject
     | AddTask
     | EditTask
+    | ToggleTodoListItemToSelectedDate
     | EditTodoListItem
     | RemoveTodoListItem
     | AddTodoList
@@ -75,7 +82,6 @@ const reducer = (state: State, action: Action): State => {
 
     switch (action.type) {
         case 'ADD_TODO_LIST': {
-            console.log('action', action)
             return { ...state, todoList: { ...state.todoList, [action.payload.date]: [] } }
         }
         case 'ADD_PROJECT':
@@ -92,19 +98,30 @@ const reducer = (state: State, action: Action): State => {
             const updatedTodoListForDate = [...state.todoList[action.payload.selectedDate]]
                 .filter(({ taskId }) => taskId !== action.payload.taskId)
 
-                return { ...state, todoList: { ...state.todoList, [action.payload.selectedDate]: updatedTodoListForDate } }
+            return { ...state, todoList: { ...state.todoList, [action.payload.selectedDate]: updatedTodoListForDate } }
+
+        }
+        case 'TOGGLE_TODO_LIST_ITEM_FOR_SELECTED_DATE': {
+            const { selectedDate, taskId, projectId, shouldExistOnSelectedDate } = action.payload
+            
+            let todoListForSelectedDate = [...state.todoList[selectedDate]]
+
+            if (shouldExistOnSelectedDate) {
+                todoListForSelectedDate.push({projectId, taskId, duration: 0})
+            } else {
+                todoListForSelectedDate = [...todoListForSelectedDate.filter(todoListItem => todoListItem.taskId !== taskId)]
+            }
+            return { ...state, todoList: { ...state.todoList, [selectedDate]: todoListForSelectedDate }}
 
         }
         case 'EDIT_TODO_LIST_ITEM': {
-            console.log('state', action)
             const updatedTodoListForDate = [...state.todoList[action.payload.selectedDate]]
                 .filter(({ taskId }) => taskId !== action.payload.taskId)
-            updatedTodoListForDate.push({projectId: action.payload.projectId, taskId: action.payload.taskId, duration: 0})
+            updatedTodoListForDate.push({ projectId: action.payload.projectId, taskId: action.payload.taskId, duration: action.payload.duration })
 
             return { ...state, todoList: { ...state.todoList, [action.payload.selectedDate]: updatedTodoListForDate } }
         }
         default: {
-            console.log(action)
             console.log(`Swallowing action: ${JSON.stringify(action)}`)
             return state
         }

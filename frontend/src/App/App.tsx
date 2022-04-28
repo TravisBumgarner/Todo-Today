@@ -8,7 +8,7 @@ import { LabelAndInput } from 'sharedComponents';
 
 const App = () => {
   const { dispatch, state } = React.useContext(context)
-  console.log(state.todoList['2022-04-27'])
+  console.log('new state', state)
   return (
     <div>
       <Header />
