@@ -15,10 +15,6 @@ type ManageTodoListItemsModalProps = {
 const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: ManageTodoListItemsModalProps) => {
     const { state, dispatch } = React.useContext(context)
 
-    const handleSubmit = () => {
-        console.log('handleSubmit')
-    }
-
     const tasksByProject = bucketTasksByProject(Object.values(state.tasks))
 
     const mapTasksToCheckboxItems = (tasks: TTask[]) => {
@@ -39,27 +35,24 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
             closeModal={() => setShowModal(false)}
         >
             <>
-                <Paragraph>Hi.</Paragraph>
+                <Paragraph>Select tasks to add to the todo list.</Paragraph>
                 {Object.keys(tasksByProject).map(projectId => {
-                    console.log(mapTasksToCheckboxItems(tasksByProject[projectId]))
                     return (
                         <div key={projectId}>
-                            <ul>
-                                <LabelAndInput
-                                    handleChange={({ value, checked }) => {
-                                        dispatch({
-                                            type: "TOGGLE_TODO_LIST_ITEM_FOR_SELECTED_DATE",
-                                            payload: {shouldExistOnSelectedDate: checked, projectId, taskId: `${value}`, selectedDate: formatDateKeyLookup(selectedDate) }
-                                        })
-                                    }
-                                    }
-                                    options={mapTasksToCheckboxItems(tasksByProject[projectId])}
-                                    name="foo"
-                                    value="foo"
-                                    label={state.projects[projectId].title}
-                                    inputType='checkbox'
-                                />
-                            </ul>
+                            <LabelAndInput
+                                handleChange={({ value, checked }) => {
+                                    dispatch({
+                                        type: "TOGGLE_TODO_LIST_ITEM_FOR_SELECTED_DATE",
+                                        payload: { shouldExistOnSelectedDate: checked, projectId, taskId: `${value}`, selectedDate: formatDateKeyLookup(selectedDate) }
+                                    })
+                                }
+                                }
+                                options={mapTasksToCheckboxItems(tasksByProject[projectId])}
+                                name="foo"
+                                value="foo"
+                                label={state.projects[projectId].title}
+                                inputType='checkbox'
+                            />
                         </div>
                     )
                 })}

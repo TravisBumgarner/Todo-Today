@@ -19,6 +19,19 @@ const Input = styled.input`
     color-scheme: dark;
 `
 
+const Checkbox = styled.input`
+    color-scheme: dark;
+    accent-color: ${colors.FOREGROUND_PRIMARY};
+`
+
+const CheckboxLabel = styled.label`
+    font-family: 'Comfortaa', cursive;
+    font-size: 1rem;
+    font-weight: 700;
+    color: ${colors.FOREGROUND_PRIMARY};
+    /* margin-left: 0.25rem; */
+`
+
 const TextArea = styled.textarea`
     font-family: 'Comfortaa', cursive;
     font-size: 1rem;
@@ -55,7 +68,7 @@ const Select = styled.select`
 `
 
 const LabelAndInputWrapper = styled.div`
-    margin: 0.5rem;
+    margin: 0.5rem 0;
 
     ${Label}{
         display: block;
@@ -88,7 +101,7 @@ type TextAreaProps = {
 type CheckboxProps = {
     inputType: 'checkbox'
     options: { label: string, name: string, value: string | number, checked: boolean }[]
-    handleChange: (value: {value: string | number , checked: boolean}) => void
+    handleChange: (value: { value: string | number, checked: boolean }) => void
 }
 
 type SelectProps = {
@@ -120,22 +133,24 @@ const LabelAndInput = (props: LabelAndInputProps) => {
         )
     }
     else if (props.inputType === 'checkbox') {
-        const { options, name, value, handleChange } = props
+        const { options, handleChange } = props
         InputElement = (
-            <div>
+            <>
                 {options.map(option => (
                     <div key={option.name}>
-                        <input
+                        <Checkbox
                             type="checkbox"
                             name={option.name}
                             value={option.value}
                             checked={option.checked}
-                            onChange={(event) => handleChange({value: option.value, checked: event.target.checked})}
+                            onChange={(event) => handleChange({ value: option.value, checked: event.target.checked })}
                         />
-                        <label htmlFor={option.name}>{option.label}</label>
+                        <CheckboxLabel
+                            htmlFor={option.name}
+                        >{option.label}</CheckboxLabel>
                     </div>
                 ))}
-            </div>
+            </>
         )
     }
     else {

@@ -4,11 +4,9 @@ import { BrowserRouter } from 'react-router-dom'
 import Theme from 'theme'
 import { Navigation, Router, Header } from './components'
 import Context, {context} from 'Context'
-import { LabelAndInput } from 'sharedComponents';
 
 const App = () => {
   const { dispatch, state } = React.useContext(context)
-  console.log('new state', state)
   return (
     <div>
       <Header />

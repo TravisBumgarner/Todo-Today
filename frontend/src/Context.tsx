@@ -42,11 +42,6 @@ type EditTask = {
     payload: TTask
 }
 
-type RemoveTodoListItem = {
-    type: 'REMOVE_TODO_LIST_ITEM'
-    payload: { taskId: string, selectedDate: string }
-}
-
 type ToggleTodoListItemToSelectedDate = {
     type: 'TOGGLE_TODO_LIST_ITEM_FOR_SELECTED_DATE'
     payload: { shouldExistOnSelectedDate: boolean, projectId: string, taskId: string, selectedDate: string }
@@ -65,7 +60,6 @@ type Action =
     | EditTask
     | ToggleTodoListItemToSelectedDate
     | EditTodoListItem
-    | RemoveTodoListItem
     | AddTodoList
 
 const context = React.createContext(
@@ -93,13 +87,6 @@ const reducer = (state: State, action: Action): State => {
         case 'EDIT_TASK': {
             const updatedTasks = { ...state.tasks, [action.payload.id]: action.payload }
             return { ...state, tasks: updatedTasks }
-        }
-        case 'REMOVE_TODO_LIST_ITEM': {
-            const updatedTodoListForDate = [...state.todoList[action.payload.selectedDate]]
-                .filter(({ taskId }) => taskId !== action.payload.taskId)
-
-            return { ...state, todoList: { ...state.todoList, [action.payload.selectedDate]: updatedTodoListForDate } }
-
         }
         case 'TOGGLE_TODO_LIST_ITEM_FOR_SELECTED_DATE': {
             const { selectedDate, taskId, projectId, shouldExistOnSelectedDate } = action.payload

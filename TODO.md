@@ -10,9 +10,9 @@
 - [x] Get rid of set state for managing state changes
 - [x] Add today view
 - [x] Remove todo list items
-- [ ] Add todo list items
-    - [ ] Figure out why checking an item in the Today view doesn't update state
-    - [ ] Convert today's date to perhaps a dictionary of dictionaries?
+- [x] Add todo list items
+    - [x] Figure out why checking an item in the Today view doesn't update state
+    - [ ] ~~Convert today's date to perhaps a dictionary of dictionaries?~~
 
 Next PR
 
