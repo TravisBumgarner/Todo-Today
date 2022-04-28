@@ -3,22 +3,15 @@ import { BrowserRouter } from 'react-router-dom'
 
 import Theme from 'theme'
 import { Navigation, Router, Header } from './components'
-import Context, {context} from 'Context'
+import Context, { context } from 'Context'
 
 const App = () => {
   const { dispatch, state } = React.useContext(context)
   return (
     <div>
       <Header />
-      <div style={{ display: 'flex' }}>
-        <div style={{ width: '20%' }}>
-          <Navigation />
-        </div>
-        <div style={{ width: '80%' }}>
-          <Router />
-        </div>
-      </div>
-
+      <Navigation />
+      <Router />
     </div>
   )
 }
