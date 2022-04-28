@@ -1,53 +1,44 @@
 import React from 'react'
-import {
-    Link as RouterLink,
-    LinkProps as RouterLinkProps,
-} from 'react-router-dom';
-import ListItem from '@mui/material/ListItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import List from '@mui/material/List';
+import styled from 'styled-components'
+import { useLocation } from 'react-router-dom'
 
+import { StyledNavLink } from 'sharedComponents'
 
-interface ListItemLinkProps {
-    icon?: React.ReactElement;
-    primary: string;
-    to: string;
-}
+const StyledNav = styled.ul`
+    list-style: none;
+    margin: 0;
+    padding: 0rem;
+    display: flex;
+    flex-direction: row;
 
-const ListItemLink = (props: ListItemLinkProps) => {
-    const { icon, primary, to } = props;
+    li {
+        margin-right: 1rem;
+    }
+`
 
-    const renderLink = React.useMemo(
-        () =>
-            React.forwardRef<HTMLAnchorElement, Omit<RouterLinkProps, 'to'>>(function Link(
-                itemProps,
-                ref,
-            ) {
-                return <RouterLink to={to} ref={ref} {...itemProps} role={undefined} />;
-            }),
-        [to],
-    );
+const ALWAYS_VISIBLE_LINKS = [
+    { text: 'Todo List', to: '/' },
+    { text: 'Projects', to: '/projects' },
+    { text: 'Tasks by Project', to: '/tasks' },
+    { text: 'Settings', to: '/settings' }
+]
 
-    return (
-        <li>
-            <ListItem button component={renderLink}>
-                {icon ? <ListItemIcon>{icon}</ListItemIcon> : null}
-                <ListItemText primary={primary} />
-            </ListItem>
-        </li>
-    );
-}
+const NavLi = styled.li`
+    font-weight: ${(props: {isActive: boolean}) => {
+        return props.isActive ? 700 : 100
+    } };
+`
 
 const Navigation = () => {
+    const location = useLocation()
     return (
-        <>
-            <List aria-label="main mailbox folders">
-                <ListItemLink to="/" primary="Today" />
-                <ListItemLink to="/projects" primary="Projects" />
-            </List>
-        </>
+        <StyledNav >
+            {ALWAYS_VISIBLE_LINKS.map(({ text, to }) => (
+                <NavLi key={to} isActive={location.pathname === to}>
+                    <StyledNavLink to={to}>{text}</StyledNavLink>
+                </NavLi>
+            ))}
+        </StyledNav>
     )
 }
-
 export default Navigation

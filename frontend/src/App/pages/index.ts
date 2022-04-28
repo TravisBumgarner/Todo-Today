@@ -1,7 +1,11 @@
 import Projects from './Projects'
-import Today from './Today'
+import TodoList from './TodoList/TodoList'
+import Tasks from './Tasks'
+import Settings from './Settings'
 
 export {
     Projects,
-    Today
+    TodoList,
+    Tasks,
+    Settings
 }
