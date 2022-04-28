@@ -8,12 +8,12 @@ import { bucketTasksByProject } from 'utilities'
 const Tasks = () => {
     const { state } = React.useContext(context)
     
-    const tasks = bucketTasksByProject(Object.values(state.tasks))
-    
+    const tasks = bucketTasksByProject(state.projects, state.tasks)
+
     return (
         <>
             <Heading.H2>Tasks</Heading.H2>
-            {Object.keys(tasks).map(projectId => {
+            {Object.keys(state.projects).map(projectId => {
                 return (
                     <TasksTable key={projectId} project={state.projects[projectId]} tasks={tasks[projectId]} />
                 )

@@ -13,6 +13,8 @@
 - [x] Add todo list items
     - [x] Figure out why checking an item in the Today view doesn't update state
     - [ ] ~~Convert today's date to perhaps a dictionary of dictionaries?~~
+- [x] Bug Fixing
+
 
 Next PR
 

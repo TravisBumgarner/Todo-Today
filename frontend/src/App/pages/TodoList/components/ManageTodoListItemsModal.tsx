@@ -15,7 +15,7 @@ type ManageTodoListItemsModalProps = {
 const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: ManageTodoListItemsModalProps) => {
     const { state, dispatch } = React.useContext(context)
 
-    const tasksByProject = bucketTasksByProject(Object.values(state.tasks))
+    const tasksByProject = bucketTasksByProject(state.projects, state.tasks)
 
     const mapTasksToCheckboxItems = (tasks: TTask[]) => {
         return tasks.map(({ title, id, projectId }) => ({

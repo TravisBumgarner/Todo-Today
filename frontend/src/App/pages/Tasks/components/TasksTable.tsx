@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Button, Heading, Table, DropdownMenu} from 'sharedComponents'
+import { Button, Heading, Table, DropdownMenu } from 'sharedComponents'
 import { TProject, TTask } from 'sharedTypes'
 import EditTaskModal from './EditTaskModal'
 import AddTaskModal from './AddTaskModal'
@@ -12,14 +12,14 @@ type TasksTableProps = {
     project: TProject
 }
 
-const TasksTable = ({ tasks, project}: TasksTableProps) => {
+const TasksTable = ({ tasks, project }: TasksTableProps) => {
     const [showAddTaskModal, setShowAddTaskModal] = React.useState<boolean>(false)
     const [selectedTaskId, setSelectedTaskId] = React.useState<string | null>(null)
 
 
     return (
         <>
-             <Heading.H3>{project.title}</Heading.H3>
+            <Heading.H3>{project.title}</Heading.H3>
             <Table.Table>
                 <Table.TableHeader>
                     <Table.TableRow>
@@ -37,7 +37,7 @@ const TasksTable = ({ tasks, project}: TasksTableProps) => {
                                 <DropdownMenu title="Actions">{
                                     [<Button fullWidth key="edit" variation="FOREGROUND_PRIMARY" onClick={() => setSelectedTaskId(id)}>Edit</Button>]
                                 }</DropdownMenu>
-                                
+
                             </Table.TableBodyCell>
                         </Table.TableRow>
                     ))}
@@ -45,15 +45,15 @@ const TasksTable = ({ tasks, project}: TasksTableProps) => {
             </Table.Table>
             <Button fullWidth key="edit" variation="FOREGROUND_PRIMARY" onClick={() => setShowAddTaskModal(true)}>Add Task to {project.title}</Button>
             <AddTaskModal showModal={showAddTaskModal} project={project} setShowModal={setShowAddTaskModal} />
-            { selectedTaskId ? 
+            {selectedTaskId ?
                 (
-                <EditTaskModal
-                    showModal={selectedTaskId !== null}
-                    setShowModal={() => setSelectedTaskId(null)}
-                    taskId={selectedTaskId}
-                    project={project}
-                />
-                ) : 
+                    <EditTaskModal
+                        showModal={selectedTaskId !== null}
+                        setShowModal={() => setSelectedTaskId(null)}
+                        taskId={selectedTaskId}
+                        project={project}
+                    />
+                ) :
                 (null)
             }
         </>

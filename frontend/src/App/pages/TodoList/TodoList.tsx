@@ -9,7 +9,7 @@ import { context } from 'Context'
 
 const groupItemsByProjectId = (todoListItems: TTodoListItem[]) => {
     const output: Record<string, TTodoListItem[]> = {}
-
+    console.log("I get to here")
     todoListItems.forEach(({ duration, projectId, taskId }) => {
         if (!(projectId in output)) {
             output[projectId] = []
@@ -23,7 +23,7 @@ const groupItemsByProjectId = (todoListItems: TTodoListItem[]) => {
 const TodoToday = () => {
     const { state, dispatch } = React.useContext(context)
     const [selectedDate, setSelectedDate] = React.useState<moment.Moment>(moment())
-    const [isLoading, setIsLoading] = React.useState<boolean>(false)
+    const [isLoading, setIsLoading] = React.useState<boolean>(true)
     const [showManagementModal, setShowManagementModal] = React.useState<boolean>(false)
 
     const getPreviousDay = () => {
@@ -43,10 +43,12 @@ const TodoToday = () => {
     }, [formatDateKeyLookup(selectedDate)])
 
     if (isLoading) {
+        console.log('isLoading', isLoading)
         return (
             <Paragraph>One sec...</Paragraph>
         )
     }
+    console.log(state)
     const todoListItems = state.todoList[formatDateKeyLookup(selectedDate) as keyof typeof state.todoList]
     const todoListItemsByProjectId = groupItemsByProjectId(todoListItems)
 
