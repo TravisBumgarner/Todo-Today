@@ -1,6 +1,7 @@
 // Modules to control application life and create native browser window
 const { app, BrowserWindow } = require('electron')
 const path = require('path')
+require('dotenv').config({ path: `.env` })
 
 function createWindow() {
     // Create the browser window.
@@ -13,7 +14,11 @@ function createWindow() {
     })
 
     // and load the index.html of the app.
-    mainWindow.loadFile('./public/index.html')
+    if (process.env.NODE_ENV === 'production') {
+        mainWindow.loadFile('./public/index.html')
+    } else {
+        mainWindow.loadURL('http://localhost:3003')
+    }
 
     // Open the DevTools.
     // mainWindow.webContents.openDevTools()
