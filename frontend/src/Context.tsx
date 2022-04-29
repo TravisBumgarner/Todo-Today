@@ -1,7 +1,7 @@
 import React from 'react'
+const { ipcRenderer } = window.require('electron');
 
 import { TProject, TSettings, TTask, TTodoList } from 'sharedTypes'
-import dataStore from './dataStore.json'
 
 type State = {
     projects: Record<string, TProject>
@@ -11,8 +11,7 @@ type State = {
 }
 
 const EMPTY_STATE: State = {
-    ...dataStore,
-} as State
+} 
 
 type AddTodoList = {
     type: 'ADD_TODO_LIST'
@@ -54,7 +53,13 @@ type EditUserSettings = {
     payload: TSettings
 }
 
+type HydrateApp = {
+    type: "HYDRATE_APP",
+    payload: State
+}
+
 type Action =
+    | HydrateApp
     | AddProject
     | EditProject
     | AddTask
@@ -77,6 +82,9 @@ const context = React.createContext(
 const reducer = (state: State, action: Action): State => {
 
     switch (action.type) {
+        case 'HYDRATE_APP': {
+            return {...action.payload}
+        }
         case 'ADD_TODO_LIST': {
             return { ...state, todoList: { ...state.todoList, [action.payload.date]: [] } }
         }
@@ -122,9 +130,21 @@ const reducer = (state: State, action: Action): State => {
 
 const ResultsContext = ({ children }: { children: React.ReactChild }) => {
     const [state, dispatch] = React.useReducer(reducer, EMPTY_STATE)
-
+    const [isLoading, setIsloading] = React.useState<boolean>(true)
+    console.log('state', state)
     const { Provider } = context
 
+    React.useEffect(() => {
+        ipcRenderer.invoke('hydrate-app').then((r: string) => {
+            dispatch({type: "HYDRATE_APP", payload: JSON.parse(r)})
+            setIsloading(false)
+        })
+      }, [])
+
+    if(isLoading){
+        return <p>Loading...</p>
+    }
+    
     return (
         <Provider value={{ state, dispatch }}>
             {children}
