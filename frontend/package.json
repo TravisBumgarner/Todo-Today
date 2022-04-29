@@ -3,6 +3,7 @@
     "author": "Travis Bumgarner",
     "dependencies": {
         "dotenv": "^16.0.0",
+        "electron": "^18.2.0",
         "moment": "^2.29.1",
         "polished": "^4.2.2",
         "react": "^17.0.2",

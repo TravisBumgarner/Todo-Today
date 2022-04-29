@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter } from 'react-router-dom'
 import styled, { ThemeProvider } from 'styled-components';
 import { ModalProvider } from 'styled-react-modal'
+const { ipcRenderer } = window.require('electron');
 
 import Theme from 'theme'
 import { Navigation, Router, Header } from './components'
@@ -33,6 +34,11 @@ const BackgroundComponent = styled.div`
 const App = () => {
   const { dispatch, state } = React.useContext(context)
   console.log(state)
+
+  React.useEffect(() => {
+    ipcRenderer.send('alive', {message: "alssive!"})
+  }, [])
+
   return (
     <ThemeProvider theme={THEMES[state.settings.colorTheme]}>
       <Theme.GlobalStyle />
