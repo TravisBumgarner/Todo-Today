@@ -36,7 +36,7 @@ const App = () => {
   console.log(state)
 
   React.useEffect(() => {
-    ipcRenderer.send('alive', {message: "alssive!"})
+    ipcRenderer.invoke('alive', {message: "alssive!"}).then(r => console.log(r))
   }, [])
 
   return (

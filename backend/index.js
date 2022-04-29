@@ -40,6 +40,7 @@ app.on('window-all-closed', function() {
     if (process.platform !== 'darwin') app.quit()
 })
 
-ipcMain.on('alive', (event, arg) => {
+ipcMain.handle('alive', (event, arg) => {
     console.log('alive?', arg) // prints "ping"
+    return "Alivesss!"
 })
