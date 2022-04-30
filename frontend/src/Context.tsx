@@ -1,7 +1,7 @@
 import React from 'react'
 const { ipcRenderer } = window.require('electron');
 
-import { TProject, TSettings, TTask, TTodoList } from 'sharedTypes'
+import { TProject, TSettings, TTask, TTodoList, TDateFormat, TWeekStart, TColorTheme } from 'sharedTypes'
 
 type State = {
     projects: Record<string, TProject>
@@ -11,7 +11,15 @@ type State = {
 }
 
 const EMPTY_STATE: State = {
-} 
+    projects: {},
+    tasks: {},
+    todoList: {},
+    settings: {
+        dateFormat: TDateFormat.A,
+        weekStart: TWeekStart.SUNDAY,
+        colorTheme: TColorTheme.BEACH
+    }
+}
 
 type AddTodoList = {
     type: 'ADD_TODO_LIST'
@@ -83,7 +91,7 @@ const reducer = (state: State, action: Action): State => {
 
     switch (action.type) {
         case 'HYDRATE_APP': {
-            return {...action.payload}
+            return { ...action.payload }
         }
         case 'ADD_TODO_LIST': {
             return { ...state, todoList: { ...state.todoList, [action.payload.date]: [] } }
@@ -100,15 +108,15 @@ const reducer = (state: State, action: Action): State => {
         }
         case 'TOGGLE_TODO_LIST_ITEM_FOR_SELECTED_DATE': {
             const { selectedDate, taskId, projectId, shouldExistOnSelectedDate } = action.payload
-            
+
             let todoListForSelectedDate = [...state.todoList[selectedDate]]
 
             if (shouldExistOnSelectedDate) {
-                todoListForSelectedDate.push({projectId, taskId, duration: 0})
+                todoListForSelectedDate.push({ projectId, taskId, duration: 0 })
             } else {
                 todoListForSelectedDate = [...todoListForSelectedDate.filter(todoListItem => todoListItem.taskId !== taskId)]
             }
-            return { ...state, todoList: { ...state.todoList, [selectedDate]: todoListForSelectedDate }}
+            return { ...state, todoList: { ...state.todoList, [selectedDate]: todoListForSelectedDate } }
 
         }
         case 'EDIT_TODO_LIST_ITEM': {
@@ -119,7 +127,7 @@ const reducer = (state: State, action: Action): State => {
             return { ...state, todoList: { ...state.todoList, [action.payload.selectedDate]: updatedTodoListForDate } }
         }
         case 'EDIT_USER_SETTINGS': {
-            return {...state, settings: {...action.payload}}
+            return { ...state, settings: { ...action.payload } }
         }
         default: {
             console.log(`Swallowing action: ${JSON.stringify(action)}`)
@@ -130,21 +138,27 @@ const reducer = (state: State, action: Action): State => {
 
 const ResultsContext = ({ children }: { children: React.ReactChild }) => {
     const [state, dispatch] = React.useReducer(reducer, EMPTY_STATE)
-    const [isLoading, setIsloading] = React.useState<boolean>(true)
-    console.log('state', state)
+    const [isHydratingApp, setIsHydratingApp] = React.useState<boolean>(true)
+
     const { Provider } = context
 
     React.useEffect(() => {
         ipcRenderer.invoke('hydrate-app').then((r: string) => {
-            dispatch({type: "HYDRATE_APP", payload: JSON.parse(r)})
-            setIsloading(false)
+            dispatch({ type: "HYDRATE_APP", payload: JSON.parse(r) })
+            setIsHydratingApp(false)
         })
-      }, [])
+    }, [])
 
-    if(isLoading){
+    React.useEffect(() => {
+        if(isHydratingApp) return // Don't send empty state to backend. 
+
+        ipcRenderer.send('state-change', {payload: state})
+    }, [state])
+
+    if (isHydratingApp) {
         return <p>Loading...</p>
     }
-    
+
     return (
         <Provider value={{ state, dispatch }}>
             {children}
