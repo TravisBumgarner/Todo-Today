@@ -3,7 +3,8 @@
 - [x] Add a Reports Generator
 - [x] Add basic electron setup
 - [ ] Get Hot reloading working
-- [ ] Setup Menu for Electron
+- [ ] Bundle App
+- [x] Setup Menu for Electron
 - [ ] Setup Icon for Electron
 - [x] Add previews for state changes
 

@@ -1,12 +1,26 @@
 // Modules to control application life and create native browser window
-const { app, BrowserWindow, ipcMain } = require('electron')
-const path = require('path')
+const { app, BrowserWindow, ipcMain, Menu } = require('electron')
+
 const fs = require('fs')
 require('dotenv').config({ path: `.env` })
 
 const dataStore = require('./dataStore.json')
 
 const isProd = process.env.NODE_ENV === 'production'
+const isMac = process.platform === 'darwin'
+
+
+const template = [
+    ...(isMac ? [{
+        label: app.name,
+        submenu: [
+            { role: 'quit' }
+        ]
+    }] : []),
+]
+
+const menu = Menu.buildFromTemplate(template)
+Menu.setApplicationMenu(menu)
 
 function createWindow() {
     const mainWindow = new BrowserWindow({
