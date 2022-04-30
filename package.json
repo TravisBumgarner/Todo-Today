@@ -6,7 +6,8 @@
     "scripts": {
         "sd:fe": "cd frontend && npm run sd:fe",
         "sd:be": "cd backend && npm run sd:be",
-        "sd": "concurrently -n fe,be \"npm run sd:fe\" \"wait-on http://localhost:3003 && npm run sd:be\""
+        "sd": "concurrently -n fe,be \"npm run sd:fe\" \"wait-on http://localhost:3003 && npm run sd:be\"",
+        "build": "cd frontend && npm run build && cd ../backend && npm run build"
     },
     "repository": {
         "type": "git",

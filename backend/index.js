@@ -5,8 +5,7 @@ const fs = require('fs')
 require('dotenv').config({ path: `.env` })
 
 const dataStore = require('./dataStore.json')
-
-const isProd = process.env.NODE_ENV === 'production'
+const isDev = process.env.NODE_ENV !== 'production'
 const isMac = process.platform === 'darwin'
 
 
@@ -24,7 +23,7 @@ Menu.setApplicationMenu(menu)
 
 function createWindow() {
     const mainWindow = new BrowserWindow({
-        width: isProd ? 800 : 1000,
+        width: isDev ? 1000 : 800,
         height: 600,
         x: 0,
         y: 0,
@@ -34,13 +33,14 @@ function createWindow() {
             nodeIntegration: true,
             enableRemoteModule: true,
             contextIsolation: false,
+            devTools: isDev
         }
     })
 
-    if (isProd) {
-        mainWindow.loadFile('./public/index.html')
-    } else {
+    if (isDev) {
         mainWindow.loadURL('http://localhost:3003')
+    } else {
+        mainWindow.loadFile('./react-public/index.html')
     }
     mainWindow.webContents.openDevTools();
 }

@@ -5,13 +5,24 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "sd:be": "export NODE_ENV=local && electron ./index.js"
+        "sd:be": "export NODE_ENV=production && electron ./index.js",
+        "app:dir": "electron-builder --dir",
+        "build": "rm -rf ./react-dist && mv ../react-dist ./ && export NODE_ENV=production && electron-builder"
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "dotenv": "^16.0.0",
-        "electron": "^18.2.0"
+        "dotenv": "^16.0.0"
+    },
+    "devDependencies": {
+        "electron": "^18.2.0",
+        "electron-builder": "^23.0.3"
+    },
+    "build": {
+        "appId": "your.id",
+        "mac": {
+            "category": "your.app.category.type"
+        }
     }
 }
