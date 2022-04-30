@@ -8,6 +8,7 @@ type State = {
     tasks: Record<string, TTask>
     todoList: Record<string, { projectId: string, taskId: string, duration: number }[]>
     settings: TSettings
+    tempSettingsStorage?: TSettings
 }
 
 const EMPTY_STATE: State = {
@@ -19,6 +20,20 @@ const EMPTY_STATE: State = {
         weekStart: TWeekStart.SUNDAY,
         colorTheme: TColorTheme.BEACH
     }
+}
+
+type UseTemporarySettings = {
+    type: 'USE_TEMPORARY_SETTINGS'
+    payload: TSettings
+}
+
+type EditTemporarySettings = {
+    type: 'EDIT_TEMPORARY_SETTINGS',
+    payload: TSettings
+}
+
+type RemoveTemporarySettings = {
+    type: 'REMOVE_TEMPORARY_SETTINGS'
 }
 
 type AddTodoList = {
@@ -76,6 +91,9 @@ type Action =
     | EditTodoListItem
     | AddTodoList
     | EditUserSettings
+    | UseTemporarySettings
+    | EditTemporarySettings
+    | RemoveTemporarySettings
 
 const context = React.createContext(
     {
@@ -92,6 +110,27 @@ const reducer = (state: State, action: Action): State => {
     switch (action.type) {
         case 'HYDRATE_APP': {
             return { ...action.payload }
+        }
+        case 'USE_TEMPORARY_SETTINGS': {
+            return {
+                ...state,
+                settings: {...state.settings},
+                tempSettingsStorage: {...state.settings}
+            }
+        }
+        case 'EDIT_TEMPORARY_SETTINGS': {
+            return {
+                ...state,
+                settings: {...state.settings, ...action.payload},
+            }
+        }
+        case 'REMOVE_TEMPORARY_SETTINGS': {
+            const modifiedState = {
+                ...state,
+                settings: state.tempSettingsStorage as TSettings
+            }
+            delete modifiedState.tempSettingsStorage
+            return modifiedState
         }
         case 'ADD_TODO_LIST': {
             return { ...state, todoList: { ...state.todoList, [action.payload.date]: [] } }

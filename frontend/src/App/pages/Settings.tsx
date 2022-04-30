@@ -16,6 +16,25 @@ const dateFormatForUser = (format: TDateFormat, date: Moment) => {
     }[format]
 }
 
+const weekStartOptionLabels: Record<TWeekStart, string> = {
+    [TWeekStart.MONDAY]: 'Monday',
+    [TWeekStart.SUNDAY]: 'Sunday',
+}
+
+const dateFormatOptionLabels: Record<TDateFormat, string> = {
+    [TDateFormat.A]: dateFormatForUser(TDateFormat.A, moment()),
+    [TDateFormat.B]: dateFormatForUser(TDateFormat.B, moment()),
+    [TDateFormat.C]: dateFormatForUser(TDateFormat.C, moment()),
+    [TDateFormat.D]: dateFormatForUser(TDateFormat.D, moment()),
+}
+
+const colorThemeOptionLabels: Record<TColorTheme, string> = {
+    [TColorTheme.BEACH]: 'Beach',
+    [TColorTheme.FIRE_AND_ICE]: 'Fire & Ice',
+    [TColorTheme.NEWSPAPER]: 'Newspaper',
+    [TColorTheme.SUNSET]: 'Sunset',
+}
+
 const Settings = () => {
     const { state, dispatch } = React.useContext(context)
     const [weekStart, setWeekStart] = React.useState<TWeekStart>(state.settings.weekStart)
@@ -28,24 +47,36 @@ const Settings = () => {
         setSubmitDisabled(true)
     }
 
-    const weekStartOptionLabels: Record<TWeekStart, string> = {
-        [TWeekStart.MONDAY]: 'Monday',
-        [TWeekStart.SUNDAY]: 'Sunday',
-    }
+    React.useEffect(() => {
+        dispatch({
+            type: 'USE_TEMPORARY_SETTINGS',
+            payload: {
+                weekStart,
+                dateFormat,
+                colorTheme,
+            }
+        })
+    }, [])
 
-    const dateFormatOptionLabels: Record<TDateFormat, string> = {
-        [TDateFormat.A]: dateFormatForUser(TDateFormat.A, moment()),
-        [TDateFormat.B]: dateFormatForUser(TDateFormat.B, moment()),
-        [TDateFormat.C]: dateFormatForUser(TDateFormat.C, moment()),
-        [TDateFormat.D]: dateFormatForUser(TDateFormat.D, moment()),
-    }
+    React.useEffect(() => {
+        dispatch({
+            type: 'EDIT_TEMPORARY_SETTINGS',
+            payload: {
+                weekStart,
+                dateFormat,
+                colorTheme,
+            }
+        })
+    }, [weekStart, dateFormat, colorTheme])
 
-    const colorThemeOptionLabels: Record<TColorTheme, string> = {
-        [TColorTheme.BEACH]: 'Beach',
-        [TColorTheme.FIRE_AND_ICE]: 'Fire & Ice',
-        [TColorTheme.NEWSPAPER]: 'Newspaper',
-        [TColorTheme.SUNSET]: 'Sunset',
-    }
+    React.useEffect(() => {
+        return () => {
+          dispatch({
+              type: "REMOVE_TEMPORARY_SETTINGS"
+          })
+        };
+      }, []);
+      
 
     return (
         <>

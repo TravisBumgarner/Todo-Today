@@ -1,7 +1,11 @@
 # PR-2 - Let's get to Using It
 
 - [x] Add a Reports Generator
-- [ ] Add electron
+- [x] Add basic electron setup
+- [ ] Get Hot reloading working
+- [ ] Setup Menu for Electron
+- [ ] Setup Icon for Electron
+- [x] Add previews for state changes
 
 Next PR
 
