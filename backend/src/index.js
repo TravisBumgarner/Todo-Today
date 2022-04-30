@@ -41,12 +41,11 @@ function createWindow() {
     })
 
 
+    mainWindow.loadFile(path.join(__dirname, './index.html'))
 
-    if (isDev) {
-        mainWindow.loadURL('http://localhost:3003')
-    } else {
-        mainWindow.loadFile(path.join(__dirname, './index.html'))
-    }
+    // if (isDev) {
+    //     mainWindow.loadURL('http://localhost:3003')
+    // } else {}
     if (isDev) {
         mainWindow.webContents.openDevTools();
     }
