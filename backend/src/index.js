@@ -1,13 +1,16 @@
-// Modules to control application life and create native browser window
+const path = require("path");
+const url = require('url');
+const fs = require('fs')
+
 const { app, BrowserWindow, ipcMain, Menu } = require('electron')
 
-const fs = require('fs')
 require('dotenv').config({ path: `.env` })
 
 const dataStore = require('./dataStore.json')
 const isDev = process.env.NODE_ENV !== 'production'
 const isMac = process.platform === 'darwin'
 
+let mainWindow
 
 const template = [
     ...(isMac ? [{
@@ -22,7 +25,7 @@ const menu = Menu.buildFromTemplate(template)
 Menu.setApplicationMenu(menu)
 
 function createWindow() {
-    const mainWindow = new BrowserWindow({
+    mainWindow = new BrowserWindow({
         width: isDev ? 1000 : 800,
         height: 600,
         x: 0,
@@ -33,16 +36,20 @@ function createWindow() {
             nodeIntegration: true,
             enableRemoteModule: true,
             contextIsolation: false,
-            devTools: isDev
+            devTools: true
         }
     })
+
+
 
     if (isDev) {
         mainWindow.loadURL('http://localhost:3003')
     } else {
-        mainWindow.loadFile('./react-public/index.html')
+        mainWindow.loadFile(path.join(__dirname, './index.html'))
     }
-    mainWindow.webContents.openDevTools();
+    if (isDev) {
+        mainWindow.webContents.openDevTools();
+    }
 }
 
 app.whenReady().then(() => {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter } from 'react-router-dom'
+import { BrowserRouter, useLocation } from 'react-router-dom'
 import styled, { ThemeProvider } from 'styled-components';
 import { ModalProvider } from 'styled-react-modal'
 
@@ -32,7 +32,7 @@ const BackgroundComponent = styled.div`
 `
 const App = () => {
   const { dispatch, state } = React.useContext(context)
-  console.log(state)
+  const navigate = useLocation()
 
   return (
     <ThemeProvider theme={THEMES[state.settings.colorTheme]}>

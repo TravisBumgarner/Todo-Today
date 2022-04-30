@@ -7,10 +7,6 @@ const Router = () => {
     return (
         <Routes>
             <Route
-                path="/"
-                element={<TodoList />}
-            />
-            <Route
                 path="/projects"
                 element={<Projects />}
             />
@@ -25,6 +21,10 @@ const Router = () => {
             <Route
                 path="/settings"
                 element={<Settings />}
+            />
+            <Route
+                path="/*"
+                element={<TodoList />}
             />
         </Routes>
     )

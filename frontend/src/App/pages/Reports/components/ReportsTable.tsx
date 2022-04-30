@@ -39,11 +39,7 @@ const ReportsTable = ({crunchedNumbers, startDate, endDate}: ReportTableProps) =
         dateColumns.push(m.format('YYYY-MM-DD'));
       }
 
-    console.log(crunchedNumbers)
-
     const getDuration = (crunchedNumbers: Record<string, Record<string, number>>, date: string, projectId: string) => {
-        // return '0'
-        console.log(crunchedNumbers, date, projectId)
         if(date in crunchedNumbers && projectId in crunchedNumbers[date]){
             return crunchedNumbers[date][projectId]
         } else {
