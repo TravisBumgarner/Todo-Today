@@ -2,7 +2,6 @@ const path = require("path");
 
 const { app, BrowserWindow, ipcMain, Menu } = require('electron')
 
-const dataStore = require('./test/dataStore.json')
 const isDev = process.env.NODE_ENV === 'local'
 const isDebugProduction = true // Set to True to debug
 const isMac = process.platform === 'darwin'
@@ -88,5 +87,4 @@ ipcMain.on('state-change', async(event, arg) => {
     await knex.raw("delete from jsondump;")
     await knex.raw(` insert into jsondump (jsondump) values ('${JSON.stringify(arg.payload)}');`)
     console.log('state-change')
-        // fs.writeFileSync('./dataStore.json', JSON.stringify(arg.payload))
 })
