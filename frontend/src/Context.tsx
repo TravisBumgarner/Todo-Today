@@ -185,6 +185,7 @@ const ResultsContext = ({ children }: { children: React.ReactChild }) => {
         ipcRenderer.invoke('hydrate-app').then((r: string) => {
             dispatch({ type: "HYDRATE_APP", payload: JSON.parse(r) })
             setIsHydratingApp(false)
+            console.log(JSON.parse(r))
         })
     }, [])
 
