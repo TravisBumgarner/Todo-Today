@@ -1,16 +1,28 @@
 const path = require("path");
-const url = require('url');
-const fs = require('fs')
 
 const { app, BrowserWindow, ipcMain, Menu } = require('electron')
 
-require('dotenv').config({ path: `.env` })
-
-const dataStore = require('./dataStore.json')
-const isDev = process.env.NODE_ENV !== 'production'
+const dataStore = require('./test/dataStore.json')
+const isDev = process.env.NODE_ENV === 'local'
+const isDebugProduction = true // Set to True to debug
 const isMac = process.platform === 'darwin'
-
+if (isDev) require('electron-reloader')(module)
 let mainWindow
+
+const knexConfig = {
+    client: 'sqlite3',
+    connection: {
+        filename: path.resolve(app.getPath('appData'), app.name, 'db.sqlite')
+    },
+    migrations: {
+        directory: './migrations'
+    },
+    seeds: {
+        directory: './seeds'
+    },
+    useNullAsDefault: true
+}
+const knex = require('knex')(knexConfig)
 
 const template = [
     ...(isMac ? [{
@@ -23,10 +35,11 @@ const template = [
 
 const menu = Menu.buildFromTemplate(template)
 Menu.setApplicationMenu(menu)
+console.log(process.env.NODE_ENV)
 
 function createWindow() {
     mainWindow = new BrowserWindow({
-        width: isDev ? 1000 : 800,
+        width: isDev || isDebugProduction ? 1000 : 800,
         height: 600,
         x: 0,
         y: 0,
@@ -36,18 +49,19 @@ function createWindow() {
             nodeIntegration: true,
             enableRemoteModule: true,
             contextIsolation: false,
-            devTools: true
+            devTools: isDev || isDebugProduction,
+            webSecurity: false
         }
     })
 
+    if (isDev) {
+        mainWindow.webContents.openDevTools();
+        mainWindow.loadURL('http://localhost:3003')
+    } else {
+        if (isDebugProduction) mainWindow.webContents.openDevTools();
+        mainWindow.loadFile(path.resolve(__dirname, 'react-dist', 'index.html'))
 
-    mainWindow.loadFile(path.join(__dirname, './index.html'))
-    mainWindow.webContents.openDevTools();
-
-    // if (isDev) {
-    //     mainWindow.loadURL('http://localhost:3003')
-    // } else {}
-    // if (isDev) {}
+    }
 }
 
 app.whenReady().then(() => {
@@ -62,11 +76,17 @@ app.on('window-all-closed', function() {
     if (process.platform !== 'darwin') app.quit()
 })
 
-ipcMain.handle('hydrate-app', (event, arg) => {
-    return JSON.stringify(dataStore)
+ipcMain.handle('hydrate-app', async(event, arg) => {
+    const data = await knex.raw('select * from jsondump')
+
+    return JSON.stringify({
+        ...JSON.parse((data[0].jsondump))
+    })
 })
 
-ipcMain.on('state-change', (event, arg) => {
+ipcMain.on('state-change', async(event, arg) => {
+    await knex.raw("delete from jsondump;")
+    await knex.raw(` insert into jsondump (jsondump) values ('${JSON.stringify(arg.payload)}');`)
     console.log('state-change')
         // fs.writeFileSync('./dataStore.json', JSON.stringify(arg.payload))
 })

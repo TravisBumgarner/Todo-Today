@@ -5,3 +5,4 @@ public/
 dist/
 react-dist/
 .DS_Store
+extracted-build/

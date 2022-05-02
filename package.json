@@ -8,7 +8,8 @@
         "sd:be": "cd backend && npm run sd:be",
         "sd": "concurrently -n fe,be \"npm run sd:fe\" \"wait-on http://localhost:3003 && npm run sd:be\"",
         "open": "open backend/dist/mac-arm64/TODO\\ TODAY.app",
-        "build": "cd frontend && npm run build && mv react-dist .. && cd ../backend && rm -rf ./src/react-dist && mv ../react-dist ./src && npm run build && cd .. && npm run open"
+        "build": "cd frontend && npm run build && mv react-dist .. && cd ../backend && rm -rf ./src/react-dist && mv ../react-dist ./src && npm run build && cd .. && npm run open",
+        "extract-build": "rm -rf ./extracted-build && npx asar extract  backend/dist/mac-arm64/TODO\\ TODAY.app/Contents/Resources/app.asar extracted-build && open ./extracted-build"
     },
     "repository": {
         "type": "git",

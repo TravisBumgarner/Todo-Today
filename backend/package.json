@@ -2,18 +2,23 @@
     "name": "backend",
     "productName": "TODO TODAY",
     "version": "1.0.0",
-    "description": "",
+    "description": "Consulting Todo List App",
     "main": "src/index.js",
     "scripts": {
         "sd:be": "export NODE_ENV=local && electron ./src/index.js",
         "app:dir": "electron-builder --dir",
-        "build": "rm -rf dist && electron-builder"
+        "build": "rm -rf dist && electron-builder",
+        "db-prod": "open /Users/travisbumgarner/Library/Application\\ Support/TODO\\ TODAY/db.sqlite",
+        "db-local": "open /Users/travisbumgarner/Library/Application\\ Support/Electron/db.sqlite"
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "dotenv": "^16.0.0"
+        "dotenv": "^16.0.0",
+        "electron-reloader": "^1.2.3",
+        "knex": "^2.0.0",
+        "sqlite3": "^5.0.6"
     },
     "devDependencies": {
         "electron": "^18.2.0",
@@ -31,7 +36,7 @@
         },
         "files": [
             "package.json",
-            "src/**/*",
+            "./src/**/*",
             "node_modules"
         ]
     }
