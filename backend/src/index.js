@@ -42,13 +42,12 @@ function createWindow() {
 
 
     mainWindow.loadFile(path.join(__dirname, './index.html'))
+    mainWindow.webContents.openDevTools();
 
     // if (isDev) {
     //     mainWindow.loadURL('http://localhost:3003')
     // } else {}
-    if (isDev) {
-        mainWindow.webContents.openDevTools();
-    }
+    // if (isDev) {}
 }
 
 app.whenReady().then(() => {
@@ -68,5 +67,6 @@ ipcMain.handle('hydrate-app', (event, arg) => {
 })
 
 ipcMain.on('state-change', (event, arg) => {
-    fs.writeFileSync('./dataStore.json', JSON.stringify(arg.payload))
+    console.log('state-change')
+        // fs.writeFileSync('./dataStore.json', JSON.stringify(arg.payload))
 })
