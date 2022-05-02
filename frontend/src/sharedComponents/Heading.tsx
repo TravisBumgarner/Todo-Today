@@ -2,6 +2,7 @@ import styled from 'styled-components'
 
 const H1 = styled.h1`
     color: ${({theme}) => theme.FOREGROUND_TEXT };
+    margin: 0;
 `
 
 const H2 = styled.h2`

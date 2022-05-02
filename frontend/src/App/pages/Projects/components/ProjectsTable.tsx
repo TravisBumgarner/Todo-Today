@@ -1,7 +1,6 @@
 import React from 'react'
 
 import { BigBoxOfNothing, Button, DropdownMenu, Table } from 'sharedComponents'
-import { TProject } from 'sharedTypes'
 import EditProjectModal from './EditProjectModal'
 import { formatDateDisplayString, projectStatusLookup } from 'utilities'
 import {context} from "Context"

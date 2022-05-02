@@ -2,6 +2,8 @@
     "name": "todotoday",
     "author": "Travis Bumgarner",
     "dependencies": {
+        "dotenv": "^16.0.0",
+        "electron": "^18.2.0",
         "moment": "^2.29.1",
         "polished": "^4.2.2",
         "react": "^17.0.2",
@@ -28,6 +30,7 @@
         "webpack-dev-server": "^3.11.3"
     },
     "scripts": {
-        "sd:fe": "webpack serve --mode=development --config=webpack.js"
+        "sd:fe": "webpack serve --mode=development --config=webpack.js",
+        "build": "rm -rf ./react-dist && mkdir ./react-dist && webpack --mode=production --config=webpack.js"
     }
 }

@@ -11,14 +11,6 @@ type ModalProps = {
     contentLabel: string
 }
 
-const StyledModal = ReactModal.styled`
-  width: 20rem;
-  height: 20rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`
-
 const HeaderWrapper = styled.div`
     display: flex;
     margin: 0.5rem;

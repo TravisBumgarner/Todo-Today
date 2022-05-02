@@ -36,7 +36,7 @@ const TableHeaderCell = styled.th`
     border-bottom: 2px solid ${({theme}) => theme.FOREGROUND_TEXT };
     padding: 10px;
     text-align: left;
-    width: ${({ width }: { width: string }) => width};
+    width: ${({ width }: { width?: string }) => width};
     
 `
 const TableBodyCell = styled.td`

@@ -1,18 +1,40 @@
 import React from 'react'
+const { ipcRenderer } = window.require('electron');
 
-import { TProject, TSettings, TTask, TTodoList } from 'sharedTypes'
-import dataStore from './dataStore.json'
+import { TProject, TSettings, TTask, TTodoList, TDateFormat, TWeekStart, TColorTheme } from 'sharedTypes'
 
 type State = {
     projects: Record<string, TProject>
     tasks: Record<string, TTask>
     todoList: Record<string, { projectId: string, taskId: string, duration: number }[]>
     settings: TSettings
+    tempSettingsStorage?: TSettings
 }
 
 const EMPTY_STATE: State = {
-    ...dataStore,
-} as State
+    projects: {},
+    tasks: {},
+    todoList: {},
+    settings: {
+        dateFormat: TDateFormat.A,
+        weekStart: TWeekStart.SUNDAY,
+        colorTheme: TColorTheme.BEACH
+    }
+}
+
+type UseTemporarySettings = {
+    type: 'USE_TEMPORARY_SETTINGS'
+    payload: TSettings
+}
+
+type EditTemporarySettings = {
+    type: 'EDIT_TEMPORARY_SETTINGS',
+    payload: TSettings
+}
+
+type RemoveTemporarySettings = {
+    type: 'REMOVE_TEMPORARY_SETTINGS'
+}
 
 type AddTodoList = {
     type: 'ADD_TODO_LIST'
@@ -54,7 +76,13 @@ type EditUserSettings = {
     payload: TSettings
 }
 
+type HydrateApp = {
+    type: "HYDRATE_APP",
+    payload: State
+}
+
 type Action =
+    | HydrateApp
     | AddProject
     | EditProject
     | AddTask
@@ -63,6 +91,9 @@ type Action =
     | EditTodoListItem
     | AddTodoList
     | EditUserSettings
+    | UseTemporarySettings
+    | EditTemporarySettings
+    | RemoveTemporarySettings
 
 const context = React.createContext(
     {
@@ -77,6 +108,30 @@ const context = React.createContext(
 const reducer = (state: State, action: Action): State => {
 
     switch (action.type) {
+        case 'HYDRATE_APP': {
+            return { ...action.payload }
+        }
+        case 'USE_TEMPORARY_SETTINGS': {
+            return {
+                ...state,
+                settings: {...state.settings},
+                tempSettingsStorage: {...state.settings}
+            }
+        }
+        case 'EDIT_TEMPORARY_SETTINGS': {
+            return {
+                ...state,
+                settings: {...state.settings, ...action.payload},
+            }
+        }
+        case 'REMOVE_TEMPORARY_SETTINGS': {
+            const modifiedState = {
+                ...state,
+                settings: state.tempSettingsStorage as TSettings
+            }
+            delete modifiedState.tempSettingsStorage
+            return modifiedState
+        }
         case 'ADD_TODO_LIST': {
             return { ...state, todoList: { ...state.todoList, [action.payload.date]: [] } }
         }
@@ -92,15 +147,15 @@ const reducer = (state: State, action: Action): State => {
         }
         case 'TOGGLE_TODO_LIST_ITEM_FOR_SELECTED_DATE': {
             const { selectedDate, taskId, projectId, shouldExistOnSelectedDate } = action.payload
-            
+
             let todoListForSelectedDate = [...state.todoList[selectedDate]]
 
             if (shouldExistOnSelectedDate) {
-                todoListForSelectedDate.push({projectId, taskId, duration: 0})
+                todoListForSelectedDate.push({ projectId, taskId, duration: 0 })
             } else {
                 todoListForSelectedDate = [...todoListForSelectedDate.filter(todoListItem => todoListItem.taskId !== taskId)]
             }
-            return { ...state, todoList: { ...state.todoList, [selectedDate]: todoListForSelectedDate }}
+            return { ...state, todoList: { ...state.todoList, [selectedDate]: todoListForSelectedDate } }
 
         }
         case 'EDIT_TODO_LIST_ITEM': {
@@ -111,7 +166,7 @@ const reducer = (state: State, action: Action): State => {
             return { ...state, todoList: { ...state.todoList, [action.payload.selectedDate]: updatedTodoListForDate } }
         }
         case 'EDIT_USER_SETTINGS': {
-            return {...state, settings: {...action.payload}}
+            return { ...state, settings: { ...action.payload } }
         }
         default: {
             console.log(`Swallowing action: ${JSON.stringify(action)}`)
@@ -122,8 +177,26 @@ const reducer = (state: State, action: Action): State => {
 
 const ResultsContext = ({ children }: { children: React.ReactChild }) => {
     const [state, dispatch] = React.useReducer(reducer, EMPTY_STATE)
+    const [isHydratingApp, setIsHydratingApp] = React.useState<boolean>(true)
 
     const { Provider } = context
+
+    React.useEffect(() => {
+        ipcRenderer.invoke('hydrate-app').then((r: string) => {
+            dispatch({ type: "HYDRATE_APP", payload: JSON.parse(r) })
+            setIsHydratingApp(false)
+        })
+    }, [])
+
+    React.useEffect(() => {
+        if(isHydratingApp) return // Don't send empty state to backend. 
+
+        ipcRenderer.send('state-change', {payload: state})
+    }, [state])
+
+    if (isHydratingApp) {
+        return <p>Loading...</p>
+    }
 
     return (
         <Provider value={{ state, dispatch }}>

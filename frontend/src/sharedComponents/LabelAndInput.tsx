@@ -10,16 +10,17 @@ const Input = styled.input`
     padding: 0.5rem 1rem;
     background-color: transparent;
     font-weight: 700;
-    color: ${({theme}) => theme.FOREGROUND_TEXT };
-    border-color: ${({theme}) => theme.FOREGROUND_TEXT };
+    color: ${({theme}) => theme.PRIMARY_BUTTON };
+    border-color: ${({theme}) => theme.PRIMARY_BUTTON };
     width: 100%;
     box-sizing: border-box;
     color-scheme: dark;
+    height: 40px;
 `
 
 const Checkbox = styled.input`
     color-scheme: dark;
-    accent-color: ${({theme}) => theme.FOREGROUND_TEXT };
+    accent-color: ${({theme}) => theme.PRIMARY_BUTTON };
 `
 
 const CheckboxLabel = styled.label`
@@ -38,7 +39,7 @@ const TextArea = styled.textarea`
     background-color: transparent;
     font-weight: 700;
     color: ${({theme}) => theme.FOREGROUND_TEXT };
-    border-color: ${({theme}) => theme.FOREGROUND_TEXT };
+    border-color: ${({theme}) => theme.PRIMARY_BUTTON };
     width: 100%;
     box-sizing: border-box;
 `
@@ -60,7 +61,7 @@ const Select = styled.select`
     background-color: transparent;
     font-weight: 700;
     color: ${({theme}) => theme.FOREGROUND_TEXT };
-    border-color: ${({theme}) => theme.FOREGROUND_TEXT };
+    border-color: ${({theme}) => theme.PRIMARY_BUTTON };
     width: 100%;
     box-sizing: border-box;
     color-scheme: dark;
