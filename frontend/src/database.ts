@@ -1,15 +1,15 @@
 // db.ts
 import Dexie, { Table } from 'dexie';
 
-import { TSettings } from 'sharedTypes';
+import { TProject } from 'sharedTypes';
 
 class MySubClassedDexie extends Dexie {
-  friends!: Table<TSettings>; 
+  projects!: Table<TProject>; 
 
   constructor() {
     super('todo-today');
     this.version(1).stores({
-      friends: '++id, name, age' // Primary key and indexed props
+      projects: '[id], title, startDate, endDate, status'
     });
   }
 }

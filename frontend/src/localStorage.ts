@@ -19,7 +19,7 @@ function useLocalStorage<Key extends keyof State>(key: Key): [State[Key], (newVa
   const updatedSetValue = React.useCallback(
     newValue => {
       localStorage.setItem(key, newValue);
-      location.reload()
+      // location.reload()
       setValue(newValue ?? initialState[key]);
     },
     [initialState, key, value, setValue]

@@ -1,17 +1,19 @@
 import React from 'react'
+import moment from 'moment'
+import { useLiveQuery } from 'dexie-react-hooks'
 
 import { BigBoxOfNothing, Button, DropdownMenu, Table } from 'sharedComponents'
 import EditProjectModal from './EditProjectModal'
 import { formatDateDisplayString, projectStatusLookup } from 'utilities'
 import {context} from "Context"
-import moment from 'moment'
+import database from 'database'
+import { TProject } from 'sharedTypes'
 
 const ProjectsTable = () => {
-    const { dispatch, state } = React.useContext(context)
-
+    const projects = useLiveQuery(() => database.projects.toArray())
     const [selectedProjectId, setSelectedProjectId] = React.useState<string | null>(null)
 
-    if(Object.values(state.projects).length === 0){
+    if(!projects || projects.length === 0){
         return <BigBoxOfNothing message="Create a project and get going!" />
     }
 
@@ -29,9 +31,9 @@ const ProjectsTable = () => {
                     </Table.TableRow>
                 </Table.TableHeader>
                 <Table.TableBody>
-                    {Object.values(state.projects).map(({ title, status, startDate, endDate, id }) => (
+                    {projects.map(({ title, status, startDate, endDate, id }) => (
                         <Table.TableRow key={id}>
-                            <Table.TableBodyCell>{title}</Table.TableBodyCell>
+                            <Table.TableBodyCell>{title}{id}</Table.TableBodyCell>
                             <Table.TableBodyCell>{projectStatusLookup[status]}</Table.TableBodyCell>
                             <Table.TableBodyCell>{formatDateDisplayString(moment(startDate))}</Table.TableBodyCell>
                             <Table.TableBodyCell>{formatDateDisplayString(moment(endDate))}</Table.TableBodyCell>
@@ -50,7 +52,7 @@ const ProjectsTable = () => {
                 <EditProjectModal
                     showModal={selectedProjectId !== null}
                     setShowModal={() => setSelectedProjectId(null)}
-                    selectedProjectId={selectedProjectId}
+                    project={projects.find(({id}) => selectedProjectId === id) as TProject}
                 />
                 ) : 
                 (null)

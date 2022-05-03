@@ -1,11 +1,14 @@
 PR-4
 - KEEP IT CLEAN FOR A POTENTIAL PRESENTATION!
 - [ ] Explore Dexie
+     - [ ] Convert to Dexie
+     - [ ] Figure out how to set IDs to be autoincrementing
 - [x] Add localStorage and use with settings
+
 
 Next PR
 
-- [ ] Add SQL Queries
+- [ ] Reading - Creating a custom hook with useContext
 - [ ] Convert backend to ts
 - [ ] Add other things you might want to track in a day
 - [ ] How to handle 'reoccurring projects' such as PTO and Sick time 

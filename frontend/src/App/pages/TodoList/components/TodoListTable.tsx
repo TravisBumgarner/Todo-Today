@@ -116,12 +116,12 @@ const AVAILABLE_DURATIONS = [
 const TodoListTable = ({ projectId, todoListItems, selectedDate }: TodoListTableProps) => {
     const { dispatch, state } = React.useContext(context)
 
-    const project = state.projects[projectId]
+    // const project = state.projects[projectId]
     const tasksAndDurations = todoListItems.map(({ taskId, duration }) => ({ ...state.tasks[taskId], duration }))
     
     return (
         <>
-            <Heading.H3>{project.title}</Heading.H3>
+            {/* <Heading.H3>{project.title}</Heading.H3> */}
             <Table.Table>
                 <Table.TableHeader>
                     <Table.TableRow>

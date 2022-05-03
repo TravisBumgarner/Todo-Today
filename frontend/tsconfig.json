@@ -19,7 +19,7 @@
         "theme": ["src/theme.tsx"],
         "utilities": ["src/utilities.ts"],
         "Context": ["src/Context.tsx"],
-
+        "database": ["src/database.ts"]
       }
     }
   }

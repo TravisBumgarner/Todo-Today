@@ -49,7 +49,8 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
                     if (tasksByProject[projectId].length === 0) {
                         return (
                             <React.Fragment key={projectId}>
-                                <LabelInDisguise>{state.projects[projectId].title}</LabelInDisguise>
+                                <LabelInDisguise>hi</LabelInDisguise>
+                                {/* <LabelInDisguise>{state.projects[projectId].title}</LabelInDisguise> */}
                                 <BigBoxOfNothing message='This project has no tasks. :(' />
                             </React.Fragment>
                         )
@@ -68,7 +69,7 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
                                 options={mapTasksToCheckboxItems(tasksByProject[projectId])}
                                 name="foo"
                                 value="foo"
-                                label={state.projects[projectId].title}
+                                label={"FOO!"  } //state.projects[projectId].title
                                 inputType='checkbox'
                             />
                         </div>

@@ -2,17 +2,18 @@ import React from 'react'
 const { ipcRenderer } = window.require('electron');
 
 import { TProject, TTask, TTodoList } from 'sharedTypes'
+import DB from './database'
 
 type State = {
-    projects: Record<string, TProject>
     tasks: Record<string, TTask>
     todoList: Record<string, { projectId: string, taskId: string, duration: number }[]>
+    projects: {}
 }
 
 const EMPTY_STATE: State = {
-    projects: {},
     tasks: {},
     todoList: {},
+    projects: {}
 }
 
 type AddTodoList = {
@@ -20,15 +21,15 @@ type AddTodoList = {
     payload: TTodoList
 }
 
-type AddProject = {
-    type: 'ADD_PROJECT'
-    payload: TProject
-}
+// type AddProject = {
+//     type: 'ADD_PROJECT'
+//     payload: TProject
+// }
 
-type EditProject = {
-    type: 'EDIT_PROJECT'
-    payload: TProject
-}
+// type EditProject = {
+//     type: 'EDIT_PROJECT'
+//     payload: TProject
+// }
 
 type AddTask = {
     type: 'ADD_TASK'
@@ -57,8 +58,8 @@ type HydrateApp = {
 
 type Action =
     | HydrateApp
-    | AddProject
-    | EditProject
+    // | AddProject
+    // | EditProject
     | AddTask
     | EditTask
     | ToggleTodoListItemToSelectedDate
@@ -83,11 +84,11 @@ const reducer = (state: State, action: Action): State => {
         case 'ADD_TODO_LIST': {
             return { ...state, todoList: { ...state.todoList, [action.payload.date]: [] } }
         }
-        case 'ADD_PROJECT':
-        case 'EDIT_PROJECT': {
-            const updatedProjects = { ...state.projects, [action.payload.id]: action.payload }
-            return { ...state, projects: updatedProjects }
-        }
+        // case 'ADD_PROJECT':
+        // case 'EDIT_PROJECT': {
+        //     const updatedProjects = { ...state.projects, [action.payload.id]: action.payload }
+        //     return { ...state, projects: updatedProjects }
+        // }
         case 'ADD_TASK':
         case 'EDIT_TASK': {
             const updatedTasks = { ...state.tasks, [action.payload.id]: action.payload }

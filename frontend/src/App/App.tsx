@@ -35,7 +35,10 @@ const BackgroundComponent = styled.div`
     width: 100vw;
     height: 100vh;
     z-index: 30;
-    background-color: ${({theme}) => theme.BACKGROUND_PRIMARY };
+    background-color: ${props => {
+      console.log(props)
+      return props.theme.BACKGROUND_PRIMARY 
+    }};
     display: flex;
     justify-content: center;
     align-items: center;
