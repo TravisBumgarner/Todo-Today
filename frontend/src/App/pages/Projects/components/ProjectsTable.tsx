@@ -5,7 +5,6 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import { BigBoxOfNothing, Button, DropdownMenu, Table } from 'sharedComponents'
 import EditProjectModal from './EditProjectModal'
 import { formatDateDisplayString, projectStatusLookup } from 'utilities'
-import {context} from "Context"
 import database from 'database'
 import { TProject } from 'sharedTypes'
 
@@ -19,7 +18,6 @@ const ProjectsTable = () => {
 
     return (
         <>
-
             <Table.Table>
                 <Table.TableHeader>
                     <Table.TableRow>

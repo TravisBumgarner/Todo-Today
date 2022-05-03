@@ -31,15 +31,15 @@ type AddTodoList = {
 //     payload: TProject
 // }
 
-type AddTask = {
-    type: 'ADD_TASK'
-    payload: TTask
-}
+// type AddTask = {
+//     type: 'ADD_TASK'
+//     payload: TTask
+// }
 
-type EditTask = {
-    type: 'EDIT_TASK'
-    payload: TTask
-}
+// type EditTask = {
+//     type: 'EDIT_TASK'
+//     payload: TTask
+// }
 
 type ToggleTodoListItemToSelectedDate = {
     type: 'TOGGLE_TODO_LIST_ITEM_FOR_SELECTED_DATE'
@@ -60,8 +60,8 @@ type Action =
     | HydrateApp
     // | AddProject
     // | EditProject
-    | AddTask
-    | EditTask
+    // | AddTask
+    // | EditTask
     | ToggleTodoListItemToSelectedDate
     | EditTodoListItem
     | AddTodoList
@@ -89,11 +89,11 @@ const reducer = (state: State, action: Action): State => {
         //     const updatedProjects = { ...state.projects, [action.payload.id]: action.payload }
         //     return { ...state, projects: updatedProjects }
         // }
-        case 'ADD_TASK':
-        case 'EDIT_TASK': {
-            const updatedTasks = { ...state.tasks, [action.payload.id]: action.payload }
-            return { ...state, tasks: updatedTasks }
-        }
+        // case 'ADD_TASK':
+        // case 'EDIT_TASK': {
+        //     const updatedTasks = { ...state.tasks, [action.payload.id]: action.payload }
+        //     return { ...state, tasks: updatedTasks }
+        // }
         case 'TOGGLE_TODO_LIST_ITEM_FOR_SELECTED_DATE': {
             const { selectedDate, taskId, projectId, shouldExistOnSelectedDate } = action.payload
 
