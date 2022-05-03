@@ -43,52 +43,11 @@ enum TTabs {
 
 const Settings = () => {
     const { state, dispatch } = React.useContext(context)
-    // const [weekStart, setWeekStart] = React.useState<TWeekStart>(localStorage.getItem('weekStart') as TWeekStart)
-    // const [weekStart, setWeekStart] = useLocalStorage('weekStart', TWeekStart.SUNDAY)
     const [colorTheme, setColorTheme] = useLocalStorage('colorTheme'); 
     const [weekStart, setWeekStart] = useLocalStorage('weekStart'); 
     const [dateFormat, setDateFormat] = useLocalStorage('dateFormat'); 
-    // const [dateFormat, setDateFormat] = React.useState<TDateFormat>(localStorage.getItem('dateFormat') as TDateFormat)
-    // const [colorTheme, seTColor] = React.useState<TColorTheme>(localStorage.getItem('colorTheme') as TColorTheme)
-    // const [submitDisabled, setSubmitDisabled] = React.useState<boolean>(true)
-    // const handleSubmit = () => {
-    //     localStorage.setItem('colorTheme', colorTheme)
-    //     // localStorage.setItem('weekStart', weekStart)
-    //     localStorage.setItem('dateFormat', dateFormat)
-    //     setSubmitDisabled(true)
-    // }
     
-
-    // React.useEffect(() => {
-    //     dispatch({
-    //         type: 'USE_TEMPORARY_SETTINGS',
-    //         payload: {
-    //             weekStart,
-    //             dateFormat,
-    //             colorTheme,
-    //         }
-    //     })
-    // }, [])
-
-    // React.useEffect(() => {
-    //     dispatch({
-    //         type: 'EDIT_TEMPORARY_SETTINGS',
-    //         payload: {
-    //             weekStart,
-    //             dateFormat,
-    //             colorTheme,
-    //         }
-    //     })
-    // }, [weekStart, dateFormat, colorTheme])
-
-    // React.useEffect(() => {
-    //     return () => {
-    //         dispatch({
-    //             type: "REMOVE_TEMPORARY_SETTINGS"
-    //         })
-    //     };
-    // }, []);
-
+    console.log(colorTheme)
     return (
         <>  
             <Heading.H2>Settings</Heading.H2>
