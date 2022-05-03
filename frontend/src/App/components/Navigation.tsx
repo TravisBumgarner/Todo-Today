@@ -21,7 +21,8 @@ const ALWAYS_VISIBLE_LINKS = [
     { text: 'Projects', to: '/projects' },
     { text: 'Tasks by Project', to: '/tasks' },
     { text: 'Reports', to: '/reports' },
-    { text: 'Settings', to: '/settings' }
+    { text: 'Settings', to: '/settings' },
+    { text: 'Backups', to: '/backups' },
 ]
 
 const NavLi = styled.li`

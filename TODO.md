@@ -1,9 +1,14 @@
+PR-3
+
+- [x] Setup Backups Setting
+- [x] Setup load from backups setting
+- [x] Add external export
+    - [x] As JSON
+
 Next PR
+
 - [ ] Add SQL Queries
 - [ ] Convert backend to ts
-- [ ] Add external export
-    - [ ] As CSV
-    - [ ] As JSON
 - [ ] Add other things you might want to track in a day
 - [ ] How to handle 'reoccurring projects' such as PTO and Sick time 
 - [ ] More settings

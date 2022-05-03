@@ -2,7 +2,7 @@ import React from 'react'
 
 import { context } from 'Context'
 import moment from 'moment'
-import { TDateFormat, TProject, TProjectStatus, TTask} from 'sharedTypes'
+import { TDateFormat, TProject, TProjectStatus, TTask, TDateISODate } from 'sharedTypes'
 
 const projectStatusLookup: Record<TProjectStatus, string> = {
     [TProjectStatus.CANCELED]: "Canceled",
@@ -26,8 +26,8 @@ const formatDateDisplayString = (dateFormat: TDateFormat, date: moment.Moment | 
     return date.format(dateFormatLookup[dateFormat])
 }
 
-const formatDateKeyLookup = (date: moment.Moment): string => {
-    return date.format('YYYY-MM-DD')
+const formatDateKeyLookup = (date: moment.Moment): TDateISODate => {
+    return date.format('YYYY-MM-DD') as TDateISODate
 }
 
 const formatDurationDisplayString = (rawMinutes: number) => {
@@ -39,7 +39,7 @@ const formatDurationDisplayString = (rawMinutes: number) => {
     return paddedHours + ':' + paddedMinutes
 }
 
-const bucketTasksByProject = (projects: Record<string, TProject>  , tasks: Record<string, TTask>) => {
+const bucketTasksByProject = (projects: Record<string, TProject>, tasks: Record<string, TTask>) => {
     const accumulator: Record<string, TTask[]> = {}
 
     Object.keys(projects).forEach(key => {
@@ -55,6 +55,16 @@ const bucketTasksByProject = (projects: Record<string, TProject>  , tasks: Recor
 
 const sumArray = (arr: number[]) => arr.reduce((partialSum, a) => partialSum + a, 0)
 
+const saveFile = async (fileName: string, jsonData: Object) => {
+    const blob = new Blob([JSON.stringify(jsonData, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.download = fileName;
+    a.href = URL.createObjectURL(blob);
+    a.addEventListener('click', (e) => {
+        setTimeout(() => URL.revokeObjectURL(a.href), 30 * 1000);
+    });
+    a.click();
+};
 
 export {
     projectStatusLookup,
@@ -63,5 +73,6 @@ export {
     formatDurationDisplayString,
     bucketTasksByProject,
     dateFormatLookup,
-    sumArray
+    sumArray,
+    saveFile
 }

@@ -14,4 +14,8 @@ const H3 = styled.h3`
     color: ${({theme}) => theme.FOREGROUND_TEXT };
 `
 
-export { H1, H2, H3 }
+const H4 = styled.h4`
+    color: ${({theme}) => theme.FOREGROUND_TEXT };
+`
+
+export { H1, H2, H3, H4 }

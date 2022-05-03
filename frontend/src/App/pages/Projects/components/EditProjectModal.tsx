@@ -4,7 +4,7 @@ import moment, { Moment } from 'moment'
 import { Button, Modal, ButtonWrapper, LabelAndInput } from 'sharedComponents'
 import { TProject, TProjectStatus } from 'sharedTypes'
 import {context } from 'Context'
-import { projectStatusLookup } from 'utilities'
+import { formatDateKeyLookup, projectStatusLookup } from 'utilities'
 
 type EditProjectModalProps = {
     selectedProjectId: TProject['id']
@@ -26,8 +26,8 @@ const EditProjectModal = ({ showModal, setShowModal, selectedProjectId }: EditPr
     const handleSubmit = () => {
         const editedProject = {
             title,
-            startDate: startDate ? moment(startDate) : null,
-            endDate: endDate ? moment(endDate) : null,
+            startDate: startDate ? formatDateKeyLookup(startDate) : null,
+            endDate: endDate ? formatDateKeyLookup(endDate) : null,
             status,
             id: project.id
         }

@@ -1,11 +1,11 @@
 import React from 'react'
 import moment, { Moment } from 'moment'
 
-import { TColorTheme, TDateFormat, TColor, TWeekStart } from 'sharedTypes'
+import { TColorTheme, TDateFormat, TWeekStart } from 'sharedTypes'
 import { Button, ButtonWrapper, Heading, LabelAndInput } from 'sharedComponents'
 import { context } from 'Context'
 import { dateFormatLookup } from 'utilities'
-import { ThemeContext } from 'styled-components'
+import styled from 'styled-components'
 
 const dateFormatForUser = (format: TDateFormat, date: Moment) => {
     return {
@@ -35,13 +35,18 @@ const colorThemeOptionLabels: Record<TColorTheme, string> = {
     [TColorTheme.SUNSET]: 'Sunset',
 }
 
+enum TTabs {
+    USER_PREFERENCES = "USER_PREFERENCES",
+    BACKUPS = "BACKUPS",
+}
+
 const Settings = () => {
     const { state, dispatch } = React.useContext(context)
     const [weekStart, setWeekStart] = React.useState<TWeekStart>(state.settings.weekStart)
     const [dateFormat, setDateFormat] = React.useState<TDateFormat>(state.settings.dateFormat)
     const [colorTheme, seTColor] = React.useState<TColorTheme>(state.settings.colorTheme)
     const [submitDisabled, setSubmitDisabled] = React.useState<boolean>(true)
-
+    
     const handleSubmit = () => {
         dispatch({ type: "EDIT_USER_SETTINGS", payload: { colorTheme, weekStart, dateFormat } })
         setSubmitDisabled(true)
@@ -71,48 +76,47 @@ const Settings = () => {
 
     React.useEffect(() => {
         return () => {
-          dispatch({
-              type: "REMOVE_TEMPORARY_SETTINGS"
-          })
+            dispatch({
+                type: "REMOVE_TEMPORARY_SETTINGS"
+            })
         };
-      }, []);
-      
+    }, []);
 
     return (
         <>
             <Heading.H2>Settings</Heading.H2>
             <form onChange={() => setSubmitDisabled(false)}>
-                <LabelAndInput
-                    inputType="select-enum"
-                    name='weekStart'
-                    label="Week starts on"
-                    value={weekStart}
-                    handleChange={(value: TWeekStart) => setWeekStart(value)}
-                    options={TWeekStart}
-                    optionLabels={weekStartOptionLabels}
-                />
-                <LabelAndInput
-                    inputType="select-enum"
-                    name='dateFormat'
-                    label="Preferred Date Format"
-                    value={dateFormat}
-                    handleChange={(value: TDateFormat) => setDateFormat(value)}
-                    options={TDateFormat}
-                    optionLabels={dateFormatOptionLabels}
-                />
-                <LabelAndInput
-                    inputType="select-enum"
-                    name='colorTheme'
-                    label="Theme"
-                    value={colorTheme}
-                    handleChange={(value: TColorTheme) => seTColor(value)}
-                    options={TColorTheme}
-                    optionLabels={colorThemeOptionLabels}
-                />
-                <ButtonWrapper fullWidth={
-                    <Button type="button" fullWidth disabled={submitDisabled} key="edit" variation="PRIMARY_BUTTON" onClick={handleSubmit}>Submit</Button>
-                } />
-            </form>
+            <LabelAndInput
+                inputType="select-enum"
+                name='weekStart'
+                label="Week starts on"
+                value={weekStart}
+                handleChange={(value: TWeekStart) => setWeekStart(value)}
+                options={TWeekStart}
+                optionLabels={weekStartOptionLabels}
+            />
+            <LabelAndInput
+                inputType="select-enum"
+                name='dateFormat'
+                label="Preferred Date Format"
+                value={dateFormat}
+                handleChange={(value: TDateFormat) => setDateFormat(value)}
+                options={TDateFormat}
+                optionLabels={dateFormatOptionLabels}
+            />
+            <LabelAndInput
+                inputType="select-enum"
+                name='colorTheme'
+                label="Theme"
+                value={colorTheme}
+                handleChange={(value: TColorTheme) => seTColor(value)}
+                options={TColorTheme}
+                optionLabels={colorThemeOptionLabels}
+            />
+            <ButtonWrapper fullWidth={
+                <Button type="button" fullWidth disabled={submitDisabled} key="edit" variation="PRIMARY_BUTTON" onClick={handleSubmit}>Submit</Button>
+            } />
+        </form>
         </>
     )
 }

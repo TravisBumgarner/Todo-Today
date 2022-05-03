@@ -1,9 +1,12 @@
 import React from 'react'
 import moment, { Moment } from 'moment'
+import { v4 as uuid4 } from 'uuid'
 
 import { context } from 'Context'
-import { Button, DropdownMenu, Table, Heading, Modal, ButtonWrapper, LabelAndInput } from 'sharedComponents'
+import { Button, Modal, ButtonWrapper, LabelAndInput } from 'sharedComponents'
 import { TProject, TProjectStatus } from 'sharedTypes'
+import { formatDateKeyLookup } from 'utilities'
+
 
 type AddProjectModalProps = {
     showModal: boolean
@@ -18,13 +21,13 @@ const AddProjectModal = ({ showModal, setShowModal }: AddProjectModalProps) => {
     const [endDate, setEndDate] = React.useState<Moment>(moment())
 
     const handleSubmit = () => {
-        const newProject = {
+        const newProject: TProject = {
             title,
-            startDate: moment(startDate),
-            endDate: moment(endDate),
+            startDate: formatDateKeyLookup(moment(startDate)),
+            endDate: formatDateKeyLookup(moment(endDate)),
             status: TProjectStatus.NEW,
-            id: `${Math.random()}`
-        }
+            id: uuid4()
+        } 
 
         dispatch({type: "ADD_PROJECT", payload: newProject})
         setShowModal(false)

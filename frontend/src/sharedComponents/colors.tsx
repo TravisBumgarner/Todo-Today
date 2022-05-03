@@ -21,7 +21,7 @@ const THEMES: Record<TColorTheme, TColor> = {
         FOREGROUND_TEXT: '#49BEAA',
         PRIMARY_BUTTON: '#EEB868',
         ALERT_BUTTON: '#EF767A',
-        FOREGROUND_DISABLED: '#49DCB1',
+        FOREGROUND_DISABLED: '#d6d6d6',
         BACKGROUND_PRIMARY: '#456990',
     },
     SUNSET: {

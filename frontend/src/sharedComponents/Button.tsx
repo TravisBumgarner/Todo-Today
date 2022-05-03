@@ -33,7 +33,7 @@ const Button = styled.button<ButtonProps>`
                     cursor: not-allowed;
                 }
             `
-        }
+        } 
 
         if (variation === 'PRIMARY_BUTTON') {
             return `
