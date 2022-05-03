@@ -33,7 +33,7 @@ const ProjectsTable = () => {
                 <Table.TableBody>
                     {projects.map(({ title, status, startDate, endDate, id }) => (
                         <Table.TableRow key={id}>
-                            <Table.TableBodyCell>{title}{id}</Table.TableBodyCell>
+                            <Table.TableBodyCell>{title}</Table.TableBodyCell>
                             <Table.TableBodyCell>{projectStatusLookup[status]}</Table.TableBodyCell>
                             <Table.TableBodyCell>{formatDateDisplayString(moment(startDate))}</Table.TableBodyCell>
                             <Table.TableBodyCell>{formatDateDisplayString(moment(endDate))}</Table.TableBodyCell>

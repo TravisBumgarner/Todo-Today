@@ -5,6 +5,9 @@ PR-4
      - [ ] Figure out how to set IDs to be autoincrementing
 - [x] Add localStorage and use with settings
 
+Weird Dexie Quirks
+- For whatever Reason I could not get the project to be filtered / found with the EditProjectModal
+- Delete database as you add new tables
 
 Next PR
 

@@ -29,7 +29,7 @@ const EditProjectModal = ({ showModal, setShowModal, project }: EditProjectModal
             status,
             id: project.id
         }
-        database.projects.update(project.id, editedProject)
+        database.projects.put(editedProject, [project.id])
         setShowModal(false)
     }
 

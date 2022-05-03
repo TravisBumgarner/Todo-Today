@@ -40,16 +40,19 @@ const formatDurationDisplayString = (rawMinutes: number) => {
     return paddedHours + ':' + paddedMinutes
 }
 
-const bucketTasksByProject = (projects: Record<string, TProject>, tasks: Record<string, TTask>) => {
+const bucketTasksByProject = (projects: TProject[], tasks: TTask[] | undefined) => {
     const accumulator: Record<string, TTask[]> = {}
 
-    Object.keys(projects).forEach(key => {
-        accumulator[key] = []
+    projects.forEach(project => {
+        accumulator[project.id] = []
     })
 
-    Object.values(tasks).forEach((curr) => {
-        accumulator[curr.projectId].push(curr)
-    })
+    
+    if(tasks){
+        Object.values(tasks).forEach((curr) => {
+            accumulator[curr.projectId].push(curr)
+        })
+    }
 
     return accumulator
 }

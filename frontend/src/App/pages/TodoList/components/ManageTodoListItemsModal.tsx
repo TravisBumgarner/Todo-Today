@@ -23,61 +23,63 @@ const LabelInDisguise = styled.p`
 
 const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: ManageTodoListItemsModalProps) => {
     const { state, dispatch } = React.useContext(context)
+    
+    return <p> Hi</p>
 
-    const tasksByProject = bucketTasksByProject(state.projects, state.tasks)
+    // const tasksByProject = bucketTasksByProject(state.projects, state.tasks)
 
-    const mapTasksToCheckboxItems = (tasks: TTask[]) => {
-        return tasks.map(({ title, id, projectId }) => ({
-            label: title,
-            name: title,
-            value: id,
-            checked: state // I'm sorry for having written this lol. 
-                .todoList[formatDateKeyLookup(selectedDate)]
-                .some((todoListItem) => todoListItem.taskId === id && todoListItem.projectId === projectId)
-        }))
-    }
+    // const mapTasksToCheckboxItems = (tasks: TTask[]) => {
+    //     return tasks.map(({ title, id, projectId }) => ({
+    //         label: title,
+    //         name: title,
+    //         value: id,
+    //         checked: state // I'm sorry for having written this lol. 
+    //             .todoList[formatDateKeyLookup(selectedDate)]
+    //             .some((todoListItem) => todoListItem.taskId === id && todoListItem.projectId === projectId)
+    //     }))
+    // }
 
-    return (
-        <Modal
-            contentLabel={`Manage ${selectedDate.format('dddd')}'s Tasks`}
-            showModal={showModal}
-            closeModal={() => setShowModal(false)}
-        >
-            <>
-                <Paragraph>Select tasks to add to the todo list.</Paragraph>
-                {Object.keys(tasksByProject).map(projectId => {
-                    if (tasksByProject[projectId].length === 0) {
-                        return (
-                            <React.Fragment key={projectId}>
-                                <LabelInDisguise>hi</LabelInDisguise>
-                                {/* <LabelInDisguise>{state.projects[projectId].title}</LabelInDisguise> */}
-                                <BigBoxOfNothing message='This project has no tasks. :(' />
-                            </React.Fragment>
-                        )
-                    }
+    // return (
+    //     <Modal
+    //         contentLabel={`Manage ${selectedDate.format('dddd')}'s Tasks`}
+    //         showModal={showModal}
+    //         closeModal={() => setShowModal(false)}
+    //     >
+    //         <>
+    //             <Paragraph>Select tasks to add to the todo list.</Paragraph>
+    //             {Object.keys(tasksByProject).map(projectId => {
+    //                 if (tasksByProject[projectId].length === 0) {
+    //                     return (
+    //                         <React.Fragment key={projectId}>
+    //                             <LabelInDisguise>hi</LabelInDisguise>
+    //                             {/* <LabelInDisguise>{state.projects[projectId].title}</LabelInDisguise> */}
+    //                             <BigBoxOfNothing message='This project has no tasks. :(' />
+    //                         </React.Fragment>
+    //                     )
+    //                 }
 
-                    return (
-                        <div key={projectId}>
-                            <LabelAndInput
-                                handleChange={({ value, checked }) => {
-                                    dispatch({
-                                        type: "TOGGLE_TODO_LIST_ITEM_FOR_SELECTED_DATE",
-                                        payload: { shouldExistOnSelectedDate: checked, projectId, taskId: `${value}`, selectedDate: formatDateKeyLookup(selectedDate) }
-                                    })
-                                }
-                                }
-                                options={mapTasksToCheckboxItems(tasksByProject[projectId])}
-                                name="foo"
-                                value="foo"
-                                label={"FOO!"  } //state.projects[projectId].title
-                                inputType='checkbox'
-                            />
-                        </div>
-                    )
-                })}
-            </>
-        </Modal >
-    )
+    //                 return (
+    //                     <div key={projectId}>
+    //                         <LabelAndInput
+    //                             handleChange={({ value, checked }) => {
+    //                                 dispatch({
+    //                                     type: "TOGGLE_TODO_LIST_ITEM_FOR_SELECTED_DATE",
+    //                                     payload: { shouldExistOnSelectedDate: checked, projectId, taskId: `${value}`, selectedDate: formatDateKeyLookup(selectedDate) }
+    //                                 })
+    //                             }
+    //                             }
+    //                             options={mapTasksToCheckboxItems(tasksByProject[projectId])}
+    //                             name="foo"
+    //                             value="foo"
+    //                             label={"FOO!"  } //state.projects[projectId].title
+    //                             inputType='checkbox'
+    //                         />
+    //                     </div>
+    //                 )
+    //             })}
+    //         </>
+    //     </Modal >
+    // )
 }
 
 export default ManageTodoListItemsModal

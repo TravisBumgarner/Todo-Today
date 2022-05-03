@@ -4,18 +4,18 @@ import React from 'react'
 import { Button, Modal, ButtonWrapper, LabelAndInput } from 'sharedComponents'
 import { TProject, TTask, TTaskStatus } from 'sharedTypes'
 import {projectStatusLookup} from 'utilities'
+import database from 'database'
+import { useLiveQuery } from 'dexie-react-hooks'
 
 type EditTaskModalProps = {
     showModal: boolean
     project: TProject
-    taskId: TTask['id']
+    task: TTask
     setShowModal: (showModal: boolean) => void
 }
 
-const EditTaskModal = ({ showModal, setShowModal, project, taskId }: EditTaskModalProps) => {
+const EditTaskModal = ({ showModal, setShowModal, project, task }: EditTaskModalProps) => {
     const { dispatch, state } = React.useContext(context)
-
-    const task = state.tasks[taskId]
 
     const [title, setTitle] = React.useState<string>(task.title)
     const [status, setStatus] = React.useState<TTaskStatus>(task.status)
@@ -28,8 +28,7 @@ const EditTaskModal = ({ showModal, setShowModal, project, taskId }: EditTaskMod
             id: task.id,
             projectId: project.id
         }
-
-        dispatch({type: "EDIT_TASK", payload: editedTask})
+        database.tasks.put(editedTask, [task.id])
         setShowModal(false)
     }
     
@@ -58,7 +57,7 @@ const EditTaskModal = ({ showModal, setShowModal, project, taskId }: EditTaskMod
                 <ButtonWrapper right={
                     [
                         <Button key="cancel" variation="PRIMARY_BUTTON" onClick={() => setShowModal(false)}>Cancel</Button>,
-                        <Button key="save" disabled={submitDisabled} variation="ALERT_BUTTON" onClick={handleSubmit}>Save</Button>
+                        <Button type="button" key="save" disabled={submitDisabled} variation="ALERT_BUTTON" onClick={handleSubmit}>Save</Button>
                     ]
                 }
                 />

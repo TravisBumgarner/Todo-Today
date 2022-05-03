@@ -4,6 +4,8 @@ import { v4 as uuid4 } from 'uuid'
 import { Button, Modal, ButtonWrapper, LabelAndInput } from 'sharedComponents'
 import { TProject, TTask, TTaskStatus } from 'sharedTypes'
 import { context } from 'Context'
+import database from 'database'
+import { useLiveQuery } from 'dexie-react-hooks'
 
 type AddTaskModalProps = {
     showModal: boolean
@@ -23,8 +25,7 @@ const AddTaskModal = ({ showModal, setShowModal, project }: AddTaskModalProps) =
             id: uuid4(),
             projectId: project.id
         }
-
-        dispatch({type: "ADD_TASK", payload: newTask})
+        database.tasks.add(newTask)
         setShowModal(false)
     }
 
