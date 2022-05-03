@@ -4,6 +4,7 @@ import { BigBoxOfNothing, Button, DropdownMenu, Table } from 'sharedComponents'
 import EditProjectModal from './EditProjectModal'
 import { formatDateDisplayString, projectStatusLookup } from 'utilities'
 import {context} from "Context"
+import moment from 'moment'
 
 const ProjectsTable = () => {
     const { dispatch, state } = React.useContext(context)
@@ -32,8 +33,8 @@ const ProjectsTable = () => {
                         <Table.TableRow key={id}>
                             <Table.TableBodyCell>{title}</Table.TableBodyCell>
                             <Table.TableBodyCell>{projectStatusLookup[status]}</Table.TableBodyCell>
-                            <Table.TableBodyCell>{formatDateDisplayString(state.settings.dateFormat, startDate)}</Table.TableBodyCell>
-                            <Table.TableBodyCell>{formatDateDisplayString(state.settings.dateFormat, endDate)}</Table.TableBodyCell>
+                            <Table.TableBodyCell>{formatDateDisplayString(state.settings.dateFormat, moment(startDate))}</Table.TableBodyCell>
+                            <Table.TableBodyCell>{formatDateDisplayString(state.settings.dateFormat, moment(endDate))}</Table.TableBodyCell>
                             <Table.TableBodyCell>
                                 <DropdownMenu title="Actions">{
                                     [<Button fullWidth key="edit" variation="PRIMARY_BUTTON" onClick={() => setSelectedProjectId(id)}>Edit</Button>]

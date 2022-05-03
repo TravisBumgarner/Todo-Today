@@ -1,4 +1,5 @@
 import React from 'react'
+import { v4 as uuid4 } from 'uuid'
 
 import { Button, Modal, ButtonWrapper, LabelAndInput } from 'sharedComponents'
 import { TProject, TTask, TTaskStatus } from 'sharedTypes'
@@ -19,7 +20,7 @@ const AddTaskModal = ({ showModal, setShowModal, project }: AddTaskModalProps) =
         const newTask = {
             title,
             status: TTaskStatus.NEW,
-            id: `${Math.random()}`,
+            id: uuid4(),
             projectId: project.id
         }
 

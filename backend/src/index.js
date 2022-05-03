@@ -2,7 +2,6 @@ const path = require("path");
 
 const { app, BrowserWindow, ipcMain, Menu } = require('electron')
 
-const dataStore = require('./test/dataStore.json')
 const isDev = process.env.NODE_ENV === 'local'
 const isDebugProduction = true // Set to True to debug
 const isMac = process.platform === 'darwin'
@@ -35,7 +34,6 @@ const template = [
 
 const menu = Menu.buildFromTemplate(template)
 Menu.setApplicationMenu(menu)
-console.log(process.env.NODE_ENV)
 
 function createWindow() {
     mainWindow = new BrowserWindow({
@@ -78,15 +76,12 @@ app.on('window-all-closed', function() {
 
 ipcMain.handle('hydrate-app', async(event, arg) => {
     const data = await knex.raw('select * from jsondump')
-
-    return JSON.stringify({
-        ...JSON.parse((data[0].jsondump))
-    })
+    return data[0] && data[0].jsondump ? data[0].jsondump : null
 })
 
 ipcMain.on('state-change', async(event, arg) => {
+    console.log("state-change", arg)
     await knex.raw("delete from jsondump;")
-    await knex.raw(` insert into jsondump (jsondump) values ('${JSON.stringify(arg.payload)}');`)
+    await knex.raw(` insert into jsondump (jsondump) values ('${arg.payload}');`)
     console.log('state-change')
-        // fs.writeFileSync('./dataStore.json', JSON.stringify(arg.payload))
 })

@@ -10,8 +10,8 @@ const Input = styled.input`
     padding: 0.5rem 1rem;
     background-color: transparent;
     font-weight: 700;
-    color: ${({theme}) => theme.PRIMARY_BUTTON };
-    border-color: ${({theme}) => theme.PRIMARY_BUTTON };
+    color: ${({ theme }) => theme.PRIMARY_BUTTON};
+    border-color: ${({ theme }) => theme.PRIMARY_BUTTON};
     width: 100%;
     box-sizing: border-box;
     color-scheme: dark;
@@ -20,14 +20,14 @@ const Input = styled.input`
 
 const Checkbox = styled.input`
     color-scheme: dark;
-    accent-color: ${({theme}) => theme.PRIMARY_BUTTON };
+    accent-color: ${({ theme }) => theme.PRIMARY_BUTTON};
 `
 
 const CheckboxLabel = styled.label`
     font-family: 'Comfortaa', cursive;
     font-size: 1rem;
     font-weight: 700;
-    color: ${({theme}) => theme.FOREGROUND_TEXT };
+    color: ${({ theme }) => theme.FOREGROUND_TEXT};
     /* margin-left: 0.25rem; */
 `
 
@@ -38,8 +38,8 @@ const TextArea = styled.textarea`
     padding: 0.5rem 1rem;
     background-color: transparent;
     font-weight: 700;
-    color: ${({theme}) => theme.FOREGROUND_TEXT };
-    border-color: ${({theme}) => theme.PRIMARY_BUTTON };
+    color: ${({ theme }) => theme.FOREGROUND_TEXT};
+    border-color: ${({ theme }) => theme.PRIMARY_BUTTON};
     width: 100%;
     box-sizing: border-box;
 `
@@ -49,7 +49,7 @@ const Label = styled.label`
     font-size: 1rem;
     background-color: transparent;
     font-weight: 700;
-    color: ${({theme}) => theme.FOREGROUND_TEXT };
+    color: ${({ theme }) => theme.FOREGROUND_TEXT};
     margin: 0.5rem 0;
 `
 
@@ -60,8 +60,8 @@ const Select = styled.select`
     padding: 0.5rem 1rem;
     background-color: transparent;
     font-weight: 700;
-    color: ${({theme}) => theme.FOREGROUND_TEXT };
-    border-color: ${({theme}) => theme.PRIMARY_BUTTON };
+    color: ${({ theme }) => theme.FOREGROUND_TEXT};
+    border-color: ${({ theme }) => theme.PRIMARY_BUTTON};
     width: 100%;
     box-sizing: border-box;
     color-scheme: dark;
@@ -85,11 +85,16 @@ const LabelAndInputWrapper = styled.div`
 type GenericProps = {
     name: string
     label: string
-    value: string
+    value?: string
+}
+
+type FileProps = {
+    inputType:  'file'
+    handleChange: (value: File | null) => void
 }
 
 type InputProps = {
-    inputType?: 'password' | 'date'
+    inputType?: 'password' | 'date' 
     handleChange: (value: string) => void
 }
 
@@ -117,7 +122,7 @@ type SelectArrayProps = {
     handleChange: (value: string) => void
 }
 
-type LabelAndInputProps = GenericProps & (SelectEnumProps | SelectArrayProps | TextAreaProps | InputProps | CheckboxProps)
+type LabelAndInputProps = GenericProps & (SelectEnumProps | SelectArrayProps | TextAreaProps | InputProps | CheckboxProps | FileProps)
 
 const LabelAndInput = (props: LabelAndInputProps) => {
     let InputElement: JSX.Element
@@ -166,6 +171,9 @@ const LabelAndInput = (props: LabelAndInputProps) => {
                 ))}
             </>
         )
+    } else if (props.inputType === 'file') {
+        const { inputType, handleChange, name, value } = props
+        InputElement = <Input autoComplete="off" type={inputType} name={name} onChange={(event) => handleChange(event.target.files ? event.target.files[0] : null)} value={value} />
     }
     else {
         const { inputType, handleChange, name, value } = props

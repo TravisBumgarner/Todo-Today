@@ -106,7 +106,6 @@ const context = React.createContext(
 )
 
 const reducer = (state: State, action: Action): State => {
-
     switch (action.type) {
         case 'HYDRATE_APP': {
             return { ...action.payload }
@@ -127,9 +126,10 @@ const reducer = (state: State, action: Action): State => {
         case 'REMOVE_TEMPORARY_SETTINGS': {
             const modifiedState = {
                 ...state,
-                settings: state.tempSettingsStorage as TSettings
+                settings: {...state.tempSettingsStorage} as TSettings
             }
             delete modifiedState.tempSettingsStorage
+            console.log('modified state', modifiedState)
             return modifiedState
         }
         case 'ADD_TODO_LIST': {
@@ -169,8 +169,8 @@ const reducer = (state: State, action: Action): State => {
             return { ...state, settings: { ...action.payload } }
         }
         default: {
-            console.log(`Swallowing action: ${JSON.stringify(action)}`)
-            return state
+            const _: never = action
+            throw new Error("Unknown Action passed to Reducer")
         }
     }
 }
@@ -182,8 +182,10 @@ const ResultsContext = ({ children }: { children: React.ReactChild }) => {
     const { Provider } = context
 
     React.useEffect(() => {
-        ipcRenderer.invoke('hydrate-app').then((r: string) => {
-            dispatch({ type: "HYDRATE_APP", payload: JSON.parse(r) })
+        ipcRenderer.invoke('hydrate-app').then((r: string) =>{
+            const payload = JSON.parse(r) === null ? {...EMPTY_STATE} : JSON.parse(r)
+
+            dispatch({ type: "HYDRATE_APP", payload  })
             setIsHydratingApp(false)
         })
     }, [])
@@ -191,7 +193,7 @@ const ResultsContext = ({ children }: { children: React.ReactChild }) => {
     React.useEffect(() => {
         if(isHydratingApp) return // Don't send empty state to backend. 
 
-        ipcRenderer.send('state-change', {payload: state})
+        ipcRenderer.send('state-change', {payload: JSON.stringify(state)})
     }, [state])
 
     if (isHydratingApp) {

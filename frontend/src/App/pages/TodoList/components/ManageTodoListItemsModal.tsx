@@ -48,10 +48,10 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
                 {Object.keys(tasksByProject).map(projectId => {
                     if (tasksByProject[projectId].length === 0) {
                         return (
-                            <>
+                            <React.Fragment key={projectId}>
                                 <LabelInDisguise>{state.projects[projectId].title}</LabelInDisguise>
                                 <BigBoxOfNothing message='This project has no tasks. :(' />
-                            </>
+                            </React.Fragment>
                         )
                     }
 
