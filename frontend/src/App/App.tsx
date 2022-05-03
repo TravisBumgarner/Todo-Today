@@ -5,7 +5,7 @@ import { ModalProvider } from 'styled-react-modal'
 
 import Theme from 'theme'
 import { Navigation, Router, Header } from './components'
-import Context, { context } from 'Context'
+// import Context, { context } from 'Context'
 import THEMES from '../sharedComponents/colors'
 import { TColorTheme, TDateFormat, TWeekStart } from 'sharedTypes';
 import useLocalStorage from '../localStorage';
@@ -53,11 +53,11 @@ const BackgroundComponent = styled.div`
     }
 `
 const App = () => {
-  const { dispatch, state } = React.useContext(context)
+  // const { dispatch, state } = React.useContext(context)
   const [isLoading, setIsLoading] = React.useState<boolean>(true)
   const navigate = useLocation()
   
-  console.log('state', state)
+  // console.log('state', state)
   React.useEffect(() => {
     if(!(localStorage.getItem(HAS_DONE_WARM_START) === TRUE)){
       warmStart()
@@ -87,9 +87,9 @@ const App = () => {
 const InjectedApp = () => {
   return (
     <BrowserRouter>
-      <Context>
+      {/* <Context> */}
         <App />
-      </Context>
+      {/* </Context> */}
     </BrowserRouter>
   )
 }

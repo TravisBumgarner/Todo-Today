@@ -74,6 +74,8 @@ type TTodoListItem = {
     duration: number
     projectId: string
     taskId: string
+    date: string
+    id: string
 }
 
 enum TDateFormat {

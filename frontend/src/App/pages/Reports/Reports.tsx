@@ -4,7 +4,7 @@ import styled from 'styled-components'
 
 import { Heading, LabelAndInput, Button } from 'sharedComponents'
 import { ReportsTable } from './components'
-import { context } from 'Context'
+// import { context } from 'Context'
 import { TTodoList, TTodoListItem } from 'sharedTypes'
 import { stringify } from 'uuid'
 
@@ -74,72 +74,73 @@ const crunchTheNumbers = (datesToCrunch: Record<string, TTodoListItem[]>) => {
 }
 
 const Reports = () => {
-    const { state } = React.useContext(context)
+    // const { state } = React.useContext(context)
     const [startDate, setStartDate] = React.useState<Moment>(moment().subtract(5, 'days'))
     const [endDate, setEndDate] = React.useState<Moment>(moment().add(5, 'days'))
     const [selectedDate, setSelectedDate] = React.useState<Moment>(moment())
     const [crunchedNumbers, setCrunchedNumbers] = React.useState<Record<string, Record<string, number>>>({})
     
-    React.useEffect(() => {
-        const datesToCrunch: Record<string, TTodoListItem[]> = {}
+    return <p>Reports</p>
+    // React.useEffect(() => {
+    //     const datesToCrunch: Record<string, TTodoListItem[]> = {}
 
-        Object
-            .keys(state.todoList)
-            .filter((date) => moment(date) > startDate && moment(date) < endDate)
-            .forEach(date => datesToCrunch[date] = state.todoList[date])
-        setCrunchedNumbers(crunchTheNumbers(datesToCrunch))
-    }, [startDate, endDate])
+    //     Object
+    //         .keys(state.todoList)
+    //         .filter((date) => moment(date) > startDate && moment(date) < endDate)
+    //         .forEach(date => datesToCrunch[date] = state.todoList[date])
+    //     setCrunchedNumbers(crunchTheNumbers(datesToCrunch))
+    // }, [startDate, endDate])
 
-    const setQuickFilter = (quickFilter: TQuickFilterOptions) => {
-        switch (quickFilter) {
-            case TQuickFilterOptions.THIS_WEEK: {
-                const sunday = getSundayDateOfWeek(selectedDate)
-                const saturday = getSaturdayDateOfWeek(selectedDate)
-                setStartDate(moment(sunday))
-                setEndDate(moment(saturday))
-                return
-            }
-            case TQuickFilterOptions.LAST_WEEK: {
-                const sevenDaysAgo = moment(selectedDate).subtract(7, 'days')
-                const sunday = getSundayDateOfWeek(sevenDaysAgo)
-                const saturday = getSaturdayDateOfWeek(sevenDaysAgo)
-                setStartDate(moment(sunday))
-                setEndDate(moment(saturday))
-                return
-            }
-        }
-    }
+    // const setQuickFilter = (quickFilter: TQuickFilterOptions) => {
+    //     switch (quickFilter) {
+    //         case TQuickFilterOptions.THIS_WEEK: {
+    //             const sunday = getSundayDateOfWeek(selectedDate)
+    //             const saturday = getSaturdayDateOfWeek(selectedDate)
+    //             setStartDate(moment(sunday))
+    //             setEndDate(moment(saturday))
+    //             return
+    //         }
+    //         case TQuickFilterOptions.LAST_WEEK: {
+    //             const sevenDaysAgo = moment(selectedDate).subtract(7, 'days')
+    //             const sunday = getSundayDateOfWeek(sevenDaysAgo)
+    //             const saturday = getSaturdayDateOfWeek(sevenDaysAgo)
+    //             setStartDate(moment(sunday))
+    //             setEndDate(moment(saturday))
+    //             return
+    //         }
+    //     }
+    // }
 
 
-    return (
-        <>
-            <FilterWrapper>
-                <LabelAndInput
-                    label="Start Date"
-                    name="startDate"
-                    value={startDate.format('YYYY-MM-DD')}
-                    inputType="date"
-                    handleChange={(date) => setStartDate(moment(date))}
-                />
-                <LabelAndInput
-                    label="End Date"
-                    name="endDate"
-                    value={endDate.format('YYYY-MM-DD')}
-                    inputType="date"
-                    handleChange={(date) => setEndDate(moment(date))}
-                />
-                <div style={{ margin: '2rem 1rem 2rem 0rem' }}>
-                    <LabelInDisguise>Quick Filters</LabelInDisguise>
-                    <FiltersWrapper>
-                        <Button variation='PRIMARY_BUTTON' onClick={() => setQuickFilter(TQuickFilterOptions.THIS_WEEK)}>This Week</Button>
-                        <Button variation='PRIMARY_BUTTON' onClick={() => setQuickFilter(TQuickFilterOptions.LAST_WEEK)} >Last Week</Button>
-                    </FiltersWrapper>
-                </div>
-            </FilterWrapper>
-            <Heading.H2>Reports</Heading.H2>
-            <ReportsTable startDate={startDate} endDate={endDate} crunchedNumbers={crunchedNumbers} />
-        </>
-    )
+    // return (
+    //     <>
+    //         <FilterWrapper>
+    //             <LabelAndInput
+    //                 label="Start Date"
+    //                 name="startDate"
+    //                 value={startDate.format('YYYY-MM-DD')}
+    //                 inputType="date"
+    //                 handleChange={(date) => setStartDate(moment(date))}
+    //             />
+    //             <LabelAndInput
+    //                 label="End Date"
+    //                 name="endDate"
+    //                 value={endDate.format('YYYY-MM-DD')}
+    //                 inputType="date"
+    //                 handleChange={(date) => setEndDate(moment(date))}
+    //             />
+    //             <div style={{ margin: '2rem 1rem 2rem 0rem' }}>
+    //                 <LabelInDisguise>Quick Filters</LabelInDisguise>
+    //                 <FiltersWrapper>
+    //                     <Button variation='PRIMARY_BUTTON' onClick={() => setQuickFilter(TQuickFilterOptions.THIS_WEEK)}>This Week</Button>
+    //                     <Button variation='PRIMARY_BUTTON' onClick={() => setQuickFilter(TQuickFilterOptions.LAST_WEEK)} >Last Week</Button>
+    //                 </FiltersWrapper>
+    //             </div>
+    //         </FilterWrapper>
+    //         <Heading.H2>Reports</Heading.H2>
+    //         <ReportsTable startDate={startDate} endDate={endDate} crunchedNumbers={crunchedNumbers} />
+    //     </>
+    // )
 }
 
 export default Reports

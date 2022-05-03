@@ -1,7 +1,7 @@
 import React from 'react'
 
 import {Table } from 'sharedComponents'
-import { context } from "Context"
+// import { context } from "Context"
 import moment, { Moment } from 'moment'
 
 type ReportTableProps = {
@@ -11,7 +11,7 @@ type ReportTableProps = {
 }
 
 const ReportsTable = ({ crunchedNumbers, startDate, endDate }: ReportTableProps) => {
-    const { dispatch, state } = React.useContext(context)
+    // const { dispatch, state } = React.useContext(context)
     const dateColumns: string[] = []
     for (var m = moment(startDate); m.isBefore(endDate); m.add(1, 'days')) {
         dateColumns.push(m.format('YYYY-MM-DD'));

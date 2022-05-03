@@ -1,4 +1,4 @@
-import { context } from 'Context'
+// import { context } from 'Context'
 import React from 'react'
 
 import { Button, Modal, ButtonWrapper, LabelAndInput } from 'sharedComponents'
@@ -15,7 +15,7 @@ type EditTaskModalProps = {
 }
 
 const EditTaskModal = ({ showModal, setShowModal, project, task }: EditTaskModalProps) => {
-    const { dispatch, state } = React.useContext(context)
+    // const { dispatch, state } = React.useContext(context)
 
     const [title, setTitle] = React.useState<string>(task.title)
     const [status, setStatus] = React.useState<TTaskStatus>(task.status)

@@ -3,7 +3,6 @@ import moment, { Moment } from 'moment'
 import { v4 as uuid4 } from 'uuid'
 
 import database from 'database'
-import { context } from 'Context'
 import { Button, Modal, ButtonWrapper, LabelAndInput } from 'sharedComponents'
 import { TProject, TProjectStatus } from 'sharedTypes'
 import { formatDateKeyLookup } from 'utilities'
@@ -16,7 +15,6 @@ type AddProjectModalProps = {
 }
 
 const AddProjectModal = ({ showModal, setShowModal }: AddProjectModalProps) => {
-    const { dispatch } = React.useContext(context)
 
     const [title, setTitle] = React.useState<string>('')
     const [startDate, setStartDate] = React.useState<Moment>(moment())

@@ -5,49 +5,39 @@ import { BigBoxOfNothing, Button, ButtonWrapper, Heading, Paragraph } from 'shar
 import { TTodoListItem } from 'sharedTypes'
 import { TodoListTable, ManageTodoListItemsModal } from './components'
 import { formatDateDisplayString, formatDateKeyLookup } from 'utilities'
-import { context } from 'Context'
+import database from 'database'
+import { useLiveQuery } from 'dexie-react-hooks'
 
 const groupItemsByProjectId = (todoListItems: TTodoListItem[]) => {
     const output: Record<string, TTodoListItem[]> = {}
-    todoListItems.forEach(({ duration, projectId, taskId }) => {
+    todoListItems.forEach(({ duration, projectId, taskId, date, id }) => {
         if (!(projectId in output)) {
             output[projectId] = []
         }
-        output[projectId].push({ duration, projectId, taskId })
+        output[projectId].push({ duration, projectId, taskId, date, id })
     })
 
     return output
 }
 
 const TodoList = () => {
-    const { state, dispatch } = React.useContext(context)
     const [selectedDate, setSelectedDate] = React.useState<moment.Moment>(moment())
-    const [isLoading, setIsLoading] = React.useState<boolean>(true)
     const [showManagementModal, setShowManagementModal] = React.useState<boolean>(false)
-
-    React.useEffect(() => {
-        if (!Object.keys(state.todoList).includes(formatDateKeyLookup(selectedDate))) {
-            dispatch({ type: "ADD_TODO_LIST", payload: { date: formatDateKeyLookup(selectedDate) } })
-        }
-        setIsLoading(false)
-    }, [formatDateKeyLookup(selectedDate)])
+    const todoListItems = useLiveQuery(() => database.todoListItems.toArray())
 
     const getPreviousDay = () => {
         setSelectedDate(moment(selectedDate).subtract(1, 'day'))
-        setIsLoading(true)
     }
     const getNextDay = () => {
         setSelectedDate(moment(selectedDate).add(1, 'day'))
-        setIsLoading(true)
     }
 
-    if (isLoading) {
+    if (!todoListItems) {
         return (
-            <Paragraph>One sec...</Paragraph>
+            <BigBoxOfNothing message='No todo list'/>
         )
     }
 
-    const todoListItems = state.todoList[formatDateKeyLookup(selectedDate) as keyof typeof state.todoList]
     const todoListItemsByProjectId = groupItemsByProjectId(todoListItems)
 
     const TodoListTables = Object
@@ -76,7 +66,7 @@ const TodoList = () => {
                     ? (<BigBoxOfNothing message="Click the Manage Tasks button above to get started!" />)
                     : (TodoListTables)
             }
-            <ManageTodoListItemsModal selectedDate={selectedDate} showModal={showManagementModal} setShowModal={setShowManagementModal} />
+            <ManageTodoListItemsModal selectedDate={selectedDate} todoListItemsByProjectId={todoListItemsByProjectId} showModal={showManagementModal} setShowModal={setShowManagementModal} />
         </>
     )
 }

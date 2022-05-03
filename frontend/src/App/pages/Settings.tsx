@@ -4,7 +4,7 @@ import useLocalStorage from '../../localStorage'
 
 import { TColorTheme, TDateFormat, TWeekStart } from 'sharedTypes'
 import { Button, ButtonWrapper, Heading, LabelAndInput } from 'sharedComponents'
-import { context } from 'Context'
+// import { context } from 'Context'
 import { dateFormatLookup } from 'utilities'
 import styled from 'styled-components'
 
@@ -42,7 +42,7 @@ enum TTabs {
 }
 
 const Settings = () => {
-    const { state, dispatch } = React.useContext(context)
+    // const { state, dispatch } = React.useContext(context)
     const [colorTheme, setColorTheme] = useLocalStorage('colorTheme'); 
     const [weekStart, setWeekStart] = useLocalStorage('weekStart'); 
     const [dateFormat, setDateFormat] = useLocalStorage('dateFormat'); 
