@@ -14,7 +14,7 @@ type State = {
 }
 
 function useLocalStorage<Key extends keyof State>(key: Key): [State[Key], (newValue: State[Key]) => void ] {
-  const [value, setValue] = React.useState<State[Key]>(localStorage.getItem(key) as State[Key]) ;
+  const [value, setValue] = React.useState<State[Key]>(localStorage.getItem(key) as State[Key])
   
   const updatedSetValue = React.useCallback(
     newValue => {

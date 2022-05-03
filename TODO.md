@@ -1,5 +1,5 @@
 PR-4
-
+- KEEP IT CLEAN FOR A POTENTIAL PRESENTATION!
 - [ ] Explore Dexie
 - [x] Add localStorage and use with settings
 
