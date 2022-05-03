@@ -9,8 +9,6 @@ import Context, { context } from 'Context'
 import THEMES from '../sharedComponents/colors'
 import { TColorTheme, TDateFormat, TWeekStart } from 'sharedTypes';
 import useLocalStorage from '../localStorage';
-// import db from '../DB';
-// import { useLiveQuery } from 'dexie-react-hooks';
 
 const HAS_DONE_WARM_START = 'HAS_DONE_WARM_START'
 const TRUE = 'TRUE'
@@ -63,12 +61,11 @@ const App = () => {
     }
     setIsLoading(false)
   }, [])
-  const [colorTheme, setColorTheme] = useLocalStorage('colorTheme'); 
+  const [colorTheme] = useLocalStorage('colorTheme'); 
   
   if (isLoading) {
     return <p>Loading...</p>
 }
-console.log(colorTheme)
 
   return (
     <ThemeProvider theme={THEMES[colorTheme]}>

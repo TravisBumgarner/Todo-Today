@@ -1,40 +1,19 @@
 import React from 'react'
 const { ipcRenderer } = window.require('electron');
 
-import { TProject, TSettings, TTask, TTodoList, TDateFormat, TWeekStart, TColorTheme } from 'sharedTypes'
+import { TProject, TTask, TTodoList } from 'sharedTypes'
 
 type State = {
     projects: Record<string, TProject>
     tasks: Record<string, TTask>
     todoList: Record<string, { projectId: string, taskId: string, duration: number }[]>
-    // settings: TSettings
-    // tempSettingsStorage?: TSettings
 }
 
 const EMPTY_STATE: State = {
     projects: {},
     tasks: {},
     todoList: {},
-    // settings: {
-    //     dateFormat: TDateFormat.A,
-    //     weekStart: TWeekStart.SUNDAY,
-    //     colorTheme: TColorTheme.BEACH
-    // }
 }
-
-// type UseTemporarySettings = {
-//     type: 'USE_TEMPORARY_SETTINGS'
-//     payload: TSettings
-// }
-
-// type EditTemporarySettings = {
-//     type: 'EDIT_TEMPORARY_SETTINGS',
-//     payload: TSettings
-// }
-
-// type RemoveTemporarySettings = {
-//     type: 'REMOVE_TEMPORARY_SETTINGS'
-// }
 
 type AddTodoList = {
     type: 'ADD_TODO_LIST'
@@ -71,11 +50,6 @@ type EditTodoListItem = {
     payload: { selectedDate: string, isChecked: boolean, taskId: string, projectId: string, duration: number }
 }
 
-// type EditUserSettings = {
-//     type: 'EDIT_USER_SETTINGS',
-//     payload: TSettings
-// }
-
 type HydrateApp = {
     type: "HYDRATE_APP",
     payload: State
@@ -90,10 +64,6 @@ type Action =
     | ToggleTodoListItemToSelectedDate
     | EditTodoListItem
     | AddTodoList
-    // | EditUserSettings
-    // | UseTemporarySettings
-    // | EditTemporarySettings
-    // | RemoveTemporarySettings
 
 const context = React.createContext(
     {
@@ -110,28 +80,6 @@ const reducer = (state: State, action: Action): State => {
         case 'HYDRATE_APP': {
             return { ...action.payload }
         }
-        // case 'USE_TEMPORARY_SETTINGS': {
-        //     return {
-        //         ...state,
-        //         settings: {...state.settings},
-        //         tempSettingsStorage: {...state.settings}
-        //     }
-        // }
-        // case 'EDIT_TEMPORARY_SETTINGS': {
-        //     return {
-        //         ...state,
-        //         settings: {...state.settings, ...action.payload},
-        //     }
-        // }
-        // case 'REMOVE_TEMPORARY_SETTINGS': {
-        //     const modifiedState = {
-        //         ...state,
-        //         settings: {...state.tempSettingsStorage} as TSettings
-        //     }
-        //     delete modifiedState.tempSettingsStorage
-        //     console.log('modified state', modifiedState)
-        //     return modifiedState
-        // }
         case 'ADD_TODO_LIST': {
             return { ...state, todoList: { ...state.todoList, [action.payload.date]: [] } }
         }
@@ -165,9 +113,6 @@ const reducer = (state: State, action: Action): State => {
 
             return { ...state, todoList: { ...state.todoList, [action.payload.selectedDate]: updatedTodoListForDate } }
         }
-        // case 'EDIT_USER_SETTINGS': {
-        //     return { ...state, settings: { ...action.payload } }
-        // }
         default: {
             const _: never = action
             throw new Error("Unknown Action passed to Reducer")

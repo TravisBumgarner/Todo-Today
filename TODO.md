@@ -1,6 +1,7 @@
 PR-4
 
-- Explore Dexie
+- [ ] Explore Dexie
+- [x] Add localStorage and use with settings
 
 Next PR
 

@@ -1,8 +1,6 @@
 import React from 'react'
 import { TColorTheme, TDateFormat, TWeekStart } from 'sharedTypes'
 
-
-
 const initialState: State = {
   dateFormat: TDateFormat.A,
   weekStart: TWeekStart.SUNDAY,
@@ -20,6 +18,7 @@ function useLocalStorage<Key extends keyof State>(key: Key): [State[Key], (newVa
   const updatedSetValue = React.useCallback(
     newValue => {
       localStorage.setItem(key, newValue);
+      location.reload()
       setValue(newValue ?? initialState);
     },
     [initialState, key, value, setValue]
