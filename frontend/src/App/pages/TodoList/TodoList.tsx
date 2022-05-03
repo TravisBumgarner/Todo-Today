@@ -63,7 +63,7 @@ const TodoList = () => {
 
     return (
         <>
-            <Heading.H2>{formatDateDisplayString(state.settings.dateFormat, selectedDate)}</Heading.H2>
+            <Heading.H2>{formatDateDisplayString(selectedDate)}</Heading.H2>
             <ButtonWrapper
                 left={[
                     <Button key="previous" onClick={getPreviousDay} variation='PRIMARY_BUTTON'>Previous Day</Button>,

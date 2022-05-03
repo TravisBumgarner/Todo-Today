@@ -1,5 +1,6 @@
 import React from 'react'
 import moment, { Moment } from 'moment'
+import useLocalStorage from '../../localStorage'
 
 import { TColorTheme, TDateFormat, TWeekStart } from 'sharedTypes'
 import { Button, ButtonWrapper, Heading, LabelAndInput } from 'sharedComponents'
@@ -42,50 +43,56 @@ enum TTabs {
 
 const Settings = () => {
     const { state, dispatch } = React.useContext(context)
-    const [weekStart, setWeekStart] = React.useState<TWeekStart>(state.settings.weekStart)
-    const [dateFormat, setDateFormat] = React.useState<TDateFormat>(state.settings.dateFormat)
-    const [colorTheme, seTColor] = React.useState<TColorTheme>(state.settings.colorTheme)
-    const [submitDisabled, setSubmitDisabled] = React.useState<boolean>(true)
+    // const [weekStart, setWeekStart] = React.useState<TWeekStart>(localStorage.getItem('weekStart') as TWeekStart)
+    // const [weekStart, setWeekStart] = useLocalStorage('weekStart', TWeekStart.SUNDAY)
+    const [colorTheme, setColorTheme] = useLocalStorage('colorTheme'); 
+    const [weekStart, setWeekStart] = useLocalStorage('weekStart'); 
+    const [dateFormat, setDateFormat] = useLocalStorage('dateFormat'); 
+    // const [dateFormat, setDateFormat] = React.useState<TDateFormat>(localStorage.getItem('dateFormat') as TDateFormat)
+    // const [colorTheme, seTColor] = React.useState<TColorTheme>(localStorage.getItem('colorTheme') as TColorTheme)
+    // const [submitDisabled, setSubmitDisabled] = React.useState<boolean>(true)
+    // const handleSubmit = () => {
+    //     localStorage.setItem('colorTheme', colorTheme)
+    //     // localStorage.setItem('weekStart', weekStart)
+    //     localStorage.setItem('dateFormat', dateFormat)
+    //     setSubmitDisabled(true)
+    // }
     
-    const handleSubmit = () => {
-        dispatch({ type: "EDIT_USER_SETTINGS", payload: { colorTheme, weekStart, dateFormat } })
-        setSubmitDisabled(true)
-    }
 
-    React.useEffect(() => {
-        dispatch({
-            type: 'USE_TEMPORARY_SETTINGS',
-            payload: {
-                weekStart,
-                dateFormat,
-                colorTheme,
-            }
-        })
-    }, [])
+    // React.useEffect(() => {
+    //     dispatch({
+    //         type: 'USE_TEMPORARY_SETTINGS',
+    //         payload: {
+    //             weekStart,
+    //             dateFormat,
+    //             colorTheme,
+    //         }
+    //     })
+    // }, [])
 
-    React.useEffect(() => {
-        dispatch({
-            type: 'EDIT_TEMPORARY_SETTINGS',
-            payload: {
-                weekStart,
-                dateFormat,
-                colorTheme,
-            }
-        })
-    }, [weekStart, dateFormat, colorTheme])
+    // React.useEffect(() => {
+    //     dispatch({
+    //         type: 'EDIT_TEMPORARY_SETTINGS',
+    //         payload: {
+    //             weekStart,
+    //             dateFormat,
+    //             colorTheme,
+    //         }
+    //     })
+    // }, [weekStart, dateFormat, colorTheme])
 
-    React.useEffect(() => {
-        return () => {
-            dispatch({
-                type: "REMOVE_TEMPORARY_SETTINGS"
-            })
-        };
-    }, []);
+    // React.useEffect(() => {
+    //     return () => {
+    //         dispatch({
+    //             type: "REMOVE_TEMPORARY_SETTINGS"
+    //         })
+    //     };
+    // }, []);
 
     return (
-        <>
+        <>  
             <Heading.H2>Settings</Heading.H2>
-            <form onChange={() => setSubmitDisabled(false)}>
+            <form >
             <LabelAndInput
                 inputType="select-enum"
                 name='weekStart'
@@ -109,13 +116,13 @@ const Settings = () => {
                 name='colorTheme'
                 label="Theme"
                 value={colorTheme}
-                handleChange={(value: TColorTheme) => seTColor(value)}
+                handleChange={(value: TColorTheme) => setColorTheme(value)}
                 options={TColorTheme}
                 optionLabels={colorThemeOptionLabels}
             />
-            <ButtonWrapper fullWidth={
+            {/* <ButtonWrapper fullWidth={
                 <Button type="button" fullWidth disabled={submitDisabled} key="edit" variation="PRIMARY_BUTTON" onClick={handleSubmit}>Submit</Button>
-            } />
+            } /> */}
         </form>
         </>
     )

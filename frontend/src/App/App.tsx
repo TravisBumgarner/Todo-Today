@@ -7,6 +7,27 @@ import Theme from 'theme'
 import { Navigation, Router, Header } from './components'
 import Context, { context } from 'Context'
 import THEMES from '../sharedComponents/colors'
+import { TColorTheme, TDateFormat, TWeekStart } from 'sharedTypes';
+import useLocalStorage from '../localStorage';
+// import db from '../DB';
+// import { useLiveQuery } from 'dexie-react-hooks';
+
+const HAS_DONE_WARM_START = 'HAS_DONE_WARM_START'
+const TRUE = 'TRUE'
+
+const warmStart = () => {
+    const DEFAULT_SETTINGS = {
+      dateFormat: TDateFormat.A,
+      weekStart: TWeekStart.SUNDAY,
+      colorTheme: TColorTheme.BEACH
+    }
+
+    Object
+      .keys(DEFAULT_SETTINGS)
+      .forEach((key: keyof typeof DEFAULT_SETTINGS) => localStorage.setItem(key, DEFAULT_SETTINGS[key]))
+
+    localStorage.setItem(HAS_DONE_WARM_START, TRUE)
+}
 
 const BackgroundComponent = styled.div`
     display: flex;
@@ -32,10 +53,25 @@ const BackgroundComponent = styled.div`
 `
 const App = () => {
   const { dispatch, state } = React.useContext(context)
+  const [isLoading, setIsLoading] = React.useState<boolean>(true)
   const navigate = useLocation()
+  
   console.log('state', state)
+  React.useEffect(() => {
+    if(!(localStorage.getItem(HAS_DONE_WARM_START) === TRUE)){
+      warmStart()
+    }
+    setIsLoading(false)
+  }, [])
+  const [colorTheme, setColorTheme] = useLocalStorage('colorTheme'); 
+  
+  if (isLoading) {
+    return <p>Loading...</p>
+}
+console.log(colorTheme)
+
   return (
-    <ThemeProvider theme={THEMES[state.settings.colorTheme]}>
+    <ThemeProvider theme={THEMES[colorTheme]}>
       <Theme.GlobalStyle />
       <ModalProvider backgroundComponent={BackgroundComponent}>
         <div>

@@ -1,9 +1,6 @@
-PR-3
+PR-4
 
-- [x] Setup Backups Setting
-- [x] Setup load from backups setting
-- [x] Add external export
-    - [x] As JSON
+- Explore Dexie
 
 Next PR
 

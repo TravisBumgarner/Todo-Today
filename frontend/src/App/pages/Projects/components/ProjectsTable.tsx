@@ -33,8 +33,8 @@ const ProjectsTable = () => {
                         <Table.TableRow key={id}>
                             <Table.TableBodyCell>{title}</Table.TableBodyCell>
                             <Table.TableBodyCell>{projectStatusLookup[status]}</Table.TableBodyCell>
-                            <Table.TableBodyCell>{formatDateDisplayString(state.settings.dateFormat, moment(startDate))}</Table.TableBodyCell>
-                            <Table.TableBodyCell>{formatDateDisplayString(state.settings.dateFormat, moment(endDate))}</Table.TableBodyCell>
+                            <Table.TableBodyCell>{formatDateDisplayString(moment(startDate))}</Table.TableBodyCell>
+                            <Table.TableBodyCell>{formatDateDisplayString(moment(endDate))}</Table.TableBodyCell>
                             <Table.TableBodyCell>
                                 <DropdownMenu title="Actions">{
                                     [<Button fullWidth key="edit" variation="PRIMARY_BUTTON" onClick={() => setSelectedProjectId(id)}>Edit</Button>]
