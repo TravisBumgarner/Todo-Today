@@ -1,9 +1,16 @@
 PR-4
 - KEEP IT CLEAN FOR A POTENTIAL PRESENTATION!
-- [ ] Explore Dexie
-     - [ ] Convert to Dexie
-     - [ ] Figure out how to set IDs to be autoincrementing
+- [x] Explore Dexie
+     - [x] Convert to Dexie
 - [x] Add localStorage and use with settings
+- [ ] Last Cleanup
+     - [ ] Manage Tasks Modal Needs to be cleaned up
+     - [ ] Don't let user add task twice for a day.
+     - [x] Figure out Backups
+- [ ] Clean up dead code
+- [ ] Clean up Sloppy imports
+
+
 
 Weird Dexie Quirks
 - For whatever Reason I could not get the project to be filtered / found with the EditProjectModal
@@ -11,7 +18,10 @@ Weird Dexie Quirks
 - need a where with delete
 
 Next PR
-
+- [ ] Add automatic backup to localdata
+- [ ] Add confirm restore button
+- [ ] Figure out updating strategy 
+     - Perhaps keep backups on the backend?
 - [ ] ASk for help on generic function in ManageTodolistitemsModal
 - [ ] Reading - Creating a custom hook with useContext
 - [ ] Convert backend to ts

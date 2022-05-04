@@ -2,12 +2,12 @@ import React from 'react'
 import moment from 'moment'
 import styled from 'styled-components'
 import { v4 as uuid4 } from 'uuid'
-
-import { Modal, Paragraph, LabelAndInput, BigBoxOfNothing, Heading } from 'sharedComponents'
-import { bucketTasksByProject, formatDateKeyLookup } from 'utilities'
-import { TProject, TTask, TTodoListItem } from 'sharedTypes'
-import database from 'database'
 import { useLiveQuery } from 'dexie-react-hooks'
+
+import { Modal, Paragraph, BigBoxOfNothing } from 'sharedComponents'
+import {  formatDateKeyLookup } from 'utilities'
+import { TTask } from 'sharedTypes'
+import database from 'database'
 
 type ManageTodoListItemsModalProps = {
     showModal: boolean
