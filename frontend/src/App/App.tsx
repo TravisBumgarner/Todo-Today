@@ -6,8 +6,9 @@ import { ModalProvider } from 'styled-react-modal'
 import Theme from 'theme'
 import { Navigation, Router, Header } from './components'
 import THEMES from '../sharedComponents/colors'
-import { TColorTheme, TDateFormat, TWeekStart } from 'sharedTypes';
+import { TBackupInterval, TColorTheme, TDateFormat, TWeekStart } from 'sharedTypes';
 import useLocalStorage from '../localStorage';
+import { automatedBackup } from './pages/Backups';
 
 const HAS_DONE_WARM_START = 'HAS_DONE_WARM_START'
 const TRUE = 'TRUE'
@@ -16,7 +17,8 @@ const warmStart = () => {
     const DEFAULT_SETTINGS = {
       dateFormat: TDateFormat.A,
       weekStart: TWeekStart.SUNDAY,
-      colorTheme: TColorTheme.BEACH
+      colorTheme: TColorTheme.BEACH,
+      backupInterval: TBackupInterval.DAILY
     }
 
     Object
@@ -42,12 +44,11 @@ const ModalBackground = styled.div`
     align-items: center;
     
     > div {
-        padding: 1rem;
+        padding: 2rem;
         border: ${({theme}) => theme.FOREGROUND_TEXT } solid 2px;
         background-color: ${({theme}) => theme.BACKGROUND_PRIMARY };
         position: static;
         max-width: 80vw;
-        min-width: 500px;
         max-height: 80vh;
         overflow-y: scroll;
     }
@@ -64,6 +65,8 @@ const App = () => {
   }, [])
   const [colorTheme] = useLocalStorage('colorTheme'); 
   
+  React.useEffect(() => automatedBackup(), [])
+
   if (isLoading) {
     return <p>Loading...</p>
 }

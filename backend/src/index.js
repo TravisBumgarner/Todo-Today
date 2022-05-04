@@ -1,4 +1,5 @@
 const path = require("path");
+const fs = require('fs')
 
 const { app, BrowserWindow, ipcMain, Menu } = require('electron')
 
@@ -7,21 +8,6 @@ const isDebugProduction = true // Set to True to debug
 const isMac = process.platform === 'darwin'
 if (isDev) require('electron-reloader')(module)
 let mainWindow
-
-const knexConfig = {
-    client: 'sqlite3',
-    connection: {
-        filename: path.resolve(app.getPath('appData'), app.name, 'db.sqlite')
-    },
-    migrations: {
-        directory: './migrations'
-    },
-    seeds: {
-        directory: './seeds'
-    },
-    useNullAsDefault: true
-}
-const knex = require('knex')(knexConfig)
 
 const template = [
     ...(isMac ? [{
@@ -85,14 +71,15 @@ app.on('window-all-closed', function() {
     if (process.platform !== 'darwin') app.quit()
 })
 
-ipcMain.handle('hydrate-app', async(event, arg) => {
-    const data = await knex.raw('select * from jsondump')
-    return data[0] && data[0].jsondump ? data[0].jsondump : null
-})
-
-ipcMain.on('state-change', async(event, arg) => {
-    console.log("state-change", arg)
-    await knex.raw("delete from jsondump;")
-    await knex.raw(` insert into jsondump (jsondump) values ('${arg.payload}');`)
-    console.log('state-change')
+ipcMain.handle('backup', async(event, arg) => {
+    try {
+        const dirname = path.resolve(app.getPath('appData'), app.name, 'backups')
+        if (!fs.existsSync(dirname)) {
+            fs.mkdirSync(dirname);
+        }
+        fs.writeFileSync(path.resolve(dirname, arg.filename), arg.data, 'utf8');
+        return { isSuccess: true }
+    } catch (e) {
+        return { isSuccess: false, message: JSON.stringify(e) }
+    }
 })
