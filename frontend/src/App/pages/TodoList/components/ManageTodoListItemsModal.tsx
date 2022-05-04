@@ -1,10 +1,11 @@
 import React from 'react'
 import moment from 'moment'
 import styled from 'styled-components'
+import { v4 as uuid4 } from 'uuid'
 
 import { Modal, Paragraph, LabelAndInput, BigBoxOfNothing, Heading } from 'sharedComponents'
 import { bucketTasksByProject, formatDateKeyLookup } from 'utilities'
-import { TTask, TTodoListItem } from 'sharedTypes'
+import { TProject, TTask, TTodoListItem } from 'sharedTypes'
 import database from 'database'
 import { useLiveQuery } from 'dexie-react-hooks'
 
@@ -26,20 +27,20 @@ const LabelInDisguise = styled.p`
 const ManageTodoListItemsModal = ({ showModal, setShowModal, todoListItemsByProjectId, selectedDate }: ManageTodoListItemsModalProps) => {
     const projects = useLiveQuery(() => database.projects.toArray())
     const tasks = useLiveQuery(() => database.tasks.toArray())
+    const todoListItems = useLiveQuery(() => database.todoListItems.toArray())
 
     if(!projects){
         return <div>No projects</div>
     }
 
     const tasksByProject = bucketTasksByProject(projects, tasks)
-  
 
     const mapTasksToCheckboxItems = (tasks: TTask[]) => {
         return tasks.map(({ title, id }) => ({
             label: title,
             name: title,
             value: id,
-            checked: false
+            checked: !!todoListItems && todoListItems.some(item => item.taskId === id)
         }))
     }
 
@@ -54,10 +55,10 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, todoListItemsByProj
                 {Object.keys(tasksByProject).map(projectId => {
                     const options = mapTasksToCheckboxItems(tasksByProject[projectId])
                     if (tasksByProject[projectId].length === 0) {
+                        const projectDetails = projects.find(({id}) => id === projectId) as TProject
                         return (
                             <React.Fragment key={projectId}>
-                                <LabelInDisguise>hi</LabelInDisguise>
-                                {/* <LabelInDisguise>{state.projects[projectId].title}</LabelInDisguise> */}
+                                <LabelInDisguise>{projectDetails.title}</LabelInDisguise>
                                 <BigBoxOfNothing message='This project has no tasks. :(' />
                             </React.Fragment>
                         )
@@ -67,17 +68,23 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, todoListItemsByProj
                         <div key={projectId}>
                             <LabelAndInput
                                 handleChange={({ value, checked }) => {
-                                    console.log('item checked')
-                                    // dispatch({
-                                    //     type: "TOGGLE_TODO_LIST_ITEM_FOR_SELECTED_DATE",
-                                    //     payload: { shouldExistOnSelectedDate: checked, projectId, taskId: `${value}`, selectedDate: formatDateKeyLookup(selectedDate) }
-                                    // })
-                                }
-                                }
+                                    if (checked){
+                                        database.todoListItems.add({
+                                            duration: 0,
+                                            projectId,
+                                            id: uuid4(),
+                                            taskId: value as string,
+                                            date:  formatDateKeyLookup(selectedDate)
+                                        })
+                                    } else {
+                                        // cant delete by a key that's not primary
+                                        database.todoListItems.where({taskId: value, date: formatDateKeyLookup(selectedDate)}).delete()
+                                    }
+                                }}
                                 options={options}
                                 name="foo"
                                 value="foo"
-                                label={"FOO!"  } //state.projects[projectId].title
+                                label={ (projects.find(({id}) => id === projectId) as TProject).title  } 
                                 inputType='checkbox'
                             />
                         </div>
