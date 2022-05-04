@@ -3,7 +3,7 @@ import { v4 as uuid4 } from 'uuid'
 
 import { Button, Modal, ButtonWrapper, LabelAndInput } from 'sharedComponents'
 import { TProject, TTask, TTaskStatus } from 'sharedTypes'
-import { context } from 'Context'
+import database from 'database'
 
 type AddTaskModalProps = {
     showModal: boolean
@@ -12,8 +12,6 @@ type AddTaskModalProps = {
 }
 
 const AddTaskModal = ({ showModal, setShowModal, project }: AddTaskModalProps) => {
-    const { dispatch } = React.useContext(context)
-
     const [title, setTitle] = React.useState<string>('')
 
     const handleSubmit = () => {
@@ -23,8 +21,7 @@ const AddTaskModal = ({ showModal, setShowModal, project }: AddTaskModalProps) =
             id: uuid4(),
             projectId: project.id
         }
-
-        dispatch({type: "ADD_TASK", payload: newTask})
+        database.tasks.add(newTask)
         setShowModal(false)
     }
 

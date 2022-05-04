@@ -2,25 +2,49 @@ import React from 'react'
 import moment from 'moment'
 
 import { Button, ButtonWrapper, Heading, LabelAndInput, Paragraph } from 'sharedComponents'
-import { context } from 'Context'
 import { saveFile } from 'utilities'
+import database from 'database'
 
 const Backups = () => {
-    const { state, dispatch } = React.useContext(context)
-    const [backup, setBackup] = React.useState<File | null>(null)
+    const [restore, setRestore] = React.useState<File | null>(null)
 
-    const handleBackup = () => {
-        saveFile(`${moment().toISOString()}.json`, state)
+    const handleBackup = async () => {
+        const data = {
+            projects: await database.projects.toArray(),
+            tasks: await database.tasks.toArray(),
+            todoListItems: await database.todoListItems.toArray(),
+        }
+
+        if (!data) {
+            alert("go make some data first")
+        } else {
+            saveFile(`${moment().toISOString()}.json`, data)
+        }
     }
 
     const handleRestore = () => {
-        if (backup) {
+        if (restore) {
             const reader = new FileReader();
-            reader.readAsText(backup, "UTF-8");
-            reader.onload = function (event) {
+            reader.readAsText(restore, "UTF-8");
+            reader.onload = async function (event) {
                 if (event.target && event.target.result) {
                     const newStore = JSON.parse(event.target.result as string)
-                    dispatch({ type: "HYDRATE_APP", payload: newStore })
+                    
+                    await Promise.all([
+                        database.projects.clear(),
+                        database.tasks.clear(),
+                        database.todoListItems.clear(),
+                    ])
+
+                    await Promise.all([
+                        database.projects.bulkAdd(newStore.projects),
+                        database.tasks.bulkAdd(newStore.tasks),
+                        database.todoListItems.bulkAdd(newStore.todoListItems)
+                    ])
+
+                    setRestore(null)
+
+
                 } else {
                     alert("Invalid backup.")
                 }
@@ -35,8 +59,8 @@ const Backups = () => {
             <ButtonWrapper fullWidth={<Button onClick={() => handleBackup()} fullWidth variation='PRIMARY_BUTTON'>Backup</Button>} />
             <Heading.H2>Restore</Heading.H2>
             <Paragraph>Restore database with a backup copy.</Paragraph>
-            <LabelAndInput handleChange={(file) => setBackup(file)} label="Select a Backup" name={"file"} inputType='file' />
-            <ButtonWrapper fullWidth={<Button disabled={!backup} onClick={() => handleRestore()} fullWidth variation='PRIMARY_BUTTON'>Restore from Backup</Button>} />
+            <LabelAndInput  handleChange={(file) => setRestore(file)} label="Select a Backup" name={"file"} inputType='file' />
+            <ButtonWrapper fullWidth={<Button disabled={!restore} onClick={() => handleRestore()} fullWidth variation='PRIMARY_BUTTON'>Restore from Backup</Button>} />
         </div>
     )
 }

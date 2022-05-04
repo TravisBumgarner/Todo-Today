@@ -23,8 +23,10 @@ module.exports = {
             theme: path.resolve(__dirname, 'src/theme.tsx'),
             utilities: path.resolve(__dirname, 'src/utilities.ts'),
             Context: path.resolve(__dirname, 'src/Context.tsx'),
+            database: path.resolve(__dirname, 'src/database.ts'),
         },
     },
+    devtool: 'source-map',
     devServer: {
         compress: true,
         port: 3003,

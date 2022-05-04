@@ -1,14 +1,32 @@
 import React from 'react';
-import { BrowserRouter, useLocation } from 'react-router-dom'
+import { BrowserRouter } from 'react-router-dom'
 import styled, { ThemeProvider } from 'styled-components';
 import { ModalProvider } from 'styled-react-modal'
 
 import Theme from 'theme'
 import { Navigation, Router, Header } from './components'
-import Context, { context } from 'Context'
 import THEMES from '../sharedComponents/colors'
+import { TColorTheme, TDateFormat, TWeekStart } from 'sharedTypes';
+import useLocalStorage from '../localStorage';
 
-const BackgroundComponent = styled.div`
+const HAS_DONE_WARM_START = 'HAS_DONE_WARM_START'
+const TRUE = 'TRUE'
+
+const warmStart = () => {
+    const DEFAULT_SETTINGS = {
+      dateFormat: TDateFormat.A,
+      weekStart: TWeekStart.SUNDAY,
+      colorTheme: TColorTheme.BEACH
+    }
+
+    Object
+      .keys(DEFAULT_SETTINGS)
+      .forEach((key: keyof typeof DEFAULT_SETTINGS) => localStorage.setItem(key, DEFAULT_SETTINGS[key]))
+
+    localStorage.setItem(HAS_DONE_WARM_START, TRUE)
+}
+
+const ModalBackground = styled.div`
     display: flex;
     position: fixed;
     top: 0;
@@ -16,7 +34,9 @@ const BackgroundComponent = styled.div`
     width: 100vw;
     height: 100vh;
     z-index: 30;
-    background-color: ${({theme}) => theme.BACKGROUND_PRIMARY };
+    background-color: ${props => {
+      return props.theme.BACKGROUND_PRIMARY 
+    }};
     display: flex;
     justify-content: center;
     align-items: center;
@@ -28,16 +48,30 @@ const BackgroundComponent = styled.div`
         position: static;
         max-width: 80vw;
         min-width: 500px;
+        max-height: 80vh;
+        overflow-y: scroll;
     }
 `
+
 const App = () => {
-  const { dispatch, state } = React.useContext(context)
-  const navigate = useLocation()
-  console.log('state', state)
+  const [isLoading, setIsLoading] = React.useState<boolean>(true)
+  
+  React.useEffect(() => {
+    if(!(localStorage.getItem(HAS_DONE_WARM_START) === TRUE)){
+      warmStart()
+    }
+    setIsLoading(false)
+  }, [])
+  const [colorTheme] = useLocalStorage('colorTheme'); 
+  
+  if (isLoading) {
+    return <p>Loading...</p>
+}
+
   return (
-    <ThemeProvider theme={THEMES[state.settings.colorTheme]}>
+    <ThemeProvider theme={THEMES[colorTheme]}>
       <Theme.GlobalStyle />
-      <ModalProvider backgroundComponent={BackgroundComponent}>
+      <ModalProvider backgroundComponent={ModalBackground}>
         <div>
           <Header />
           <Navigation />
@@ -51,9 +85,7 @@ const App = () => {
 const InjectedApp = () => {
   return (
     <BrowserRouter>
-      <Context>
         <App />
-      </Context>
     </BrowserRouter>
   )
 }

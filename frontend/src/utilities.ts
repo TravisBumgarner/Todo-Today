@@ -1,14 +1,20 @@
 import React from 'react'
-
-import { context } from 'Context'
 import moment from 'moment'
-import { TDateFormat, TProject, TProjectStatus, TTask, TDateISODate } from 'sharedTypes'
+
+import { TDateFormat, TProject, TProjectStatus, TTask, TDateISODate, TTaskStatus } from 'sharedTypes'
 
 const projectStatusLookup: Record<TProjectStatus, string> = {
     [TProjectStatus.CANCELED]: "Canceled",
     [TProjectStatus.COMPLETED]: "Completed",
     [TProjectStatus.IN_PROGRESS]: "In Progress",
     [TProjectStatus.NEW]: "New"
+}
+
+const taskStatusLookup: Record<TTaskStatus, string> = {
+    [TTaskStatus.CANCELED]: "Canceled",
+    [TTaskStatus.COMPLETED]: "Completed",
+    [TTaskStatus.IN_PROGRESS]: "In Progress",
+    [TTaskStatus.NEW]: "New"
 }
 
 const dateFormatLookup = {
@@ -18,7 +24,8 @@ const dateFormatLookup = {
     [TDateFormat.D]: 'DD/MM/YY',
 }
 
-const formatDateDisplayString = (dateFormat: TDateFormat, date: moment.Moment | null): string => {
+const formatDateDisplayString = ( date: moment.Moment | null): string => {
+    const dateFormat = localStorage.getItem('dateFormat') as TDateFormat
     if (date === null) {
         return ''
     }
@@ -36,19 +43,22 @@ const formatDurationDisplayString = (rawMinutes: number) => {
 
     const paddedHours = hours < 10 ? '0' + hours : hours
     const paddedMinutes = minutes < 10 ? '0' + minutes : minutes
-    return paddedHours + ':' + paddedMinutes
+    return paddedHours + 'H' + paddedMinutes + "M"
 }
 
-const bucketTasksByProject = (projects: Record<string, TProject>, tasks: Record<string, TTask>) => {
+const bucketTasksByProject = (projects: TProject[], tasks: TTask[] | undefined) => {
     const accumulator: Record<string, TTask[]> = {}
 
-    Object.keys(projects).forEach(key => {
-        accumulator[key] = []
+    projects.forEach(project => {
+        accumulator[project.id] = []
     })
 
-    Object.values(tasks).forEach((curr) => {
-        accumulator[curr.projectId].push(curr)
-    })
+    
+    if(tasks){
+        Object.values(tasks).forEach((curr) => {
+            accumulator[curr.projectId].push(curr)
+        })
+    }
 
     return accumulator
 }
@@ -68,6 +78,7 @@ const saveFile = async (fileName: string, jsonData: Object) => {
 
 export {
     projectStatusLookup,
+    taskStatusLookup,
     formatDateDisplayString,
     formatDateKeyLookup,
     formatDurationDisplayString,

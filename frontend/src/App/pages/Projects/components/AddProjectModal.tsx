@@ -2,11 +2,10 @@ import React from 'react'
 import moment, { Moment } from 'moment'
 import { v4 as uuid4 } from 'uuid'
 
-import { context } from 'Context'
+import database from 'database'
 import { Button, Modal, ButtonWrapper, LabelAndInput } from 'sharedComponents'
 import { TProject, TProjectStatus } from 'sharedTypes'
 import { formatDateKeyLookup } from 'utilities'
-
 
 type AddProjectModalProps = {
     showModal: boolean
@@ -14,22 +13,20 @@ type AddProjectModalProps = {
 }
 
 const AddProjectModal = ({ showModal, setShowModal }: AddProjectModalProps) => {
-    const { dispatch } = React.useContext(context)
 
     const [title, setTitle] = React.useState<string>('')
     const [startDate, setStartDate] = React.useState<Moment>(moment())
     const [endDate, setEndDate] = React.useState<Moment>(moment())
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         const newProject: TProject = {
+            id: uuid4(),
             title,
             startDate: formatDateKeyLookup(moment(startDate)),
             endDate: formatDateKeyLookup(moment(endDate)),
             status: TProjectStatus.NEW,
-            id: uuid4()
         } 
-
-        dispatch({type: "ADD_PROJECT", payload: newProject})
+        await database.projects.add(newProject)
         setShowModal(false)
     }
 

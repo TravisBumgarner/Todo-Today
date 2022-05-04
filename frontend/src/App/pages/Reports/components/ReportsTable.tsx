@@ -1,8 +1,11 @@
 import React from 'react'
-
-import {Table } from 'sharedComponents'
-import { context } from "Context"
 import moment, { Moment } from 'moment'
+import { useLiveQuery } from 'dexie-react-hooks'
+
+import database from 'database'
+import { Table } from 'sharedComponents'
+import { formatDurationDisplayString, sumArray } from 'utilities'
+import { TProject } from 'sharedTypes'
 
 type ReportTableProps = {
     crunchedNumbers: Record<string, Record<string, number>>
@@ -11,20 +14,15 @@ type ReportTableProps = {
 }
 
 const ReportsTable = ({ crunchedNumbers, startDate, endDate }: ReportTableProps) => {
-    const { dispatch, state } = React.useContext(context)
+    const projects = useLiveQuery(async () => {
+        return database.projects.toArray()
+    })
     const dateColumns: string[] = []
     for (var m = moment(startDate); m.isBefore(endDate); m.add(1, 'days')) {
         dateColumns.push(m.format('YYYY-MM-DD'));
     }
-
-    const getDuration = (crunchedNumbers: Record<string, Record<string, number>>, date: string, projectId: string) => {
-        if (date in crunchedNumbers && projectId in crunchedNumbers[date]) {
-            return crunchedNumbers[date][projectId]
-        } else {
-            return 0
-        }
-    }
-
+    
+    if(!projects) return <p>One sec</p>
     return (
         <>
             <Table.Table>
@@ -45,18 +43,22 @@ const ReportsTable = ({ crunchedNumbers, startDate, endDate }: ReportTableProps)
                     </Table.TableRow>
                 </Table.TableHeader>
                 <Table.TableBody>
-                    {Object.keys(state.projects).map(projectId => {
+                    {Object.keys(crunchedNumbers).map(projectId => {
+                        const totalDuration = sumArray(Object.values(crunchedNumbers[projectId]))
+                        const totalDurationDisplay = totalDuration ? formatDurationDisplayString(totalDuration) : '-'
                         return (
                             <Table.TableRow key={projectId}>
-                                <Table.TableBodyCell>{state.projects[projectId].title}</Table.TableBodyCell>
-                                <Table.TableBodyCell>total</Table.TableBodyCell>
+                                <Table.TableBodyCell>{((projects as TProject[]).find(({id}) => id === projectId)  as TProject).title}</Table.TableBodyCell>
+                                <Table.TableBodyCell>{totalDurationDisplay}</Table.TableBodyCell>
                                 {
-                                    dateColumns.map(date => <Table.TableBodyCell key={date}>{getDuration(crunchedNumbers, date, projectId)}</Table.TableBodyCell>)
+                                    dateColumns.map(date => {
+                                        const minutes = crunchedNumbers[projectId][date]
+                                        return <Table.TableBodyCell key={date}>{minutes ? formatDurationDisplayString(minutes) : '-'}</Table.TableBodyCell>
+                                    })
                                 }
                             </Table.TableRow>
                         )
                     })}
-
                 </Table.TableBody>
             </Table.Table>
         </>

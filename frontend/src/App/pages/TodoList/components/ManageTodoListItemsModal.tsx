@@ -1,11 +1,13 @@
 import React from 'react'
 import moment from 'moment'
 import styled from 'styled-components'
+import { v4 as uuid4 } from 'uuid'
+import { useLiveQuery } from 'dexie-react-hooks'
 
-import { context } from 'Context'
-import { Modal, Paragraph, LabelAndInput, BigBoxOfNothing, Heading } from 'sharedComponents'
-import { bucketTasksByProject, formatDateKeyLookup } from 'utilities'
-import { TTask } from 'sharedTypes'
+import { Modal, Paragraph, BigBoxOfNothing, Button, Heading, ButtonWrapper } from 'sharedComponents'
+import {  formatDateKeyLookup } from 'utilities'
+import { TTask, TTodoListItem } from 'sharedTypes'
+import database from 'database'
 
 type ManageTodoListItemsModalProps = {
     showModal: boolean
@@ -13,67 +15,65 @@ type ManageTodoListItemsModalProps = {
     selectedDate: moment.Moment
 }
 
-const LabelInDisguise = styled.p`
-    font-family: 'Comfortaa',cursive;
-    font-size: 1rem;
-    background-color: transparent;
-    font-weight: 700;
-    color: ${({theme}) => theme.FOREGROUND_TEXT};
-`
+const getTasksByProjectId = <T extends TTask>(key: keyof TTask, arrayItems: T[]) => {
+    return arrayItems.reduce((accumulator, current) => {
+        if(!(current[key] in accumulator)){
+            accumulator[current[key]] = []
+        }
+        accumulator[current[key]].push(current)
+        return accumulator
+    },
+    {} as Record<string, T[]>)
+}
+
+const getTodoListTaskIds = (todoListItems: TTodoListItem[]) => todoListItems.map(({taskId}) => taskId)
 
 const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: ManageTodoListItemsModalProps) => {
-    const { state, dispatch } = React.useContext(context)
+    const tasks = useLiveQuery(() => database.tasks.toArray())
+    const projects = useLiveQuery(() => database.projects.toArray())
+    const todoListItems = useLiveQuery(() => database.todoListItems.where({todoListDate: formatDateKeyLookup(selectedDate)}).toArray(), [selectedDate])
 
-    const tasksByProject = bucketTasksByProject(state.projects, state.tasks)
+    if(!tasks || !tasks.length || !projects || !projects.length){
+        return <BigBoxOfNothing message='Go create some tasks and/or projects and come back!' />
+    }
+    const tasksByProjectId = getTasksByProjectId('projectId', tasks)
+    const todoListTaskIds = getTodoListTaskIds(todoListItems || [])
 
-    const mapTasksToCheckboxItems = (tasks: TTask[]) => {
-        return tasks.map(({ title, id, projectId }) => ({
-            label: title,
-            name: title,
-            value: id,
-            checked: state // I'm sorry for having written this lol. 
-                .todoList[formatDateKeyLookup(selectedDate)]
-                .some((todoListItem) => todoListItem.taskId === id && todoListItem.projectId === projectId)
-        }))
+    const handleAdd = ({projectId, taskId}: {projectId: string, taskId: string}) => {
+        database.todoListItems.add({
+            projectId,
+            taskId,
+            duration: 0,
+            id: uuid4(),
+            todoListDate: formatDateKeyLookup(selectedDate)
+        })
     }
 
     return (
         <Modal
-            contentLabel={`Manage ${selectedDate.format('dddd')}'s Tasks`}
+            contentLabel={`Add ${selectedDate.format('dddd')}'s Tasks`}
             showModal={showModal}
             closeModal={() => setShowModal(false)}
         >
             <>
                 <Paragraph>Select tasks to add to the todo list.</Paragraph>
-                {Object.keys(tasksByProject).map(projectId => {
-                    if (tasksByProject[projectId].length === 0) {
+                {
+                    projects.map(({title, id: projectId}) => {
+                        const tasks = tasksByProjectId[projectId].length ? tasksByProjectId[projectId] : []
+                        if(!tasks.length) return null
                         return (
-                            <React.Fragment key={projectId}>
-                                <LabelInDisguise>{state.projects[projectId].title}</LabelInDisguise>
-                                <BigBoxOfNothing message='This project has no tasks. :(' />
-                            </React.Fragment>
-                        )
-                    }
-
-                    return (
-                        <div key={projectId}>
-                            <LabelAndInput
-                                handleChange={({ value, checked }) => {
-                                    dispatch({
-                                        type: "TOGGLE_TODO_LIST_ITEM_FOR_SELECTED_DATE",
-                                        payload: { shouldExistOnSelectedDate: checked, projectId, taskId: `${value}`, selectedDate: formatDateKeyLookup(selectedDate) }
-                                    })
-                                }
-                                }
-                                options={mapTasksToCheckboxItems(tasksByProject[projectId])}
-                                name="foo"
-                                value="foo"
-                                label={state.projects[projectId].title}
-                                inputType='checkbox'
+                            <div key={projectId}>
+                            <Heading.H2>{title}</Heading.H2>
+                            <ButtonWrapper
+                                vertical={tasks.map(({title, id: taskId}) => {
+                                    return <Button key={taskId} fullWidth disabled={todoListTaskIds.includes(taskId)} variation="PRIMARY_BUTTON" onClick={() => handleAdd({projectId, taskId})}>{title}</Button>
+                                })}
                             />
-                        </div>
-                    )
-                })}
+                                
+                            </div>
+                        )
+                    })
+                }
             </>
         </Modal >
     )

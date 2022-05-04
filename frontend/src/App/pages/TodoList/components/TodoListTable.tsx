@@ -1,15 +1,16 @@
 import React from 'react'
 import moment from 'moment'
+import database from 'database'
+import { useLiveQuery } from 'dexie-react-hooks'
 
-import { Button, DropdownMenu, Heading, LabelAndInput, Table } from 'sharedComponents'
-import { TTodoListItem } from 'sharedTypes'
-import { formatDateKeyLookup, projectStatusLookup } from 'utilities'
-import { context } from "Context"
+import { BigBoxOfNothing, Button, DropdownMenu, LabelAndInput, Table } from 'sharedComponents'
+import {  TProject, TTask, TTodoListItem } from 'sharedTypes'
+import { formatDateKeyLookup, taskStatusLookup } from 'utilities'
+
 
 type TodoListTableProps = {
-    projectId: string,
-    todoListItems: TTodoListItem[]
     selectedDate: moment.Moment
+    todoListItems: TTodoListItem[] | undefined
 }
 
 // It is what it is. lol
@@ -113,18 +114,26 @@ const AVAILABLE_DURATIONS = [
     { label: '24:00', value: '1440' }
 ]
 
-const TodoListTable = ({ projectId, todoListItems, selectedDate }: TodoListTableProps) => {
-    const { dispatch, state } = React.useContext(context)
 
-    const project = state.projects[projectId]
-    const tasksAndDurations = todoListItems.map(({ taskId, duration }) => ({ ...state.tasks[taskId], duration }))
-    
+const TodoListTable = ({ selectedDate, todoListItems }: TodoListTableProps) => {
+    const tableRows = useLiveQuery(async () => {
+        return await Promise.all([...todoListItems || []].map(async todoListItem => {
+            const task = (await database.tasks.where({ id: todoListItem.taskId }).first()) as TTask
+            const project = (await database.projects.where({ id: todoListItem.projectId }).first()) as TProject
+            return { projectTitle: project.title, taskTitle: task.title, status: task.status, duration: todoListItem.duration, taskId: task.id, todoListItemId: todoListItem.id, projectId: todoListItem.projectId }
+        }))
+    }, [todoListItems])
+
+    if(!tableRows){
+        return <BigBoxOfNothing message='Click Add Tasks above to get started' />
+    }
+
     return (
         <>
-            <Heading.H3>{project.title}</Heading.H3>
             <Table.Table>
                 <Table.TableHeader>
                     <Table.TableRow>
+                        <Table.TableHeaderCell width="35%" scope="col">Project</Table.TableHeaderCell>
                         <Table.TableHeaderCell width="35%" scope="col">Task</Table.TableHeaderCell>
                         <Table.TableHeaderCell width="15%" scope="col">Status</Table.TableHeaderCell>
                         <Table.TableHeaderCell width="20%" scope="col">Duration</Table.TableHeaderCell>
@@ -132,31 +141,47 @@ const TodoListTable = ({ projectId, todoListItems, selectedDate }: TodoListTable
                     </Table.TableRow>
                 </Table.TableHeader>
                 <Table.TableBody>
-                    {tasksAndDurations
-                        .sort((a, b) => a.title > b.title ? 1 : -1)
-                        .map(({ title, status, id, duration }) => (
-                            <Table.TableRow key={id}>
-                                <Table.TableBodyCell>{title}</Table.TableBodyCell>
-                                <Table.TableBodyCell>{projectStatusLookup[status]}</Table.TableBodyCell>
-                                <Table.TableBodyCell>
-                                    <LabelAndInput
-                                        label="Duration"
-                                        name="duration"
-                                        value={`${duration}`}
-                                        options={AVAILABLE_DURATIONS}
-                                        inputType="select-array"
-                                        handleChange={(value) => {
-                                            dispatch({ type: "EDIT_TODO_LIST_ITEM", payload: {  isChecked: true, projectId, taskId: id, duration: parseInt(value, 10), selectedDate: formatDateKeyLookup(selectedDate) } })}
-                                        }
-                                    /></Table.TableBodyCell>
-                                <Table.TableBodyCell>
-                                    <DropdownMenu title="Actions">{
-                                        [<Button fullWidth key="remove" variation="PRIMARY_BUTTON" onClick={() => dispatch({type: "TOGGLE_TODO_LIST_ITEM_FOR_SELECTED_DATE", payload: { projectId, shouldExistOnSelectedDate: false, taskId: id, selectedDate: formatDateKeyLookup(selectedDate)}})}>Remove</Button>]
-                                    }</DropdownMenu>
-
-                                </Table.TableBodyCell>
-                            </Table.TableRow>
-                        ))}
+                    {
+                        tableRows.map(({ taskId, duration, projectTitle, taskTitle, status, todoListItemId, projectId }) => {
+                            return (
+                                <Table.TableRow key={taskId}>
+                                    <Table.TableBodyCell width="35%" scope="col">{projectTitle}</Table.TableBodyCell>
+                                    <Table.TableBodyCell width="35%" scope="col">{taskTitle}</Table.TableBodyCell>
+                                    <Table.TableBodyCell width="15%" scope="col">{taskStatusLookup[status]}</Table.TableBodyCell>
+                                    <Table.TableBodyCell width="20%" scope="col">
+                                        <LabelAndInput
+                                            label="Duration"
+                                            name="duration"
+                                            value={`${duration}`}
+                                            options={AVAILABLE_DURATIONS}
+                                            inputType="select-array"
+                                            handleChange={(value) => {
+                                                database.todoListItems.put(
+                                                    {
+                                                        projectId,
+                                                        id: todoListItemId,
+                                                        taskId,
+                                                        duration: parseInt(value, 10),
+                                                        todoListDate: formatDateKeyLookup(selectedDate)
+                                                    }, [todoListItemId])
+                                            }}
+                                        />
+                                    </Table.TableBodyCell>
+                                    <Table.TableBodyCell>
+                                        <DropdownMenu title="Actions">{
+                                            [<Button
+                                                fullWidth
+                                                key="remove"
+                                                variation="PRIMARY_BUTTON"
+                                                onClick={async() => {
+                                                    await database.todoListItems.where({id: todoListItemId}).delete()
+                                                }}>Remove</Button>]
+                                        }</DropdownMenu>
+                                    </Table.TableBodyCell>
+                                </Table.TableRow>
+                            )
+                        })
+                    }
                 </Table.TableBody>
             </Table.Table>
         </>

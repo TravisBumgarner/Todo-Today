@@ -1,12 +1,13 @@
 import moment, { Moment } from 'moment'
 import React from 'react'
 import styled from 'styled-components'
+import { useLiveQuery } from 'dexie-react-hooks'
 
-import { Heading, LabelAndInput, Button } from 'sharedComponents'
+import database from 'database'
+import { Heading, LabelAndInput, Button, BigBoxOfNothing } from 'sharedComponents'
 import { ReportsTable } from './components'
-import { context } from 'Context'
-import { TTodoList, TTodoListItem } from 'sharedTypes'
-import { stringify } from 'uuid'
+import { TTodoListItem } from 'sharedTypes'
+import { formatDateKeyLookup } from 'utilities'
 
 const FilterWrapper = styled.div`
     display: flex;
@@ -46,7 +47,7 @@ const getSundayDateOfWeek = (selectedDate: Moment) => {
 
 const getSaturdayDateOfWeek = (selectedDate: Moment) => {
     const dayOfWeek = selectedDate.day()
-    const saturday = moment(selectedDate.add(6 - dayOfWeek, 'days'))
+    const saturday = moment(selectedDate.add(7 - dayOfWeek, 'days'))
     return saturday
 }
 
@@ -56,51 +57,42 @@ type CrunchedNumbers = {
     dates: Record<string, number>
 }
 
-const crunchTheNumbers = (datesToCrunch: Record<string, TTodoListItem[]>) => {
-    const output: Record<string, Record<string, number>> = {}
+const crunchTheNumbers = (todoListItems: TTodoListItem[]) => {
+    return todoListItems.reduce((accumulator, { projectId, duration, todoListDate }) => {
+        if (!(projectId in accumulator)) {
+            accumulator[projectId] = {}
+        }
 
-    Object.keys(datesToCrunch).forEach(date => {
-        output[date] = {}
+        if (!(todoListDate in accumulator[projectId])) {
+            accumulator[projectId][todoListDate] = 0
+        }
 
-        datesToCrunch[date].forEach(({ duration, projectId }) => {
-            if(!(projectId in output[date])){
-                output[date][projectId] = 0
-            }
-            output[date][projectId] += duration
-        })
-    })
+        accumulator[projectId][todoListDate] += duration
 
-    return output
+        return accumulator
+
+    }, {} as Record<string, Record<string, number>>)
 }
 
 const Reports = () => {
-    const { state } = React.useContext(context)
-    const [startDate, setStartDate] = React.useState<Moment>(moment().subtract(5, 'days'))
-    const [endDate, setEndDate] = React.useState<Moment>(moment().add(5, 'days'))
-    const [selectedDate, setSelectedDate] = React.useState<Moment>(moment())
-    const [crunchedNumbers, setCrunchedNumbers] = React.useState<Record<string, Record<string, number>>>({})
-    
-    React.useEffect(() => {
-        const datesToCrunch: Record<string, TTodoListItem[]> = {}
+    const [startDate, setStartDate] = React.useState<Moment>(getSundayDateOfWeek(moment()))
+    const [endDate, setEndDate] = React.useState<Moment>(getSaturdayDateOfWeek(moment()))
 
-        Object
-            .keys(state.todoList)
-            .filter((date) => moment(date) > startDate && moment(date) < endDate)
-            .forEach(date => datesToCrunch[date] = state.todoList[date])
-        setCrunchedNumbers(crunchTheNumbers(datesToCrunch))
+    const filteredTodoListItems = useLiveQuery(async () => {
+        return database.todoListItems.where('todoListDate').between(formatDateKeyLookup(startDate), formatDateKeyLookup(endDate), true, true).toArray()
     }, [startDate, endDate])
 
     const setQuickFilter = (quickFilter: TQuickFilterOptions) => {
         switch (quickFilter) {
             case TQuickFilterOptions.THIS_WEEK: {
-                const sunday = getSundayDateOfWeek(selectedDate)
-                const saturday = getSaturdayDateOfWeek(selectedDate)
+                const sunday = getSundayDateOfWeek(moment())
+                const saturday = getSaturdayDateOfWeek(moment())
                 setStartDate(moment(sunday))
                 setEndDate(moment(saturday))
                 return
             }
             case TQuickFilterOptions.LAST_WEEK: {
-                const sevenDaysAgo = moment(selectedDate).subtract(7, 'days')
+                const sevenDaysAgo = moment(moment()).subtract(7, 'days')
                 const sunday = getSundayDateOfWeek(sevenDaysAgo)
                 const saturday = getSaturdayDateOfWeek(sevenDaysAgo)
                 setStartDate(moment(sunday))
@@ -109,7 +101,6 @@ const Reports = () => {
             }
         }
     }
-
 
     return (
         <>
@@ -129,7 +120,7 @@ const Reports = () => {
                     handleChange={(date) => setEndDate(moment(date))}
                 />
                 <div style={{ margin: '2rem 1rem 2rem 0rem' }}>
-                    <LabelInDisguise>Quick Filters</LabelInDisguise>
+                    <LabelInDisguise>Quick Reports</LabelInDisguise>
                     <FiltersWrapper>
                         <Button variation='PRIMARY_BUTTON' onClick={() => setQuickFilter(TQuickFilterOptions.THIS_WEEK)}>This Week</Button>
                         <Button variation='PRIMARY_BUTTON' onClick={() => setQuickFilter(TQuickFilterOptions.LAST_WEEK)} >Last Week</Button>
@@ -137,7 +128,11 @@ const Reports = () => {
                 </div>
             </FilterWrapper>
             <Heading.H2>Reports</Heading.H2>
-            <ReportsTable startDate={startDate} endDate={endDate} crunchedNumbers={crunchedNumbers} />
+            {
+                !filteredTodoListItems || !filteredTodoListItems.length
+                    ? <BigBoxOfNothing message="No data exists for these dates." />
+                    : <ReportsTable startDate={startDate} endDate={endDate} crunchedNumbers={crunchTheNumbers(filteredTodoListItems)} />
+            }
         </>
     )
 }

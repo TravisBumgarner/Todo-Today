@@ -3,20 +3,16 @@ import moment, { Moment } from 'moment'
 
 import { Button, Modal, ButtonWrapper, LabelAndInput } from 'sharedComponents'
 import { TProject, TProjectStatus } from 'sharedTypes'
-import {context } from 'Context'
 import { formatDateKeyLookup, projectStatusLookup } from 'utilities'
+import database from 'database'
 
 type EditProjectModalProps = {
-    selectedProjectId: TProject['id']
+    project: TProject
     showModal: boolean
     setShowModal: (showModal: boolean) => void
 }
 
-const EditProjectModal = ({ showModal, setShowModal, selectedProjectId }: EditProjectModalProps) => {
-    const { dispatch, state } = React.useContext(context)
-
-    const project = state.projects[selectedProjectId]
-
+const EditProjectModal = ({ showModal, setShowModal, project }: EditProjectModalProps) => {
     const [title, setTitle] = React.useState<string>(project.title)
     const [startDate, setStartDate] = React.useState<Moment | null>(project.startDate ? moment(project.startDate) : null)
     const [endDate, setEndDate] = React.useState<Moment | null>(project.endDate ? moment(project.endDate) : null)
@@ -31,8 +27,7 @@ const EditProjectModal = ({ showModal, setShowModal, selectedProjectId }: EditPr
             status,
             id: project.id
         }
-        
-        dispatch({type: "EDIT_PROJECT", payload: editedProject})
+        database.projects.put(editedProject, [project.id])
         setShowModal(false)
     }
 
