@@ -47,7 +47,7 @@ const getSundayDateOfWeek = (selectedDate: Moment) => {
 
 const getSaturdayDateOfWeek = (selectedDate: Moment) => {
     const dayOfWeek = selectedDate.day()
-    const saturday = moment(selectedDate.add(6 - dayOfWeek, 'days'))
+    const saturday = moment(selectedDate.add(7 - dayOfWeek, 'days'))
     return saturday
 }
 
