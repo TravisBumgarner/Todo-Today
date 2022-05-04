@@ -46,7 +46,7 @@ const ReportsTable = ({ crunchedNumbers, startDate, endDate }: ReportTableProps)
                                 {
                                     dateColumns.map(date => {
                                         const minutes = crunchedNumbers[projectId][date]
-                                        return <Table.TableBodyCell>{minutes ? formatDurationDisplayString(minutes) : '-'}</Table.TableBodyCell>
+                                        return <Table.TableBodyCell key={date}>{minutes ? formatDurationDisplayString(minutes) : '-'}</Table.TableBodyCell>
                                     })
                                 }
                             </Table.TableRow>

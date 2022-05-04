@@ -3,16 +3,14 @@ import moment from 'moment'
 import database from 'database'
 import { useLiveQuery } from 'dexie-react-hooks'
 
-import { Button, DropdownMenu, Heading, LabelAndInput, Table } from 'sharedComponents'
-import { TProject, TTask, TTodoListItem } from 'sharedTypes'
+import { BigBoxOfNothing, Button, DropdownMenu, LabelAndInput, Table } from 'sharedComponents'
+import {  TProject, TTask, TTodoListItem } from 'sharedTypes'
 import { formatDateKeyLookup, taskStatusLookup } from 'utilities'
-import { useNavigate } from 'react-router-dom'
 
 
 type TodoListTableProps = {
-    projectId: string,
     selectedDate: moment.Moment
-    todoListItems: TTodoListItem[]
+    todoListItems: TTodoListItem[] | undefined
 }
 
 // It is what it is. lol
@@ -117,28 +115,25 @@ const AVAILABLE_DURATIONS = [
 ]
 
 
-const TodoListTable = ({ projectId, selectedDate, todoListItems }: TodoListTableProps) => {
-    const lookupDate = formatDateKeyLookup(selectedDate)
-    const project = useLiveQuery(() => database.projects.where({ id: projectId }).first())
-    const navigate = useNavigate()
-
+const TodoListTable = ({ selectedDate, todoListItems }: TodoListTableProps) => {
     const tableRows = useLiveQuery(async () => {
-        return await Promise.all([...todoListItems].map(async todoListItem => {
+        return await Promise.all([...todoListItems || []].map(async todoListItem => {
             const task = (await database.tasks.where({ id: todoListItem.taskId }).first()) as TTask
-            return { title: task.title, status: task.status, duration: todoListItem.duration, taskId: task.id, todoListItemId: todoListItem.id }
+            const project = (await database.projects.where({ id: todoListItem.projectId }).first()) as TProject
+            return { projectTitle: project.title, taskTitle: task.title, status: task.status, duration: todoListItem.duration, taskId: task.id, todoListItemId: todoListItem.id, projectId: todoListItem.projectId }
         }))
     }, [todoListItems])
 
-    if (!project || !tableRows) {
-        return <p>Error</p>
+    if(!tableRows){
+        return <BigBoxOfNothing message='Click Add Tasks above to get started' />
     }
 
     return (
         <>
-            <Heading.H3>{project.title}</Heading.H3>
             <Table.Table>
                 <Table.TableHeader>
                     <Table.TableRow>
+                        <Table.TableHeaderCell width="35%" scope="col">Project</Table.TableHeaderCell>
                         <Table.TableHeaderCell width="35%" scope="col">Task</Table.TableHeaderCell>
                         <Table.TableHeaderCell width="15%" scope="col">Status</Table.TableHeaderCell>
                         <Table.TableHeaderCell width="20%" scope="col">Duration</Table.TableHeaderCell>
@@ -147,10 +142,11 @@ const TodoListTable = ({ projectId, selectedDate, todoListItems }: TodoListTable
                 </Table.TableHeader>
                 <Table.TableBody>
                     {
-                        tableRows.map(({ taskId, duration, title, status, todoListItemId }) => {
+                        tableRows.map(({ taskId, duration, projectTitle, taskTitle, status, todoListItemId, projectId }) => {
                             return (
                                 <Table.TableRow key={taskId}>
-                                    <Table.TableBodyCell width="35%" scope="col">{title}</Table.TableBodyCell>
+                                    <Table.TableBodyCell width="35%" scope="col">{projectTitle}</Table.TableBodyCell>
+                                    <Table.TableBodyCell width="35%" scope="col">{taskTitle}</Table.TableBodyCell>
                                     <Table.TableBodyCell width="15%" scope="col">{taskStatusLookup[status]}</Table.TableBodyCell>
                                     <Table.TableBodyCell width="20%" scope="col">
                                         <LabelAndInput

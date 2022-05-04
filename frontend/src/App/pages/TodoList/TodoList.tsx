@@ -2,23 +2,15 @@ import React from 'react'
 import moment from 'moment'
 import { useLiveQuery } from 'dexie-react-hooks'
 
-import { BigBoxOfNothing, Button, ButtonWrapper, Heading, Paragraph } from 'sharedComponents'
-import { TTodoListItem } from 'sharedTypes'
+import { Button, ButtonWrapper, Heading } from 'sharedComponents'
 import { TodoListTable, ManageTodoListItemsModal } from './components'
 import { formatDateDisplayString, formatDateKeyLookup } from 'utilities'
 import database from 'database'
 
-const getProjectIdsWithTodoListItems = (todoListItems: TTodoListItem[]) => {
-    const ids: string[] = []
-    todoListItems.forEach(({ projectId }) => {
-        if (!ids.includes(projectId)) ids.push(projectId)
-    })
-    return ids
-}
-
 const TodoList = () => {
     const [selectedDate, setSelectedDate] = React.useState<moment.Moment>(moment())
     const [showManagementModal, setShowManagementModal] = React.useState<boolean>(false)
+
     const todoListItems = useLiveQuery(() =>
         database
             .todoListItems
@@ -27,6 +19,7 @@ const TodoList = () => {
             .toArray(),
         [formatDateKeyLookup(selectedDate)]
     )
+
 
     const getPreviousDay = () => {
         setSelectedDate(moment(selectedDate).subtract(1, 'day'))
@@ -47,13 +40,11 @@ const TodoList = () => {
                     <Button key="next" onClick={getNextDay} variation='PRIMARY_BUTTON'>Next</Button>,
                     <Button key="today" onClick={getToday} variation='PRIMARY_BUTTON'>Today</Button>,
                 ]}
-                right={[<Button key="manage" onClick={() => setShowManagementModal(true)} variation='PRIMARY_BUTTON'>Manage Tasks</Button>]}
+                right={[<Button key="manage" onClick={() => setShowManagementModal(true)} variation='PRIMARY_BUTTON'>Add Tasks</Button>]}
             />
             {
-                todoListItems && todoListItems.length
-                    ? (
-                        getProjectIdsWithTodoListItems(todoListItems).map(projectId => <TodoListTable key={projectId} todoListItems={todoListItems} selectedDate={selectedDate} projectId={projectId} />)
-                    ) : <BigBoxOfNothing message='Click Manage Tasks above to get started' />
+                <TodoListTable todoListItems={todoListItems} selectedDate={selectedDate} />
+
             }
 
 

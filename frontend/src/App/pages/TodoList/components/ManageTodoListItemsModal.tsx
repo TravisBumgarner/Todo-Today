@@ -4,9 +4,9 @@ import styled from 'styled-components'
 import { v4 as uuid4 } from 'uuid'
 import { useLiveQuery } from 'dexie-react-hooks'
 
-import { Modal, Paragraph, BigBoxOfNothing } from 'sharedComponents'
+import { Modal, Paragraph, BigBoxOfNothing, Button } from 'sharedComponents'
 import {  formatDateKeyLookup } from 'utilities'
-import { TTask } from 'sharedTypes'
+import { TTask, TTodoList, TTodoListItem } from 'sharedTypes'
 import database from 'database'
 
 type ManageTodoListItemsModalProps = {
@@ -34,16 +34,18 @@ const getTasksByProjectId = <T extends TTask>(key: keyof TTask, arrayItems: T[])
     {} as Record<string, T[]>)
 }
 
+const getTodoListTaskIds = (todoListItems: TTodoListItem[]) => todoListItems.map(({taskId}) => taskId)
 
 const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: ManageTodoListItemsModalProps) => {
     const tasks = useLiveQuery(() => database.tasks.toArray())
     const projects = useLiveQuery(() => database.projects.toArray())
-    const todoListItems = useLiveQuery(() => database.todoListItems.toArray())
+    const todoListItems = useLiveQuery(() => database.todoListItems.where({todoListDate: formatDateKeyLookup(selectedDate)}).toArray(), [selectedDate])
 
     if(!tasks || !tasks.length || !projects || !projects.length){
         return <BigBoxOfNothing message='Go create some tasks and/or projects and come back!' />
     }
     const tasksByProjectId = getTasksByProjectId('projectId', tasks)
+    const todoListTaskIds = getTodoListTaskIds(todoListItems || [])
 
     const handleAdd = ({projectId, taskId}: {projectId: string, taskId: string}) => {
         database.todoListItems.add({
@@ -57,7 +59,7 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
 
     return (
         <Modal
-            contentLabel={`Manage ${selectedDate.format('dddd')}'s Tasks`}
+            contentLabel={`Add ${selectedDate.format('dddd')}'s Tasks`}
             showModal={showModal}
             closeModal={() => setShowModal(false)}
         >
@@ -69,8 +71,8 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
                             <div key={projectId}>
                             {title}
                             <ul>
-                                {tasksByProjectId.length && tasksByProjectId[projectId].map(({title, id: taskId}) => {
-                                    return <li key={taskId}><button onClick={() => handleAdd({projectId, taskId})}>{title}</button></li>
+                                {tasksByProjectId[projectId].length && tasksByProjectId[projectId].map(({title, id: taskId}) => {
+                                    return <li key={taskId}><Button disabled={todoListTaskIds.includes(taskId)} variation="PRIMARY_BUTTON" onClick={() => handleAdd({projectId, taskId})}>{title}</Button></li>
                                 })}
                             </ul>
                             </div>
