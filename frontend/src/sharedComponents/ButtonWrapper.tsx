@@ -12,9 +12,7 @@ const ButtonWrapperWrapper = styled.div`
     display: flex;
     margin: 2rem 0;
 
-    div {
-        width: calc(100% / 2);
-    }
+    justify-content: space-between;
 
     div:nth-child(1) {
         text-align: left;

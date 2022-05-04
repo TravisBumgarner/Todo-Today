@@ -8,6 +8,7 @@ PR-4
 Weird Dexie Quirks
 - For whatever Reason I could not get the project to be filtered / found with the EditProjectModal
 - Delete database as you add new tables
+- need a where with delete
 
 Next PR
 

@@ -2,13 +2,20 @@ import React from 'react'
 
 // import { context } from 'Context'
 import moment from 'moment'
-import { TDateFormat, TProject, TProjectStatus, TTask, TDateISODate } from 'sharedTypes'
+import { TDateFormat, TProject, TProjectStatus, TTask, TDateISODate, TTaskStatus } from 'sharedTypes'
 
 const projectStatusLookup: Record<TProjectStatus, string> = {
     [TProjectStatus.CANCELED]: "Canceled",
     [TProjectStatus.COMPLETED]: "Completed",
     [TProjectStatus.IN_PROGRESS]: "In Progress",
     [TProjectStatus.NEW]: "New"
+}
+
+const taskStatusLookup: Record<TTaskStatus, string> = {
+    [TTaskStatus.CANCELED]: "Canceled",
+    [TTaskStatus.COMPLETED]: "Completed",
+    [TTaskStatus.IN_PROGRESS]: "In Progress",
+    [TTaskStatus.NEW]: "New"
 }
 
 const dateFormatLookup = {
@@ -72,6 +79,7 @@ const saveFile = async (fileName: string, jsonData: Object) => {
 
 export {
     projectStatusLookup,
+    taskStatusLookup,
     formatDateDisplayString,
     formatDateKeyLookup,
     formatDurationDisplayString,
