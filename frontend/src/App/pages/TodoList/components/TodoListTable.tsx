@@ -4,7 +4,7 @@ import database from 'database'
 import { useLiveQuery } from 'dexie-react-hooks'
 
 import { Button, DropdownMenu, Heading, LabelAndInput, Table } from 'sharedComponents'
-import { TProject, TTodoListItem } from 'sharedTypes'
+import { TProject, TTask, TTodoListItem } from 'sharedTypes'
 import { formatDateKeyLookup, projectStatusLookup } from 'utilities'
 import { useNavigate } from 'react-router-dom'
 
@@ -116,17 +116,20 @@ const AVAILABLE_DURATIONS = [
     { label: '24:00', value: '1440' }
 ]
 
-const convertObjectArrayToLookupByKey = () => {
-
-}
 
 const TodoListTable = ({ projectId, selectedDate, todoListItems }: TodoListTableProps) => {
     const lookupDate = formatDateKeyLookup(selectedDate)
-    const project = useLiveQuery(() => database.projects.where({id: projectId}).first())
+    const project = useLiveQuery(() => database.projects.where({ id: projectId }).first())
     const navigate = useNavigate()
 
-    console.log(projectId, 'gives', project)
-    if(!project) {
+    const tableRows = useLiveQuery(async () => {
+        return await Promise.all([...todoListItems].map(async todoListItem => {
+            const task = (await database.tasks.where({ id: todoListItem.taskId }).first()) as TTask
+            return { title: task.title, status: task.status, duration: todoListItem.duration, taskId: task.id, todoListItemId: todoListItem.id }
+        }))
+    })
+
+    if (!project || !tableRows) {
         return <p>Error</p>
     }
 
@@ -142,6 +145,20 @@ const TodoListTable = ({ projectId, selectedDate, todoListItems }: TodoListTable
                         <Table.TableHeaderCell width="20%" scope="col">Actions</Table.TableHeaderCell>
                     </Table.TableRow>
                 </Table.TableHeader>
+                <Table.TableBody>
+                    {
+                        tableRows.map(({ taskId, duration, title, status }) => {
+                            return (
+                                <Table.TableRow key={taskId}>
+                                    <Table.TableHeaderCell width="35%" scope="col">{title}</Table.TableHeaderCell>
+                                    <Table.TableHeaderCell width="15%" scope="col">{status}</Table.TableHeaderCell>
+                                    <Table.TableHeaderCell width="20%" scope="col">{duration}</Table.TableHeaderCell>
+                                    <Table.TableHeaderCell width="20%" scope="col">Actions</Table.TableHeaderCell>
+                                </Table.TableRow>
+                            )
+                        })
+                    }
+                </Table.TableBody>
             </Table.Table>
         </>
     )
