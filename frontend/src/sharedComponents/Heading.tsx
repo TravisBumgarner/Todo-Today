@@ -7,7 +7,7 @@ const H1 = styled.h1`
 
 const H2 = styled.h2`
     color: ${({theme}) => theme.ALERT_BUTTON };
-    margin: 1rem 0;
+    margin: 1.5rem 0 1rem 0;
 `
 
 const H3 = styled.h3`
