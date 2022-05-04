@@ -7,8 +7,8 @@ PR-4
      - [ ] Manage Tasks Modal Needs to be cleaned up
      - [ ] Don't let user add task twice for a day.
      - [x] Figure out Backups
-- [ ] Clean up dead code
-- [ ] Clean up Sloppy imports
+- [x] Clean up dead code
+- [x] Clean up Sloppy imports
 
 
 
@@ -18,6 +18,7 @@ Weird Dexie Quirks
 - need a where with delete
 
 Next PR
+- [ ] Look into race conditions with random like in ReportsTable.tsx with having to return early. 
 - [ ] Fix broken manage tasks modal
 - [ ] If you click and drag on the modal outside of the modal it closes itself
 - [ ] Add automatic backup to localdata

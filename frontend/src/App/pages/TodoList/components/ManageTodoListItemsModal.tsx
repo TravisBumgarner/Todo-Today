@@ -6,7 +6,7 @@ import { useLiveQuery } from 'dexie-react-hooks'
 
 import { Modal, Paragraph, BigBoxOfNothing, Button, Heading, ButtonWrapper } from 'sharedComponents'
 import {  formatDateKeyLookup } from 'utilities'
-import { TTask, TTodoList, TTodoListItem } from 'sharedTypes'
+import { TTask, TTodoListItem } from 'sharedTypes'
 import database from 'database'
 
 type ManageTodoListItemsModalProps = {
@@ -14,14 +14,6 @@ type ManageTodoListItemsModalProps = {
     setShowModal: (showModal: boolean) => void
     selectedDate: moment.Moment
 }
-
-const LabelInDisguise = styled.p`
-    font-family: 'Comfortaa',cursive;
-    font-size: 1rem;
-    background-color: transparent;
-    font-weight: 700;
-    color: ${({theme}) => theme.FOREGROUND_TEXT};
-`
 
 const getTasksByProjectId = <T extends TTask>(key: keyof TTask, arrayItems: T[]) => {
     return arrayItems.reduce((accumulator, current) => {

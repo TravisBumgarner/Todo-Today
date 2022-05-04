@@ -6,8 +6,6 @@ import database from 'database'
 import { Button, Modal, ButtonWrapper, LabelAndInput } from 'sharedComponents'
 import { TProject, TProjectStatus } from 'sharedTypes'
 import { formatDateKeyLookup } from 'utilities'
-import { useLiveQuery } from 'dexie-react-hooks'
-
 
 type AddProjectModalProps = {
     showModal: boolean

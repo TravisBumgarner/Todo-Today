@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, useLocation } from 'react-router-dom'
+import { BrowserRouter } from 'react-router-dom'
 import styled, { ThemeProvider } from 'styled-components';
 import { ModalProvider } from 'styled-react-modal'
 
@@ -55,7 +55,6 @@ const ModalBackground = styled.div`
 
 const App = () => {
   const [isLoading, setIsLoading] = React.useState<boolean>(true)
-  const navigate = useLocation()
   
   React.useEffect(() => {
     if(!(localStorage.getItem(HAS_DONE_WARM_START) === TRUE)){
@@ -86,9 +85,7 @@ const App = () => {
 const InjectedApp = () => {
   return (
     <BrowserRouter>
-      {/* <Context> */}
         <App />
-      {/* </Context> */}
     </BrowserRouter>
   )
 }

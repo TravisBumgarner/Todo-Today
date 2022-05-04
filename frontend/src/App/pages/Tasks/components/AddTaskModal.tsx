@@ -3,9 +3,7 @@ import { v4 as uuid4 } from 'uuid'
 
 import { Button, Modal, ButtonWrapper, LabelAndInput } from 'sharedComponents'
 import { TProject, TTask, TTaskStatus } from 'sharedTypes'
-// import { context } from 'Context'
 import database from 'database'
-import { useLiveQuery } from 'dexie-react-hooks'
 
 type AddTaskModalProps = {
     showModal: boolean
@@ -14,8 +12,6 @@ type AddTaskModalProps = {
 }
 
 const AddTaskModal = ({ showModal, setShowModal, project }: AddTaskModalProps) => {
-    // const { dispatch } = React.useContext(context)
-
     const [title, setTitle] = React.useState<string>('')
 
     const handleSubmit = () => {

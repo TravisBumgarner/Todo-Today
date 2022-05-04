@@ -5,7 +5,6 @@ import { Button, Modal, ButtonWrapper, LabelAndInput } from 'sharedComponents'
 import { TProject, TTask, TTaskStatus } from 'sharedTypes'
 import {projectStatusLookup} from 'utilities'
 import database from 'database'
-import { useLiveQuery } from 'dexie-react-hooks'
 
 type EditTaskModalProps = {
     showModal: boolean
@@ -15,8 +14,6 @@ type EditTaskModalProps = {
 }
 
 const EditTaskModal = ({ showModal, setShowModal, project, task }: EditTaskModalProps) => {
-    // const { dispatch, state } = React.useContext(context)
-
     const [title, setTitle] = React.useState<string>(task.title)
     const [status, setStatus] = React.useState<TTaskStatus>(task.status)
     const [submitDisabled, setSubmitDisabled] = React.useState<boolean>(true)

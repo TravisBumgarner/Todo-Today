@@ -1,12 +1,11 @@
 import React from 'react'
 import moment, { Moment } from 'moment'
 import useLocalStorage from '../../localStorage'
+import styled from 'styled-components'
 
 import { TColorTheme, TDateFormat, TWeekStart } from 'sharedTypes'
 import { Button, ButtonWrapper, Heading, LabelAndInput } from 'sharedComponents'
-// import { context } from 'Context'
 import { dateFormatLookup } from 'utilities'
-import styled from 'styled-components'
 
 const dateFormatForUser = (format: TDateFormat, date: Moment) => {
     return {
@@ -42,7 +41,6 @@ enum TTabs {
 }
 
 const Settings = () => {
-    // const { state, dispatch } = React.useContext(context)
     const [colorTheme, setColorTheme] = useLocalStorage('colorTheme'); 
     const [weekStart, setWeekStart] = useLocalStorage('weekStart'); 
     const [dateFormat, setDateFormat] = useLocalStorage('dateFormat'); 
@@ -78,9 +76,6 @@ const Settings = () => {
                 options={TColorTheme}
                 optionLabels={colorThemeOptionLabels}
             />
-            {/* <ButtonWrapper fullWidth={
-                <Button type="button" fullWidth disabled={submitDisabled} key="edit" variation="PRIMARY_BUTTON" onClick={handleSubmit}>Submit</Button>
-            } /> */}
         </form>
         </>
     )

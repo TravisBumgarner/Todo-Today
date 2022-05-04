@@ -1,10 +1,8 @@
 import React from 'react'
 import moment, { Moment } from 'moment'
-import { useLiveQuery } from 'dexie-react-hooks'
 
 import { Button, Modal, ButtonWrapper, LabelAndInput } from 'sharedComponents'
 import { TProject, TProjectStatus } from 'sharedTypes'
-// import {context } from 'Context'
 import { formatDateKeyLookup, projectStatusLookup } from 'utilities'
 import database from 'database'
 

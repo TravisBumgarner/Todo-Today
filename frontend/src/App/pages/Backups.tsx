@@ -1,6 +1,5 @@
 import React from 'react'
 import moment from 'moment'
-import { useLiveQuery } from 'dexie-react-hooks'
 
 import { Button, ButtonWrapper, Heading, LabelAndInput, Paragraph } from 'sharedComponents'
 import { saveFile } from 'utilities'
@@ -8,7 +7,6 @@ import database from 'database'
 
 const Backups = () => {
     const [restore, setRestore] = React.useState<File | null>(null)
-
 
     const handleBackup = async () => {
         const data = {
@@ -23,7 +21,6 @@ const Backups = () => {
             saveFile(`${moment().toISOString()}.json`, data)
         }
     }
-
 
     const handleRestore = () => {
         if (restore) {

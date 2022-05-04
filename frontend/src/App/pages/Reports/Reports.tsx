@@ -1,12 +1,12 @@
 import moment, { Moment } from 'moment'
 import React from 'react'
 import styled from 'styled-components'
+import { useLiveQuery } from 'dexie-react-hooks'
 
 import database from 'database'
-import { useLiveQuery } from 'dexie-react-hooks'
 import { Heading, LabelAndInput, Button, BigBoxOfNothing } from 'sharedComponents'
 import { ReportsTable } from './components'
-import { TTodoList, TTodoListItem } from 'sharedTypes'
+import { TTodoListItem } from 'sharedTypes'
 import { formatDateKeyLookup } from 'utilities'
 
 const FilterWrapper = styled.div`

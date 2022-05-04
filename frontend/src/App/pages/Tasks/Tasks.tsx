@@ -1,10 +1,10 @@
+import { useLiveQuery } from 'dexie-react-hooks'
 import React from 'react'
 
 import { BigBoxOfNothing } from 'sharedComponents'
 import { TasksTable } from './components'
 import { bucketTasksByProject } from 'utilities'
 import database from 'database'
-import { useLiveQuery } from 'dexie-react-hooks'
 
 const Tasks = () => {
     const projects = useLiveQuery(() => database.projects.toArray())
