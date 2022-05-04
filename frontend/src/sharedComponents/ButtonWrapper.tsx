@@ -6,15 +6,15 @@ type ButtonWrapperProps = {
     fullWidth?: JSX.Element
     left?: JSX.Element[]
     right?: JSX.Element[]
+    vertical?: JSX.Element[]
 }
 
-const ButtonWrapperWrapper = styled.div`
+const LeftRightWrapper = styled.div`
     display: flex;
     margin: 2rem 0;
-
     justify-content: space-between;
 
-    div:nth-child(1) {
+   div:nth-child(1) {
         text-align: left;
         ${Button}{
             margin-right: 0.5rem;
@@ -27,23 +27,42 @@ const ButtonWrapperWrapper = styled.div`
             margin-left: 0.5rem;
         }
     }
-
 `
 
-const ButtonWrapper = ({ left, right, fullWidth }: ButtonWrapperProps) => {
-    return (
-        <ButtonWrapperWrapper>
-            {fullWidth
-                ? fullWidth 
-                : <>
-                    <div>{left}</div>
-                    <div>{right}</div>
-                </>
+const VerticalWrapper = styled.div`
+    ${Button}{
+        margin-bottom: 0.5rem;
+    }
+`
 
-            }
 
-        </ButtonWrapperWrapper>
-    )
+const ButtonWrapper = ({ left, right, fullWidth, vertical }: ButtonWrapperProps) => {
+    let content
+
+    if (left || right) {
+        content = (
+            <LeftRightWrapper>
+                <div>{left}</div>
+                <div>{right}</div>
+            </LeftRightWrapper>
+        )
+    } else if (fullWidth) {
+        content = (
+            <div>
+                {fullWidth}
+            </div>
+        )
+    } else if (vertical) {
+        content = <VerticalWrapper>
+            {vertical}
+        </VerticalWrapper>
+    } else {
+        return <p>Call it an easter egg.</p>
+    }
+
+
+    return content
+
 }
 
 export default ButtonWrapper

@@ -26,7 +26,7 @@ const warmStart = () => {
     localStorage.setItem(HAS_DONE_WARM_START, TRUE)
 }
 
-const BackgroundComponent = styled.div`
+const ModalBackground = styled.div`
     display: flex;
     position: fixed;
     top: 0;
@@ -48,8 +48,11 @@ const BackgroundComponent = styled.div`
         position: static;
         max-width: 80vw;
         min-width: 500px;
+        max-height: 80vh;
+        overflow-y: scroll;
     }
 `
+
 const App = () => {
   const [isLoading, setIsLoading] = React.useState<boolean>(true)
   const navigate = useLocation()
@@ -69,7 +72,7 @@ const App = () => {
   return (
     <ThemeProvider theme={THEMES[colorTheme]}>
       <Theme.GlobalStyle />
-      <ModalProvider backgroundComponent={BackgroundComponent}>
+      <ModalProvider backgroundComponent={ModalBackground}>
         <div>
           <Header />
           <Navigation />

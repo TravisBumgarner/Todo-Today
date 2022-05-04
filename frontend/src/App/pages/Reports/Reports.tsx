@@ -77,7 +77,6 @@ const crunchTheNumbers = (todoListItems: TTodoListItem[]) => {
 const Reports = () => {
     const [startDate, setStartDate] = React.useState<Moment>(getSundayDateOfWeek(moment()))
     const [endDate, setEndDate] = React.useState<Moment>(getSaturdayDateOfWeek(moment()))
-    const [selectedDate, setSelectedDate] = React.useState<Moment>(moment())
 
     const filteredTodoListItems = useLiveQuery(async () => {
         return database.todoListItems.where('todoListDate').between(formatDateKeyLookup(startDate), formatDateKeyLookup(endDate), true, true).toArray()
@@ -86,14 +85,14 @@ const Reports = () => {
     const setQuickFilter = (quickFilter: TQuickFilterOptions) => {
         switch (quickFilter) {
             case TQuickFilterOptions.THIS_WEEK: {
-                const sunday = getSundayDateOfWeek(selectedDate)
-                const saturday = getSaturdayDateOfWeek(selectedDate)
+                const sunday = getSundayDateOfWeek(moment())
+                const saturday = getSaturdayDateOfWeek(moment())
                 setStartDate(moment(sunday))
                 setEndDate(moment(saturday))
                 return
             }
             case TQuickFilterOptions.LAST_WEEK: {
-                const sevenDaysAgo = moment(selectedDate).subtract(7, 'days')
+                const sevenDaysAgo = moment(moment()).subtract(7, 'days')
                 const sunday = getSundayDateOfWeek(sevenDaysAgo)
                 const saturday = getSaturdayDateOfWeek(sevenDaysAgo)
                 setStartDate(moment(sunday))

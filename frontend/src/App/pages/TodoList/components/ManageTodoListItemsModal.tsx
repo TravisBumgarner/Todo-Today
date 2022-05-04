@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { v4 as uuid4 } from 'uuid'
 import { useLiveQuery } from 'dexie-react-hooks'
 
-import { Modal, Paragraph, BigBoxOfNothing, Button } from 'sharedComponents'
+import { Modal, Paragraph, BigBoxOfNothing, Button, Heading, ButtonWrapper } from 'sharedComponents'
 import {  formatDateKeyLookup } from 'utilities'
 import { TTask, TTodoList, TTodoListItem } from 'sharedTypes'
 import database from 'database'
@@ -67,14 +67,17 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
                 <Paragraph>Select tasks to add to the todo list.</Paragraph>
                 {
                     projects.map(({title, id: projectId}) => {
+                        const tasks = tasksByProjectId[projectId].length ? tasksByProjectId[projectId] : []
+                        if(!tasks.length) return null
                         return (
                             <div key={projectId}>
-                            {title}
-                            <ul>
-                                {tasksByProjectId[projectId].length && tasksByProjectId[projectId].map(({title, id: taskId}) => {
-                                    return <li key={taskId}><Button disabled={todoListTaskIds.includes(taskId)} variation="PRIMARY_BUTTON" onClick={() => handleAdd({projectId, taskId})}>{title}</Button></li>
+                            <Heading.H2>{title}</Heading.H2>
+                            <ButtonWrapper
+                                vertical={tasks.map(({title, id: taskId}) => {
+                                    return <Button key={taskId} fullWidth disabled={todoListTaskIds.includes(taskId)} variation="PRIMARY_BUTTON" onClick={() => handleAdd({projectId, taskId})}>{title}</Button>
                                 })}
-                            </ul>
+                            />
+                                
                             </div>
                         )
                     })
