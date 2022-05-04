@@ -1,8 +1,11 @@
 import React from 'react'
 import moment, { Moment } from 'moment'
+import { useLiveQuery } from 'dexie-react-hooks'
 
+import database from 'database'
 import { Table } from 'sharedComponents'
 import { formatDurationDisplayString, sumArray } from 'utilities'
+import { TProject } from 'sharedTypes'
 
 type ReportTableProps = {
     crunchedNumbers: Record<string, Record<string, number>>
@@ -11,11 +14,15 @@ type ReportTableProps = {
 }
 
 const ReportsTable = ({ crunchedNumbers, startDate, endDate }: ReportTableProps) => {
+    const projects = useLiveQuery(async () => {
+        return database.projects.toArray()
+    })
     const dateColumns: string[] = []
     for (var m = moment(startDate); m.isBefore(endDate); m.add(1, 'days')) {
         dateColumns.push(m.format('YYYY-MM-DD'));
     }
-    console.log(crunchedNumbers)
+    
+    if(!projects) return <p>One sec</p>
     return (
         <>
             <Table.Table>
@@ -41,7 +48,7 @@ const ReportsTable = ({ crunchedNumbers, startDate, endDate }: ReportTableProps)
                         const totalDurationDisplay = totalDuration ? formatDurationDisplayString(totalDuration) : '-'
                         return (
                             <Table.TableRow key={projectId}>
-                                <Table.TableBodyCell>{projectId}</Table.TableBodyCell>
+                                <Table.TableBodyCell>{((projects as TProject[]).find(({id}) => id === projectId)  as TProject).title}</Table.TableBodyCell>
                                 <Table.TableBodyCell>{totalDurationDisplay}</Table.TableBodyCell>
                                 {
                                     dateColumns.map(date => {
