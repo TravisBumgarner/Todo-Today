@@ -11,6 +11,7 @@ Weird Dexie Quirks
 
 Next PR
 
+- [ ] ASk for help on generic function in ManageTodolistitemsModal
 - [ ] Reading - Creating a custom hook with useContext
 - [ ] Convert backend to ts
 - [ ] Add other things you might want to track in a day

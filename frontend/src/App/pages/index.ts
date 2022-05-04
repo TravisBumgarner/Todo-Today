@@ -4,6 +4,7 @@ import Tasks from './Tasks'
 import Settings from './Settings'
 import Reports from './Reports'
 import Backups from './Backups'
+import Error from './Error'
 
 export {
     Projects,
@@ -11,5 +12,6 @@ export {
     Tasks,
     Settings,
     Reports,
-    Backups
+    Backups,
+    Error
 }

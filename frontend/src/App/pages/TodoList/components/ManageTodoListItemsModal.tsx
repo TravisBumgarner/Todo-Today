@@ -12,7 +12,6 @@ import { useLiveQuery } from 'dexie-react-hooks'
 type ManageTodoListItemsModalProps = {
     showModal: boolean
     setShowModal: (showModal: boolean) => void
-    todoListItemsByProjectId: Record<string, TTodoListItem[]>
     selectedDate: moment.Moment
 }
 
@@ -24,24 +23,36 @@ const LabelInDisguise = styled.p`
     color: ${({theme}) => theme.FOREGROUND_TEXT};
 `
 
-const ManageTodoListItemsModal = ({ showModal, setShowModal, todoListItemsByProjectId, selectedDate }: ManageTodoListItemsModalProps) => {
-    const projects = useLiveQuery(() => database.projects.toArray())
+const getTasksByProjectId = <T extends TTask>(key: keyof TTask, arrayItems: T[]) => {
+    return arrayItems.reduce((accumulator, current) => {
+        if(!(current[key] in accumulator)){
+            accumulator[current[key]] = []
+        }
+        accumulator[current[key]].push(current)
+        return accumulator
+    },
+    {} as Record<string, T[]>)
+}
+
+
+const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: ManageTodoListItemsModalProps) => {
     const tasks = useLiveQuery(() => database.tasks.toArray())
+    const projects = useLiveQuery(() => database.projects.toArray())
     const todoListItems = useLiveQuery(() => database.todoListItems.toArray())
 
-    if(!projects){
-        return <div>No projects</div>
+    if(!tasks || !tasks.length || !projects || !projects.length){
+        return <BigBoxOfNothing message='Go create some tasks and/or projects and come back!' />
     }
+    const tasksByProjectId = getTasksByProjectId('projectId', tasks)
 
-    const tasksByProject = bucketTasksByProject(projects, tasks)
-
-    const mapTasksToCheckboxItems = (tasks: TTask[]) => {
-        return tasks.map(({ title, id }) => ({
-            label: title,
-            name: title,
-            value: id,
-            checked: !!todoListItems && todoListItems.some(item => item.taskId === id)
-        }))
+    const handleAdd = ({projectId, taskId}: {projectId: string, taskId: string}) => {
+        database.todoListItems.add({
+            projectId,
+            taskId,
+            duration: 0,
+            id: uuid4(),
+            todoListDate: formatDateKeyLookup(selectedDate)
+        })
     }
 
     return (
@@ -52,44 +63,20 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, todoListItemsByProj
         >
             <>
                 <Paragraph>Select tasks to add to the todo list.</Paragraph>
-                {Object.keys(tasksByProject).map(projectId => {
-                    const options = mapTasksToCheckboxItems(tasksByProject[projectId])
-                    if (tasksByProject[projectId].length === 0) {
-                        const projectDetails = projects.find(({id}) => id === projectId) as TProject
+                {
+                    projects.map(({title, id: projectId}) => {
                         return (
-                            <React.Fragment key={projectId}>
-                                <LabelInDisguise>{projectDetails.title}</LabelInDisguise>
-                                <BigBoxOfNothing message='This project has no tasks. :(' />
-                            </React.Fragment>
+                            <div key={projectId}>
+                            {title}
+                            <ul>
+                                {tasksByProjectId[projectId].map(({title, id: taskId}) => {
+                                    return <li key={taskId}><button onClick={() => handleAdd({projectId, taskId})}>{title}</button></li>
+                                })}
+                            </ul>
+                            </div>
                         )
-                    }
-
-                    return (
-                        <div key={projectId}>
-                            <LabelAndInput
-                                handleChange={({ value, checked }) => {
-                                    if (checked){
-                                        database.todoListItems.add({
-                                            duration: 0,
-                                            projectId,
-                                            id: uuid4(),
-                                            taskId: value as string,
-                                            date:  formatDateKeyLookup(selectedDate)
-                                        })
-                                    } else {
-                                        // cant delete by a key that's not primary
-                                        database.todoListItems.where({taskId: value, date: formatDateKeyLookup(selectedDate)}).delete()
-                                    }
-                                }}
-                                options={options}
-                                name="foo"
-                                value="foo"
-                                label={ (projects.find(({id}) => id === projectId) as TProject).title  } 
-                                inputType='checkbox'
-                            />
-                        </div>
-                    )
-                })}
+                    })
+                }
             </>
         </Modal >
     )

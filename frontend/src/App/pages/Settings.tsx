@@ -47,7 +47,6 @@ const Settings = () => {
     const [weekStart, setWeekStart] = useLocalStorage('weekStart'); 
     const [dateFormat, setDateFormat] = useLocalStorage('dateFormat'); 
     
-    console.log(colorTheme)
     return (
         <>  
             <Heading.H2>Settings</Heading.H2>

@@ -74,7 +74,7 @@ type TTodoListItem = {
     duration: number
     projectId: string
     taskId: string
-    date: string
+    todoListDate: string
     id: string
 }
 

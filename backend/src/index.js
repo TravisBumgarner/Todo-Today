@@ -60,7 +60,6 @@ function createWindow() {
             enableRemoteModule: true,
             contextIsolation: false,
             devTools: isDev || isDebugProduction,
-            webSecurity: false
         }
     })
 

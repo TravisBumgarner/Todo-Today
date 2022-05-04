@@ -8,22 +8,27 @@ import { formatDateDisplayString, formatDateKeyLookup } from 'utilities'
 import database from 'database'
 import { useLiveQuery } from 'dexie-react-hooks'
 
-const groupItemsByProjectId = (todoListItems: TTodoListItem[]) => {
-    const output: Record<string, TTodoListItem[]> = {}
-    todoListItems.forEach(({ duration, projectId, taskId, date, id }) => {
-        if (!(projectId in output)) {
-            output[projectId] = []
-        }
-        output[projectId].push({ duration, projectId, taskId, date, id })
+const getProjectIdsWithTodoListItems = (todoListItems: TTodoListItem[]) => {
+    const ids: string[] = []
+    todoListItems.forEach(({ projectId }) => {
+        if (!ids.includes(projectId)) ids.push(projectId)
     })
-
-    return output
+    console.log('ids', ids)
+    return ids
 }
 
 const TodoList = () => {
     const [selectedDate, setSelectedDate] = React.useState<moment.Moment>(moment())
     const [showManagementModal, setShowManagementModal] = React.useState<boolean>(false)
-    const todoListItems = useLiveQuery(() => database.todoListItems.toArray())
+    const todoListItems = useLiveQuery(() =>
+         database
+            .todoListItems
+            .where('todoListDate')
+            .equals(formatDateKeyLookup(selectedDate))
+            .toArray(),
+        [formatDateKeyLookup(selectedDate)]
+    )
+    console.log(todoListItems)
 
     const getPreviousDay = () => {
         setSelectedDate(moment(selectedDate).subtract(1, 'day'))
@@ -31,25 +36,6 @@ const TodoList = () => {
     const getNextDay = () => {
         setSelectedDate(moment(selectedDate).add(1, 'day'))
     }
-
-    if (!todoListItems) {
-        return (
-            <BigBoxOfNothing message='No todo list'/>
-        )
-    }
-
-    const todoListItemsByProjectId = groupItemsByProjectId(todoListItems)
-
-    const TodoListTables = Object
-        .keys(todoListItemsByProjectId)
-        .map(projectId => <TodoListTable
-            selectedDate={selectedDate}
-            key={projectId}
-            projectId={projectId}
-            todoListItems={todoListItemsByProjectId[projectId]}
-        />
-        )
-
 
     return (
         <>
@@ -60,13 +46,15 @@ const TodoList = () => {
                     <Button key="next" onClick={getNextDay} variation='PRIMARY_BUTTON'>Next Day</Button>]}
                 right={[<Button key="manage" onClick={() => setShowManagementModal(true)} variation='PRIMARY_BUTTON'>Manage Tasks</Button>]}
             />
-
             {
-                Object.keys(todoListItemsByProjectId).length == 0
-                    ? (<BigBoxOfNothing message="Click the Manage Tasks button above to get started!" />)
-                    : (TodoListTables)
+                todoListItems && todoListItems.length
+                    ? (
+                        getProjectIdsWithTodoListItems(todoListItems).map(projectId => <TodoListTable todoListItems={todoListItems} selectedDate={selectedDate} projectId={projectId} />)
+                    ) : <BigBoxOfNothing message='Click Manage Tasks above to get started' />
             }
-            <ManageTodoListItemsModal selectedDate={selectedDate} todoListItemsByProjectId={todoListItemsByProjectId} showModal={showManagementModal} setShowModal={setShowManagementModal} />
+
+
+            <ManageTodoListItemsModal selectedDate={selectedDate} showModal={showManagementModal} setShowModal={setShowManagementModal} />
         </>
     )
 }
