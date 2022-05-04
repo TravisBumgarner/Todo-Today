@@ -26,6 +26,7 @@ module.exports = {
             database: path.resolve(__dirname, 'src/database.ts'),
         },
     },
+    devtool: 'source-map',
     devServer: {
         compress: true,
         port: 3003,
