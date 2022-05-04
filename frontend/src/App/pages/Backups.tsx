@@ -1,12 +1,13 @@
 import React from 'react'
 import moment from 'moment'
 
-import { Button, ButtonWrapper, Heading, LabelAndInput, Paragraph } from 'sharedComponents'
+import { Button, ButtonWrapper, Heading, LabelAndInput, Modal, Paragraph } from 'sharedComponents'
 import { saveFile } from 'utilities'
 import database from 'database'
 
 const Backups = () => {
     const [restore, setRestore] = React.useState<File | null>(null)
+    const [showRestoreConfirmModal, setShowRestoreConfirmModal] = React.useState<boolean>(false)
 
     const handleBackup = async () => {
         const data = {
@@ -29,7 +30,7 @@ const Backups = () => {
             reader.onload = async function (event) {
                 if (event.target && event.target.result) {
                     const newStore = JSON.parse(event.target.result as string)
-                    
+
                     await Promise.all([
                         database.projects.clear(),
                         database.tasks.clear(),
@@ -41,10 +42,7 @@ const Backups = () => {
                         database.tasks.bulkAdd(newStore.tasks),
                         database.todoListItems.bulkAdd(newStore.todoListItems)
                     ])
-
                     setRestore(null)
-
-
                 } else {
                     alert("Invalid backup.")
                 }
@@ -59,8 +57,26 @@ const Backups = () => {
             <ButtonWrapper fullWidth={<Button onClick={() => handleBackup()} fullWidth variation='PRIMARY_BUTTON'>Backup</Button>} />
             <Heading.H2>Restore</Heading.H2>
             <Paragraph>Restore database with a backup copy.</Paragraph>
-            <LabelAndInput  handleChange={(file) => setRestore(file)} label="Select a Backup" name={"file"} inputType='file' />
-            <ButtonWrapper fullWidth={<Button disabled={!restore} onClick={() => handleRestore()} fullWidth variation='PRIMARY_BUTTON'>Restore from Backup</Button>} />
+            <LabelAndInput handleChange={(file) => setRestore(file)} label="Select a Backup" name={"file"} inputType='file' />
+            <ButtonWrapper fullWidth={<Button disabled={!restore} onClick={() => setShowRestoreConfirmModal(true)} fullWidth variation='PRIMARY_BUTTON'>Restore from Backup</Button>} />
+            <Modal
+                contentLabel='Restore?'
+                showModal={showRestoreConfirmModal}
+                closeModal={() => setShowRestoreConfirmModal(false)}
+            >   
+                <Paragraph>If you have data you haven't created a backup for, please do that first.</Paragraph>
+                <Paragraph>Clicking restore will erase everything currently stored in the application.</Paragraph>
+                <ButtonWrapper
+                    right={[
+                        <Button
+                            variation="PRIMARY_BUTTON"
+                            onClick={() => setShowRestoreConfirmModal(false)}
+                        >Cancel
+                        </Button>,
+                        <Button variation="ALERT_BUTTON" onClick={() => handleRestore()}>Restore</Button>
+                    ]}
+                />
+            </Modal>
         </div>
     )
 }

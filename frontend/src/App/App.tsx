@@ -42,12 +42,11 @@ const ModalBackground = styled.div`
     align-items: center;
     
     > div {
-        padding: 1rem;
+        padding: 2rem;
         border: ${({theme}) => theme.FOREGROUND_TEXT } solid 2px;
         background-color: ${({theme}) => theme.BACKGROUND_PRIMARY };
         position: static;
         max-width: 80vw;
-        min-width: 500px;
         max-height: 80vh;
         overflow-y: scroll;
     }
