@@ -44,7 +44,7 @@ const formatDurationDisplayString = (rawMinutes: number) => {
 
     const paddedHours = hours < 10 ? '0' + hours : hours
     const paddedMinutes = minutes < 10 ? '0' + minutes : minutes
-    return paddedHours + ':' + paddedMinutes
+    return paddedHours + 'H' + paddedMinutes + "M"
 }
 
 const bucketTasksByProject = (projects: TProject[], tasks: TTask[] | undefined) => {
