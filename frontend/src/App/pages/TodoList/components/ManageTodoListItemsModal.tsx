@@ -69,7 +69,7 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
                             <div key={projectId}>
                             {title}
                             <ul>
-                                {tasksByProjectId[projectId].map(({title, id: taskId}) => {
+                                {tasksByProjectId.length && tasksByProjectId[projectId].map(({title, id: taskId}) => {
                                     return <li key={taskId}><button onClick={() => handleAdd({projectId, taskId})}>{title}</button></li>
                                 })}
                             </ul>

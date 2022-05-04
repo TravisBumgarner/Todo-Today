@@ -44,8 +44,8 @@ const TodoList = () => {
             <ButtonWrapper
                 left={[
                     <Button key="previous" onClick={getPreviousDay} variation='PRIMARY_BUTTON'>Previous</Button>,
-                    <Button key="next" onClick={getToday} variation='PRIMARY_BUTTON'>Today</Button>,
-                    <Button key="next" onClick={getNextDay} variation='PRIMARY_BUTTON'>Next Next</Button>
+                    <Button key="next" onClick={getNextDay} variation='PRIMARY_BUTTON'>Next</Button>,
+                    <Button key="today" onClick={getToday} variation='PRIMARY_BUTTON'>Today</Button>,
                 ]}
                 right={[<Button key="manage" onClick={() => setShowManagementModal(true)} variation='PRIMARY_BUTTON'>Manage Tasks</Button>]}
             />

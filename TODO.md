@@ -18,6 +18,8 @@ Weird Dexie Quirks
 - need a where with delete
 
 Next PR
+- [ ] Fix broken manage tasks modal
+- [ ] If you click and drag on the modal outside of the modal it closes itself
 - [ ] Add automatic backup to localdata
 - [ ] Add confirm restore button
 - [ ] Figure out updating strategy 
