@@ -1,16 +1,16 @@
 import React from 'react'
-import moment, { Moment } from 'moment'
+import moment from 'moment'
 import { useLiveQuery } from 'dexie-react-hooks'
 
 import database from 'database'
 import { Table } from 'sharedComponents'
-import { formatDurationDisplayString, sumArray } from 'utilities'
-import { TProject } from 'sharedTypes'
+import { formatDateDisplayString, formatDateKeyLookup, formatDurationDisplayString, sumArray } from 'utilities'
+import { TDateISODate, TProject } from 'sharedTypes'
 
 type ReportTableProps = {
     crunchedNumbers: Record<string, Record<string, number>>
-    startDate: Moment,
-    endDate: Moment
+    startDate: TDateISODate,
+    endDate: TDateISODate
 }
 
 const ReportsTable = ({ crunchedNumbers, startDate, endDate }: ReportTableProps) => {
@@ -19,10 +19,11 @@ const ReportsTable = ({ crunchedNumbers, startDate, endDate }: ReportTableProps)
     })
     const dateColumns: string[] = []
     for (var m = moment(startDate); m.isBefore(endDate); m.add(1, 'days')) {
-        dateColumns.push(m.format('YYYY-MM-DD'));
+        dateColumns.push(formatDateKeyLookup(m))
     }
     
     if(!projects) return <p>One sec</p>
+    const tableTitle = `${formatDateDisplayString(startDate)} to ${formatDateDisplayString(endDate)}`
     return (
         <>
             <Table.Table>
@@ -30,7 +31,7 @@ const ReportsTable = ({ crunchedNumbers, startDate, endDate }: ReportTableProps)
                     <Table.TableRow>
                         <Table.TableHeaderCell scope="col">Project</Table.TableHeaderCell>
                         <Table.TableHeaderCell scope="col">Total</Table.TableHeaderCell>
-                        <Table.TableHeaderCell style={{ textAlign: 'center' }} colSpan={dateColumns.length + 1} scope="col">Daily Breakdown</Table.TableHeaderCell>
+                        <Table.TableHeaderCell style={{ textAlign: 'center' }} colSpan={dateColumns.length + 1} scope="col">{tableTitle}</Table.TableHeaderCell>
                     </Table.TableRow>
                     <Table.TableRow>
                         <Table.TableHeaderCell scope="col"></Table.TableHeaderCell>

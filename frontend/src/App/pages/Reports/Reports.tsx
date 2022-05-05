@@ -6,7 +6,7 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import database from 'database'
 import { Heading, LabelAndInput, Button, BigBoxOfNothing } from 'sharedComponents'
 import { ReportsTable } from './components'
-import { TTodoListItem } from 'sharedTypes'
+import { TDateISODate, TTodoListItem } from 'sharedTypes'
 import { formatDateKeyLookup } from 'utilities'
 
 const FilterWrapper = styled.div`
@@ -39,22 +39,16 @@ enum TQuickFilterOptions {
     LAST_WEEK = "LAST_WEEK"
 }
 
-const getSundayDateOfWeek = (selectedDate: Moment) => {
-    const dayOfWeek = selectedDate.day()
-    const sunday = moment(selectedDate.subtract(dayOfWeek, 'days'))
-    return sunday
+const getSundayDateOfWeek = (selectedDate: Moment): TDateISODate => {
+    const dayOfWeek = moment(selectedDate).day()
+    const sunday = moment(selectedDate).subtract(dayOfWeek, 'days')
+    return formatDateKeyLookup(sunday)
 }
 
-const getSaturdayDateOfWeek = (selectedDate: Moment) => {
-    const dayOfWeek = selectedDate.day()
-    const saturday = moment(selectedDate.add(7 - dayOfWeek, 'days'))
-    return saturday
-}
-
-type CrunchedNumbers = {
-    projectId: string,
-    projectTitle: string,
-    dates: Record<string, number>
+const getSaturdayDateOfWeek = (selectedDate: Moment): TDateISODate => {
+    const dayOfWeek = moment(selectedDate).day()
+    const saturday = moment(selectedDate).add(7 - dayOfWeek, 'days')
+    return formatDateKeyLookup(saturday)
 }
 
 const crunchTheNumbers = (todoListItems: TTodoListItem[]) => {
@@ -75,11 +69,11 @@ const crunchTheNumbers = (todoListItems: TTodoListItem[]) => {
 }
 
 const Reports = () => {
-    const [startDate, setStartDate] = React.useState<Moment>(getSundayDateOfWeek(moment()))
-    const [endDate, setEndDate] = React.useState<Moment>(getSaturdayDateOfWeek(moment()))
+    const [startDate, setStartDate] = React.useState<TDateISODate>(getSundayDateOfWeek(moment()))
+    const [endDate, setEndDate] = React.useState<TDateISODate>(getSaturdayDateOfWeek(moment()))
 
     const filteredTodoListItems = useLiveQuery(async () => {
-        return database.todoListItems.where('todoListDate').between(formatDateKeyLookup(startDate), formatDateKeyLookup(endDate), true, true).toArray()
+        return database.todoListItems.where('todoListDate').between(startDate, endDate, true, true).toArray()
     }, [startDate, endDate])
 
     const setQuickFilter = (quickFilter: TQuickFilterOptions) => {
@@ -87,16 +81,16 @@ const Reports = () => {
             case TQuickFilterOptions.THIS_WEEK: {
                 const sunday = getSundayDateOfWeek(moment())
                 const saturday = getSaturdayDateOfWeek(moment())
-                setStartDate(moment(sunday))
-                setEndDate(moment(saturday))
+                setStartDate(sunday)
+                setEndDate(saturday)
                 return
             }
             case TQuickFilterOptions.LAST_WEEK: {
                 const sevenDaysAgo = moment(moment()).subtract(7, 'days')
                 const sunday = getSundayDateOfWeek(sevenDaysAgo)
                 const saturday = getSaturdayDateOfWeek(sevenDaysAgo)
-                setStartDate(moment(sunday))
-                setEndDate(moment(saturday))
+                setStartDate(sunday)
+                setEndDate(saturday)
                 return
             }
         }
@@ -108,16 +102,16 @@ const Reports = () => {
                 <LabelAndInput
                     label="Start Date"
                     name="startDate"
-                    value={startDate.format('YYYY-MM-DD')}
+                    value={startDate}
                     inputType="date"
-                    handleChange={(date) => setStartDate(moment(date))}
+                    handleChange={(date: TDateISODate) => setStartDate(date)}
                 />
                 <LabelAndInput
                     label="End Date"
                     name="endDate"
-                    value={endDate.format('YYYY-MM-DD')}
+                    value={endDate}
                     inputType="date"
-                    handleChange={(date) => setEndDate(moment(date))}
+                    handleChange={(date: TDateISODate) => setEndDate(date)}
                 />
                 <div style={{ margin: '2rem 1rem 2rem 0rem' }}>
                     <LabelInDisguise>Quick Reports</LabelInDisguise>

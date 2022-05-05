@@ -1,4 +1,3 @@
-import React from 'react'
 import moment from 'moment'
 
 import { TDateFormat, TProject, TProjectStatus, TTask, TDateISODate, TTaskStatus } from 'sharedTypes'
@@ -24,13 +23,13 @@ const dateFormatLookup = {
     [TDateFormat.D]: 'DD/MM/YY',
 }
 
-const formatDateDisplayString = ( date: moment.Moment | null): string => {
+const formatDateDisplayString = ( date: TDateISODate| null): string => {
     const dateFormat = localStorage.getItem('dateFormat') as TDateFormat
     if (date === null) {
         return ''
     }
 
-    return date.format(dateFormatLookup[dateFormat])
+    return moment(date).format(dateFormatLookup[dateFormat])
 }
 
 const formatDateKeyLookup = (date: moment.Moment): TDateISODate => {
@@ -40,10 +39,8 @@ const formatDateKeyLookup = (date: moment.Moment): TDateISODate => {
 const formatDurationDisplayString = (rawMinutes: number) => {
     var hours = Math.floor(rawMinutes / 60)
     var minutes = rawMinutes % 60
-
-    const paddedHours = hours < 10 ? '0' + hours : hours
     const paddedMinutes = minutes < 10 ? '0' + minutes : minutes
-    return paddedHours + 'H' + paddedMinutes + "M"
+    return hours + 'H' + paddedMinutes + "M"
 }
 
 const bucketTasksByProject = (projects: TProject[], tasks: TTask[] | undefined) => {

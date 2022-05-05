@@ -1,18 +1,16 @@
 import React from 'react'
-import moment from 'moment'
-import styled from 'styled-components'
 import { v4 as uuid4 } from 'uuid'
 import { useLiveQuery } from 'dexie-react-hooks'
 
 import { Modal, Paragraph, BigBoxOfNothing, Button, Heading, ButtonWrapper } from 'sharedComponents'
-import {  formatDateKeyLookup } from 'utilities'
-import { TTask, TTodoListItem } from 'sharedTypes'
+import {  formatDateDisplayString, formatDateKeyLookup } from 'utilities'
+import { TDateISODate, TTask, TTodoListItem } from 'sharedTypes'
 import database from 'database'
 
 type ManageTodoListItemsModalProps = {
     showModal: boolean
     setShowModal: (showModal: boolean) => void
-    selectedDate: moment.Moment
+    selectedDate: TDateISODate
 }
 
 const getTasksByProjectId = <T extends TTask>(key: keyof TTask, arrayItems: T[]) => {
@@ -31,7 +29,7 @@ const getTodoListTaskIds = (todoListItems: TTodoListItem[]) => todoListItems.map
 const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: ManageTodoListItemsModalProps) => {
     const tasks = useLiveQuery(() => database.tasks.toArray())
     const projects = useLiveQuery(() => database.projects.toArray())
-    const todoListItems = useLiveQuery(() => database.todoListItems.where({todoListDate: formatDateKeyLookup(selectedDate)}).toArray(), [selectedDate])
+    const todoListItems = useLiveQuery(() => database.todoListItems.where({todoListDate: selectedDate}).toArray(), [selectedDate])
 
     if(!tasks || !tasks.length || !projects || !projects.length){
         return <BigBoxOfNothing message='Go create some tasks and/or projects and come back!' />
@@ -45,13 +43,13 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
             taskId,
             duration: 0,
             id: uuid4(),
-            todoListDate: formatDateKeyLookup(selectedDate)
+            todoListDate: selectedDate
         })
     }
 
     return (
         <Modal
-            contentLabel={`Add ${selectedDate.format('dddd')}'s Tasks`}
+            contentLabel={`Add ${formatDateDisplayString(selectedDate)}'s Tasks`}
             showModal={showModal}
             closeModal={() => setShowModal(false)}
         >
