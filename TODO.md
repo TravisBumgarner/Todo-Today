@@ -1,12 +1,6 @@
-PR-6: Cleanup for Prototype Test
+PR-8
 
-- [x] Cleanup Terminal Warnings
-- [ ] Make sure it can be compiled and installed in Applications
-- [x] Cleanup Dates
-
-PR-X: Cleanup for Testing with Others
-- [ ] Create compile scripts for each OS
-
+- Supplement localStorage with a context
 
 
 Next PR

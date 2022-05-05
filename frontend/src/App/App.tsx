@@ -4,30 +4,14 @@ import styled, { ThemeProvider } from 'styled-components';
 import { ModalProvider } from 'styled-react-modal'
 import { darken } from 'polished'
 
+import Context, { context } from 'Context'
 import Theme from 'theme'
 import { Navigation, Router, Header } from './components'
 import THEMES from '../sharedComponents/colors'
 import { TBackupInterval, TColorTheme, TDateFormat, TWeekStart } from 'sharedTypes';
-import useLocalStorage from '../localStorage';
 import { automatedBackup } from './pages/Backups';
 
-const HAS_DONE_WARM_START = 'HAS_DONE_WARM_START'
-const TRUE = 'TRUE'
 
-const warmStart = () => {
-  const DEFAULT_SETTINGS = {
-    dateFormat: TDateFormat.A,
-    weekStart: TWeekStart.SUNDAY,
-    colorTheme: TColorTheme.BEACH,
-    backupInterval: TBackupInterval.DAILY
-  }
-
-  Object
-    .keys(DEFAULT_SETTINGS)
-    .forEach((key: keyof typeof DEFAULT_SETTINGS) => localStorage.setItem(key, DEFAULT_SETTINGS[key]))
-
-  localStorage.setItem(HAS_DONE_WARM_START, TRUE)
-}
 
 const ModalBackground = styled.div`
     display: flex;
@@ -57,24 +41,11 @@ const ModalBackground = styled.div`
 `
 
 const App = () => {
-  const [isLoading, setIsLoading] = React.useState<boolean>(true)
-
-  React.useEffect(() => {
-    if (!(localStorage.getItem(HAS_DONE_WARM_START) === TRUE)) {
-      warmStart()
-    }
-    setIsLoading(false)
-  }, [])
-  const [colorTheme] = useLocalStorage('colorTheme');
-
+  const {state} = React.useContext(context)
   React.useEffect(() => automatedBackup(), [])
 
-  if (isLoading) {
-    return <p>Loading...</p>
-  }
-
   return (
-    <ThemeProvider theme={THEMES[colorTheme]}>
+    <ThemeProvider theme={THEMES[state.colorTheme]}>
       <Theme.GlobalStyle />
       <ModalProvider backgroundComponent={ModalBackground}>
         <div>
@@ -120,7 +91,9 @@ const InjectedApp = () => {
   return (
     <ErrorBoundary>
       <BrowserRouter>
-        <App />
+        <Context>
+          <App />
+        </Context>
       </BrowserRouter>
     </ErrorBoundary>
   )

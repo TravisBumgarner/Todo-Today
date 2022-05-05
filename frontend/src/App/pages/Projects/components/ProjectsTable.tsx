@@ -6,10 +6,12 @@ import EditProjectModal from './EditProjectModal'
 import { formatDateDisplayString, projectStatusLookup } from 'utilities'
 import database from 'database'
 import { TProject } from 'sharedTypes'
+import { context } from 'Context'
 
 const ProjectsTable = () => {
     const projects = useLiveQuery(() => database.projects.toArray())
     const [selectedProjectId, setSelectedProjectId] = React.useState<string | null>(null)
+    const {state: {dateFormat}} = React.useContext(context)
 
     if(!projects || projects.length === 0){
         return <BigBoxOfNothing message="Create a project and get going!" />
@@ -32,8 +34,8 @@ const ProjectsTable = () => {
                         <Table.TableRow key={id}>
                             <Table.TableBodyCell>{title}</Table.TableBodyCell>
                             <Table.TableBodyCell>{projectStatusLookup[status]}</Table.TableBodyCell>
-                            <Table.TableBodyCell>{formatDateDisplayString(startDate)}</Table.TableBodyCell>
-                            <Table.TableBodyCell>{formatDateDisplayString(endDate)}</Table.TableBodyCell>
+                            <Table.TableBodyCell>{formatDateDisplayString(dateFormat, startDate)}</Table.TableBodyCell>
+                            <Table.TableBodyCell>{formatDateDisplayString(dateFormat, endDate)}</Table.TableBodyCell>
                             <Table.TableBodyCell>
                                 <DropdownMenu title="Actions">{
                                     [<Button fullWidth key="edit" variation="PRIMARY_BUTTON" onClick={() => setSelectedProjectId(id)}>Edit</Button>]

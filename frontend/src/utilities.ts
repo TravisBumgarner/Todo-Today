@@ -23,8 +23,7 @@ const dateFormatLookup = {
     [TDateFormat.D]: 'DD/MM/YY',
 }
 
-const formatDateDisplayString = ( date: TDateISODate| null): string => {
-    const dateFormat = localStorage.getItem('dateFormat') as TDateFormat
+const formatDateDisplayString = (dateFormat: TDateFormat, date: TDateISODate| null): string => {
     if (date === null) {
         return ''
     }
