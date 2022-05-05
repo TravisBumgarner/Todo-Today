@@ -41,7 +41,6 @@ function createWindow() {
         y: 0,
         title: "TODO TODAY",
         webPreferences: {
-            // preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: true,
             enableRemoteModule: true,
             contextIsolation: false,
