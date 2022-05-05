@@ -6,29 +6,30 @@ import { Button, ButtonWrapper, Heading } from 'sharedComponents'
 import { TodoListTable, ManageTodoListItemsModal } from './components'
 import { formatDateDisplayString, formatDateKeyLookup } from 'utilities'
 import database from 'database'
+import { TDateISODate } from 'sharedTypes'
 
 const TodoList = () => {
-    const [selectedDate, setSelectedDate] = React.useState<moment.Moment>(moment())
+    const [selectedDate, setSelectedDate] = React.useState<TDateISODate>(formatDateKeyLookup(moment()))
     const [showManagementModal, setShowManagementModal] = React.useState<boolean>(false)
 
     const todoListItems = useLiveQuery(() =>
         database
             .todoListItems
             .where('todoListDate')
-            .equals(formatDateKeyLookup(selectedDate))
+            .equals(selectedDate)
             .toArray(),
-        [formatDateKeyLookup(selectedDate)]
+        [selectedDate]
     )
 
 
     const getPreviousDay = () => {
-        setSelectedDate(moment(selectedDate).subtract(1, 'day'))
+        setSelectedDate(formatDateKeyLookup(moment(selectedDate).subtract(1, 'day')))
     }
     const getToday = () => {
-        setSelectedDate(moment())
+        setSelectedDate(formatDateKeyLookup(moment()))
     }
     const getNextDay = () => {
-        setSelectedDate(moment(selectedDate).add(1, 'day'))
+        setSelectedDate(formatDateKeyLookup(moment(selectedDate).add(1, 'day')))
     }
 
     return (

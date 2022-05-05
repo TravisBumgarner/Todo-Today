@@ -1,5 +1,4 @@
 import React from 'react'
-import moment from 'moment'
 import { useLiveQuery } from 'dexie-react-hooks'
 
 import { BigBoxOfNothing, Button, DropdownMenu, Table } from 'sharedComponents'
@@ -33,8 +32,8 @@ const ProjectsTable = () => {
                         <Table.TableRow key={id}>
                             <Table.TableBodyCell>{title}</Table.TableBodyCell>
                             <Table.TableBodyCell>{projectStatusLookup[status]}</Table.TableBodyCell>
-                            <Table.TableBodyCell>{formatDateDisplayString(moment(startDate))}</Table.TableBodyCell>
-                            <Table.TableBodyCell>{formatDateDisplayString(moment(endDate))}</Table.TableBodyCell>
+                            <Table.TableBodyCell>{formatDateDisplayString(startDate)}</Table.TableBodyCell>
+                            <Table.TableBodyCell>{formatDateDisplayString(endDate)}</Table.TableBodyCell>
                             <Table.TableBodyCell>
                                 <DropdownMenu title="Actions">{
                                     [<Button fullWidth key="edit" variation="PRIMARY_BUTTON" onClick={() => setSelectedProjectId(id)}>Edit</Button>]

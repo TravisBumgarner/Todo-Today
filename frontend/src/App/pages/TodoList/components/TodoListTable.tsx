@@ -1,15 +1,14 @@
 import React from 'react'
-import moment from 'moment'
 import database from 'database'
 import { useLiveQuery } from 'dexie-react-hooks'
 
 import { BigBoxOfNothing, Button, DropdownMenu, LabelAndInput, Table } from 'sharedComponents'
-import {  TProject, TTask, TTodoListItem } from 'sharedTypes'
+import {  TDateISODate, TProject, TTask, TTodoListItem } from 'sharedTypes'
 import { formatDateKeyLookup, taskStatusLookup } from 'utilities'
 
 
 type TodoListTableProps = {
-    selectedDate: moment.Moment
+    selectedDate: TDateISODate
     todoListItems: TTodoListItem[] | undefined
 }
 
@@ -162,7 +161,7 @@ const TodoListTable = ({ selectedDate, todoListItems }: TodoListTableProps) => {
                                                         id: todoListItemId,
                                                         taskId,
                                                         duration: parseInt(value, 10),
-                                                        todoListDate: formatDateKeyLookup(selectedDate)
+                                                        todoListDate: selectedDate
                                                     }, [todoListItemId])
                                             }}
                                         />

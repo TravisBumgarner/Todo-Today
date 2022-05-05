@@ -4,7 +4,7 @@ const fs = require('fs')
 const { app, BrowserWindow, ipcMain, Menu } = require('electron')
 
 const isDev = process.env.NODE_ENV === 'local'
-const isDebugProduction = true // Set to True to debug
+const isDebugProduction = false // Set to True to debug
 const isMac = process.platform === 'darwin'
 if (isDev) require('electron-reloader')(module)
 let mainWindow
@@ -41,7 +41,6 @@ function createWindow() {
         y: 0,
         title: "TODO TODAY",
         webPreferences: {
-            // preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: true,
             enableRemoteModule: true,
             contextIsolation: false,

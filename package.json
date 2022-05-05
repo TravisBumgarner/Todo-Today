@@ -11,7 +11,7 @@
         "build": "cd frontend && npm run build && mv react-dist .. && cd ../backend && rm -rf ./src/react-dist && mv ../react-dist ./src && npm run build && cd .. && npm run open",
         "extract-build": "rm -rf ./extracted-build && npx asar extract  backend/dist/mac-arm64/TODO\\ TODAY.app/Contents/Resources/app.asar extracted-build && open ./extracted-build",
         "kill-it": "rm -rf node_modules && rm -rf ./backend/node_modules && rm -rf ./frontend/node_modules",
-        "will-it": "npm i && npm i --prefix frontend && npm i --prefix backend"
+        "fill-it": "npm i && npm i --prefix frontend && npm i --prefix backend"
     },
     "repository": {
         "type": "git",
