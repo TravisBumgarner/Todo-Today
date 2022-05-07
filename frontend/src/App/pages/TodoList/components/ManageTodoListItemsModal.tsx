@@ -6,6 +6,7 @@ import { Modal, Paragraph, BigBoxOfNothing, Button, Heading, ButtonWrapper } fro
 import {  formatDateDisplayString, formatDateKeyLookup } from 'utilities'
 import { TDateISODate, TTask, TTodoListItem } from 'sharedTypes'
 import database from 'database'
+import { context } from 'Context'
 
 type ManageTodoListItemsModalProps = {
     showModal: boolean
@@ -30,6 +31,7 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
     const tasks = useLiveQuery(() => database.tasks.toArray())
     const projects = useLiveQuery(() => database.projects.toArray())
     const todoListItems = useLiveQuery(() => database.todoListItems.where({todoListDate: selectedDate}).toArray(), [selectedDate])
+    const {state: {dateFormat}} = React.useContext(context)
 
     if(!tasks || !tasks.length || !projects || !projects.length){
         return <BigBoxOfNothing message='Go create some tasks and/or projects and come back!' />
@@ -49,7 +51,7 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
 
     return (
         <Modal
-            contentLabel={`Add ${formatDateDisplayString(selectedDate)}'s Tasks`}
+            contentLabel={`Add ${formatDateDisplayString(dateFormat, selectedDate)}'s Tasks`}
             showModal={showModal}
             closeModal={() => setShowModal(false)}
         >

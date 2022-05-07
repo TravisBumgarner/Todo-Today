@@ -4,8 +4,8 @@ import moment from 'moment'
 import { Button, ButtonWrapper, Heading, LabelAndInput, Modal, Paragraph } from 'sharedComponents'
 import { saveFile } from 'utilities'
 import database from 'database'
-import { TBackupInterval, TWeekStart } from 'sharedTypes'
-import useLocalStorage from '../../localStorage'
+import { TBackupInterval } from 'sharedTypes'
+import { context } from 'Context'
 const { ipcRenderer } = window.require('electron');
 
 const backupIntervalOptions: Record<TBackupInterval, string> = {
@@ -53,9 +53,9 @@ const automatedBackup = () => {
 }
 
 const Backups = () => {
+    const {state, dispatch} = React.useContext(context)
     const [restore, setRestore] = React.useState<File | null>(null)
     const [showRestoreConfirmModal, setShowRestoreConfirmModal] = React.useState<boolean>(false)
-    const [backupInterval, setBackupInterval] = useLocalStorage('backupInterval');
 
     const handleBackup = () => {
         const data = createBackup()
@@ -105,8 +105,8 @@ const Backups = () => {
                 inputType="select-enum"
                 name='weekStart'
                 label="How often would you like automated backups to run?"
-                value={backupInterval}
-                handleChange={(value: TBackupInterval) => setBackupInterval(value)}
+                value={state.backupInterval}
+                handleChange={(value: TBackupInterval) => dispatch({type: "EDIT_USER_SETTINGS", payload: {backupInterval: value}})}
                 options={TBackupInterval}
                 optionLabels={backupIntervalOptions}
             />

@@ -1,20 +1,10 @@
-PR-6: Cleanup for Prototype Test
-
-- [x] Cleanup Terminal Warnings
-- [ ] Make sure it can be compiled and installed in Applications
-- [x] Cleanup Dates
-
-PR-X: Cleanup for Testing with Others
-- [ ] Create compile scripts for each OS
+PR-8
 
 
 
 Next PR
 - [ ] Look into race conditions with random like in ReportsTable.tsx with having to return early.  
-- [ ] Figure out updating strategy 
-     - Perhaps keep backups on the backend?
 - [ ] ASk for help on generic function in ManageTodolistitemsModal
-- [ ] Reading - Creating a custom hook with useContext
 - [ ] Add other things you might want to track in a day
 - [ ] How to handle 'reoccurring projects' such as PTO and Sick time 
 - [ ] More settings

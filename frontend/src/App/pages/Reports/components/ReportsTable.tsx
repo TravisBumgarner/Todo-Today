@@ -6,6 +6,7 @@ import database from 'database'
 import { Table } from 'sharedComponents'
 import { formatDateDisplayString, formatDateKeyLookup, formatDurationDisplayString, sumArray } from 'utilities'
 import { TDateISODate, TProject } from 'sharedTypes'
+import { context } from 'Context'
 
 type ReportTableProps = {
     crunchedNumbers: Record<string, Record<string, number>>
@@ -14,6 +15,7 @@ type ReportTableProps = {
 }
 
 const ReportsTable = ({ crunchedNumbers, startDate, endDate }: ReportTableProps) => {
+    const {state: {dateFormat}} = React.useContext(context)
     const projects = useLiveQuery(async () => {
         return database.projects.toArray()
     })
@@ -23,7 +25,7 @@ const ReportsTable = ({ crunchedNumbers, startDate, endDate }: ReportTableProps)
     }
     
     if(!projects) return <p>One sec</p>
-    const tableTitle = `${formatDateDisplayString(startDate)} to ${formatDateDisplayString(endDate)}`
+    const tableTitle = `${formatDateDisplayString(dateFormat, startDate)} to ${formatDateDisplayString(dateFormat, endDate)}`
     return (
         <>
             <Table.Table>

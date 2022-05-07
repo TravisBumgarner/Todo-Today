@@ -79,6 +79,7 @@ type TSettings = {
     dateFormat: TDateFormat
     weekStart: TWeekStart
     colorTheme: TColorTheme
+    backupInterval: TBackupInterval
 }
 
 type EnumTypeString<TEnum extends string> =

@@ -1,11 +1,10 @@
 import React from 'react'
 import moment, { Moment } from 'moment'
-import useLocalStorage from '../../localStorage'
-import styled from 'styled-components'
 
-import { TColorTheme, TDateFormat, TWeekStart } from 'sharedTypes'
-import { Button, ButtonWrapper, Heading, LabelAndInput } from 'sharedComponents'
+import { TColorTheme, TDateFormat, TSettings, TWeekStart } from 'sharedTypes'
+import { Heading, LabelAndInput } from 'sharedComponents'
 import { dateFormatLookup } from 'utilities'
+import { context } from 'Context'
 
 const dateFormatForUser = (format: TDateFormat, date: Moment) => {
     return {
@@ -41,42 +40,43 @@ enum TTabs {
 }
 
 const Settings = () => {
-    const [colorTheme, setColorTheme] = useLocalStorage('colorTheme'); 
-    const [weekStart, setWeekStart] = useLocalStorage('weekStart'); 
-    const [dateFormat, setDateFormat] = useLocalStorage('dateFormat'); 
-    
+    const { state, dispatch } = React.useContext(context)
+
+    const handleSubmit = (setting: Partial<TSettings>) => {
+        dispatch({ type: "EDIT_USER_SETTINGS", payload: setting })
+    }
     return (
-        <>  
+        <>
             <Heading.H2>Settings</Heading.H2>
-            <form >
-            <LabelAndInput
-                inputType="select-enum"
-                name='weekStart'
-                label="Week starts on"
-                value={weekStart}
-                handleChange={(value: TWeekStart) => setWeekStart(value)}
-                options={TWeekStart}
-                optionLabels={weekStartOptionLabels}
-            />
-            <LabelAndInput
-                inputType="select-enum"
-                name='dateFormat'
-                label="Preferred Date Format"
-                value={dateFormat}
-                handleChange={(value: TDateFormat) => setDateFormat(value)}
-                options={TDateFormat}
-                optionLabels={dateFormatOptionLabels}
-            />
-            <LabelAndInput
-                inputType="select-enum"
-                name='colorTheme'
-                label="Theme"
-                value={colorTheme}
-                handleChange={(value: TColorTheme) => setColorTheme(value)}
-                options={TColorTheme}
-                optionLabels={colorThemeOptionLabels}
-            />
-        </form>
+            <form>
+                <LabelAndInput
+                    inputType="select-enum"
+                    name='weekStart'
+                    label="Week starts on"
+                    value={state.weekStart}
+                    handleChange={(value: TWeekStart) => handleSubmit({weekStart: value})}
+                    options={TWeekStart}
+                    optionLabels={weekStartOptionLabels}
+                />
+                <LabelAndInput
+                    inputType="select-enum"
+                    name='dateFormat'
+                    label="Preferred Date Format"
+                    value={state.dateFormat}
+                    handleChange={(value: TDateFormat) => handleSubmit({dateFormat: value})}
+                    options={TDateFormat}
+                    optionLabels={dateFormatOptionLabels}
+                />
+                <LabelAndInput
+                    inputType="select-enum"
+                    name='colorTheme'
+                    label="Theme"
+                    value={state.colorTheme}
+                    handleChange={(value: TColorTheme) => handleSubmit({colorTheme: value})}
+                    options={TColorTheme}
+                    optionLabels={colorThemeOptionLabels}
+                />
+            </form>
         </>
     )
 }

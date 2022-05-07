@@ -7,10 +7,12 @@ import { TodoListTable, ManageTodoListItemsModal } from './components'
 import { formatDateDisplayString, formatDateKeyLookup } from 'utilities'
 import database from 'database'
 import { TDateISODate } from 'sharedTypes'
+import { context } from 'Context'
 
 const TodoList = () => {
     const [selectedDate, setSelectedDate] = React.useState<TDateISODate>(formatDateKeyLookup(moment()))
     const [showManagementModal, setShowManagementModal] = React.useState<boolean>(false)
+    const {state: {dateFormat}} = React.useContext(context)
 
     const todoListItems = useLiveQuery(() =>
         database
@@ -34,7 +36,7 @@ const TodoList = () => {
 
     return (
         <>
-            <Heading.H2>{formatDateDisplayString(selectedDate)}</Heading.H2>
+            <Heading.H2>{formatDateDisplayString(dateFormat, selectedDate)}</Heading.H2>
             <ButtonWrapper
                 left={[
                     <Button key="previous" onClick={getPreviousDay} variation='PRIMARY_BUTTON'>Previous</Button>,
