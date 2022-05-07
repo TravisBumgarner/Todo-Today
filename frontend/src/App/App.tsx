@@ -67,18 +67,18 @@ class ErrorBoundary extends React.Component<{}, { hasError: boolean, error: stri
     };
   }
 
-  static getDerivedStateFromError(error: unknown) {
+  static getDerivedStateFromError(error: Error) {
     return { hasError: true };
   }
 
-  componentDidCatch(error: unknown, errorInfo: unknown) {
-    this.setState({ error: `${JSON.stringify(error)}\n${JSON.stringify(errorInfo)}` });
+  componentDidCatch(error: Error, errorInfo: unknown) {
+    this.setState({ error: `${JSON.stringify(error.message)}\n${JSON.stringify(errorInfo)}` });
   }
 
   render() {
     if (this.state.hasError) {
       return <>
-        <h1>Something went wrong.</h1>;
+        <h1>Something went wrong.</h1>
         <p>Message: ${this.state.error}</p>
       </>
     }
