@@ -50,7 +50,7 @@ const TodoList = () => {
                 right={[<Button key="manage" onClick={() => setShowManagementModal(true)} variation='PRIMARY_BUTTON'>Add Tasks</Button>]}
             />
             {
-                <TodoListTable todoListItems={todoListItems} selectedDate={selectedDate} />
+                <TodoListTable setShowModal={setShowManagementModal} todoListItems={todoListItems} selectedDate={selectedDate} />
 
             }
 

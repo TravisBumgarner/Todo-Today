@@ -79,7 +79,6 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
                                         Object.keys(taskIdsToTodoListIds).includes(taskId)
                                             ? <Button key={`${taskId}-remove`} fullWidth variation="ALERT_BUTTON" onClick={() => handleRemove(taskIdsToTodoListIds[taskId])}>Remove {title}</Button>
                                             : <Button key={`${taskId}-add`} fullWidth variation="PRIMARY_BUTTON" onClick={() => handleAdd({ projectId, taskId })}>Add {title}</Button>
-
                                     )
                                 })}
                                 />
@@ -87,6 +86,8 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
                         )
                     })
                 }
+                <Heading.H2>Done Adding Tasks?</Heading.H2>
+                <Button key="finished" fullWidth variation="PRIMARY_BUTTON" onClick={() => setShowModal(false)}>Done!</Button>
             </>
         </Modal >
     )
