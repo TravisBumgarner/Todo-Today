@@ -24,9 +24,9 @@ const TasksTable = ({ tasks, project }: TasksTableProps) => {
         <Table.Table>
             <Table.TableHeader>
                 <Table.TableRow>
-                    <Table.TableHeaderCell width="35%" scope="col">Task</Table.TableHeaderCell>
-                    <Table.TableHeaderCell width="15%" scope="col">Status</Table.TableHeaderCell>
-                    <Table.TableHeaderCell width="20%" scope="col">Actions</Table.TableHeaderCell>
+                    <Table.TableHeaderCell>Task</Table.TableHeaderCell>
+                    <Table.TableHeaderCell width="70px">Status</Table.TableHeaderCell>
+                    <Table.TableHeaderCell width="110px">Actions</Table.TableHeaderCell>
                 </Table.TableRow>
             </Table.TableHeader>
             <Table.TableBody>

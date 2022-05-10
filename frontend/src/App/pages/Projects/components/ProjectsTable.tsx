@@ -22,11 +22,11 @@ const ProjectsTable = () => {
             <Table.Table>
                 <Table.TableHeader>
                     <Table.TableRow>
-                        <Table.TableHeaderCell width="35%" scope="col">Project</Table.TableHeaderCell>
-                        <Table.TableHeaderCell width="15%" scope="col">Status</Table.TableHeaderCell>
+                        <Table.TableHeaderCell>Project</Table.TableHeaderCell>
+                        <Table.TableHeaderCell width="70px" scope="col">Status</Table.TableHeaderCell>
                         <Table.TableHeaderCell width="15%" scope="col">Start Date</Table.TableHeaderCell>
                         <Table.TableHeaderCell width="15%" scope="col">End Date</Table.TableHeaderCell>
-                        <Table.TableHeaderCell width="20%" scope="col">Actions</Table.TableHeaderCell>
+                        <Table.TableHeaderCell width="100px" scope="col">Actions</Table.TableHeaderCell>
                     </Table.TableRow>
                 </Table.TableHeader>
                 <Table.TableBody>

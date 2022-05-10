@@ -1,5 +1,7 @@
 import styled from 'styled-components'
 
+import { TColor } from 'sharedTypes'
+
 const Table = styled.table`
     margin: 1rem 0;
     padding: 1rem;
@@ -31,13 +33,14 @@ const TableRow = styled.tr`
     
 `
 
-const TableHeaderCell = styled.th`
+const TableHeaderCell = styled.th<{theme: TColor, width?: string, minWidth?: string}>`
     background-color: ${({theme}) => theme.BACKGROUND_PRIMARY };
     color: ${({theme}) => theme.FOREGROUND_TEXT }; 
     border-bottom: 2px solid ${({theme}) => theme.FOREGROUND_TEXT };
     padding: 10px;
     text-align: left;
-    width: ${({ width }: { width?: string }) => width};
+    width: ${({ width }) => width};
+    min-width: ${({ minWidth }) => minWidth};
     
 `
 const TableBodyCell = styled.td`

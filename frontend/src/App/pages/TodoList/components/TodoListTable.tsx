@@ -136,11 +136,11 @@ const TodoListTable = ({ selectedDate, todoListItems, setShowModal }: TodoListTa
             <Table.Table>
                 <Table.TableHeader>
                     <Table.TableRow>
-                        <Table.TableHeaderCell width="35%" scope="col">Project</Table.TableHeaderCell>
-                        <Table.TableHeaderCell width="35%" scope="col">Task</Table.TableHeaderCell>
-                        <Table.TableHeaderCell width="15%" scope="col">Status</Table.TableHeaderCell>
-                        <Table.TableHeaderCell width="20%" scope="col">Duration</Table.TableHeaderCell>
-                        <Table.TableHeaderCell width="20%" scope="col">Actions</Table.TableHeaderCell>
+                        <Table.TableHeaderCell width="30%">Project</Table.TableHeaderCell>
+                        <Table.TableHeaderCell width="30%">Task</Table.TableHeaderCell>
+                        <Table.TableHeaderCell width="60px">Status</Table.TableHeaderCell>
+                        <Table.TableHeaderCell width="110px">Duration</Table.TableHeaderCell>
+                        <Table.TableHeaderCell width="100px">Actions</Table.TableHeaderCell>
                     </Table.TableRow>
                 </Table.TableHeader>
                 <Table.TableBody>
@@ -148,10 +148,10 @@ const TodoListTable = ({ selectedDate, todoListItems, setShowModal }: TodoListTa
                         tableRows.map(({ taskId, duration, projectTitle, taskTitle, status, todoListItemId, projectId }) => {
                             return (
                                 <Table.TableRow key={taskId}>
-                                    <Table.TableBodyCell width="35%" scope="col">{projectTitle}</Table.TableBodyCell>
-                                    <Table.TableBodyCell width="35%" scope="col">{taskTitle}</Table.TableBodyCell>
-                                    <Table.TableBodyCell width="15%" scope="col">{taskStatusLookup[status]}</Table.TableBodyCell>
-                                    <Table.TableBodyCell width="20%" scope="col">
+                                    <Table.TableBodyCell >{projectTitle}</Table.TableBodyCell>
+                                    <Table.TableBodyCell >{taskTitle}</Table.TableBodyCell>
+                                    <Table.TableBodyCell >{taskStatusLookup[status]}</Table.TableBodyCell>
+                                    <Table.TableBodyCell >
                                         <LabelAndInput
                                             name="duration"
                                             value={`${duration}`}
