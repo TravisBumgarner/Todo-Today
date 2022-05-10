@@ -1,4 +1,8 @@
-PR-8
+PR-9
+
+- [ ] Add a "Remove Item" button or soemthing from ManageTodoListModal
+- [x] Add Daily summary on TodoList page
+- [ ] Add daily summary on Reports page
 
 
 

@@ -4,7 +4,7 @@ import { useLiveQuery } from 'dexie-react-hooks'
 
 import { Button, ButtonWrapper, Heading } from 'sharedComponents'
 import { TodoListTable, ManageTodoListItemsModal } from './components'
-import { formatDateDisplayString, formatDateKeyLookup } from 'utilities'
+import { formatDateDisplayString, formatDateKeyLookup, formatDurationDisplayString, sumArray } from 'utilities'
 import database from 'database'
 import { TDateISODate } from 'sharedTypes'
 import { context } from 'Context'
@@ -34,9 +34,13 @@ const TodoList = () => {
         setSelectedDate(formatDateKeyLookup(moment(selectedDate).add(1, 'day')))
     }
 
+    const hoursWorkedSelectedDate = todoListItems
+        ? `(${formatDurationDisplayString(sumArray(todoListItems.map(({duration}) => duration)))} Worked)`
+        : ''
+
     return (
         <>
-            <Heading.H2>{formatDateDisplayString(dateFormat, selectedDate)}</Heading.H2>
+            <Heading.H2>{formatDateDisplayString(dateFormat, selectedDate)} {hoursWorkedSelectedDate}</Heading.H2>
             <ButtonWrapper
                 left={[
                     <Button key="previous" onClick={getPreviousDay} variation='PRIMARY_BUTTON'>Previous</Button>,
