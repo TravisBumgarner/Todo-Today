@@ -61,11 +61,16 @@ const crunchTheNumbers = (todoListItems: TTodoListItem[]) => {
             accumulator[projectId][todoListDate] = 0
         }
 
+        if (!(todoListDate in accumulator['all'])) {
+            accumulator['all'][todoListDate] = 0
+        }
+
         accumulator[projectId][todoListDate] += duration
+        accumulator['all'][todoListDate] += duration
 
         return accumulator
 
-    }, {} as Record<string, Record<string, number>>)
+    }, {'all': {}} as Record<string, Record<string, number>>)
 }
 
 const Reports = () => {

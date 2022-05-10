@@ -14,8 +14,14 @@ type ReportTableProps = {
     endDate: TDateISODate
 }
 
+const sumAndDisplay = (durations: number[]) => {
+    const totalDuration = sumArray(durations)
+    const totalDurationDisplay = totalDuration ? formatDurationDisplayString(totalDuration) : '-'
+    return totalDurationDisplay
+}
+
 const ReportsTable = ({ crunchedNumbers, startDate, endDate }: ReportTableProps) => {
-    const {state: {dateFormat}} = React.useContext(context)
+    const { state: { dateFormat } } = React.useContext(context)
     const projects = useLiveQuery(async () => {
         return database.projects.toArray()
     })
@@ -23,8 +29,8 @@ const ReportsTable = ({ crunchedNumbers, startDate, endDate }: ReportTableProps)
     for (var m = moment(startDate); m.isBefore(endDate); m.add(1, 'days')) {
         dateColumns.push(formatDateKeyLookup(m))
     }
-    
-    if(!projects) return <p>One sec</p>
+
+    if (!projects) return <p>One sec</p>
     const tableTitle = `${formatDateDisplayString(dateFormat, startDate)} to ${formatDateDisplayString(dateFormat, endDate)}`
     return (
         <>
@@ -47,12 +53,12 @@ const ReportsTable = ({ crunchedNumbers, startDate, endDate }: ReportTableProps)
                 </Table.TableHeader>
                 <Table.TableBody>
                     {Object.keys(crunchedNumbers).map(projectId => {
-                        const totalDuration = sumArray(Object.values(crunchedNumbers[projectId]))
-                        const totalDurationDisplay = totalDuration ? formatDurationDisplayString(totalDuration) : '-'
+                        if (projectId === 'all') return
+
                         return (
                             <Table.TableRow key={projectId}>
-                                <Table.TableBodyCell>{((projects as TProject[]).find(({id}) => id === projectId)  as TProject).title}</Table.TableBodyCell>
-                                <Table.TableBodyCell>{totalDurationDisplay}</Table.TableBodyCell>
+                                <Table.TableBodyCell>{((projects as TProject[]).find(({ id }) => id === projectId) as TProject).title}</Table.TableBodyCell>
+                                <Table.TableBodyCell>{sumAndDisplay(Object.values(crunchedNumbers[projectId]))}</Table.TableBodyCell>
                                 {
                                     dateColumns.map(date => {
                                         const minutes = crunchedNumbers[projectId][date]
@@ -62,6 +68,16 @@ const ReportsTable = ({ crunchedNumbers, startDate, endDate }: ReportTableProps)
                             </Table.TableRow>
                         )
                     })}
+                    <Table.TableRow key={'all'}>
+                        <Table.TableBodyCell>All Projects</Table.TableBodyCell>
+                        <Table.TableBodyCell>{sumAndDisplay(Object.values(crunchedNumbers['all']))}</Table.TableBodyCell>
+                        {
+                            dateColumns.map(date => {
+                                const minutes = crunchedNumbers['all'][date]
+                                return <Table.TableBodyCell key={date}>{minutes ? formatDurationDisplayString(minutes) : '-'}</Table.TableBodyCell>
+                            })
+                        }
+                    </Table.TableRow>
                 </Table.TableBody>
             </Table.Table>
         </>
