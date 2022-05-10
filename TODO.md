@@ -1,4 +1,10 @@
-PR-8
+PR-9
+
+- [x] Add a "Remove Item" button or soemthing from ManageTodoListModal, Add Finished button at bottom. 
+- [x] Add Daily summary on TodoList page
+- [x] Add daily summary on Reports page
+- [x] Filter End Date is off by 1
+- [x] Fix styling on reports table
 
 
 

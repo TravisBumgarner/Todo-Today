@@ -7,6 +7,7 @@ const Table = styled.table`
     border-spacing: 0;
     width: 100%;
     border: 2px solid ${({theme}) => theme.FOREGROUND_TEXT };
+    table-layout: fixed;
 `
 
 const TableHeader = styled.thead`

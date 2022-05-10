@@ -10,6 +10,7 @@ import { formatDateKeyLookup, taskStatusLookup } from 'utilities'
 type TodoListTableProps = {
     selectedDate: TDateISODate
     todoListItems: TTodoListItem[] | undefined
+    setShowModal: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 // It is what it is. lol
@@ -114,7 +115,7 @@ const AVAILABLE_DURATIONS = [
 ]
 
 
-const TodoListTable = ({ selectedDate, todoListItems }: TodoListTableProps) => {
+const TodoListTable = ({ selectedDate, todoListItems, setShowModal }: TodoListTableProps) => {
     const tableRows = useLiveQuery(async () => {
         return await Promise.all([...todoListItems || []].map(async todoListItem => {
             const task = (await database.tasks.where({ id: todoListItem.taskId }).first()) as TTask
@@ -123,8 +124,11 @@ const TodoListTable = ({ selectedDate, todoListItems }: TodoListTableProps) => {
         }))
     }, [todoListItems])
 
-    if(!tableRows){
-        return <BigBoxOfNothing message='Click Add Tasks above to get started' />
+    if(!tableRows || tableRows.length === 0){
+        return <BigBoxOfNothing
+            message='Click Add Tasks above to get started!'
+            callToActionButton={<Button key="manage" onClick={() => setShowModal(true)} variation='PRIMARY_BUTTON'>Add Tasks</Button>}
+        />
     }
 
     return (
