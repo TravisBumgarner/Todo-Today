@@ -4,6 +4,7 @@ PR-9
 - [x] Add Daily summary on TodoList page
 - [x] Add daily summary on Reports page
 - [ ] Filter End Date is off by 1
+- [x] Fix styling on reports table
 
 
 
