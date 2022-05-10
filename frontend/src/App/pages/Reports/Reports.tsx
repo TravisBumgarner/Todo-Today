@@ -47,7 +47,7 @@ const getSundayDateOfWeek = (selectedDate: Moment): TDateISODate => {
 
 const getSaturdayDateOfWeek = (selectedDate: Moment): TDateISODate => {
     const dayOfWeek = moment(selectedDate).day()
-    const saturday = moment(selectedDate).add(7 - dayOfWeek, 'days')
+    const saturday = moment(selectedDate).add(6 - dayOfWeek, 'days')
     return formatDateKeyLookup(saturday)
 }
 

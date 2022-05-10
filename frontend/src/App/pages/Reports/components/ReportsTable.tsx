@@ -26,7 +26,7 @@ const ReportsTable = ({ crunchedNumbers, startDate, endDate }: ReportTableProps)
         return database.projects.toArray()
     })
     const dateColumns: string[] = []
-    for (var m = moment(startDate); m.isBefore(endDate); m.add(1, 'days')) {
+    for (var m = moment(startDate); m.isSameOrBefore(endDate); m.add(1, 'days')) {
         dateColumns.push(formatDateKeyLookup(m))
     }
 
