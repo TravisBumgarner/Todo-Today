@@ -14,6 +14,7 @@ import Divider from './Divider'
 import ButtonWrapper from './ButtonWrapper'
 import Icon from './Icon'
 import BigBoxOfNothing from './BigBoxOfNothing'
+import Form from './Form'
 
 export {
     Loading,
@@ -31,5 +32,6 @@ export {
     Divider,
     ButtonWrapper,
     Icon,
-    BigBoxOfNothing
+    BigBoxOfNothing,
+    Form
 }

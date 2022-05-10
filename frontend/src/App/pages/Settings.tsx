@@ -2,7 +2,7 @@ import React from 'react'
 import moment, { Moment } from 'moment'
 
 import { TColorTheme, TDateFormat, TSettings, TWeekStart } from 'sharedTypes'
-import { Heading, LabelAndInput } from 'sharedComponents'
+import { Heading, LabelAndInput, Form } from 'sharedComponents'
 import { dateFormatLookup } from 'utilities'
 import { context } from 'Context'
 
@@ -48,7 +48,7 @@ const Settings = () => {
     return (
         <>
             <Heading.H2>Settings</Heading.H2>
-            <form>
+            <Form>
                 <LabelAndInput
                     inputType="select-enum"
                     name='weekStart'
@@ -76,7 +76,7 @@ const Settings = () => {
                     options={TColorTheme}
                     optionLabels={colorThemeOptionLabels}
                 />
-            </form>
+            </Form>
         </>
     )
 }

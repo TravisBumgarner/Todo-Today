@@ -1,7 +1,7 @@
 // import { context } from 'Context'
 import React from 'react'
 
-import { Button, Modal, ButtonWrapper, LabelAndInput } from 'sharedComponents'
+import { Button, Modal, ButtonWrapper, LabelAndInput, Form } from 'sharedComponents'
 import { TProject, TTask, TTaskStatus } from 'sharedTypes'
 import {projectStatusLookup} from 'utilities'
 import database from 'database'
@@ -35,7 +35,7 @@ const EditTaskModal = ({ showModal, setShowModal, project, task }: EditTaskModal
             showModal={showModal}
             closeModal={() => setShowModal(false)}
         >
-             <form onChange={() => setSubmitDisabled(false)}>
+             <Form onChange={() => setSubmitDisabled(false)}>
                 <LabelAndInput
                     label="Task"
                     name="title"
@@ -58,7 +58,7 @@ const EditTaskModal = ({ showModal, setShowModal, project, task }: EditTaskModal
                     ]
                 }
                 />
-            </form>
+            </Form>
         </Modal >
     )
 }

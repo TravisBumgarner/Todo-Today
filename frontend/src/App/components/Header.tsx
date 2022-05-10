@@ -17,7 +17,7 @@ const Header = () => {
             <div>
                 <Link style={{ textDecoration: 'none' }} to="/">
                     <Heading.H1>
-                        TODO TODAY
+                        Todo Today
                     </Heading.H1>
                 </Link>
             </div>

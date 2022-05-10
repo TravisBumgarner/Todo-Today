@@ -1,11 +1,10 @@
-PR-9
+PR-10
 
-- [x] Add a "Remove Item" button or soemthing from ManageTodoListModal, Add Finished button at bottom. 
-- [x] Add Daily summary on TodoList page
-- [x] Add daily summary on Reports page
-- [x] Filter End Date is off by 1
-- [x] Fix styling on reports table
-
+- Eslint
+- Backend to TS
+- Clean up Todolist table
+- Replace alerts with modals
+- Add Icon
 
 
 Next PR

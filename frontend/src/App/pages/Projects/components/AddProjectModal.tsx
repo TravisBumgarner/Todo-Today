@@ -3,7 +3,7 @@ import moment, { Moment } from 'moment'
 import { v4 as uuid4 } from 'uuid'
 
 import database from 'database'
-import { Button, Modal, ButtonWrapper, LabelAndInput } from 'sharedComponents'
+import { Button, Modal, ButtonWrapper, LabelAndInput, Form } from 'sharedComponents'
 import { TProject, TProjectStatus } from 'sharedTypes'
 import { formatDateKeyLookup } from 'utilities'
 
@@ -36,7 +36,7 @@ const AddProjectModal = ({ showModal, setShowModal }: AddProjectModalProps) => {
             showModal={showModal}
             closeModal={() => setShowModal(false)}
         >
-            <>
+            <Form>
                 <LabelAndInput
                     label="Title"
                     name="title"
@@ -64,7 +64,7 @@ const AddProjectModal = ({ showModal, setShowModal }: AddProjectModalProps) => {
                     ]
                 }
                 />
-            </>
+            </Form>
         </Modal >
     )
 }

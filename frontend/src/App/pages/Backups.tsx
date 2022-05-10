@@ -1,7 +1,7 @@
 import React from 'react'
 import moment from 'moment'
 
-import { Button, ButtonWrapper, Heading, LabelAndInput, Modal, Paragraph } from 'sharedComponents'
+import { Button, ButtonWrapper, Heading, LabelAndInput, Modal, Paragraph, Form } from 'sharedComponents'
 import { saveFile } from 'utilities'
 import database from 'database'
 import { TBackupInterval } from 'sharedTypes'
@@ -113,8 +113,10 @@ const Backups = () => {
 
 
             <Heading.H2>Restore</Heading.H2>
+            <Form>
             <LabelAndInput handleChange={(file) => setRestore(file)} label="Restore database with a backup copy." name={"file"} inputType='file' />
             <ButtonWrapper fullWidth={<Button disabled={!restore} onClick={() => setShowRestoreConfirmModal(true)} fullWidth variation='PRIMARY_BUTTON'>Restore from Backup</Button>} />
+            </Form>
             <Modal
                 contentLabel='Restore?'
                 showModal={showRestoreConfirmModal}

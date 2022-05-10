@@ -153,7 +153,6 @@ const TodoListTable = ({ selectedDate, todoListItems, setShowModal }: TodoListTa
                                     <Table.TableBodyCell width="15%" scope="col">{taskStatusLookup[status]}</Table.TableBodyCell>
                                     <Table.TableBodyCell width="20%" scope="col">
                                         <LabelAndInput
-                                            label="Duration"
                                             name="duration"
                                             value={`${duration}`}
                                             options={AVAILABLE_DURATIONS}

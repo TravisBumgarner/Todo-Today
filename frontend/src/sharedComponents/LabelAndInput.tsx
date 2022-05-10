@@ -68,8 +68,6 @@ const Select = styled.select`
 `
 
 const LabelAndInputWrapper = styled.div`
-    margin: 2rem 0;
-
     ${Label}{
         display: block;
         box-sizing: border-box;
@@ -84,7 +82,7 @@ const LabelAndInputWrapper = styled.div`
 
 type GenericProps = {
     name: string
-    label: string
+    label?: string
     value?: string
 }
 
@@ -183,7 +181,7 @@ const LabelAndInput = (props: LabelAndInputProps) => {
     const { name, label } = props
     return (
         <LabelAndInputWrapper>
-            <Label htmlFor={name}>{label}</Label>
+            {label ? <Label htmlFor={name}>{label}</Label> : null}
             {InputElement}
         </LabelAndInputWrapper>
     )

@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { useLiveQuery } from 'dexie-react-hooks'
 
 import database from 'database'
-import { Heading, LabelAndInput, Button, BigBoxOfNothing } from 'sharedComponents'
+import { Heading, LabelAndInput, Button, BigBoxOfNothing, Form } from 'sharedComponents'
 import { ReportsTable } from './components'
 import { TDateISODate, TTodoListItem } from 'sharedTypes'
 import { formatDateKeyLookup } from 'utilities'
@@ -70,7 +70,7 @@ const crunchTheNumbers = (todoListItems: TTodoListItem[]) => {
 
         return accumulator
 
-    }, {'all': {}} as Record<string, Record<string, number>>)
+    }, { 'all': {} } as Record<string, Record<string, number>>)
 }
 
 const Reports = () => {
@@ -118,12 +118,13 @@ const Reports = () => {
                     inputType="date"
                     handleChange={(date: TDateISODate) => setEndDate(date)}
                 />
-                <div style={{ margin: '2rem 1rem 2rem 0rem' }}>
+                <div>
                     <LabelInDisguise>Quick Reports</LabelInDisguise>
                     <FiltersWrapper>
                         <Button variation='PRIMARY_BUTTON' onClick={() => setQuickFilter(TQuickFilterOptions.THIS_WEEK)}>This Week</Button>
                         <Button variation='PRIMARY_BUTTON' onClick={() => setQuickFilter(TQuickFilterOptions.LAST_WEEK)} >Last Week</Button>
                     </FiltersWrapper>
+
                 </div>
             </FilterWrapper>
             <Heading.H2>Reports</Heading.H2>

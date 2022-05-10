@@ -1,7 +1,8 @@
 import React from 'react'
 import moment, { Moment } from 'moment'
+import styled from 'styled-components'
 
-import { Button, Modal, ButtonWrapper, LabelAndInput } from 'sharedComponents'
+import { Button, Modal, ButtonWrapper, LabelAndInput, Form } from 'sharedComponents'
 import { TProject, TProjectStatus } from 'sharedTypes'
 import { formatDateKeyLookup, projectStatusLookup } from 'utilities'
 import database from 'database'
@@ -37,7 +38,7 @@ const EditProjectModal = ({ showModal, setShowModal, project }: EditProjectModal
             showModal={showModal}
             closeModal={() => setShowModal(false)}
         >
-            <form onChange={() => setSubmitDisabled(false)}>
+            <Form onChange={() => setSubmitDisabled(false)}>
                 <LabelAndInput
                     label="Title"
                     name="title"
@@ -74,7 +75,7 @@ const EditProjectModal = ({ showModal, setShowModal, project }: EditProjectModal
                     ]
                 }
                 />
-            </form>
+            </Form>
         </Modal >
     )
 }
