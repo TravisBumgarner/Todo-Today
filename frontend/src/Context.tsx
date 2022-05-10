@@ -18,13 +18,30 @@ const EMPTY_STATE: State = {
     backupInterval: TBackupInterval.DAILY
 }
 
-const warmStart = () => {
+const initialSetup = () => {
     Object
         .keys(EMPTY_STATE)
         .forEach((key: keyof typeof EMPTY_STATE) => localStorage.setItem(key, EMPTY_STATE[key]))
 
     localStorage.setItem(HAS_DONE_WARM_START, TRUE)
 }
+
+const getKeysFromStorage = () => {
+    // This function is bad. :shrug:
+    const output: Record<string, string> = {}
+
+    Object
+        .keys(EMPTY_STATE)
+        .forEach((key: string) => {
+            output[key] = (localStorage.getItem(key)) as string
+        })
+    return output as unknown as State
+}
+
+const updateKeysInLocalStorage = (data: Record<string, string>) => {
+    Object.keys(data).forEach(key => localStorage.setItem(key, data[key]))
+}
+
 
 
 type HydrateUserSettings = {
@@ -40,6 +57,7 @@ type EditUserSettings = {
 const reducer = (state: State, action: EditUserSettings | HydrateUserSettings): State => {
     switch (action.type) {
         default: {
+            updateKeysInLocalStorage(action.payload)
             return { ...state, ...action.payload }
         }
     }
@@ -58,12 +76,14 @@ const context = React.createContext(
 const ResultsContext = ({ children }: { children: React.ReactChild }) => {
     const [state, dispatch] = React.useReducer(reducer, EMPTY_STATE)
     const [isLoading, setIsLoading] = React.useState<boolean>(true)
-
     React.useEffect(() => {
-        if(localStorage.getItem(HAS_DONE_WARM_START) !== TRUE){
-            warmStart()
+        if (localStorage.getItem(HAS_DONE_WARM_START) !== TRUE) {
+            initialSetup()
+            setIsLoading(false)
+        } else {
+            dispatch({ type: 'HYDRATE_USER_SETTINGS', payload: getKeysFromStorage() })
+            setIsLoading(false)
         }
-        setIsLoading(false)
     }, [])
 
     if (isLoading) {

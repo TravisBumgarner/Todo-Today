@@ -2,7 +2,6 @@ PR-10
 
 - Eslint
 - Backend to TS
-- Clean up Todolist table
 - Replace alerts with modals
 - Add Icon
 
