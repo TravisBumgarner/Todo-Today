@@ -48,7 +48,7 @@ const TasksTable = ({ tasks, project }: TasksTableProps) => {
 
     return (
         <>
-            <Heading.H3>{project.title}</Heading.H3>
+            <Heading.H2>{project.title}</Heading.H2>
             {
 
                 tasks.length === 0

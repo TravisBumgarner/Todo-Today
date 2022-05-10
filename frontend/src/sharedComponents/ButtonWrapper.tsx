@@ -27,6 +27,7 @@ const LeftRightWrapper = styled.div`
             margin-left: 0.5rem;
         }
     }
+
 `
 
 const VerticalWrapper = styled.div`

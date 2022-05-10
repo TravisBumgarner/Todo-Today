@@ -12,7 +12,7 @@ import { context } from 'Context'
 const TodoList = () => {
     const [selectedDate, setSelectedDate] = React.useState<TDateISODate>(formatDateKeyLookup(moment()))
     const [showManagementModal, setShowManagementModal] = React.useState<boolean>(false)
-    const {state: {dateFormat}} = React.useContext(context)
+    const { state: { dateFormat } } = React.useContext(context)
 
     const todoListItems = useLiveQuery(() =>
         database
@@ -35,7 +35,7 @@ const TodoList = () => {
     }
 
     const hoursWorkedSelectedDate = todoListItems
-        ? `(${formatDurationDisplayString(sumArray(todoListItems.map(({duration}) => duration)))} Worked)`
+        ? `(${formatDurationDisplayString(sumArray(todoListItems.map(({ duration }) => duration)))} Worked)`
         : ''
 
     return (
@@ -43,18 +43,15 @@ const TodoList = () => {
             <Heading.H2>{formatDateDisplayString(dateFormat, selectedDate)} {hoursWorkedSelectedDate}</Heading.H2>
             <ButtonWrapper
                 left={[
-                    <Button key="previous" onClick={getPreviousDay} variation='PRIMARY_BUTTON'>Previous</Button>,
-                    <Button key="next" onClick={getNextDay} variation='PRIMARY_BUTTON'>Next</Button>,
                     <Button key="today" onClick={getToday} variation='PRIMARY_BUTTON'>Today</Button>,
                 ]}
-                right={[<Button key="manage" onClick={() => setShowManagementModal(true)} variation='PRIMARY_BUTTON'>Add Tasks</Button>]}
+                right={[
+                    <Button key="previous" onClick={getPreviousDay} variation='PRIMARY_BUTTON'>Previous</Button>,
+                    <Button key="next" onClick={getNextDay} variation='PRIMARY_BUTTON'>Next</Button>,
+                ]}
             />
-            {
-                <TodoListTable setShowModal={setShowManagementModal} todoListItems={todoListItems} selectedDate={selectedDate} />
-
-            }
-
-
+            <TodoListTable todoListItems={todoListItems} selectedDate={selectedDate} />
+            <Button key="manage" fullWidth onClick={() => setShowManagementModal(true)} variation='PRIMARY_BUTTON'>Add Tasks</Button>
             <ManageTodoListItemsModal selectedDate={selectedDate} showModal={showManagementModal} setShowModal={setShowManagementModal} />
         </>
     )

@@ -11,10 +11,23 @@ import { formatDateKeyLookup } from 'utilities'
 
 const FilterWrapper = styled.div`
     display: flex;
+    justify-content: space-between;
+    > div:first-child {
+        flex-direction: row;
+        display: flex;
 
-    > div {
-        margin-right: 1rem;
-        box-sizing: border-box;
+        & > div:first-child {
+            margin-right: 1rem;
+        }
+        
+    }
+
+    @media (max-width: 800px) {
+        flex-direction: column;
+        
+        > div:nth-child(2) {
+            margin-top: 0.5rem;
+        }
     }
 `
 
@@ -28,10 +41,10 @@ const LabelInDisguise = styled.p`
 `
 
 const FiltersWrapper = styled.div`
-    ${Button}{
+    ${Button}:first-child {
         margin-right: 1rem;
-        height: 40px;
     }
+    height: 40px;
 `
 
 enum TQuickFilterOptions {
@@ -104,20 +117,23 @@ const Reports = () => {
     return (
         <>
             <FilterWrapper>
-                <LabelAndInput
-                    label="Start Date"
-                    name="startDate"
-                    value={startDate}
-                    inputType="date"
-                    handleChange={(date: TDateISODate) => setStartDate(date)}
-                />
-                <LabelAndInput
-                    label="End Date"
-                    name="endDate"
-                    value={endDate}
-                    inputType="date"
-                    handleChange={(date: TDateISODate) => setEndDate(date)}
-                />
+                <div>
+                    <LabelAndInput
+                        label="Start Date"
+                        name="startDate"
+                        value={startDate}
+                        inputType="date"
+                        handleChange={(date: TDateISODate) => setStartDate(date)}
+                    />
+                    <LabelAndInput
+                        label="End Date"
+                        name="endDate"
+                        value={endDate}
+                        inputType="date"
+                        handleChange={(date: TDateISODate) => setEndDate(date)}
+                    />
+                </div>
+
                 <div>
                     <LabelInDisguise>Quick Reports</LabelInDisguise>
                     <FiltersWrapper>
