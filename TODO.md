@@ -1,8 +1,3 @@
-PR-10
-
-- Eslint
-- Backend to TS
-- Replace alerts with modals
 - Add Icon
 
 Next PR

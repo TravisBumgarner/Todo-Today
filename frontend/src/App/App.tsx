@@ -40,7 +40,7 @@ const ModalBackground = styled.div`
 
 const App = () => {
     const { state } = React.useContext(context)
-    const [showAutomatedBackupModal, setShowAutomatedBackupModal] = React.useState<boolean>(true)
+    const [showAutomatedBackupModal, setShowAutomatedBackupModal] = React.useState<boolean>(false)
     React.useEffect(() => automatedBackup(setShowAutomatedBackupModal), [])
 
     return (

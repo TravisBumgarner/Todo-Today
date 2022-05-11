@@ -1,6 +1,7 @@
 const path = require("path");
 const fs = require('fs')
 
+const contextMenu = require('electron-context-menu');
 const { app, BrowserWindow, ipcMain, Menu } = require('electron')
 
 const isDev = process.env.NODE_ENV === 'local'
@@ -9,23 +10,105 @@ const isMac = process.platform === 'darwin'
 if (isDev) require('electron-reloader')(module)
 let mainWindow
 
+contextMenu({showInspectElement: isDev});
+
 const template = [
+    // { role: 'appMenu' }
     ...(isMac ? [{
         label: app.name,
         submenu: [
+            { role: 'about' },
+            { type: 'separator' },
+            { role: 'services' },
+            { type: 'separator' },
+            { role: 'hide' },
+            { role: 'hideOthers' },
+            { role: 'unhide' },
+            { type: 'separator' },
             { role: 'quit' }
         ]
     }] : []),
+    // { role: 'fileMenu' }
     {
-        label: "Edit",
+        label: 'File',
         submenu: [
-            { label: "Undo", accelerator: "CmdOrCtrl+Z", selector: "undo:" },
-            { label: "Redo", accelerator: "Shift+CmdOrCtrl+Z", selector: "redo:" },
-            { type: "separator" },
-            { label: "Cut", accelerator: "CmdOrCtrl+X", selector: "cut:" },
-            { label: "Copy", accelerator: "CmdOrCtrl+C", selector: "copy:" },
-            { label: "Paste", accelerator: "CmdOrCtrl+V", selector: "paste:" },
-            { label: "Select All", accelerator: "CmdOrCtrl+A", selector: "selectAll:" }
+            { role: 'reload' },
+            isMac ? { role: 'close' } : { role: 'quit' },
+        ]
+    },
+    // { role: 'editMenu' }
+    {
+        label: 'Edit',
+        submenu: [
+            { role: 'undo' },
+            { role: 'redo' },
+            { type: 'separator' },
+            { role: 'cut' },
+            { role: 'copy' },
+            { role: 'paste' },
+            ...(isMac ? [
+                { role: 'pasteAndMatchStyle' },
+                { role: 'delete' },
+                { role: 'selectAll' },
+                { type: 'separator' },
+                {
+                    label: 'Speech',
+                    submenu: [
+                        { role: 'startSpeaking' },
+                        { role: 'stopSpeaking' }
+                    ]
+                }
+            ] : [
+                { role: 'delete' },
+                { type: 'separator' },
+                { role: 'selectAll' }
+            ])
+        ]
+    },
+    // { role: 'viewMenu' }
+    {
+        label: 'View',
+        submenu: [
+
+            ...(isDev
+                ? [
+                    { role: 'forceReload' },
+                    { role: 'toggleDevTools' }]
+                : []
+            ),
+            { role: 'resetZoom' },
+            { role: 'zoomIn' },
+            { role: 'zoomOut' },
+            { type: 'separator' },
+            { role: 'togglefullscreen' }
+        ]
+    },
+    // { role: 'windowMenu' }
+    {
+        label: 'Window',
+        submenu: [
+            { role: 'minimize' },
+            { role: 'zoom' },
+            ...(isMac ? [
+                { type: 'separator' },
+                { role: 'front' },
+                { type: 'separator' },
+                { role: 'window' }
+            ] : [
+                { role: 'close' }
+            ])
+        ]
+    },
+    {
+        role: 'help',
+        submenu: [
+            {
+                label: 'Learn More',
+                click: async () => {
+                    const { shell } = require('electron')
+                    await shell.openExternal('https://electronjs.org')
+                }
+            }
         ]
     }
 ]
@@ -42,9 +125,10 @@ function createWindow() {
         title: "TODO TODAY",
         webPreferences: {
             nodeIntegration: true,
-            enableRemoteModule: true,
+            // enableRemoteModule: true,
             contextIsolation: false,
             devTools: isDev || isDebugProduction,
+            spellcheck: true
         }
     })
 
@@ -61,16 +145,16 @@ function createWindow() {
 app.whenReady().then(() => {
     createWindow()
 
-    app.on('activate', function() {
+    app.on('activate', function () {
         if (BrowserWindow.getAllWindows().length === 0) createWindow()
     })
 })
 
-app.on('window-all-closed', function() {
+app.on('window-all-closed', function () {
     if (process.platform !== 'darwin') app.quit()
 })
 
-ipcMain.handle('backup', async(event, arg) => {
+ipcMain.handle('backup', async (event, arg) => {
     try {
         const dirname = path.resolve(app.getPath('appData'), app.name, 'backups')
         if (!fs.existsSync(dirname)) {

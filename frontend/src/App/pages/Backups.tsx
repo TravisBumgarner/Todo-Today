@@ -103,11 +103,13 @@ const Backups = () => {
             <Paragraph>Create a copy of the entire database.</Paragraph>
             <ButtonWrapper fullWidth={<Button onClick={() => handleBackup()} fullWidth variation="PRIMARY_BUTTON">Backup</Button>} />
 
-            <Heading.H2>Automated Backup</Heading.H2>
+            <Heading.H2>
+                Automated Backup
+            </Heading.H2>
             <LabelAndInput
                 inputType="select-enum"
                 name="weekStart"
-                label="How often would you like automated backups to run?"
+                label={`How often would you like automated backups to run? (Last Backup: ${localStorage.getItem('lastBackup')})`}
                 value={state.backupInterval}
                 handleChange={(value: TBackupInterval) => dispatch({ type: 'EDIT_USER_SETTINGS', payload: { backupInterval: value } })}
                 options={TBackupInterval}
