@@ -18,8 +18,8 @@ const StyledNav = styled.ul`
 
 const ALWAYS_VISIBLE_LINKS = [
     { text: 'Todo List', to: '/' },
-    { text: 'Projects', to: '/projects' },
-    { text: 'Tasks by Project', to: '/tasks' },
+    { text: 'Manage Projects', to: '/projects' },
+    { text: 'Manage Tasks', to: '/tasks' },
     { text: 'Reports', to: '/reports' },
     { text: 'Settings', to: '/settings' },
     { text: 'Backups', to: '/backups' },
