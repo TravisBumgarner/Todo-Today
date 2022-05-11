@@ -12,7 +12,7 @@
 
 # Features in Development
 
-- Set Reminders to Track 
+- Set Reminders to submit todo list. 
 
 # Contributing
 
