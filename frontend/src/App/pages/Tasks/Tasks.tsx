@@ -2,21 +2,21 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import React from 'react'
 
 import { BigBoxOfNothing } from 'sharedComponents'
-import { TasksTable } from './components'
 import { bucketTasksByProject } from 'utilities'
 import database from 'database'
+import { TasksTable } from './components'
 
 const Tasks = () => {
     const projects = useLiveQuery(() => database.projects.toArray())
     const tasks = useLiveQuery(() => database.tasks.toArray())
 
-    if(!projects){
+    if (!projects) {
         return <BigBoxOfNothing message="Create a project and then come back!" />
     }
 
     const tasksByProject = bucketTasksByProject(projects, tasks)
 
-    const TasksByProject = projects.map(project => {
+    const TasksByProject = projects.map((project) => {
         return (
             <TasksTable key={project.id} project={project} tasks={tasksByProject[project.id]} />
         )

@@ -13,7 +13,6 @@ type AddProjectModalProps = {
 }
 
 const AddProjectModal = ({ showModal, setShowModal }: AddProjectModalProps) => {
-
     const [title, setTitle] = React.useState<string>('')
     const [startDate, setStartDate] = React.useState<Moment>(moment())
     const [endDate, setEndDate] = React.useState<Moment>(moment())
@@ -25,7 +24,7 @@ const AddProjectModal = ({ showModal, setShowModal }: AddProjectModalProps) => {
             startDate: formatDateKeyLookup(moment(startDate)),
             endDate: formatDateKeyLookup(moment(endDate)),
             status: TProjectStatus.NEW,
-        } 
+        }
         await database.projects.add(newProject)
         setShowModal(false)
     }
@@ -65,7 +64,7 @@ const AddProjectModal = ({ showModal, setShowModal }: AddProjectModalProps) => {
                 }
                 />
             </Form>
-        </Modal >
+        </Modal>
     )
 }
 

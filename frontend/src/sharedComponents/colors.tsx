@@ -1,7 +1,5 @@
 import { TColorTheme, TColor } from 'sharedTypes'
 
-
-
 const THEMES: Record<TColorTheme, TColor> = {
     FIRE_AND_ICE: {
         FOREGROUND_TEXT: '#7bc3ff',
@@ -32,8 +30,6 @@ const THEMES: Record<TColorTheme, TColor> = {
         BACKGROUND_PRIMARY: '#003049',
     }
 }
-
-
 
 // const randomColor = (colors: string[]) => colors[Math.floor(Math.random() * colors.length)];
 

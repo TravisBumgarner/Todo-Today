@@ -46,6 +46,8 @@ module.exports = {
         'import/no-extraneous-dependencies': ['off'],
         'object-curly-newline': ['off'],
         'arrow-body-style': ['off'],
-        'react/jsx-props-no-spreading': ['off']
+        'react/jsx-props-no-spreading': ['off'],
+        'react/destructuring-assignment': ['off'],
+        'func-names': ['off']
     },
 }

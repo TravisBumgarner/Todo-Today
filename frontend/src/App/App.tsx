@@ -1,17 +1,15 @@
-import React from 'react';
+import React from 'react'
 import { BrowserRouter } from 'react-router-dom'
-import styled, { ThemeProvider } from 'styled-components';
+import styled, { ThemeProvider } from 'styled-components'
 import { ModalProvider } from 'styled-react-modal'
 import { darken } from 'polished'
 
 import Context, { context } from 'Context'
 import Theme from 'theme'
+import { ConfirmationModal } from 'sharedComponents'
 import { Navigation, Router, Header } from './components'
 import THEMES from '../sharedComponents/colors'
-import { TBackupInterval, TColorTheme, TDateFormat, TWeekStart } from 'sharedTypes';
-import { automatedBackup } from './pages/Backups';
-
-
+import { automatedBackup } from './pages/Backups'
 
 const ModalBackground = styled.div`
     display: flex;
@@ -22,9 +20,9 @@ const ModalBackground = styled.div`
     height: 100vh;
     z-index: 30;
     
-    background-color: ${props => {
-    return darken(0.05, props.theme.BACKGROUND_PRIMARY)
-  }};
+    background-color: ${(props) => {
+        return darken(0.05, props.theme.BACKGROUND_PRIMARY)
+    }};
     display: flex;
     justify-content: center;
     align-items: center;
@@ -41,64 +39,72 @@ const ModalBackground = styled.div`
 `
 
 const App = () => {
-  const {state} = React.useContext(context)
-  React.useEffect(() => automatedBackup(), [])
+    const { state } = React.useContext(context)
+    const [showAutomatedBackupModal, setShowAutomatedBackupModal] = React.useState<boolean>(true)
+    React.useEffect(() => automatedBackup(setShowAutomatedBackupModal), [])
 
-  return (
-    <ThemeProvider theme={THEMES[state.colorTheme]}>
-      <Theme.GlobalStyle />
-      <ModalProvider backgroundComponent={ModalBackground}>
-        <div>
-          <Header />
-          <Navigation />
-          <Router />
-        </div>
-      </ModalProvider>
-    </ThemeProvider>
-  )
+    return (
+        <ThemeProvider theme={THEMES[state.colorTheme]}>
+            <Theme.GlobalStyle />
+            <ModalProvider backgroundComponent={ModalBackground}>
+                <div>
+                    <Header />
+                    <Navigation />
+                    <Router />
+                </div>
+                <ConfirmationModal
+                    body="The automated backup failed to run."
+                    title="Heads Up!"
+                    confirmationCallback={() => setShowAutomatedBackupModal(false)}
+                    showModal={showAutomatedBackupModal}
+                    setShowModal={setShowAutomatedBackupModal}
+                />
+            </ModalProvider>
+        </ThemeProvider>
+    )
 }
 
 class ErrorBoundary extends React.Component<{}, { hasError: boolean, error: string }> {
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      hasError: false,
-      error: ''
-    };
-  }
-
-  static getDerivedStateFromError(error: Error) {
-    return { hasError: true };
-  }
-
-  componentDidCatch(error: Error, errorInfo: unknown) {
-    this.setState({ error: `${JSON.stringify(error.message)}\n${JSON.stringify(errorInfo)}` });
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return <>
-        <h1>Something went wrong.</h1>
-        <p>Message: ${this.state.error}</p>
-      </>
+    constructor(props: any) {
+        super(props)
+        this.state = {
+            hasError: false,
+            error: ''
+        }
     }
 
-    return this.props.children;
-  }
+    static getDerivedStateFromError() {
+        return { hasError: true }
+    }
+
+    componentDidCatch(error: Error, errorInfo: unknown) {
+        this.setState({ error: `${JSON.stringify(error.message)}\n${JSON.stringify(errorInfo)}` })
+    }
+
+    render() {
+        if (this.state.hasError) {
+            return (
+                <>
+                    <h1>Something went wrong.</h1>
+                    <p>Message: ${this.state.error}</p>
+                </>
+            )
+        }
+
+        return this.props.children
+    }
 }
 
 const InjectedApp = () => {
-  return (
-    <ErrorBoundary>
-      <BrowserRouter>
-        <Context>
-          <App />
-        </Context>
-      </BrowserRouter>
-    </ErrorBoundary>
-  )
+    return (
+        <ErrorBoundary>
+            <BrowserRouter>
+                <Context>
+                    <App />
+                </Context>
+            </BrowserRouter>
+        </ErrorBoundary>
+    )
 }
-
-
 
 export default InjectedApp

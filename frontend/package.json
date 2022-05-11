@@ -33,6 +33,8 @@
     },
     "scripts": {
         "sd:fe": "webpack serve --mode=development --config=webpack.js",
-        "build": "rm -rf ./react-dist && mkdir ./react-dist && webpack --mode=production --config=webpack.js"
+        "build": "rm -rf ./react-dist && mkdir ./react-dist && webpack --mode=production --config=webpack.js",
+        "lint:run": "npx eslint --ext .ts,.tsx ./src/",
+        "lint:fix": "npx eslint --ext .ts,.tsx ./src/ --fix"
     }
 }

@@ -5,9 +5,9 @@ type TDateISODate = `${TYear}-${TMonth}-${TDay}`;
 
 enum TProjectStatus {
     NEW = 'NEW',
-    IN_PROGRESS = "IN_PROGRESS",
-    COMPLETED = "COMPLETED",
-    CANCELED = "CANCELED",
+    IN_PROGRESS = 'IN_PROGRESS',
+    COMPLETED = 'COMPLETED',
+    CANCELED = 'CANCELED',
 }
 
 type TProject = {
@@ -20,9 +20,9 @@ type TProject = {
 
 enum TTaskStatus {
     NEW = 'NEW',
-    IN_PROGRESS = "IN_PROGRESS",
-    COMPLETED = "COMPLETED",
-    CANCELED = "CANCELED",
+    IN_PROGRESS = 'IN_PROGRESS',
+    COMPLETED = 'COMPLETED',
+    CANCELED = 'CANCELED',
 }
 
 type TTask = {
@@ -48,11 +48,11 @@ enum TDateFormat {
 }
 
 enum TBackupInterval {
-    HOURLY = "HOURLY",
-    DAILY = "DAILY",
-    WEEKLY = "WEEKLY",
-    MONTHLY = "MONTHLY",
-    OFF = "OFF"
+    HOURLY = 'HOURLY',
+    DAILY = 'DAILY',
+    WEEKLY = 'WEEKLY',
+    MONTHLY = 'MONTHLY',
+    OFF = 'OFF'
 }
 
 enum TWeekStart {

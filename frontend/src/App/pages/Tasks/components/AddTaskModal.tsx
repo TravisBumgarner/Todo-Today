@@ -46,7 +46,7 @@ const AddTaskModal = ({ showModal, setShowModal, project }: AddTaskModalProps) =
                 }
                 />
             </Form>
-        </Modal >
+        </Modal>
     )
 }
 

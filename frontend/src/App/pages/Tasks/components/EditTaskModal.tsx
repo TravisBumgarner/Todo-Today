@@ -1,9 +1,8 @@
-// import { context } from 'Context'
 import React from 'react'
 
 import { Button, Modal, ButtonWrapper, LabelAndInput, Form } from 'sharedComponents'
 import { TProject, TTask, TTaskStatus } from 'sharedTypes'
-import {projectStatusLookup} from 'utilities'
+import { projectStatusLookup } from 'utilities'
 import database from 'database'
 
 type EditTaskModalProps = {
@@ -17,7 +16,7 @@ const EditTaskModal = ({ showModal, setShowModal, project, task }: EditTaskModal
     const [title, setTitle] = React.useState<string>(task.title)
     const [status, setStatus] = React.useState<TTaskStatus>(task.status)
     const [submitDisabled, setSubmitDisabled] = React.useState<boolean>(true)
-    
+
     const handleSubmit = () => {
         const editedTask = {
             title,
@@ -28,14 +27,14 @@ const EditTaskModal = ({ showModal, setShowModal, project, task }: EditTaskModal
         database.tasks.put(editedTask, [task.id])
         setShowModal(false)
     }
-    
+
     return (
         <Modal
-            contentLabel={`Edit Task`}
+            contentLabel="Edit Task"
             showModal={showModal}
             closeModal={() => setShowModal(false)}
         >
-             <Form onChange={() => setSubmitDisabled(false)}>
+            <Form onChange={() => setSubmitDisabled(false)}>
                 <LabelAndInput
                     label="Task"
                     name="title"
@@ -49,7 +48,7 @@ const EditTaskModal = ({ showModal, setShowModal, project, task }: EditTaskModal
                     options={TTaskStatus}
                     optionLabels={projectStatusLookup}
                     inputType="select-enum"
-                    handleChange={(status: TTaskStatus) => setStatus(status)}
+                    handleChange={(newStatus: TTaskStatus) => setStatus(newStatus)}
                 />
                 <ButtonWrapper right={
                     [
@@ -59,7 +58,7 @@ const EditTaskModal = ({ showModal, setShowModal, project, task }: EditTaskModal
                 }
                 />
             </Form>
-        </Modal >
+        </Modal>
     )
 }
 

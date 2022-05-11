@@ -2,18 +2,18 @@ import React from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
 
 import { BigBoxOfNothing, Button, DropdownMenu, Table } from 'sharedComponents'
-import EditProjectModal from './EditProjectModal'
 import { formatDateDisplayString, projectStatusLookup } from 'utilities'
 import database from 'database'
 import { TProject } from 'sharedTypes'
 import { context } from 'Context'
+import EditProjectModal from './EditProjectModal'
 
 const ProjectsTable = () => {
     const projects = useLiveQuery(() => database.projects.toArray())
     const [selectedProjectId, setSelectedProjectId] = React.useState<string | null>(null)
-    const {state: {dateFormat}} = React.useContext(context)
+    const { state: { dateFormat } } = React.useContext(context)
 
-    if(!projects || projects.length === 0){
+    if (!projects || projects.length === 0) {
         return <BigBoxOfNothing message="Create a project and get going!" />
     }
 
@@ -39,23 +39,23 @@ const ProjectsTable = () => {
                             <Table.TableBodyCell>
                                 <DropdownMenu title="Actions">{
                                     [<Button fullWidth key="edit" variation="PRIMARY_BUTTON" onClick={() => setSelectedProjectId(id)}>Edit</Button>]
-                                }</DropdownMenu>
-                                
+                                }
+                                </DropdownMenu>
+
                             </Table.TableBodyCell>
                         </Table.TableRow>
                     ))}
                 </Table.TableBody>
             </Table.Table>
-            { selectedProjectId ? 
-                (
-                <EditProjectModal
-                    showModal={selectedProjectId !== null}
-                    setShowModal={() => setSelectedProjectId(null)}
-                    project={projects.find(({id}) => selectedProjectId === id) as TProject}
-                />
-                ) : 
-                (null)
-            }
+            { selectedProjectId
+                ? (
+                    <EditProjectModal
+                        showModal={selectedProjectId !== null}
+                        setShowModal={() => setSelectedProjectId(null)}
+                        project={projects.find(({ id }) => selectedProjectId === id) as TProject}
+                    />
+                )
+                : (null)}
         </>
     )
 }

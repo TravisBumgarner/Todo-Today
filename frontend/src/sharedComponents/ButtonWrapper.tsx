@@ -11,7 +11,7 @@ type ButtonWrapperProps = {
 
 const LeftRightWrapper = styled.div`
     display: flex;
-    margin: 2rem 0;
+    margin: 0.5rem 0;
     justify-content: space-between;
 
    div:nth-child(1) {
@@ -36,7 +36,6 @@ const VerticalWrapper = styled.div`
     }
 `
 
-
 const ButtonWrapper = ({ left, right, fullWidth, vertical }: ButtonWrapperProps) => {
     let content
 
@@ -54,16 +53,16 @@ const ButtonWrapper = ({ left, right, fullWidth, vertical }: ButtonWrapperProps)
             </div>
         )
     } else if (vertical) {
-        content = <VerticalWrapper>
-            {vertical}
-        </VerticalWrapper>
+        content = (
+            <VerticalWrapper>
+                {vertical}
+            </VerticalWrapper>
+        )
     } else {
         return <p>Call it an easter egg.</p>
     }
 
-
     return content
-
 }
 
 export default ButtonWrapper

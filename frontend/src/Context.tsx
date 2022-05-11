@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { TDateFormat, TWeekStart, TColorTheme, TBackupInterval, TSettings } from 'sharedTypes'
+
 const HAS_DONE_WARM_START = 'HAS_DONE_WARM_START'
 const TRUE = 'TRUE'
 
@@ -39,10 +40,8 @@ const getKeysFromStorage = () => {
 }
 
 const updateKeysInLocalStorage = (data: Record<string, string>) => {
-    Object.keys(data).forEach(key => localStorage.setItem(key, data[key]))
+    Object.keys(data).forEach((key) => localStorage.setItem(key, data[key]))
 }
-
-
 
 type HydrateUserSettings = {
     type: 'HYDRATE_USER_SETTINGS',

@@ -1,6 +1,5 @@
 import React from 'react'
 import moment, { Moment } from 'moment'
-import styled from 'styled-components'
 
 import { Button, Modal, ButtonWrapper, LabelAndInput, Form } from 'sharedComponents'
 import { TProject, TProjectStatus } from 'sharedTypes'
@@ -66,7 +65,7 @@ const EditProjectModal = ({ showModal, setShowModal, project }: EditProjectModal
                     options={TProjectStatus}
                     optionLabels={projectStatusLookup}
                     inputType="select-enum"
-                    handleChange={(status: TProjectStatus) => setStatus(status)}
+                    handleChange={(newStatus: TProjectStatus) => setStatus(newStatus)}
                 />
                 <ButtonWrapper right={
                     [
@@ -76,7 +75,7 @@ const EditProjectModal = ({ showModal, setShowModal, project }: EditProjectModal
                 }
                 />
             </Form>
-        </Modal >
+        </Modal>
     )
 }
 

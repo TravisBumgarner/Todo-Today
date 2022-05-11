@@ -34,16 +34,11 @@ const colorThemeOptionLabels: Record<TColorTheme, string> = {
     [TColorTheme.SUNSET]: 'Sunset',
 }
 
-enum TTabs {
-    USER_PREFERENCES = "USER_PREFERENCES",
-    BACKUPS = "BACKUPS",
-}
-
 const Settings = () => {
     const { state, dispatch } = React.useContext(context)
 
     const handleSubmit = (setting: Partial<TSettings>) => {
-        dispatch({ type: "EDIT_USER_SETTINGS", payload: setting })
+        dispatch({ type: 'EDIT_USER_SETTINGS', payload: setting })
     }
     return (
         <>
@@ -51,28 +46,28 @@ const Settings = () => {
             <Form>
                 <LabelAndInput
                     inputType="select-enum"
-                    name='weekStart'
+                    name="weekStart"
                     label="Week starts on"
                     value={state.weekStart}
-                    handleChange={(value: TWeekStart) => handleSubmit({weekStart: value})}
+                    handleChange={(value: TWeekStart) => handleSubmit({ weekStart: value })}
                     options={TWeekStart}
                     optionLabels={weekStartOptionLabels}
                 />
                 <LabelAndInput
                     inputType="select-enum"
-                    name='dateFormat'
+                    name="dateFormat"
                     label="Preferred Date Format"
                     value={state.dateFormat}
-                    handleChange={(value: TDateFormat) => handleSubmit({dateFormat: value})}
+                    handleChange={(value: TDateFormat) => handleSubmit({ dateFormat: value })}
                     options={TDateFormat}
                     optionLabels={dateFormatOptionLabels}
                 />
                 <LabelAndInput
                     inputType="select-enum"
-                    name='colorTheme'
+                    name="colorTheme"
                     label="Theme"
                     value={state.colorTheme}
-                    handleChange={(value: TColorTheme) => handleSubmit({colorTheme: value})}
+                    handleChange={(value: TColorTheme) => handleSubmit({ colorTheme: value })}
                     options={TColorTheme}
                     optionLabels={colorThemeOptionLabels}
                 />

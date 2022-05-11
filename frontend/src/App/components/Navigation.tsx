@@ -28,13 +28,13 @@ const ALWAYS_VISIBLE_LINKS = [
 const NavLi = styled.li`
     font-weight: ${(props: {isActive: boolean}) => {
         return props.isActive ? 700 : 100
-    } };
+    }};
 `
 
 const Navigation = () => {
     const location = useLocation()
     return (
-        <StyledNav >
+        <StyledNav>
             {ALWAYS_VISIBLE_LINKS.map(({ text, to }) => (
                 <NavLi key={to} isActive={location.pathname === to}>
                     <StyledNavLink to={to}>{text}</StyledNavLink>

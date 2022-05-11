@@ -4,10 +4,10 @@ import styled from 'styled-components'
 import { useLiveQuery } from 'dexie-react-hooks'
 
 import database from 'database'
-import { Heading, LabelAndInput, Button, BigBoxOfNothing, Form } from 'sharedComponents'
-import { ReportsTable } from './components'
+import { Heading, LabelAndInput, Button, BigBoxOfNothing } from 'sharedComponents'
 import { TDateISODate, TTodoListItem } from 'sharedTypes'
 import { formatDateKeyLookup } from 'utilities'
+import { ReportsTable } from './components'
 
 const FilterWrapper = styled.div`
     display: flex;
@@ -48,8 +48,8 @@ const FiltersWrapper = styled.div`
 `
 
 enum TQuickFilterOptions {
-    THIS_WEEK = "THIS_WEEK",
-    LAST_WEEK = "LAST_WEEK"
+    THIS_WEEK = 'THIS_WEEK',
+    LAST_WEEK = 'LAST_WEEK'
 }
 
 const getSundayDateOfWeek = (selectedDate: Moment): TDateISODate => {
@@ -74,16 +74,15 @@ const crunchTheNumbers = (todoListItems: TTodoListItem[]) => {
             accumulator[projectId][todoListDate] = 0
         }
 
-        if (!(todoListDate in accumulator['all'])) {
-            accumulator['all'][todoListDate] = 0
+        if (!(todoListDate in accumulator.all)) {
+            accumulator.all[todoListDate] = 0
         }
 
         accumulator[projectId][todoListDate] += duration
-        accumulator['all'][todoListDate] += duration
+        accumulator.all[todoListDate] += duration
 
         return accumulator
-
-    }, { 'all': {} } as Record<string, Record<string, number>>)
+    }, { all: {} } as Record<string, Record<string, number>>)
 }
 
 const Reports = () => {
@@ -109,7 +108,6 @@ const Reports = () => {
                 const saturday = getSaturdayDateOfWeek(sevenDaysAgo)
                 setStartDate(sunday)
                 setEndDate(saturday)
-                return
             }
         }
     }
@@ -137,8 +135,8 @@ const Reports = () => {
                 <div>
                     <LabelInDisguise>Quick Reports</LabelInDisguise>
                     <FiltersWrapper>
-                        <Button variation='PRIMARY_BUTTON' onClick={() => setQuickFilter(TQuickFilterOptions.THIS_WEEK)}>This Week</Button>
-                        <Button variation='PRIMARY_BUTTON' onClick={() => setQuickFilter(TQuickFilterOptions.LAST_WEEK)} >Last Week</Button>
+                        <Button variation="PRIMARY_BUTTON" onClick={() => setQuickFilter(TQuickFilterOptions.THIS_WEEK)}>This Week</Button>
+                        <Button variation="PRIMARY_BUTTON" onClick={() => setQuickFilter(TQuickFilterOptions.LAST_WEEK)}>Last Week</Button>
                     </FiltersWrapper>
 
                 </div>

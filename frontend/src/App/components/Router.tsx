@@ -1,7 +1,7 @@
 import React from 'react'
 import { Routes, Route } from 'react-router'
 
-import { Projects, TodoList, Tasks, Settings, Reports, Backups, Error} from '../pages'
+import { Projects, TodoList, Tasks, Settings, Reports, Backups, Error } from '../pages'
 
 const Router = () => {
     return (

@@ -12,8 +12,8 @@ const StyledNav = styled.ul`
     list-style: none;
     flex-direction: row;
     padding: 1rem;
-    background-color: ${({theme}) => theme.BACKGROUND_PRIMARY };
-    border: 2px solid ${({theme}) => theme.FOREGROUND_TEXT };
+    background-color: ${({ theme }) => theme.BACKGROUND_PRIMARY};
+    border: 2px solid ${({ theme }) => theme.FOREGROUND_TEXT};
     margin: 0.5rem;
 
     ${Button} {

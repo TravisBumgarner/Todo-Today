@@ -3,7 +3,7 @@ import { v4 as uuid4 } from 'uuid'
 import { useLiveQuery } from 'dexie-react-hooks'
 
 import { Modal, Paragraph, BigBoxOfNothing, Button, Heading, ButtonWrapper } from 'sharedComponents'
-import { formatDateDisplayString, formatDateKeyLookup } from 'utilities'
+import { formatDateDisplayString } from 'utilities'
 import { TDateISODate, TTask, TTodoListItem } from 'sharedTypes'
 import database from 'database'
 import { context } from 'Context'
@@ -15,14 +15,16 @@ type ManageTodoListItemsModalProps = {
 }
 
 const getTasksByProjectId = <T extends TTask>(key: keyof TTask, arrayItems: T[]) => {
-    return arrayItems.reduce((accumulator, current) => {
-        if (!(current[key] in accumulator)) {
-            accumulator[current[key]] = []
-        }
-        accumulator[current[key]].push(current)
-        return accumulator
-    },
-        {} as Record<string, T[]>)
+    return arrayItems.reduce(
+        (accumulator, current) => {
+            if (!(current[key] in accumulator)) {
+                accumulator[current[key]] = []
+            }
+            accumulator[current[key]].push(current)
+            return accumulator
+        },
+        {} as Record<string, T[]>
+    )
 }
 
 const getTaskIdsToTodoListIds = (todoListItems: TTodoListItem[]) => {
@@ -39,7 +41,7 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
     const { state: { dateFormat } } = React.useContext(context)
 
     if (!tasks || !tasks.length || !projects || !projects.length) {
-        return <BigBoxOfNothing message='Go create some tasks and/or projects and come back!' />
+        return <BigBoxOfNothing message="Go create some tasks and/or projects and come back!" />
     }
     const tasksByProjectId = getTasksByProjectId('projectId', tasks)
     const taskIdsToTodoListIds = getTaskIdsToTodoListIds(todoListItems || [])
@@ -55,7 +57,7 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
     }
 
     const handleRemove = async (todoListItemId: string) => {
-        await database.todoListItems.where({id: todoListItemId}).delete()
+        await database.todoListItems.where({ id: todoListItemId }).delete()
     }
 
     return (
@@ -68,19 +70,36 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
                 <Paragraph>Select tasks to add to the todo list.</Paragraph>
                 {
                     projects.map(({ title, id: projectId }) => {
-                        const tasks = tasksByProjectId[projectId].length ? tasksByProjectId[projectId] : []
-                        if (!tasks.length) return null
+                        const tasksByProject = tasksByProjectId[projectId].length ? tasksByProjectId[projectId] : []
+                        if (!tasksByProject.length) return null
                         return (
                             <div key={projectId}>
                                 <Heading.H2>{title}</Heading.H2>
                                 <ButtonWrapper
-                                vertical={tasks.map(({ title, id: taskId }) => {
-                                    return (
-                                        Object.keys(taskIdsToTodoListIds).includes(taskId)
-                                            ? <Button key={`${taskId}-remove`} fullWidth variation="ALERT_BUTTON" onClick={() => handleRemove(taskIdsToTodoListIds[taskId])}>Remove {title}</Button>
-                                            : <Button key={`${taskId}-add`} fullWidth variation="PRIMARY_BUTTON" onClick={() => handleAdd({ projectId, taskId })}>Add {title}</Button>
-                                    )
-                                })}
+                                    vertical={tasksByProject.map(({ title: taskTitle, id: taskId }) => {
+                                        return (
+                                            Object.keys(taskIdsToTodoListIds).includes(taskId)
+                                                ? (
+                                                    <Button
+                                                        key={`${taskId}-remove`}
+                                                        fullWidth
+                                                        variation="ALERT_BUTTON"
+                                                        onClick={() => handleRemove(taskIdsToTodoListIds[taskId])}
+                                                    >
+                                                        Remove {taskTitle}
+                                                    </Button>
+                                                ) : (
+                                                    <Button
+                                                        key={`${taskId}-add`}
+                                                        fullWidth
+                                                        variation="PRIMARY_BUTTON"
+                                                        onClick={() => handleAdd({ projectId, taskId })}
+                                                    >
+                                                        Add {taskTitle}
+                                                    </Button>
+                                                )
+                                        )
+                                    })}
                                 />
                             </div>
                         )
@@ -89,7 +108,7 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
                 <Heading.H2>Done Adding Tasks?</Heading.H2>
                 <Button key="finished" fullWidth variation="PRIMARY_BUTTON" onClick={() => setShowModal(false)}>Done!</Button>
             </>
-        </Modal >
+        </Modal>
     )
 }
 

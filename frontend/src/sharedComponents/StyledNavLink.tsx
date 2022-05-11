@@ -1,5 +1,5 @@
-import { NavLink, NavLinkProps } from 'react-router-dom'
-import styled, { ThemedStyledProps } from 'styled-components'
+import { NavLink } from 'react-router-dom'
+import styled from 'styled-components'
 
 const StyledNavLink = styled(NavLink)`
     color: ${(props) => {

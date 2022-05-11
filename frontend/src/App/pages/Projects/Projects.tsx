@@ -12,8 +12,9 @@ const Projects = () => {
             <ProjectsTable />
             <ButtonWrapper fullWidth={
                 <Button fullWidth key="edit" variation="PRIMARY_BUTTON" onClick={() => setShowAddProjectModal(true)}>Add Project</Button>
-            }/>
-            
+            }
+            />
+
             <AddProjectModal showModal={showAddProjectModal} setShowModal={setShowAddProjectModal} />
         </>
     )

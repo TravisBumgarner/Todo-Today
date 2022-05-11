@@ -15,6 +15,7 @@ import ButtonWrapper from './ButtonWrapper'
 import Icon from './Icon'
 import BigBoxOfNothing from './BigBoxOfNothing'
 import Form from './Form'
+import ConfirmationModal from './ConfirmationModal'
 
 export {
     Loading,
@@ -33,5 +34,6 @@ export {
     ButtonWrapper,
     Icon,
     BigBoxOfNothing,
-    Form
+    Form,
+    ConfirmationModal
 }

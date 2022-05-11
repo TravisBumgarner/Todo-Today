@@ -5,7 +5,6 @@ PR-10
 - Replace alerts with modals
 - Add Icon
 
-
 Next PR
 - [ ] Look into race conditions with random like in ReportsTable.tsx with having to return early.  
 - [ ] ASk for help on generic function in ManageTodolistitemsModal

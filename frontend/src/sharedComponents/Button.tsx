@@ -33,7 +33,7 @@ const Button = styled.button<ButtonProps>`
                     cursor: not-allowed;
                 }
             `
-        } 
+        }
 
         if (variation === 'PRIMARY_BUTTON') {
             return `
@@ -45,8 +45,8 @@ const Button = styled.button<ButtonProps>`
                     border-color: ${theme.ALERT_BUTTON};
                 }
             `
-        } 
-        
+        }
+
         if (variation === 'ALERT_BUTTON') {
             return `
                 color: ${theme.ALERT_BUTTON};
@@ -57,7 +57,7 @@ const Button = styled.button<ButtonProps>`
                     border-color: ${theme.PRIMARY_BUTTON};
                 }
             `
-        } 
+        }
     }}
 `
 

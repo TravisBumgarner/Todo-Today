@@ -87,12 +87,12 @@ type GenericProps = {
 }
 
 type FileProps = {
-    inputType:  'file'
+    inputType: 'file'
     handleChange: (value: File | null) => void
 }
 
 type InputProps = {
-    inputType?: 'password' | 'date' 
+    inputType?: 'password' | 'date'
     handleChange: (value: string) => void
 }
 
@@ -128,32 +128,29 @@ const LabelAndInput = (props: LabelAndInputProps) => {
     if (props.inputType === 'textarea') {
         const { name, handleChange, value } = props
         InputElement = <TextArea rows={5} autoComplete="on" name={name} onChange={(event) => handleChange(event.target.value)} value={value} />
-    }
-    else if (props.inputType === 'select-enum') {
+    } else if (props.inputType === 'select-enum') {
         const { options, name, value, handleChange, optionLabels } = props
         InputElement = (
             <Select id={name} value={value} onChange={(event) => handleChange(event.target.value)}>
                 {
-                    Object.values(options).map(option => <option key={option} value={option}>{optionLabels[option]}</option>)
+                    Object.values(options).map((option) => <option key={option} value={option}>{optionLabels[option]}</option>)
                 }
             </Select>
         )
-    }
-    else if (props.inputType === 'select-array') {
+    } else if (props.inputType === 'select-array') {
         const { options, name, value, handleChange } = props
         InputElement = (
             <Select id={name} value={value} onChange={(event) => handleChange(event.target.value)}>
                 {
-                    options.map(({ label, value }) => <option key={label} value={value}>{label}</option>)
+                    options.map((option) => <option key={option.label} value={option.value}>{option.label}</option>)
                 }
             </Select>
         )
-    }
-    else if (props.inputType === 'checkbox') {
+    } else if (props.inputType === 'checkbox') {
         const { options, handleChange } = props
         InputElement = (
             <>
-                {options.map(option => (
+                {options.map((option) => (
                     <div key={option.name}>
                         <Checkbox
                             type="checkbox"
@@ -164,18 +161,34 @@ const LabelAndInput = (props: LabelAndInputProps) => {
                         />
                         <CheckboxLabel
                             htmlFor={option.name}
-                        >{option.label}</CheckboxLabel>
+                        >{option.label}
+                        </CheckboxLabel>
                     </div>
                 ))}
             </>
         )
     } else if (props.inputType === 'file') {
         const { inputType, handleChange, name, value } = props
-        InputElement = <Input autoComplete="off" type={inputType} name={name} onChange={(event) => handleChange(event.target.files ? event.target.files[0] : null)} value={value} />
-    }
-    else {
+        InputElement = (
+            <Input
+                autoComplete="off"
+                type={inputType}
+                name={name}
+                onChange={(event) => handleChange(event.target.files ? event.target.files[0] : null)}
+                value={value}
+            />
+        )
+    } else {
         const { inputType, handleChange, name, value } = props
-        InputElement = <Input autoComplete="on" type={inputType || 'text'} name={name} onChange={(event) => handleChange(event.target.value)} value={value} />
+        InputElement = (
+            <Input
+                autoComplete="on"
+                type={inputType || 'text'}
+                name={name}
+                onChange={(event) => handleChange(event.target.value)}
+                value={value}
+            />
+        )
     }
 
     const { name, label } = props

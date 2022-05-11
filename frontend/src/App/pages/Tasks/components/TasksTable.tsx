@@ -2,10 +2,9 @@ import React from 'react'
 
 import { Button, Heading, Table, DropdownMenu, BigBoxOfNothing, ButtonWrapper } from 'sharedComponents'
 import { TProject, TTask } from 'sharedTypes'
+import { projectStatusLookup } from 'utilities'
 import EditTaskModal from './EditTaskModal'
 import AddTaskModal from './AddTaskModal'
-import { projectStatusLookup } from 'utilities'
-
 
 type TasksTableProps = {
     tasks: TTask[] | null
@@ -16,7 +15,7 @@ const TasksTable = ({ tasks, project }: TasksTableProps) => {
     const [showAddTaskModal, setShowAddTaskModal] = React.useState<boolean>(false)
     const [selectedTaskId, setSelectedTaskId] = React.useState<string | null>(null)
 
-    if(!tasks){
+    if (!tasks) {
         return <BigBoxOfNothing message="Create a task and then come back!" />
     }
 
@@ -37,7 +36,8 @@ const TasksTable = ({ tasks, project }: TasksTableProps) => {
                         <Table.TableBodyCell>
                             <DropdownMenu title="Actions">{
                                 [<Button fullWidth key="edit" variation="PRIMARY_BUTTON" onClick={() => setSelectedTaskId(id)}>Edit</Button>]
-                            }</DropdownMenu>
+                            }
+                            </DropdownMenu>
 
                         </Table.TableBodyCell>
                     </Table.TableRow>
@@ -57,20 +57,20 @@ const TasksTable = ({ tasks, project }: TasksTableProps) => {
             }
             <ButtonWrapper fullWidth={
                 <Button fullWidth key="edit" variation="PRIMARY_BUTTON" onClick={() => setShowAddTaskModal(true)}>Add Task to {project.title}</Button>
-            } />
+            }
+            />
 
             <AddTaskModal showModal={showAddTaskModal} project={project} setShowModal={setShowAddTaskModal} />
-            {selectedTaskId ?
-                (
+            {selectedTaskId
+                ? (
                     <EditTaskModal
                         showModal={selectedTaskId !== null}
                         setShowModal={() => setSelectedTaskId(null)}
-                        task={tasks.find(({id}) => selectedTaskId === id) as TTask}
+                        task={tasks.find(({ id }) => selectedTaskId === id) as TTask}
                         project={project}
                     />
-                ) :
-                (null)
-            }
+                )
+                : (null)}
         </>
     )
 }

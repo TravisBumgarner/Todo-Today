@@ -1,12 +1,13 @@
 import React from 'react'
 import moment from 'moment'
 
-import { Button, ButtonWrapper, Heading, LabelAndInput, Modal, Paragraph, Form } from 'sharedComponents'
+import { Button, ButtonWrapper, Heading, LabelAndInput, Modal, Paragraph, Form, ConfirmationModal } from 'sharedComponents'
 import { saveFile } from 'utilities'
 import database from 'database'
 import { TBackupInterval } from 'sharedTypes'
 import { context } from 'Context'
-const { ipcRenderer } = window.require('electron');
+
+const { ipcRenderer } = window.require('electron')
 
 const backupIntervalOptions: Record<TBackupInterval, string> = {
     [TBackupInterval.HOURLY]: 'Hourly',
@@ -25,7 +26,7 @@ const createBackup = async () => {
     return data
 }
 
-const automatedBackup = () => {
+const automatedBackup = (showAutomatedBackupFailedModal: React.Dispatch<React.SetStateAction<boolean>>) => {
     const backupInterval = localStorage.getItem('backupInterval') as TBackupInterval
     if (backupInterval === TBackupInterval.OFF) {
         return
@@ -41,26 +42,28 @@ const automatedBackup = () => {
     const lastBackupThreshold = moment().subtract(backupIntervalLookup[backupInterval], 'hours')
 
     if (!lastBackup || moment(lastBackup) < lastBackupThreshold) {
-        createBackup().then(async data => {
-            const response = await ipcRenderer.invoke('backup', {filename: `${moment().toISOString()}.json`, data: JSON.stringify(data)})
-            if(response.isSuccess === true){
+        createBackup().then(async (data) => {
+            const response = await ipcRenderer.invoke('backup', { filename: `${moment().toISOString()}.json`, data: JSON.stringify(data) })
+            if (response.isSuccess === true) {
                 localStorage.setItem('lastBackup', moment().toString())
             } else {
-                alert(`Automated backup failed because ${JSON.stringify(response.message)}`)
+                showAutomatedBackupFailedModal(true)
             }
-        })  
+        })
     }
 }
 
 const Backups = () => {
-    const {state, dispatch} = React.useContext(context)
+    const { state, dispatch } = React.useContext(context)
     const [restore, setRestore] = React.useState<File | null>(null)
     const [showRestoreConfirmModal, setShowRestoreConfirmModal] = React.useState<boolean>(false)
+    const [showNoDataModal, setShowNoDataModal] = React.useState<boolean>(false)
+    const [showInvalidBackupModal, setShowInvalidBackupModal] = React.useState<boolean>(false)
 
     const handleBackup = () => {
         const data = createBackup()
         if (!data) {
-            alert("go make some data first")
+            setShowNoDataModal(true)
         } else {
             saveFile(`${moment().toISOString()}.json`, data)
         }
@@ -68,8 +71,8 @@ const Backups = () => {
 
     const handleRestore = () => {
         if (restore) {
-            const reader = new FileReader();
-            reader.readAsText(restore, "UTF-8");
+            const reader = new FileReader()
+            reader.readAsText(restore, 'UTF-8')
             reader.onload = async function (event) {
                 if (event.target && event.target.result) {
                     const newStore = JSON.parse(event.target.result as string)
@@ -87,7 +90,7 @@ const Backups = () => {
                     ])
                     setRestore(null)
                 } else {
-                    alert("Invalid backup.")
+                    setShowInvalidBackupModal(true)
                 }
             }
         }
@@ -98,31 +101,41 @@ const Backups = () => {
         <div>
             <Heading.H2>Manual Backup</Heading.H2>
             <Paragraph>Create a copy of the entire database.</Paragraph>
-            <ButtonWrapper fullWidth={<Button onClick={() => handleBackup()} fullWidth variation='PRIMARY_BUTTON'>Backup</Button>} />
+            <ButtonWrapper fullWidth={<Button onClick={() => handleBackup()} fullWidth variation="PRIMARY_BUTTON">Backup</Button>} />
 
             <Heading.H2>Automated Backup</Heading.H2>
             <LabelAndInput
                 inputType="select-enum"
-                name='weekStart'
+                name="weekStart"
                 label="How often would you like automated backups to run?"
                 value={state.backupInterval}
-                handleChange={(value: TBackupInterval) => dispatch({type: "EDIT_USER_SETTINGS", payload: {backupInterval: value}})}
+                handleChange={(value: TBackupInterval) => dispatch({ type: 'EDIT_USER_SETTINGS', payload: { backupInterval: value } })}
                 options={TBackupInterval}
                 optionLabels={backupIntervalOptions}
             />
 
-
             <Heading.H2>Restore</Heading.H2>
             <Form>
-            <LabelAndInput handleChange={(file) => setRestore(file)} label="Restore database with a backup copy." name={"file"} inputType='file' />
-            <ButtonWrapper fullWidth={<Button disabled={!restore} onClick={() => setShowRestoreConfirmModal(true)} fullWidth variation='PRIMARY_BUTTON'>Restore from Backup</Button>} />
+                <LabelAndInput handleChange={(file) => setRestore(file)} label="Restore database with a backup copy." name="file" inputType="file" />
+                <ButtonWrapper
+                    fullWidth={(
+                        <Button
+                            disabled={!restore}
+                            onClick={() => setShowRestoreConfirmModal(true)}
+                            fullWidth
+                            variation="PRIMARY_BUTTON"
+                        >
+                            Restore from Backup
+                        </Button>
+                    )}
+                />
             </Form>
             <Modal
-                contentLabel='Restore?'
+                contentLabel="Restore?"
                 showModal={showRestoreConfirmModal}
                 closeModal={() => setShowRestoreConfirmModal(false)}
             >
-                <Paragraph>If you have data you haven't created a backup for, please do that first.</Paragraph>
+                <Paragraph>If you have data you have not created a backup for, please do that first.</Paragraph>
                 <Paragraph>Clicking restore will erase everything currently stored in the application.</Paragraph>
                 <ButtonWrapper
                     right={[
@@ -136,6 +149,21 @@ const Backups = () => {
                     ]}
                 />
             </Modal>
+            <ConfirmationModal
+                body="There is no data to backup."
+                title="Heads Up!"
+                confirmationCallback={() => setShowNoDataModal(false)}
+                showModal={showNoDataModal}
+                setShowModal={setShowNoDataModal}
+            />
+            <ConfirmationModal
+                body="That backup is invalid."
+                title="Heads Up!"
+                confirmationCallback={() => setShowInvalidBackupModal(false)}
+                showModal={showInvalidBackupModal}
+                setShowModal={setShowInvalidBackupModal}
+            />
+
         </div>
     )
 }
