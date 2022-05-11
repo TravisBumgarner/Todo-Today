@@ -1,6 +1,6 @@
 {
     "name": "backend",
-    "productName": "TODO TODAY",
+    "productName": "Todo Today",
     "version": "1.0.0",
     "description": "Consulting Todo List App",
     "main": "src/index.js",
@@ -28,7 +28,14 @@
     "build": {
         "appId": "com.tbumgarner.todotoday",
         "mac": {
-            "category": "your.app.category.type"
+            "category": "your.app.category.type",
+            "icon": "./public/icons/mac/icon.png"
+        },
+        "win": {
+            "icon": "./public/icons/win/icon.png"
+        },
+        "linux": {
+            "icon": "./public/icons/linux/icon.png"
         },
         "directories": {
             "app": ".",
@@ -38,7 +45,8 @@
         "files": [
             "package.json",
             "./src/**/*",
-            "node_modules"
+            "node_modules",
+            "./public/**/*"
         ]
     }
 }

@@ -1,4 +1,5 @@
-- Add Icon
+- [x] Add Icon
+- Update with builds for Windows and Linux
 
 Next PR
 - [ ] Look into race conditions with random like in ReportsTable.tsx with having to return early.  

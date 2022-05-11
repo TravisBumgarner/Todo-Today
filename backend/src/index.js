@@ -122,7 +122,7 @@ function createWindow() {
         height: 600,
         x: 0,
         y: 0,
-        title: "TODO TODAY",
+        title: "Todo Today",
         webPreferences: {
             nodeIntegration: true,
             // enableRemoteModule: true,
