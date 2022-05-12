@@ -41,7 +41,7 @@ const formatDurationDisplayString = (rawMinutes: number) => {
     const hours = Math.floor(rawMinutes / 60)
     const minutes = rawMinutes % 60
     const paddedMinutes = minutes < 10 ? `0${minutes}` : minutes
-    return `${hours}H${paddedMinutes}M`
+    return `${hours}H${paddedMinutes}`
 }
 
 const bucketTasksByProject = (projects: TProject[], tasks: TTask[] | undefined) => {

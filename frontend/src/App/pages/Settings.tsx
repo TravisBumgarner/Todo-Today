@@ -4,7 +4,7 @@ import styled from 'styled-components'
 
 import { EColorTheme, EDateFormat, TSettings, EDaysOfWeek } from 'sharedTypes'
 import { Heading, LabelAndInput, Form, Modal, BigBoxOfNothing, Button, ButtonWrapper, Table, DropdownMenu } from 'sharedComponents'
-import { dateFormatLookup } from 'utilities'
+import { dateFormatLookup, formatDurationDisplayString } from 'utilities'
 import { context } from 'Context'
 import { AddReminderIPC } from '../../../../shared/types'
 
@@ -50,8 +50,8 @@ type ScheduleMakerModalProps = {
 }
 
 const ScheduleMakerModal = ({ showModal, setShowModal }: ScheduleMakerModalProps) => {
-    const [dayOfWeek, setDayOfWeek] = React.useState<EDaysOfWeek>(EDaysOfWeek.SUNDAY)
-    const [timeOfDay, setTimeOfDay] = React.useState<any>('00:00')
+    const [dayOfWeek, setDayOfWeek] = React.useState<EDaysOfWeek>(EDaysOfWeek.MONDAY)
+    const [timeOfDay, setTimeOfDay] = React.useState<any>('17:00')
     const { dispatch } = React.useContext(context)
 
     const handleSubmit = async () => {
@@ -118,8 +118,8 @@ const RemindersTable = () => {
             <Table.TableBody>
                 {state.reminders.map(({ dayOfWeek, minutes, hours, reminderIndex }) => (
                     <Table.TableRow key={reminderIndex}>
-                        <Table.TableBodyCell>{dayOfWeek}</Table.TableBodyCell>
-                        <Table.TableBodyCell>{hours}:{minutes}</Table.TableBodyCell>
+                        <Table.TableBodyCell>{dayOfWeekLabels[dayOfWeek]}</Table.TableBodyCell>
+                        <Table.TableBodyCell>{formatDurationDisplayString(parseInt(hours, 10) * 60 + parseInt(minutes, 10))}</Table.TableBodyCell>
                         <Table.TableBodyCell>
                             <DropdownMenu title="Actions">{
                                 [<Button fullWidth key="edit" variation="PRIMARY_BUTTON" onClick={() => handleDelete(reminderIndex)}>Remove</Button>]
