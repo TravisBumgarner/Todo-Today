@@ -69,7 +69,7 @@ enum EDaysOfWeek {
 type TReminder = {
     timeOfDay: string,
     dayOfWeek: EDaysOfWeek,
-    reminderIndex: number
+    reminderIndex: string
 }
 
 enum EWeekStart {

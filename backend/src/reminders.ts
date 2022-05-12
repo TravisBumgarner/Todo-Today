@@ -16,6 +16,15 @@ const scheduleWeeklyReminder = ({minutes, hours, dayOfWeek}: {minutes: number, h
   return reminderIndex
 }
 
+const deleteReminder = (reminderIndex: string) => {
+  console.log("reminder deleted", reminderIndex)
+  console.log('all reminders', reminders)
+  reminders[reminderIndex].stop()
+  delete reminders[reminderIndex]
+  return reminderIndex
+}
+
 export {
-  scheduleWeeklyReminder
+  scheduleWeeklyReminder,
+  deleteReminder
 }

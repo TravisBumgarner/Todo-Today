@@ -106,6 +106,12 @@ const ScheduleMakerModal = ({ showModal, setShowModal }: ScheduleMakerModalProps
 const RemindersTable = () => {
     const { state, dispatch } = React.useContext(context)
 
+    const handleDelete = async (reminderIndex: string) => {
+        const deletedReminderIndex = await ipcRenderer.invoke('remove-reminder', reminderIndex)
+
+        dispatch({ type: 'DELETE_REMINDER', payload: { deletedReminderIndex } })
+    }
+
     return (
         <Table.Table>
             <Table.TableHeader>
@@ -116,13 +122,13 @@ const RemindersTable = () => {
                 </Table.TableRow>
             </Table.TableHeader>
             <Table.TableBody>
-                {state.reminders.map(({ dayOfWeek, timeOfDay }) => (
-                    <Table.TableRow key={dayOfWeek + timeOfDay}>
+                {state.reminders.map(({ dayOfWeek, timeOfDay, reminderIndex }) => (
+                    <Table.TableRow key={reminderIndex}>
                         <Table.TableBodyCell>{dayOfWeek}</Table.TableBodyCell>
                         <Table.TableBodyCell>{timeOfDay}</Table.TableBodyCell>
                         <Table.TableBodyCell>
                             <DropdownMenu title="Actions">{
-                                [<Button fullWidth key="edit" variation="PRIMARY_BUTTON" onClick={() => console.log('remove')}>Remove</Button>]
+                                [<Button fullWidth key="edit" variation="PRIMARY_BUTTON" onClick={() => handleDelete(reminderIndex)}>Remove</Button>]
                             }
                             </DropdownMenu>
 

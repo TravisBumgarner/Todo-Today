@@ -8,7 +8,7 @@ import { app, BrowserWindow, ipcMain, Menu, Notification } from 'electron'
 import { isDev, isDebugProduction } from './config'
 import menu from './menu'
 import { NotificationIPC, BackupIPC, AddReminderIPC } from '../../shared/types'
-import { scheduleWeeklyReminder } from './reminders'
+import { deleteReminder, scheduleWeeklyReminder } from './reminders'
 
 if (isDev) require('electron-reloader')(module)
 
@@ -62,6 +62,11 @@ ipcMain.on('notification', async (event, arg: NotificationIPC) => {
 ipcMain.handle('add-reminder', async (event, reminder: AddReminderIPC) => {
     const reminderIndex = scheduleWeeklyReminder(reminder)
     return reminderIndex
+})
+
+ipcMain.handle('remove-reminder', async (event, reminderIndex: string) => {
+    const deletedReminderIndex = deleteReminder(reminderIndex)
+    return deletedReminderIndex
 })
 
 ipcMain.handle('backup', async (event, arg: BackupIPC) => {

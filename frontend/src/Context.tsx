@@ -13,7 +13,7 @@ type State = {
     reminders: {
         timeOfDay: string,
         dayOfWeek: EDaysOfWeek,
-        reminderIndex: number
+        reminderIndex: string
     }[]
 }
 
@@ -65,10 +65,18 @@ type AddReminder = {
     payload: TReminder
 }
 
+type DeleteReminder = {
+    type: "DELETE_REMINDER",
+    payload: {
+        deletedReminderIndex: string
+    }
+}
+
 type Action =
     | EditUserSettings
     | HydrateUserSettings
     | AddReminder
+    | DeleteReminder
 
 const reducer = (state: State, action: Action): State => {
     switch (action.type) {
@@ -80,6 +88,11 @@ const reducer = (state: State, action: Action): State => {
         case "ADD_REMINDER": {
             const reminders = [...state.reminders]
             reminders.push(action.payload)
+            localStorage.setItem('reminders', JSON.stringify(reminders))
+            return { ...state, reminders }
+        }
+        case "DELETE_REMINDER": {
+            const reminders = [...state.reminders.filter(({reminderIndex}) => reminderIndex !== action.payload.deletedReminderIndex)]
             localStorage.setItem('reminders', JSON.stringify(reminders))
             return { ...state, reminders }
         }
