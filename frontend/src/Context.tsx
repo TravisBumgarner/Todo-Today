@@ -39,7 +39,6 @@ const getKeysFromStorage = () => {
     Object
         .keys(EMPTY_STATE)
         .forEach((key: string) => {
-            console.log(localStorage.getItem(key))
             output[key] = (JSON.parse(localStorage.getItem(key) as string))
         })
     return output as unknown as State
@@ -132,9 +131,7 @@ const ResultsContext = ({ children }: { children: React.ReactChild }) => {
             } else {
                 // On Restart, reminderIndexes are stale because they don't exist on the backend anymore. 
                 const currentLocalStorage = getKeysFromStorage()
-                console.log('current', currentLocalStorage)
                 const refreshedReminders = await ipcRenderer.invoke('refresh-reminder-ids', prepareRemindersPayload(currentLocalStorage.reminders))
-                console.log('refreshed', refreshedReminders)
                 dispatch({ type: 'HYDRATE_USER_SETTINGS', payload: { ...currentLocalStorage, reminders: refreshedReminders } })
             }
         }
