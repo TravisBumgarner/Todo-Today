@@ -64,7 +64,7 @@ const ScheduleMakerModal = ({ showModal, setShowModal }: ScheduleMakerModalProps
         const payload = { hours: parseInt(hours, 10), minutes: parseInt(minutes, 10), dayOfWeek: parseInt(dayOfWeek, 10) } as AddReminderIPC
         const reminderIndex = await ipcRenderer.invoke('add-reminder', payload)
 
-        dispatch({ type: 'ADD_REMINDER', payload: { timeOfDay, dayOfWeek, reminderIndex } })
+        dispatch({ type: 'ADD_REMINDER', payload: { dayOfWeek, hours, minutes, reminderIndex } })
         setShowModal(false)
     }
 
@@ -111,7 +111,7 @@ const RemindersTable = () => {
 
         dispatch({ type: 'DELETE_REMINDER', payload: { deletedReminderIndex } })
     }
-
+    console.log('state',state)
     return (
         <Table.Table>
             <Table.TableHeader>
@@ -122,10 +122,10 @@ const RemindersTable = () => {
                 </Table.TableRow>
             </Table.TableHeader>
             <Table.TableBody>
-                {state.reminders.map(({ dayOfWeek, timeOfDay, reminderIndex }) => (
+                {state.reminders.map(({ dayOfWeek, minutes, hours, reminderIndex }) => (
                     <Table.TableRow key={reminderIndex}>
                         <Table.TableBodyCell>{dayOfWeek}</Table.TableBodyCell>
-                        <Table.TableBodyCell>{timeOfDay}</Table.TableBodyCell>
+                        <Table.TableBodyCell>{hours}:{minutes}</Table.TableBodyCell>
                         <Table.TableBodyCell>
                             <DropdownMenu title="Actions">{
                                 [<Button fullWidth key="edit" variation="PRIMARY_BUTTON" onClick={() => handleDelete(reminderIndex)}>Remove</Button>]
@@ -154,7 +154,7 @@ const Settings = () => {
     const { state, dispatch } = React.useContext(context)
     const [showModal, setShowModal] = React.useState<boolean>(false)
 
-    const handleSubmit = (setting: Partial<TSettings>) => {
+    const handleSubmit = (setting: Partial<Omit<TSettings, 'reminders'>>) => {
         dispatch({ type: 'EDIT_USER_SETTINGS', payload: setting })
     }
     return (

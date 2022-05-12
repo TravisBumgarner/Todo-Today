@@ -14,8 +14,11 @@ type AddReminderIPC = {
     dayOfWeek: number
 }
 
+type RefreshRemindersIPC = AddReminderIPC[]
+
 export {
     NotificationIPC,
     BackupIPC,
-    AddReminderIPC
+    AddReminderIPC,
+    RefreshRemindersIPC
 }

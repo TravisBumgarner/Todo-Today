@@ -1,10 +1,12 @@
 import { Notification } from 'electron';
 import cron from 'node-cron'
 import {v4 as uuid4} from 'uuid'
+import { AddReminderIPC, RefreshRemindersIPC } from '../../shared/types';
 
 const reminders: Record<string, cron.ScheduledTask> = {}
 
-const scheduleWeeklyReminder = ({minutes, hours, dayOfWeek}: {minutes: number, hours: number, dayOfWeek: number}) => {
+const addReminder = ({minutes, hours, dayOfWeek}: AddReminderIPC) => {
+  console.log('all reminders', reminders)
   const cronExpression = `${minutes} ${hours} * * ${dayOfWeek}`
 
   const reminder = cron.schedule(cronExpression, () => {
@@ -16,15 +18,27 @@ const scheduleWeeklyReminder = ({minutes, hours, dayOfWeek}: {minutes: number, h
   return reminderIndex
 }
 
+const refreshReminders = (reminders: RefreshRemindersIPC) => {
+  return reminders.map(({minutes, hours, dayOfWeek}) => {
+    const reminderIndex = addReminder({minutes, hours, dayOfWeek})
+    return {
+      reminderIndex,
+      minutes,
+      hours,
+      dayOfWeek
+    }
+  })
+  
+}
+
 const deleteReminder = (reminderIndex: string) => {
-  console.log("reminder deleted", reminderIndex)
-  console.log('all reminders', reminders)
   reminders[reminderIndex].stop()
   delete reminders[reminderIndex]
   return reminderIndex
 }
 
 export {
-  scheduleWeeklyReminder,
-  deleteReminder
+  addReminder,
+  deleteReminder,
+  refreshReminders
 }

@@ -67,7 +67,8 @@ enum EDaysOfWeek {
 }
 
 type TReminder = {
-    timeOfDay: string,
+    hours: string,
+    minutes: string,
     dayOfWeek: EDaysOfWeek,
     reminderIndex: string
 }
@@ -97,6 +98,7 @@ type TSettings = {
     weekStart: EWeekStart
     colorTheme: EColorTheme
     backupInterval: EBackupInterval
+    reminders: TReminder[]
 }
 
 type TEnumTypeString<TEnum extends string> =
