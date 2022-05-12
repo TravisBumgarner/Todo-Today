@@ -5,3 +5,5 @@ dist/
 react-dist/
 .DS_Store
 extracted-build/
+dist/
+dist-electron/
