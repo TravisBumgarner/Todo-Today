@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import React from 'react'
 
-import { EnumType } from 'sharedTypes'
+import { TEnumType } from 'sharedTypes'
 
 const Input = styled.input`
     font-family: 'Comfortaa', cursive;
@@ -10,8 +10,23 @@ const Input = styled.input`
     padding: 0.5rem 1rem;
     background-color: transparent;
     font-weight: 700;
-    color: ${({ theme }) => theme.PRIMARY_BUTTON};
-    border-color: ${({ theme }) => theme.PRIMARY_BUTTON};
+    color: ${({ theme }) => theme.FOREGROUND_TEXT};
+    border-color: ${({ theme }) => theme.FOREGROUND_TEXT};
+    width: 100%;
+    box-sizing: border-box;
+    color-scheme: dark;
+    height: 40px;
+`
+
+const Time = styled.input`
+    font-family: 'Comfortaa', cursive;
+    font-size: 1rem;
+    border: 2px solid;
+    padding: 0.5rem 1rem;
+    background-color: transparent;
+    font-weight: 700;
+    color: ${({ theme }) => theme.FOREGROUND_TEXT};
+    border-color: ${({ theme }) => theme.FOREGROUND_TEXT};
     width: 100%;
     box-sizing: border-box;
     color-scheme: dark;
@@ -20,14 +35,14 @@ const Input = styled.input`
 
 const Checkbox = styled.input`
     color-scheme: dark;
-    accent-color: ${({ theme }) => theme.PRIMARY_BUTTON};
+    accent-color: ${({ theme }) => theme.FOREGROUND_TEXT};
 `
 
 const CheckboxLabel = styled.label`
     font-family: 'Comfortaa', cursive;
     font-size: 1rem;
     font-weight: 700;
-    color: ${({ theme }) => theme.FOREGROUND_TEXT};
+    color: ${({ theme }) => theme.ALERT_BUTTON};
     /* margin-left: 0.25rem; */
 `
 
@@ -39,7 +54,7 @@ const TextArea = styled.textarea`
     background-color: transparent;
     font-weight: 700;
     color: ${({ theme }) => theme.FOREGROUND_TEXT};
-    border-color: ${({ theme }) => theme.PRIMARY_BUTTON};
+    border-color: ${({ theme }) => theme.FOREGROUND_TEXT};
     width: 100%;
     box-sizing: border-box;
 `
@@ -49,7 +64,7 @@ const Label = styled.label`
     font-size: 1rem;
     background-color: transparent;
     font-weight: 700;
-    color: ${({ theme }) => theme.FOREGROUND_TEXT};
+    color: ${({ theme }) => theme.ALERT_BUTTON};
     margin: 0.5rem 0;
 `
 
@@ -61,7 +76,7 @@ const Select = styled.select`
     background-color: transparent;
     font-weight: 700;
     color: ${({ theme }) => theme.FOREGROUND_TEXT};
-    border-color: ${({ theme }) => theme.PRIMARY_BUTTON};
+    border-color: ${({ theme }) => theme.FOREGROUND_TEXT};
     width: 100%;
     box-sizing: border-box;
     color-scheme: dark;
@@ -109,7 +124,7 @@ type CheckboxProps = {
 
 type SelectEnumProps = {
     inputType: 'select-enum'
-    options: EnumType<string>
+    options: TEnumType<string>
     optionLabels: Record<string, string>,
     handleChange: (value: string) => void
 }
@@ -120,7 +135,12 @@ type SelectArrayProps = {
     handleChange: (value: string) => void
 }
 
-type LabelAndInputProps = GenericProps & (SelectEnumProps | SelectArrayProps | TextAreaProps | InputProps | CheckboxProps | FileProps)
+type TimeProps = {
+    inputType: 'time'
+    handleChange: (value: string) => void
+}
+
+type LabelAndInputProps = GenericProps & (TimeProps | SelectEnumProps | SelectArrayProps | TextAreaProps | InputProps | CheckboxProps | FileProps)
 
 const LabelAndInput = (props: LabelAndInputProps) => {
     let InputElement: JSX.Element
@@ -177,6 +197,16 @@ const LabelAndInput = (props: LabelAndInputProps) => {
                 onChange={(event) => handleChange(event.target.files ? event.target.files[0] : null)}
                 value={value}
             />
+        )
+    } else if(props.inputType === 'time'){
+        const { inputType, handleChange, name, value } = props
+        InputElement = (
+            <Input
+            type={'time'}
+            name={name}
+            onChange={(event) => handleChange(event.target.value)}
+            value={value}
+        /> 
         )
     } else {
         const { inputType, handleChange, name, value } = props

@@ -8,7 +8,7 @@ const Table = styled.table`
     border-collapse: separate;
     border-spacing: 0;
     width: 100%;
-    border: 2px solid ${({ theme }) => theme.FOREGROUND_TEXT};
+    border: 2px solid ${({ theme }) => theme.PRIMARY_BUTTON};
     table-layout: fixed;
 `
 
@@ -35,8 +35,8 @@ const TableRow = styled.tr`
 
 const TableHeaderCell = styled.th<{theme: TColor, width?: string, minWidth?: string}>`
     background-color: ${({ theme }) => theme.BACKGROUND_PRIMARY};
-    color: ${({ theme }) => theme.FOREGROUND_TEXT}; 
-    border-bottom: 2px solid ${({ theme }) => theme.FOREGROUND_TEXT};
+    color: ${({ theme }) => theme.PRIMARY_BUTTON}; 
+    border-bottom: 2px solid ${({ theme }) => theme.PRIMARY_BUTTON};
     padding: 10px;
     text-align: left;
     width: ${({ width }) => width};
@@ -44,9 +44,9 @@ const TableHeaderCell = styled.th<{theme: TColor, width?: string, minWidth?: str
     
 `
 const TableBodyCell = styled.td`
-    border-bottom: 2px solid ${({ theme }) => theme.FOREGROUND_TEXT};
+    border-bottom: 2px solid ${({ theme }) => theme.PRIMARY_BUTTON};
     padding: 10px;
-    color: ${({ theme }) => theme.FOREGROUND_TEXT};
+    color: ${({ theme }) => theme.PRIMARY_BUTTON};
 `
 
 export {

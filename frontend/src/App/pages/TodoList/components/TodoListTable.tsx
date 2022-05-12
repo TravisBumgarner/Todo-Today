@@ -185,6 +185,16 @@ const TodoListTable = ({ selectedDate, todoListItems }: TodoListTableProps) => {
                                             }}
                                         >
                                             Remove
+                                        </Button>,
+                                        <Button
+                                            fullWidth
+                                            key="remove"
+                                            variation="PRIMARY_BUTTON"
+                                            onClick={async () => {
+                                                await database.todoListItems.where({ id: todoListItemId }).delete()
+                                            }}
+                                        >
+                                            Remove
                                         </Button>
                                         ]
                                     </DropdownMenu>

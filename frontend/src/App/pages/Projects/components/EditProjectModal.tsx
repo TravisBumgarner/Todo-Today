@@ -2,7 +2,7 @@ import React from 'react'
 import moment, { Moment } from 'moment'
 
 import { Button, Modal, ButtonWrapper, LabelAndInput, Form } from 'sharedComponents'
-import { TProject, TProjectStatus } from 'sharedTypes'
+import { TProject, EProjectStatus } from 'sharedTypes'
 import { formatDateKeyLookup, projectStatusLookup } from 'utilities'
 import database from 'database'
 
@@ -16,7 +16,7 @@ const EditProjectModal = ({ showModal, setShowModal, project }: EditProjectModal
     const [title, setTitle] = React.useState<string>(project.title)
     const [startDate, setStartDate] = React.useState<Moment | null>(project.startDate ? moment(project.startDate) : null)
     const [endDate, setEndDate] = React.useState<Moment | null>(project.endDate ? moment(project.endDate) : null)
-    const [status, setStatus] = React.useState<TProjectStatus>(project.status)
+    const [status, setStatus] = React.useState<EProjectStatus>(project.status)
     const [submitDisabled, setSubmitDisabled] = React.useState<boolean>(true)
 
     const handleSubmit = () => {
@@ -62,10 +62,10 @@ const EditProjectModal = ({ showModal, setShowModal, project }: EditProjectModal
                     label="Status"
                     name="status"
                     value={status}
-                    options={TProjectStatus}
+                    options={EProjectStatus}
                     optionLabels={projectStatusLookup}
                     inputType="select-enum"
-                    handleChange={(newStatus: TProjectStatus) => setStatus(newStatus)}
+                    handleChange={(newStatus: EProjectStatus) => setStatus(newStatus)}
                 />
                 <ButtonWrapper right={
                     [

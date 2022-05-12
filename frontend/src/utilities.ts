@@ -1,29 +1,31 @@
 import moment from 'moment'
 
-import { TDateFormat, TProject, TProjectStatus, TTask, TDateISODate, TTaskStatus } from 'sharedTypes'
+const { ipcRenderer } = window.require('electron')
+import { EDateFormat, TProject, EProjectStatus, TTask, TDateISODate, ETaskStatus } from 'sharedTypes'
+import { NotificationIPC } from '../../shared/types'
 
-const projectStatusLookup: Record<TProjectStatus, string> = {
-    [TProjectStatus.CANCELED]: 'Canceled',
-    [TProjectStatus.COMPLETED]: 'Completed',
-    [TProjectStatus.IN_PROGRESS]: 'In Progress',
-    [TProjectStatus.NEW]: 'New'
+const projectStatusLookup: Record<EProjectStatus, string> = {
+    [EProjectStatus.CANCELED]: 'Canceled',
+    [EProjectStatus.COMPLETED]: 'Completed',
+    [EProjectStatus.IN_PROGRESS]: 'In Progress',
+    [EProjectStatus.NEW]: 'New'
 }
 
-const taskStatusLookup: Record<TTaskStatus, string> = {
-    [TTaskStatus.CANCELED]: 'Canceled',
-    [TTaskStatus.COMPLETED]: 'Completed',
-    [TTaskStatus.IN_PROGRESS]: 'In Progress',
-    [TTaskStatus.NEW]: 'New'
+const taskStatusLookup: Record<ETaskStatus, string> = {
+    [ETaskStatus.CANCELED]: 'Canceled',
+    [ETaskStatus.COMPLETED]: 'Completed',
+    [ETaskStatus.IN_PROGRESS]: 'In Progress',
+    [ETaskStatus.NEW]: 'New'
 }
 
 const dateFormatLookup = {
-    [TDateFormat.A]: 'dddd MMMM Do YYYY',
-    [TDateFormat.B]: 'dddd MMMM Do',
-    [TDateFormat.C]: 'MM/DD/YY',
-    [TDateFormat.D]: 'DD/MM/YY',
+    [EDateFormat.A]: 'dddd MMMM Do YYYY',
+    [EDateFormat.B]: 'dddd MMMM Do',
+    [EDateFormat.C]: 'MM/DD/YY',
+    [EDateFormat.D]: 'DD/MM/YY',
 }
 
-const formatDateDisplayString = (dateFormat: TDateFormat, date: TDateISODate| null): string => {
+const formatDateDisplayString = (dateFormat: EDateFormat, date: TDateISODate| null): string => {
     if (date === null) {
         return ''
     }
@@ -71,6 +73,10 @@ const saveFile = async (fileName: string, jsonData: Object) => {
     a.click()
 }
 
+const sendNotification = (title: string, body: string) => {
+    ipcRenderer.send('notification', {title, body} as NotificationIPC)
+}
+
 export {
     projectStatusLookup,
     taskStatusLookup,
@@ -80,5 +86,6 @@ export {
     bucketTasksByProject,
     dateFormatLookup,
     sumArray,
-    saveFile
+    saveFile,
+    sendNotification
 }

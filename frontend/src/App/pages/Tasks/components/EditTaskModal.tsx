@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { Button, Modal, ButtonWrapper, LabelAndInput, Form } from 'sharedComponents'
-import { TProject, TTask, TTaskStatus } from 'sharedTypes'
+import { TProject, TTask, ETaskStatus } from 'sharedTypes'
 import { projectStatusLookup } from 'utilities'
 import database from 'database'
 
@@ -14,7 +14,7 @@ type EditTaskModalProps = {
 
 const EditTaskModal = ({ showModal, setShowModal, project, task }: EditTaskModalProps) => {
     const [title, setTitle] = React.useState<string>(task.title)
-    const [status, setStatus] = React.useState<TTaskStatus>(task.status)
+    const [status, setStatus] = React.useState<ETaskStatus>(task.status)
     const [submitDisabled, setSubmitDisabled] = React.useState<boolean>(true)
 
     const handleSubmit = () => {
@@ -45,10 +45,10 @@ const EditTaskModal = ({ showModal, setShowModal, project, task }: EditTaskModal
                     label="Status"
                     name="status"
                     value={status}
-                    options={TTaskStatus}
+                    options={ETaskStatus}
                     optionLabels={projectStatusLookup}
                     inputType="select-enum"
-                    handleChange={(newStatus: TTaskStatus) => setStatus(newStatus)}
+                    handleChange={(newStatus: ETaskStatus) => setStatus(newStatus)}
                 />
                 <ButtonWrapper right={
                     [

@@ -37,12 +37,12 @@ const Button = styled.button<ButtonProps>`
 
         if (variation === 'PRIMARY_BUTTON') {
             return `
-                color: ${theme.PRIMARY_BUTTON};
-                border-color: ${theme.PRIMARY_BUTTON};
+                color: ${theme.FOREGROUND_TEXT};
+                border-color: ${theme.FOREGROUND_TEXT};
 
                 &:hover {
-                    color: ${theme.ALERT_BUTTON};
-                    border-color: ${theme.ALERT_BUTTON};
+                    color: ${theme.PRIMARY_BUTTON};
+                    border-color: ${theme.PRIMARY_BUTTON};
                 }
             `
         }

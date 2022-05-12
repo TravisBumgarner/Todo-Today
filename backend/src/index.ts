@@ -2,10 +2,14 @@ import path from "path"
 import fs from 'fs'
 
 import contextMenu from 'electron-context-menu'
-import { app, BrowserWindow, ipcMain, Menu, MenuItemConstructorOptions } from 'electron'
+import { app, BrowserWindow, ipcMain, Menu, Notification } from 'electron'
+
 
 import { isDev, isDebugProduction } from './config'
 import menu from './menu'
+import { NotificationIPC, BackupIPC, AddReminderIPC, RefreshRemindersIPC } from '../../shared/types'
+import { deleteReminder, addReminder, refreshReminders } from './reminders'
+
 if (isDev) require('electron-reloader')(module)
 
 let mainWindow
@@ -51,14 +55,33 @@ app.on('window-all-closed', function () {
     if (process.platform !== 'darwin') app.quit()
 })
 
-ipcMain.handle('backup', async (event, arg) => {
+ipcMain.on('notification', async (event, arg: NotificationIPC) => {
+    new Notification({ body: arg.body, title: arg.title }).show()
+})
+
+ipcMain.handle('add-reminder', async (event, reminder: AddReminderIPC) => {
+    const reminderIndex = addReminder(reminder)
+    return reminderIndex
+})
+
+ipcMain.handle('remove-reminder', async (event, reminderIndex: string) => {
+    const deletedReminderIndex = deleteReminder(reminderIndex)
+    return deletedReminderIndex
+})
+
+ipcMain.handle('refresh-reminder-ids', async (event, reminders: RefreshRemindersIPC) => {
+    const refreshedReminders = refreshReminders(reminders)
+    return refreshedReminders
+})
+
+ipcMain.handle('backup', async (event, arg: BackupIPC) => {
     try {
         const dirname = path.resolve(app.getPath('appData'), app.name, 'backups')
         if (!fs.existsSync(dirname)) {
             fs.mkdirSync(dirname);
         }
         fs.writeFileSync(path.resolve(dirname, arg.filename), arg.data, 'utf8');
-        return { isSuccess: true }
+        return { isSuccess: true, moreData: 'hi' }
     } catch (e) {
         return { isSuccess: false, message: JSON.stringify(e) }
     }
