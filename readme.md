@@ -4,15 +4,17 @@
 
 # Features
 
-- Track time spent on projects
-- Create todo lists for projects
-- Generate reports of work completed - Broken down by date and project.
-- Automated and manual backups
-- Super awesome color themes
+- It's a Todo List!
+- Create Projects, tasks, and todo list items!
+- Track time spent on projects!
+- Generate reports of work completed - Broken down by date and project!
+- Automated and manual backups!
+- Create Notifications!
+- Super awesome color themes!
 
 # Features in Development
 
-- Set Reminders to submit todo list. 
+- Add ability to track misc things each day.
 
 # Contributing
 
@@ -23,6 +25,8 @@
   3. Run `npm run sd` from the project root.
   4. Get to coding.
   5. Create a pull request.
+
+Create new color themes!!
 
 # Building
 
