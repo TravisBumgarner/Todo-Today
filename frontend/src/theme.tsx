@@ -12,6 +12,10 @@ const GlobalStyle = createGlobalStyle<{theme: TColor}>`
         max-width: 1200px;
         margin: 0px auto;
     }
+
+    // table, button {
+    //     border-radius: 10px !important;
+    // }
 `
 
 export default { GlobalStyle }

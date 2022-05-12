@@ -1,6 +1,6 @@
-import { TColorTheme, TColor } from 'sharedTypes'
+import { EColorTheme, TColor } from 'sharedTypes'
 
-const THEMES: Record<TColorTheme, TColor> = {
+const THEMES: Record<EColorTheme, TColor> = {
     FIRE_AND_ICE: {
         FOREGROUND_TEXT: '#7bc3ff',
         PRIMARY_BUTTON: '#7bff7f',
@@ -16,8 +16,8 @@ const THEMES: Record<TColorTheme, TColor> = {
         BACKGROUND_PRIMARY: '#1b1b1b',
     },
     BEACH: {
-        FOREGROUND_TEXT: '#49BEAA',
-        PRIMARY_BUTTON: '#EEB868',
+        FOREGROUND_TEXT: '#EEB868',
+        PRIMARY_BUTTON: '#49BEAA',
         ALERT_BUTTON: '#EF767A',
         FOREGROUND_DISABLED: '#d6d6d6',
         BACKGROUND_PRIMARY: '#456990',

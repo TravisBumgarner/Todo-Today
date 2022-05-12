@@ -1,28 +1,34 @@
 import React from 'react'
 
-import { TDateFormat, TWeekStart, TColorTheme, TBackupInterval, TSettings } from 'sharedTypes'
+import { EDateFormat, EWeekStart, EColorTheme, EBackupInterval, TSettings, EDaysOfWeek, TReminder } from 'sharedTypes'
 
 const HAS_DONE_WARM_START = 'HAS_DONE_WARM_START'
 const TRUE = 'TRUE'
 
 type State = {
-    dateFormat: TDateFormat
-    weekStart: TWeekStart
-    colorTheme: TColorTheme
-    backupInterval: TBackupInterval
+    dateFormat: EDateFormat
+    weekStart: EWeekStart
+    colorTheme: EColorTheme
+    backupInterval: EBackupInterval
+    reminders: {
+        timeOfDay: string,
+        dayOfWeek: EDaysOfWeek,
+        reminderIndex: number
+    }[]
 }
 
 const EMPTY_STATE: State = {
-    dateFormat: TDateFormat.A,
-    weekStart: TWeekStart.SUNDAY,
-    colorTheme: TColorTheme.SUNSET,
-    backupInterval: TBackupInterval.DAILY
+    dateFormat: EDateFormat.A,
+    weekStart: EWeekStart.SUNDAY,
+    colorTheme: EColorTheme.SUNSET,
+    backupInterval: EBackupInterval.DAILY,
+    reminders: []
 }
 
 const initialSetup = () => {
     Object
         .keys(EMPTY_STATE)
-        .forEach((key: keyof typeof EMPTY_STATE) => localStorage.setItem(key, EMPTY_STATE[key]))
+        .forEach((key: keyof typeof EMPTY_STATE) => localStorage.setItem(key, JSON.stringify(EMPTY_STATE[key])))
 
     localStorage.setItem(HAS_DONE_WARM_START, TRUE)
 }
@@ -34,13 +40,14 @@ const getKeysFromStorage = () => {
     Object
         .keys(EMPTY_STATE)
         .forEach((key: string) => {
-            output[key] = (localStorage.getItem(key)) as string
+            console.log(localStorage.getItem(key))
+            output[key] = (JSON.parse(localStorage.getItem(key) as string))
         })
     return output as unknown as State
 }
 
 const updateKeysInLocalStorage = (data: Record<string, string>) => {
-    Object.keys(data).forEach((key) => localStorage.setItem(key, data[key]))
+    Object.keys(data).forEach((key) => localStorage.setItem(key, JSON.stringify(data[key])))
 }
 
 type HydrateUserSettings = {
@@ -53,12 +60,31 @@ type EditUserSettings = {
     payload: Partial<TSettings>
 }
 
-const reducer = (state: State, action: EditUserSettings | HydrateUserSettings): State => {
+type AddReminder = {
+    type: "ADD_REMINDER",
+    payload: TReminder
+}
+
+type Action =
+    | EditUserSettings
+    | HydrateUserSettings
+    | AddReminder
+
+const reducer = (state: State, action: Action): State => {
     switch (action.type) {
-        default: {
+        case "EDIT_USER_SETTINGS":
+        case "HYDRATE_USER_SETTINGS": {
             updateKeysInLocalStorage(action.payload)
             return { ...state, ...action.payload }
         }
+        case "ADD_REMINDER": {
+            const reminders = [...state.reminders]
+            reminders.push(action.payload)
+            localStorage.setItem('reminders', JSON.stringify(reminders))
+            return { ...state, reminders }
+        }
+        default:
+            throw new Error('Unexpected action')
     }
 }
 
@@ -68,7 +94,7 @@ const context = React.createContext(
         dispatch: () => { },
     } as {
         state: State,
-        dispatch: React.Dispatch<EditUserSettings>
+        dispatch: React.Dispatch<Action>
     },
 )
 

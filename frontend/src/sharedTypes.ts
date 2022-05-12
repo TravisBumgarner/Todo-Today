@@ -3,7 +3,7 @@ type TMonth = `${number}${number}`;
 type TDay = `${number}${number}`;
 type TDateISODate = `${TYear}-${TMonth}-${TDay}`;
 
-enum TProjectStatus {
+enum EProjectStatus {
     NEW = 'NEW',
     IN_PROGRESS = 'IN_PROGRESS',
     COMPLETED = 'COMPLETED',
@@ -15,10 +15,10 @@ type TProject = {
     title: string
     startDate: TDateISODate | null
     endDate: TDateISODate | null
-    status: TProjectStatus
+    status: EProjectStatus
 }
 
-enum TTaskStatus {
+enum ETaskStatus {
     NEW = 'NEW',
     IN_PROGRESS = 'IN_PROGRESS',
     COMPLETED = 'COMPLETED',
@@ -29,7 +29,7 @@ type TTask = {
     id: string
     projectId: string
     title: string
-    status: TTaskStatus
+    status: ETaskStatus
 }
 
 type TTodoListItem = {
@@ -40,14 +40,14 @@ type TTodoListItem = {
     id: string
 }
 
-enum TDateFormat {
+enum EDateFormat {
     A = 'A',
     B = 'B',
     C = 'C',
     D = 'D',
 }
 
-enum TBackupInterval {
+enum EBackupInterval {
     HOURLY = 'HOURLY',
     DAILY = 'DAILY',
     WEEKLY = 'WEEKLY',
@@ -55,12 +55,29 @@ enum TBackupInterval {
     OFF = 'OFF'
 }
 
-enum TWeekStart {
+enum EDaysOfWeek {
+    SUNDAY = "0",
+    MONDAY = "1",
+    TUESDAY = "2",
+    WEDNESDAY = "3",
+    THURSDAY = "4",
+    FRIDAY = "5",
+    SATURDAY = "6",
+
+}
+
+type TReminder = {
+    timeOfDay: string,
+    dayOfWeek: EDaysOfWeek,
+    reminderIndex: number
+}
+
+enum EWeekStart {
     MONDAY = 'MONDAY',
     SUNDAY = 'SUNDAY'
 }
 
-enum TColorTheme {
+enum EColorTheme {
     FIRE_AND_ICE = 'FIRE_AND_ICE',
     NEWSPAPER = 'NEWSPAPER',
     BEACH = 'BEACH',
@@ -76,35 +93,37 @@ type TColor = {
 }
 
 type TSettings = {
-    dateFormat: TDateFormat
-    weekStart: TWeekStart
-    colorTheme: TColorTheme
-    backupInterval: TBackupInterval
+    dateFormat: EDateFormat
+    weekStart: EWeekStart
+    colorTheme: EColorTheme
+    backupInterval: EBackupInterval
 }
 
-type EnumTypeString<TEnum extends string> =
+type TEnumTypeString<TEnum extends string> =
     { [key in string]: TEnum | string; }
 
-type EnumTypeNumber<TEnum extends number> =
+type TEnumTypeNumber<TEnum extends number> =
     { [key in string]: TEnum | number; }
     | { [key in number]: string; }
 
-type EnumType<TEnum extends string | number> =
-    (TEnum extends string ? EnumTypeString<TEnum> : never)
-    | (TEnum extends number ? EnumTypeNumber<TEnum> : never)
+type TEnumType<TEnum extends string | number> =
+    (TEnum extends string ? TEnumTypeString<TEnum> : never)
+    | (TEnum extends number ? TEnumTypeNumber<TEnum> : never)
 
 export {
     TProject,
-    TProjectStatus,
+    EProjectStatus,
     TTask,
-    TTaskStatus,
+    ETaskStatus,
     TTodoListItem,
-    EnumType,
+    TEnumType,
     TSettings,
-    TDateFormat,
-    TWeekStart,
-    TColorTheme,
+    EDateFormat,
+    EWeekStart,
+    EColorTheme,
     TColor,
     TDateISODate,
-    TBackupInterval
+    EBackupInterval,
+    EDaysOfWeek,
+    TReminder
 }

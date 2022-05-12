@@ -2,6 +2,7 @@
     "name": "todotoday",
     "author": "Travis Bumgarner",
     "dependencies": {
+        "@types/electron": "^1.6.10",
         "dexie": "^3.2.2",
         "dexie-react-hooks": "^1.1.1",
         "dotenv": "^16.0.0",

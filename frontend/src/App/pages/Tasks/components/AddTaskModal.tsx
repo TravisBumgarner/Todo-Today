@@ -2,7 +2,7 @@ import React from 'react'
 import { v4 as uuid4 } from 'uuid'
 
 import { Button, Modal, ButtonWrapper, LabelAndInput, Form } from 'sharedComponents'
-import { TProject, TTaskStatus } from 'sharedTypes'
+import { TProject, ETaskStatus } from 'sharedTypes'
 import database from 'database'
 
 type AddTaskModalProps = {
@@ -17,7 +17,7 @@ const AddTaskModal = ({ showModal, setShowModal, project }: AddTaskModalProps) =
     const handleSubmit = () => {
         const newTask = {
             title,
-            status: TTaskStatus.NEW,
+            status: ETaskStatus.NEW,
             id: uuid4(),
             projectId: project.id
         }

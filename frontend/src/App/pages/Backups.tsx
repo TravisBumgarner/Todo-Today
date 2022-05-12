@@ -4,17 +4,18 @@ import moment from 'moment'
 import { Button, ButtonWrapper, Heading, LabelAndInput, Modal, Paragraph, Form, ConfirmationModal } from 'sharedComponents'
 import { saveFile } from 'utilities'
 import database from 'database'
-import { TBackupInterval } from 'sharedTypes'
+import { EBackupInterval } from 'sharedTypes'
 import { context } from 'Context'
+import { BackupIPC } from '../../../../shared/types'
 
 const { ipcRenderer } = window.require('electron')
 
-const backupIntervalOptions: Record<TBackupInterval, string> = {
-    [TBackupInterval.HOURLY]: 'Hourly',
-    [TBackupInterval.DAILY]: 'Daily',
-    [TBackupInterval.WEEKLY]: 'Weekly',
-    [TBackupInterval.MONTHLY]: 'Monthly',
-    [TBackupInterval.OFF]: 'Off',
+const backupIntervalOptions: Record<EBackupInterval, string> = {
+    [EBackupInterval.HOURLY]: 'Hourly',
+    [EBackupInterval.DAILY]: 'Daily',
+    [EBackupInterval.WEEKLY]: 'Weekly',
+    [EBackupInterval.MONTHLY]: 'Monthly',
+    [EBackupInterval.OFF]: 'Off',
 }
 
 const createBackup = async () => {
@@ -27,23 +28,27 @@ const createBackup = async () => {
 }
 
 const automatedBackup = (showAutomatedBackupFailedModal: React.Dispatch<React.SetStateAction<boolean>>) => {
-    const backupInterval = localStorage.getItem('backupInterval') as TBackupInterval
-    if (backupInterval === TBackupInterval.OFF) {
+    const backupInterval = localStorage.getItem('backupInterval') as EBackupInterval
+    if (backupInterval === EBackupInterval.OFF) {
         return
     }
     const lastBackup = localStorage.getItem('lastBackup')
     const backupIntervalLookup = {
-        [TBackupInterval.HOURLY]: 1,
-        [TBackupInterval.DAILY]: 24,
-        [TBackupInterval.WEEKLY]: 24 * 7,
-        [TBackupInterval.MONTHLY]: 24 * 30
+        [EBackupInterval.HOURLY]: 1,
+        [EBackupInterval.DAILY]: 24,
+        [EBackupInterval.WEEKLY]: 24 * 7,
+        [EBackupInterval.MONTHLY]: 24 * 30
     }
 
     const lastBackupThreshold = moment().subtract(backupIntervalLookup[backupInterval], 'hours')
 
     if (!lastBackup || moment(lastBackup) < lastBackupThreshold) {
         createBackup().then(async (data) => {
-            const response = await ipcRenderer.invoke('backup', { filename: `${moment().toISOString()}.json`, data: JSON.stringify(data) })
+            const response = await ipcRenderer.invoke(
+                'backup',
+                { filename: `${moment().toISOString()}.json`, data: JSON.stringify(data) } as BackupIPC
+            )
+            console.log('woo', response)
             if (response.isSuccess === true) {
                 localStorage.setItem('lastBackup', moment().toString())
             } else {
@@ -94,7 +99,7 @@ const Backups = () => {
                 }
             }
         }
-        setShowRestoreConfirmModal(false)
+    setShowRestoreConfirmModal(false)
     }
 
     return (
@@ -111,8 +116,8 @@ const Backups = () => {
                 name="weekStart"
                 label={`How often would you like automated backups to run? (Last Backup: ${localStorage.getItem('lastBackup')})`}
                 value={state.backupInterval}
-                handleChange={(value: TBackupInterval) => dispatch({ type: 'EDIT_USER_SETTINGS', payload: { backupInterval: value } })}
-                options={TBackupInterval}
+                handleChange={(value: EBackupInterval) => dispatch({ type: 'EDIT_USER_SETTINGS', payload: { backupInterval: value } })}
+                options={EBackupInterval}
                 optionLabels={backupIntervalOptions}
             />
 

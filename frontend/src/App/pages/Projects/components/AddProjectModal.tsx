@@ -4,7 +4,7 @@ import { v4 as uuid4 } from 'uuid'
 
 import database from 'database'
 import { Button, Modal, ButtonWrapper, LabelAndInput, Form } from 'sharedComponents'
-import { TProject, TProjectStatus } from 'sharedTypes'
+import { TProject, EProjectStatus } from 'sharedTypes'
 import { formatDateKeyLookup } from 'utilities'
 
 type AddProjectModalProps = {
@@ -23,7 +23,7 @@ const AddProjectModal = ({ showModal, setShowModal }: AddProjectModalProps) => {
             title,
             startDate: formatDateKeyLookup(moment(startDate)),
             endDate: formatDateKeyLookup(moment(endDate)),
-            status: TProjectStatus.NEW,
+            status: EProjectStatus.NEW,
         }
         await database.projects.add(newProject)
         setShowModal(false)
