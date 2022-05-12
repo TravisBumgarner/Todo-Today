@@ -111,7 +111,6 @@ const RemindersTable = () => {
 
         dispatch({ type: 'DELETE_REMINDER', payload: { deletedReminderIndex } })
     }
-    console.log('state',state)
     return (
         <Table.Table>
             <Table.TableHeader>
