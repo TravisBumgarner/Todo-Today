@@ -73,11 +73,6 @@ type TReminder = {
     reminderIndex: string
 }
 
-enum EWeekStart {
-    MONDAY = EDaysOfWeek.MONDAY,
-    SUNDAY = EDaysOfWeek.SUNDAY
-}
-
 enum EColorTheme {
     FIRE_AND_ICE = 'FIRE_AND_ICE',
     NEWSPAPER = 'NEWSPAPER',
@@ -95,7 +90,6 @@ type TColor = {
 
 type TSettings = {
     dateFormat: EDateFormat
-    weekStart: EWeekStart
     colorTheme: EColorTheme
     backupInterval: EBackupInterval
     reminders: TReminder[]
@@ -121,7 +115,6 @@ export {
     TEnumType,
     TSettings,
     EDateFormat,
-    EWeekStart,
     EColorTheme,
     TColor,
     TDateISODate,

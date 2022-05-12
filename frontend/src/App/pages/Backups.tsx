@@ -115,7 +115,7 @@ const Backups = () => {
                 name="weekStart"
                 label={`How often would you like automated backups to run? (Last Backup: ${localStorage.getItem('lastBackup')})`}
                 value={state.backupInterval}
-                handleChange={(value: EBackupInterval) => dispatch({ type: 'EDIT_USER_SETTINGS', payload: { backupInterval: value } })}
+                handleChange={(value: EBackupInterval) => dispatch({ type: 'EDIT_USER_SETTING', payload: { key: 'backupInterval', value } })}
                 options={EBackupInterval}
                 optionLabels={backupIntervalOptions}
             />

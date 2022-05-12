@@ -2,7 +2,7 @@ import React from 'react'
 import moment, { Moment } from 'moment'
 import styled from 'styled-components'
 
-import { EColorTheme, EDateFormat, TSettings, EWeekStart, EDaysOfWeek } from 'sharedTypes'
+import { EColorTheme, EDateFormat, TSettings, EDaysOfWeek } from 'sharedTypes'
 import { Heading, LabelAndInput, Form, Modal, BigBoxOfNothing, Button, ButtonWrapper, Table, DropdownMenu } from 'sharedComponents'
 import { dateFormatLookup } from 'utilities'
 import { context } from 'Context'
@@ -18,11 +18,6 @@ const dateFormatForUser = (format: EDateFormat, date: Moment) => {
         [EDateFormat.C]: `${moment(date).format((dateFormatLookup[EDateFormat.C]))} (Month/Day/Year)`,
         [EDateFormat.D]: `${moment(date).format((dateFormatLookup[EDateFormat.D]))} (Day/Month/Year)`,
     }[format]
-}
-
-const weekStartOptionLabels: Record<EWeekStart, string> = {
-    [EWeekStart.MONDAY]: 'Monday',
-    [EWeekStart.SUNDAY]: 'Sunday',
 }
 
 const dayOfWeekLabels: Record<EDaysOfWeek, string> = {
@@ -153,8 +148,8 @@ const Settings = () => {
     const { state, dispatch } = React.useContext(context)
     const [showModal, setShowModal] = React.useState<boolean>(false)
 
-    const handleSubmit = (setting: Partial<Omit<TSettings, 'reminders'>>) => {
-        dispatch({ type: 'EDIT_USER_SETTINGS', payload: setting })
+    const handleSubmit = ({key, value}: {key: string, value: string}) => {
+        dispatch({ type: 'EDIT_USER_SETTING', payload: {key, value} })
     }
     return (
         <>
@@ -162,19 +157,10 @@ const Settings = () => {
             <Form>
                 <LabelAndInput
                     inputType="select-enum"
-                    name="weekStart"
-                    label="Week starts on"
-                    value={state.weekStart}
-                    handleChange={(value: EWeekStart) => handleSubmit({ weekStart: value })}
-                    options={EWeekStart}
-                    optionLabels={weekStartOptionLabels}
-                />
-                <LabelAndInput
-                    inputType="select-enum"
                     name="dateFormat"
                     label="Preferred Date Format"
                     value={state.dateFormat}
-                    handleChange={(value: EDateFormat) => handleSubmit({ dateFormat: value })}
+                    handleChange={(value: EDateFormat) => handleSubmit({ key: 'dateFormat', value })}
                     options={EDateFormat}
                     optionLabels={dateFormatOptionLabels}
                 />
@@ -183,7 +169,7 @@ const Settings = () => {
                     name="colorTheme"
                     label="Theme"
                     value={state.colorTheme}
-                    handleChange={(value: EColorTheme) => handleSubmit({ colorTheme: value })}
+                    handleChange={(value: EColorTheme) => handleSubmit({ key: 'colorTheme', value })}
                     options={EColorTheme}
                     optionLabels={colorThemeOptionLabels}
                 />

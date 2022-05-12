@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { EDateFormat, EWeekStart, EColorTheme, EBackupInterval, TSettings, EDaysOfWeek, TReminder } from 'sharedTypes'
+import { EDateFormat, EColorTheme, EBackupInterval, TSettings, EDaysOfWeek, TReminder } from 'sharedTypes'
 import { RefreshRemindersIPC } from '../../shared/types'
 
 const { ipcRenderer } = window.require('electron')
@@ -10,7 +10,6 @@ const TRUE = 'TRUE'
 
 type State = {
     dateFormat: EDateFormat
-    weekStart: EWeekStart
     colorTheme: EColorTheme
     backupInterval: EBackupInterval
     reminders: TReminder[]
@@ -18,7 +17,6 @@ type State = {
 
 const EMPTY_STATE: State = {
     dateFormat: EDateFormat.A,
-    weekStart: EWeekStart.SUNDAY,
     colorTheme: EColorTheme.BEACH,
     backupInterval: EBackupInterval.DAILY,
     reminders: []
@@ -44,18 +42,17 @@ const getKeysFromStorage = () => {
     return output as unknown as State
 }
 
-const updateKeysInLocalStorage = (data: Record<string, string>) => {
-    Object.keys(data).forEach((key) => localStorage.setItem(key, JSON.stringify(data[key])))
-}
-
 type HydrateUserSettings = {
     type: 'HYDRATE_USER_SETTINGS',
     payload: TSettings
 }
 
 type EditUserSettings = {
-    type: 'EDIT_USER_SETTINGS',
-    payload: Partial<Omit<TSettings, 'reminders'>>
+    type: 'EDIT_USER_SETTING',
+    payload: {
+        key: string
+        value: string
+    }
 }
 
 type AddReminder = {
@@ -81,9 +78,10 @@ const reducer = (state: State, action: Action): State => {
         case "HYDRATE_USER_SETTINGS": {
             return { ...state, ...action.payload }
         }
-        case "EDIT_USER_SETTINGS": {
-            updateKeysInLocalStorage(action.payload)
-            return { ...state, ...action.payload }
+        case "EDIT_USER_SETTING": {
+            const {key, value} = action.payload
+            localStorage.setItem(key, JSON.stringify(value))
+            return { ...state, [key]: value}
         }
         case "ADD_REMINDER": {
             const reminders = [...state.reminders]
