@@ -74,8 +74,8 @@ type TReminder = {
 }
 
 enum EWeekStart {
-    MONDAY = 'MONDAY',
-    SUNDAY = 'SUNDAY'
+    MONDAY = EDaysOfWeek.MONDAY,
+    SUNDAY = EDaysOfWeek.SUNDAY
 }
 
 enum EColorTheme {

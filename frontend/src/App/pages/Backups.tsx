@@ -48,7 +48,6 @@ const automatedBackup = (showAutomatedBackupFailedModal: React.Dispatch<React.Se
                 'backup',
                 { filename: `${moment().toISOString()}.json`, data: JSON.stringify(data) } as BackupIPC
             )
-            console.log('woo', response)
             if (response.isSuccess === true) {
                 localStorage.setItem('lastBackup', moment().toString())
             } else {
