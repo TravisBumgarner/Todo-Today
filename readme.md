@@ -23,3 +23,7 @@
   3. Run `npm run sd` from the project root.
   4. Get to coding.
   5. Create a pull request.
+
+# Building
+
+1. Run `npm run build` from root.
