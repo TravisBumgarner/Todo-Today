@@ -3,7 +3,7 @@ import database from 'database'
 import { useLiveQuery } from 'dexie-react-hooks'
 
 import { BigBoxOfNothing, Button, DropdownMenu, LabelAndInput, Table } from 'sharedComponents'
-import { TDateISODate, TProject, TTask, TTodoListItem } from 'sharedTypes'
+import { ETaskStatus, TDateISODate, TProject, TTask, TTodoListItem } from 'sharedTypes'
 import { taskStatusLookup } from 'utilities'
 
 type TodoListTableProps = {
@@ -113,6 +113,8 @@ const AVAILABLE_DURATIONS = [
 ]
 
 const TodoListTable = ({ selectedDate, todoListItems }: TodoListTableProps) => {
+    const [modifiedTask, setModifiedTask] = React.useState<string | null>(null)
+    
     const tableRows = useLiveQuery(async () => {
         return Promise.all([...todoListItems || []].map(async (todoListItem) => {
             const task = (await database.tasks.where({ id: todoListItem.taskId }).first()) as TTask
@@ -127,7 +129,7 @@ const TodoListTable = ({ selectedDate, todoListItems }: TodoListTableProps) => {
                 projectId: todoListItem.projectId
             }
         }))
-    }, [todoListItems])
+    }, [todoListItems, modifiedTask])
 
     if (!tableRows || tableRows.length === 0) {
         return (
@@ -150,7 +152,15 @@ const TodoListTable = ({ selectedDate, todoListItems }: TodoListTableProps) => {
             </Table.TableHeader>
             <Table.TableBody>
                 {
-                    tableRows.map(({ taskId, duration, projectTitle, taskTitle, status, todoListItemId, projectId }) => {
+                    tableRows
+                        .sort((a,b) => {
+                            if(a.projectTitle.toLowerCase() < b.projectTitle.toLowerCase()) return -1
+                            if(a.projectTitle.toLowerCase() > b.projectTitle.toLowerCase()) return 1
+                            if(a.taskTitle.toLowerCase() < b.taskTitle.toLowerCase()) return -1
+                            if(a.taskTitle.toLowerCase() > b.taskTitle.toLowerCase()) return 1
+                            return 0
+                        })
+                        .map(({ taskId, duration, projectTitle, taskTitle, status, todoListItemId, projectId }) => {
                         return (
                             <Table.TableRow key={taskId}>
                                 <Table.TableBodyCell>{projectTitle}</Table.TableBodyCell>
@@ -175,17 +185,19 @@ const TodoListTable = ({ selectedDate, todoListItems }: TodoListTableProps) => {
                                 </Table.TableBodyCell>
                                 <Table.TableBodyCell>
                                     <DropdownMenu title="Actions">
-                                        [
                                         <Button
                                             fullWidth
-                                            key="remove"
+                                            key="mark-task-completed"
                                             variation="INTERACTION"
                                             onClick={async () => {
-                                                await database.todoListItems.where({ id: todoListItemId }).delete()
+                                                const r = await database.tasks
+                                                    .where({id: taskId})
+                                                    .modify({status: ETaskStatus.COMPLETED})
+                                                setModifiedTask(taskId)
                                             }}
                                         >
-                                            Remove
-                                        </Button>,
+                                            Mark Task Complete
+                                        </Button>
                                         <Button
                                             fullWidth
                                             key="remove"
@@ -196,7 +208,6 @@ const TodoListTable = ({ selectedDate, todoListItems }: TodoListTableProps) => {
                                         >
                                             Remove
                                         </Button>
-                                        ]
                                     </DropdownMenu>
                                 </Table.TableBodyCell>
                             </Table.TableRow>

@@ -1,7 +1,7 @@
 import moment from 'moment'
 
 const { ipcRenderer } = window.require('electron')
-import { EDateFormat, TProject, EProjectStatus, TTask, TDateISODate, ETaskStatus } from 'sharedTypes'
+import { EDateFormat, TProject, EProjectStatus, TTask, TDateISODate, ETaskStatus, EDaysOfWeek, EColorTheme } from 'sharedTypes'
 import { NotificationIPC } from '../../shared/types'
 
 const projectStatusLookup: Record<EProjectStatus, string> = {
@@ -16,6 +16,26 @@ const taskStatusLookup: Record<ETaskStatus, string> = {
     [ETaskStatus.COMPLETED]: 'Completed',
     [ETaskStatus.IN_PROGRESS]: 'In Progress',
     [ETaskStatus.NEW]: 'New'
+}
+
+const dayOfWeekLabels: Record<EDaysOfWeek, string> = {
+    [EDaysOfWeek.SUNDAY]: 'Sunday',
+    [EDaysOfWeek.MONDAY]: 'Monday',
+    [EDaysOfWeek.TUESDAY]: 'Tuesday',
+    [EDaysOfWeek.WEDNESDAY]: 'Wednesday',
+    [EDaysOfWeek.THURSDAY]: 'Thursday',
+    [EDaysOfWeek.FRIDAY]: 'Friday',
+    [EDaysOfWeek.SATURDAY]: 'Saturday',
+}
+
+const colorThemeOptionLabels: Record<EColorTheme, string> = {
+    [EColorTheme.BEACH]: 'Beach',
+    [EColorTheme.NEWSPAPER]: 'Newspaper',
+    [EColorTheme.OUTERSPACE]: 'Outerspace',
+    [EColorTheme.RETRO_FUTURE]: 'Retro Future',
+    [EColorTheme.SLATE]: 'Slate',
+    [EColorTheme.SUNSET]: 'Sunset',
+    [EColorTheme.UNDER_THE_SEA]: 'Under the Sea',
 }
 
 const dateFormatLookup = {
@@ -85,6 +105,8 @@ export {
     formatDurationDisplayString,
     bucketTasksByProject,
     dateFormatLookup,
+    dayOfWeekLabels,
+    colorThemeOptionLabels,
     sumArray,
     saveFile,
     sendNotification

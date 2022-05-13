@@ -33,6 +33,18 @@ const Time = styled.input`
     height: 40px;
 `
 
+const CheckboxWrapper = styled.div`
+    flex-direction: row;
+    border: 2px solid;
+    border-color: ${({ theme }) => theme.FOREGROUND};
+    padding: 0.5rem 1rem;
+
+    div {
+        display: inline-block;
+        margin-right: 1rem;
+    }
+`
+
 const Checkbox = styled.input`
     color-scheme: dark;
     accent-color: ${({ theme }) => theme.FOREGROUND};
@@ -169,7 +181,7 @@ const LabelAndInput = (props: LabelAndInputProps) => {
     } else if (props.inputType === 'checkbox') {
         const { options, handleChange } = props
         InputElement = (
-            <>
+            <CheckboxWrapper>
                 {options.map((option) => (
                     <div key={option.name}>
                         <Checkbox
@@ -185,7 +197,7 @@ const LabelAndInput = (props: LabelAndInputProps) => {
                         </CheckboxLabel>
                     </div>
                 ))}
-            </>
+            </CheckboxWrapper>
         )
     } else if (props.inputType === 'file') {
         const { inputType, handleChange, name, value } = props

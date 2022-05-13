@@ -45,14 +45,14 @@ const EditProjectModal = ({ showModal, setShowModal, project }: EditProjectModal
                     handleChange={(data) => setTitle(data)}
                 />
                 <LabelAndInput
-                    label="Start Date"
+                    label="Start Date (Optional)"
                     name="startDate"
                     value={startDate ? startDate.format('YYYY-MM-DD') : ''}
                     inputType="date"
                     handleChange={(date) => setStartDate(moment(date))}
                 />
                 <LabelAndInput
-                    label="End Date"
+                    label="End Date (Optional)"
                     name="endDate"
                     value={endDate ? endDate.format('YYYY-MM-DD') : ''}
                     inputType="date"

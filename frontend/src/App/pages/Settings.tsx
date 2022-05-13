@@ -4,7 +4,7 @@ import styled from 'styled-components'
 
 import { EColorTheme, EDateFormat, TSettings, EDaysOfWeek } from 'sharedTypes'
 import { Heading, LabelAndInput, Form, Modal, BigBoxOfNothing, Button, ButtonWrapper, Table, DropdownMenu } from 'sharedComponents'
-import { dateFormatLookup, formatDurationDisplayString } from 'utilities'
+import { dateFormatLookup, formatDurationDisplayString, dayOfWeekLabels, colorThemeOptionLabels } from 'utilities'
 import { context } from 'Context'
 import { AddReminderIPC } from '../../../../shared/types'
 
@@ -20,15 +20,7 @@ const dateFormatForUser = (format: EDateFormat, date: Moment) => {
     }[format]
 }
 
-const dayOfWeekLabels: Record<EDaysOfWeek, string> = {
-    [EDaysOfWeek.SUNDAY]: 'Sunday',
-    [EDaysOfWeek.MONDAY]: 'Monday',
-    [EDaysOfWeek.TUESDAY]: 'Tuesday',
-    [EDaysOfWeek.WEDNESDAY]: 'Wednesday',
-    [EDaysOfWeek.THURSDAY]: 'Thursday',
-    [EDaysOfWeek.FRIDAY]: 'Friday',
-    [EDaysOfWeek.SATURDAY]: 'Saturday',
-}
+
 
 const dateFormatOptionLabels: Record<EDateFormat, string> = {
     [EDateFormat.A]: dateFormatForUser(EDateFormat.A, moment()),
@@ -37,15 +29,7 @@ const dateFormatOptionLabels: Record<EDateFormat, string> = {
     [EDateFormat.D]: dateFormatForUser(EDateFormat.D, moment()),
 }
 
-const colorThemeOptionLabels: Record<EColorTheme, string> = {
-    [EColorTheme.BEACH]: 'Beach',
-    [EColorTheme.NEWSPAPER]: 'Newspaper',
-    [EColorTheme.OUTERSPACE]: 'Outerspace',
-    [EColorTheme.RETRO_FUTURE]: 'Retro Future',
-    [EColorTheme.SLATE]: 'Slate',
-    [EColorTheme.SUNSET]: 'Sunset',
-    [EColorTheme.UNDER_THE_SEA]: 'Under the Sea',
-}
+
 
 type ScheduleMakerModalProps = {
     showModal: boolean
