@@ -21,7 +21,7 @@ Menu.setApplicationMenu(menu)
 function createWindow() {
     mainWindow = new BrowserWindow({
         width: isDev || isDebugProduction ? 1000 : 800,
-        height: 600,
+        height: isDev || isDebugProduction ? 1000 : 600,
         x: 0,
         y: 0,
         title: isDev ? "DEV MODE" : "Todo Today",
