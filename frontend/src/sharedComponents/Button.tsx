@@ -2,7 +2,7 @@ import { TColor } from 'sharedTypes'
 import styled from 'styled-components'
 
 type ButtonProps = {
-    variation: 'PRIMARY_BUTTON' | 'ALERT_BUTTON'
+    variation: 'INTERACTION' | 'WARNING'
     disabled?: boolean
     fullWidth?: boolean
     alignRight?: boolean
@@ -26,8 +26,8 @@ const Button = styled.button<ButtonProps>`
     ${({ variation, disabled, theme }) => {
         if (disabled) {
             return `
-                color: ${theme.FOREGROUND_DISABLED};
-                border-color: ${theme.FOREGROUND_DISABLED};
+                color: ${theme.DISABLED};
+                border-color: ${theme.DISABLED};
 
                 &:hover {
                     cursor: not-allowed;
@@ -35,26 +35,26 @@ const Button = styled.button<ButtonProps>`
             `
         }
 
-        if (variation === 'PRIMARY_BUTTON') {
+        if (variation === 'INTERACTION') {
             return `
-                color: ${theme.FOREGROUND_TEXT};
-                border-color: ${theme.FOREGROUND_TEXT};
+                color: ${theme.FOREGROUND};
+                border-color: ${theme.FOREGROUND};
 
                 &:hover {
-                    color: ${theme.PRIMARY_BUTTON};
-                    border-color: ${theme.PRIMARY_BUTTON};
+                    color: ${theme.INTERACTION};
+                    border-color: ${theme.INTERACTION};
                 }
             `
         }
 
-        if (variation === 'ALERT_BUTTON') {
+        if (variation === 'WARNING') {
             return `
-                color: ${theme.ALERT_BUTTON};
-                border-color: ${theme.ALERT_BUTTON};
+                color: ${theme.WARNING};
+                border-color: ${theme.WARNING};
 
                 &:hover {
-                    color: ${theme.PRIMARY_BUTTON};
-                    border-color: ${theme.PRIMARY_BUTTON};
+                    color: ${theme.INTERACTION};
+                    border-color: ${theme.INTERACTION};
                 }
             `
         }

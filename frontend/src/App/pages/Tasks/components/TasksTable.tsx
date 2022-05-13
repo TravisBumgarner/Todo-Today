@@ -35,7 +35,7 @@ const TasksTable = ({ tasks, project }: TasksTableProps) => {
                         <Table.TableBodyCell>{projectStatusLookup[status]}</Table.TableBodyCell>
                         <Table.TableBodyCell>
                             <DropdownMenu title="Actions">{
-                                [<Button fullWidth key="edit" variation="PRIMARY_BUTTON" onClick={() => setSelectedTaskId(id)}>Edit</Button>]
+                                [<Button fullWidth key="edit" variation="INTERACTION" onClick={() => setSelectedTaskId(id)}>Edit</Button>]
                             }
                             </DropdownMenu>
 
@@ -56,7 +56,7 @@ const TasksTable = ({ tasks, project }: TasksTableProps) => {
                     : (TasksTableOnly)
             }
             <ButtonWrapper fullWidth={
-                <Button fullWidth key="edit" variation="PRIMARY_BUTTON" onClick={() => setShowAddTaskModal(true)}>Add Task to {project.title}</Button>
+                <Button fullWidth key="edit" variation="INTERACTION" onClick={() => setShowAddTaskModal(true)}>Add Task to {project.title}</Button>
             }
             />
 

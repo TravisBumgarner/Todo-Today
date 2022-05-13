@@ -3,12 +3,12 @@ import styled from 'styled-components'
 
 const StyledNavLink = styled(NavLink)`
     color: ${(props) => {
-        return props.theme.FOREGROUND_TEXT
+        return props.theme.FOREGROUND
     }};
 
     &:hover {
         color: ${(props) => {
-        return props.theme.PRIMARY_BUTTON
+        return props.theme.INTERACTION
     }};
     }
 

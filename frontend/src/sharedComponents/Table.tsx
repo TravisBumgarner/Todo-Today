@@ -8,7 +8,7 @@ const Table = styled.table`
     border-collapse: separate;
     border-spacing: 0;
     width: 100%;
-    border: 2px solid ${({ theme }) => theme.PRIMARY_BUTTON};
+    border: 2px solid ${({ theme }) => theme.INTERACTION};
     table-layout: fixed;
 `
 
@@ -24,19 +24,19 @@ const TableRow = styled.tr`
     padding: 10px;
 
     &:nth-child(2n+1){
-        background-color: ${({ theme }) => theme.BACKGROUND_PRIMARY};   
+        background-color: ${({ theme }) => theme.BACKGROUND};   
     }
 
     &:nth-child(2n){
-        background-color: ${({ theme }) => theme.BACKGROUND_PRIMARY};   
+        background-color: ${({ theme }) => theme.BACKGROUND};   
     }
     
 `
 
 const TableHeaderCell = styled.th<{theme: TColor, width?: string, minWidth?: string}>`
-    background-color: ${({ theme }) => theme.BACKGROUND_PRIMARY};
-    color: ${({ theme }) => theme.PRIMARY_BUTTON}; 
-    border-bottom: 2px solid ${({ theme }) => theme.PRIMARY_BUTTON};
+    background-color: ${({ theme }) => theme.BACKGROUND};
+    color: ${({ theme }) => theme.INTERACTION}; 
+    border-bottom: 2px solid ${({ theme }) => theme.INTERACTION};
     padding: 10px;
     text-align: left;
     width: ${({ width }) => width};
@@ -44,9 +44,9 @@ const TableHeaderCell = styled.th<{theme: TColor, width?: string, minWidth?: str
     
 `
 const TableBodyCell = styled.td`
-    border-bottom: 2px solid ${({ theme }) => theme.PRIMARY_BUTTON};
+    border-bottom: 2px solid ${({ theme }) => theme.INTERACTION};
     padding: 10px;
-    color: ${({ theme }) => theme.PRIMARY_BUTTON};
+    color: ${({ theme }) => theme.INTERACTION};
 `
 
 export {

@@ -21,7 +21,7 @@ const ModalBackground = styled.div`
     z-index: 30;
     
     background-color: ${(props) => {
-        return darken(0.05, props.theme.BACKGROUND_PRIMARY)
+        return darken(0.05, props.theme.BACKGROUND)
     }};
     display: flex;
     justify-content: center;
@@ -29,8 +29,8 @@ const ModalBackground = styled.div`
     
     > div {
         padding: 2rem;
-        border: ${({ theme }) => theme.FOREGROUND_TEXT} solid 2px;
-        background-color: ${({ theme }) => theme.BACKGROUND_PRIMARY};
+        border: ${({ theme }) => theme.FOREGROUND} solid 2px;
+        background-color: ${({ theme }) => theme.BACKGROUND};
         position: static;
         max-width: 80vw;
         max-height: 80vh;

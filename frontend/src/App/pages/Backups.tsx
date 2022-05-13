@@ -105,7 +105,7 @@ const Backups = () => {
         <div>
             <Heading.H2>Manual Backup</Heading.H2>
             <Paragraph>Create a copy of the entire database.</Paragraph>
-            <ButtonWrapper fullWidth={<Button onClick={() => handleBackup()} fullWidth variation="PRIMARY_BUTTON">Backup</Button>} />
+            <ButtonWrapper fullWidth={<Button onClick={() => handleBackup()} fullWidth variation="INTERACTION">Backup</Button>} />
 
             <Heading.H2>
                 Automated Backup
@@ -129,7 +129,7 @@ const Backups = () => {
                             disabled={!restore}
                             onClick={() => setShowRestoreConfirmModal(true)}
                             fullWidth
-                            variation="PRIMARY_BUTTON"
+                            variation="INTERACTION"
                         >
                             Restore from Backup
                         </Button>
@@ -147,11 +147,11 @@ const Backups = () => {
                     right={[
                         <Button
                             key="cancel"
-                            variation="PRIMARY_BUTTON"
+                            variation="INTERACTION"
                             onClick={() => setShowRestoreConfirmModal(false)}
                         >Cancel
                         </Button>,
-                        <Button key="restore" variation="ALERT_BUTTON" onClick={() => handleRestore()}>Restore</Button>
+                        <Button key="restore" variation="WARNING" onClick={() => handleRestore()}>Restore</Button>
                     ]}
                 />
             </Modal>

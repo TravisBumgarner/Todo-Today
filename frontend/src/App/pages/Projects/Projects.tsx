@@ -11,7 +11,7 @@ const Projects = () => {
             <Heading.H2>Projects</Heading.H2>
             <ProjectsTable />
             <ButtonWrapper fullWidth={
-                <Button fullWidth key="edit" variation="PRIMARY_BUTTON" onClick={() => setShowAddProjectModal(true)}>Add Project</Button>
+                <Button fullWidth key="edit" variation="INTERACTION" onClick={() => setShowAddProjectModal(true)}>Add Project</Button>
             }
             />
 

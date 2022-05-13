@@ -71,16 +71,16 @@ const TodoList = () => {
             <Heading.H2>{formatDateDisplayString(dateFormat, selectedDate)} {hoursWorkedSelectedDate}</Heading.H2>
             <ButtonWrapper
                 left={[
-                    <Button key="today" disabled={todoListItems && todoListItems.length > 0} onClick={getPreviousDatesTasks} variation="PRIMARY_BUTTON">Copy Yesterday</Button>
+                    <Button key="today" disabled={todoListItems && todoListItems.length > 0} onClick={getPreviousDatesTasks} variation="INTERACTION">Copy Yesterday</Button>
                 ]}
                 right={[
-                    <Button key="today" onClick={getToday} variation="PRIMARY_BUTTON">Today</Button>,
-                    <Button key="previous" onClick={setPreviousDate} variation="PRIMARY_BUTTON">&lt;</Button>,
-                    <Button key="next" onClick={getNextDate} variation="PRIMARY_BUTTON">&gt;</Button>,
+                    <Button key="today" onClick={getToday} variation="INTERACTION">Today</Button>,
+                    <Button key="previous" onClick={setPreviousDate} variation="INTERACTION">&lt;</Button>,
+                    <Button key="next" onClick={getNextDate} variation="INTERACTION">&gt;</Button>,
                 ]}
             />
             <TodoListTable todoListItems={todoListItems} selectedDate={selectedDate} />
-            <Button key="manage" fullWidth onClick={() => setShowManagementModal(true)} variation="PRIMARY_BUTTON">Add Tasks</Button>
+            <Button key="manage" fullWidth onClick={() => setShowManagementModal(true)} variation="INTERACTION">Add Tasks</Button>
             <ManageTodoListItemsModal selectedDate={selectedDate} showModal={showManagementModal} setShowModal={setShowManagementModal} />
             <ConfirmationModal
                 body="It looks like there's nothing to copy from yesterday."

@@ -179,7 +179,7 @@ const TodoListTable = ({ selectedDate, todoListItems }: TodoListTableProps) => {
                                         <Button
                                             fullWidth
                                             key="remove"
-                                            variation="PRIMARY_BUTTON"
+                                            variation="INTERACTION"
                                             onClick={async () => {
                                                 await database.todoListItems.where({ id: todoListItemId }).delete()
                                             }}
@@ -189,7 +189,7 @@ const TodoListTable = ({ selectedDate, todoListItems }: TodoListTableProps) => {
                                         <Button
                                             fullWidth
                                             key="remove"
-                                            variation="PRIMARY_BUTTON"
+                                            variation="INTERACTION"
                                             onClick={async () => {
                                                 await database.todoListItems.where({ id: todoListItemId }).delete()
                                             }}

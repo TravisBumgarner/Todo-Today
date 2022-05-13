@@ -39,9 +39,12 @@ const dateFormatOptionLabels: Record<EDateFormat, string> = {
 
 const colorThemeOptionLabels: Record<EColorTheme, string> = {
     [EColorTheme.BEACH]: 'Beach',
-    [EColorTheme.FIRE_AND_ICE]: 'Fire & Ice',
     [EColorTheme.NEWSPAPER]: 'Newspaper',
+    [EColorTheme.OUTERSPACE]: 'Outerspace',
+    [EColorTheme.RETRO_FUTURE]: 'Retro Future',
+    [EColorTheme.SLATE]: 'Slate',
     [EColorTheme.SUNSET]: 'Sunset',
+    [EColorTheme.UNDER_THE_SEA]: 'Under the Sea',
 }
 
 type ScheduleMakerModalProps = {
@@ -88,8 +91,8 @@ const ScheduleMakerModal = ({ showModal, setShowModal }: ScheduleMakerModalProps
                 />
                 <ButtonWrapper right={
                     [
-                        <Button key="cancel" variation="ALERT_BUTTON" onClick={() => setShowModal(false)}>Cancel</Button>,
-                        <Button key="save" variation="PRIMARY_BUTTON" type='button' onClick={handleSubmit}>Save</Button>
+                        <Button key="cancel" variation="WARNING" onClick={() => setShowModal(false)}>Cancel</Button>,
+                        <Button key="save" variation="INTERACTION" type='button' onClick={handleSubmit}>Save</Button>
                     ]
                 }
                 />
@@ -122,7 +125,7 @@ const RemindersTable = () => {
                         <Table.TableBodyCell>{formatDurationDisplayString(parseInt(hours, 10) * 60 + parseInt(minutes, 10))}</Table.TableBodyCell>
                         <Table.TableBodyCell>
                             <DropdownMenu title="Actions">{
-                                [<Button fullWidth key="edit" variation="PRIMARY_BUTTON" onClick={() => handleDelete(reminderIndex)}>Remove</Button>]
+                                [<Button fullWidth key="edit" variation="INTERACTION" onClick={() => handleDelete(reminderIndex)}>Remove</Button>]
                             }
                             </DropdownMenu>
 
@@ -140,7 +143,7 @@ const FakeLabel = styled.p`
     font-size: 1rem;
     background-color: transparent;
     font-weight: 700;
-    color: ${({ theme }) => theme.ALERT_BUTTON};
+    color: ${({ theme }) => theme.WARNING};
     margin: 0.5rem 0;
 `
 
@@ -180,7 +183,7 @@ const Settings = () => {
                     ? <BigBoxOfNothing message="No Reminders yet, click Add Reminder Below" />
                     : <RemindersTable />
                 }
-                <Button key="addSchedule" fullWidth onClick={() => setShowModal(true)} variation="PRIMARY_BUTTON">Add Reminder</Button>
+                <Button key="addSchedule" fullWidth onClick={() => setShowModal(true)} variation="INTERACTION">Add Reminder</Button>
             </div>
             <ScheduleMakerModal setShowModal={setShowModal} showModal={showModal} />
         </>

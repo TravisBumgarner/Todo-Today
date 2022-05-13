@@ -58,8 +58,8 @@ const AddProjectModal = ({ showModal, setShowModal }: AddProjectModalProps) => {
                 />
                 <ButtonWrapper right={
                     [
-                        <Button key="cancel" variation="ALERT_BUTTON" onClick={() => setShowModal(false)}>Cancel</Button>,
-                        <Button key="save" variation="PRIMARY_BUTTON" onClick={handleSubmit}>Save</Button>
+                        <Button key="cancel" variation="WARNING" onClick={() => setShowModal(false)}>Cancel</Button>,
+                        <Button key="save" variation="INTERACTION" onClick={handleSubmit}>Save</Button>
                     ]
                 }
                 />

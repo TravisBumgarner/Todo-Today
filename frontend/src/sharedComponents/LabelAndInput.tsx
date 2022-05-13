@@ -10,8 +10,8 @@ const Input = styled.input`
     padding: 0.5rem 1rem;
     background-color: transparent;
     font-weight: 700;
-    color: ${({ theme }) => theme.FOREGROUND_TEXT};
-    border-color: ${({ theme }) => theme.FOREGROUND_TEXT};
+    color: ${({ theme }) => theme.FOREGROUND};
+    border-color: ${({ theme }) => theme.FOREGROUND};
     width: 100%;
     box-sizing: border-box;
     color-scheme: dark;
@@ -25,8 +25,8 @@ const Time = styled.input`
     padding: 0.5rem 1rem;
     background-color: transparent;
     font-weight: 700;
-    color: ${({ theme }) => theme.FOREGROUND_TEXT};
-    border-color: ${({ theme }) => theme.FOREGROUND_TEXT};
+    color: ${({ theme }) => theme.FOREGROUND};
+    border-color: ${({ theme }) => theme.FOREGROUND};
     width: 100%;
     box-sizing: border-box;
     color-scheme: dark;
@@ -35,14 +35,14 @@ const Time = styled.input`
 
 const Checkbox = styled.input`
     color-scheme: dark;
-    accent-color: ${({ theme }) => theme.FOREGROUND_TEXT};
+    accent-color: ${({ theme }) => theme.FOREGROUND};
 `
 
 const CheckboxLabel = styled.label`
     font-family: 'Comfortaa', cursive;
     font-size: 1rem;
     font-weight: 700;
-    color: ${({ theme }) => theme.ALERT_BUTTON};
+    color: ${({ theme }) => theme.WARNING};
     /* margin-left: 0.25rem; */
 `
 
@@ -53,8 +53,8 @@ const TextArea = styled.textarea`
     padding: 0.5rem 1rem;
     background-color: transparent;
     font-weight: 700;
-    color: ${({ theme }) => theme.FOREGROUND_TEXT};
-    border-color: ${({ theme }) => theme.FOREGROUND_TEXT};
+    color: ${({ theme }) => theme.FOREGROUND};
+    border-color: ${({ theme }) => theme.FOREGROUND};
     width: 100%;
     box-sizing: border-box;
 `
@@ -64,7 +64,7 @@ const Label = styled.label`
     font-size: 1rem;
     background-color: transparent;
     font-weight: 700;
-    color: ${({ theme }) => theme.ALERT_BUTTON};
+    color: ${({ theme }) => theme.WARNING};
     margin: 0.5rem 0;
 `
 
@@ -75,8 +75,8 @@ const Select = styled.select`
     padding: 0.5rem 1rem;
     background-color: transparent;
     font-weight: 700;
-    color: ${({ theme }) => theme.FOREGROUND_TEXT};
-    border-color: ${({ theme }) => theme.FOREGROUND_TEXT};
+    color: ${({ theme }) => theme.FOREGROUND};
+    border-color: ${({ theme }) => theme.FOREGROUND};
     width: 100%;
     box-sizing: border-box;
     color-scheme: dark;

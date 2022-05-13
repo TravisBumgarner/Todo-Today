@@ -17,8 +17,8 @@ type ConfirmationModalProps = {
 const ConfirmationModal = ({ title, body, confirmationCallback, cancelCallback, showModal, setShowModal }: ConfirmationModalProps) => {
     const Buttons = []
 
-    if (cancelCallback) Buttons.push(<Button key="cancel" variation="ALERT_BUTTON" onClick={cancelCallback}>Cancel</Button>)
-    if (confirmationCallback) Buttons.push(<Button key="confirm" variation="PRIMARY_BUTTON" onClick={confirmationCallback}>Continue</Button>)
+    if (cancelCallback) Buttons.push(<Button key="cancel" variation="WARNING" onClick={cancelCallback}>Cancel</Button>)
+    if (confirmationCallback) Buttons.push(<Button key="confirm" variation="INTERACTION" onClick={confirmationCallback}>Continue</Button>)
 
     return (
         <Modal

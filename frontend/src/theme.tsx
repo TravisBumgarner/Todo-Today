@@ -7,7 +7,7 @@ const GlobalStyle = createGlobalStyle<{theme: TColor}>`
         font-size: 16px;
         font-weight: 400;
         font-family: 'Roboto', sans-serif;
-        background-color: ${({ theme }) => theme.BACKGROUND_PRIMARY};
+        background-color: ${({ theme }) => theme.BACKGROUND};
         padding: 1em;
         max-width: 1200px;
         margin: 0px auto;

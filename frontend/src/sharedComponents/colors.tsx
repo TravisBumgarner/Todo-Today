@@ -1,33 +1,54 @@
 import { EColorTheme, TColor } from 'sharedTypes'
 
 const THEMES: Record<EColorTheme, TColor> = {
-    FIRE_AND_ICE: {
-        FOREGROUND_TEXT: '#7bc3ff',
-        PRIMARY_BUTTON: '#7bff7f',
-        ALERT_BUTTON: '#ff3f85',
-        FOREGROUND_DISABLED: '#767676',
-        BACKGROUND_PRIMARY: '#1b1b1b',
+    RETRO_FUTURE: {
+        FOREGROUND: '#7bc3ff',
+        INTERACTION: '#7bff7f',
+        WARNING: '#ff3f85',
+        DISABLED: '#767676',
+        BACKGROUND: '#1b1b1b',
     },
     NEWSPAPER: {
-        FOREGROUND_TEXT: '#ffffff',
-        PRIMARY_BUTTON: '#ffffff',
-        ALERT_BUTTON: '#aaaaaa',
-        FOREGROUND_DISABLED: '#767676',
-        BACKGROUND_PRIMARY: '#1b1b1b',
+        FOREGROUND: '#ffffff',
+        INTERACTION: '#ffffff',
+        WARNING: '#aaaaaa',
+        DISABLED: '#767676',
+        BACKGROUND: '#1b1b1b',
     },
     BEACH: {
-        FOREGROUND_TEXT: '#EEB868',
-        PRIMARY_BUTTON: '#49BEAA',
-        ALERT_BUTTON: '#EF767A',
-        FOREGROUND_DISABLED: '#d6d6d6',
-        BACKGROUND_PRIMARY: '#456990',
+        FOREGROUND: '#EEB868',
+        INTERACTION: '#49BEAA',
+        WARNING: '#EF767A',
+        DISABLED: '#d6d6d6',
+        BACKGROUND: '#456990',
     },
     SUNSET: {
-        FOREGROUND_TEXT: '#FCBF49',
-        PRIMARY_BUTTON: '#F77F00',
-        ALERT_BUTTON: '#D62828',
-        FOREGROUND_DISABLED: '#EAE2B7',
-        BACKGROUND_PRIMARY: '#003049',
+        FOREGROUND: '#FCBF49',
+        INTERACTION: '#F77F00',
+        WARNING: '#D62828',
+        DISABLED: '#EAE2B7',
+        BACKGROUND: '#003049',
+    },
+    UNDER_THE_SEA: {
+        FOREGROUND: '#81ffff',
+        INTERACTION: '#85FFC7',
+        WARNING: '#ffd552',
+        DISABLED: '#E6E6E6',
+        BACKGROUND: '#39393A',
+    },
+    OUTERSPACE: {
+        FOREGROUND: '#07BEB8',
+        INTERACTION: '#98DFEA',
+        WARNING: '#8F3985',
+        DISABLED: '#a0a0a0',
+        BACKGROUND: '#25283D',
+    },
+    SLATE: {
+        FOREGROUND: '#84828F',
+        INTERACTION: '#9491a7',
+        WARNING: '#536271',
+        DISABLED: '#3E4C5E',
+        BACKGROUND: '#2C3D55',
     }
 }
 
@@ -37,11 +58,11 @@ const THEMES: Record<EColorTheme, TColor> = {
 
 // const surpriseMe = () => {
 //     return {
-//         FOREGROUND_TEXT: randomColor(['#7bff7f', '#7bc3ff', '#ffcc7b']),
-//         PRIMARY_BUTTON: randomColor(['#7bff7f', '#7bc3ff', '#ffcc7b']),
-//         ALERT_BUTTON: randomColor(['#793fff', '#3ff9ff', '#ff553f']),
-//         FOREGROUND_DISABLED: randomColor(['#555555', '#23455a', '#632657']),
-//         BACKGROUND_PRIMARY: randomColor(['#1b1b1b', '#1b1b1b', '#1b1b1b']),
+//         FOREGROUND: randomColor(['#7bff7f', '#7bc3ff', '#ffcc7b']),
+//         INTERACTION: randomColor(['#7bff7f', '#7bc3ff', '#ffcc7b']),
+//         WARNING: randomColor(['#793fff', '#3ff9ff', '#ff553f']),
+//         DISABLED: randomColor(['#555555', '#23455a', '#632657']),
+//         BACKGROUND: randomColor(['#1b1b1b', '#1b1b1b', '#1b1b1b']),
 //     }
 
 // }

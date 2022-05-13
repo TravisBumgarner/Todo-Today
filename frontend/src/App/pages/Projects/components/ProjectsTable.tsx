@@ -38,7 +38,7 @@ const ProjectsTable = () => {
                             <Table.TableBodyCell>{formatDateDisplayString(dateFormat, endDate)}</Table.TableBodyCell>
                             <Table.TableBodyCell>
                                 <DropdownMenu title="Actions">{
-                                    [<Button fullWidth key="edit" variation="PRIMARY_BUTTON" onClick={() => setSelectedProjectId(id)}>Edit</Button>]
+                                    [<Button fullWidth key="edit" variation="INTERACTION" onClick={() => setSelectedProjectId(id)}>Edit</Button>]
                                 }
                                 </DropdownMenu>
 

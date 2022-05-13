@@ -21,13 +21,13 @@ const HeaderWrapper = styled.div`
 
     svg {
         cursor: pointer;
-        fill: ${({ theme }) => theme.FOREGROUND_TEXT};
+        fill: ${({ theme }) => theme.FOREGROUND};
         position: relative;
         right: -13px;
         top: -14px;
 
     &:hover {
-        fill: ${({ theme }) => theme.FOREGROUND_TEXT};
+        fill: ${({ theme }) => theme.FOREGROUND};
         }
     }
     `

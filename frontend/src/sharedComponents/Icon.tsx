@@ -14,7 +14,7 @@ const Button = styled.button`
     cursor: pointer;
 
     > span {
-        color: ${({ theme }) => theme.FOREGROUND_TEXT};
+        color: ${({ theme }) => theme.FOREGROUND};
     }
 `
 

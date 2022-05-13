@@ -74,18 +74,21 @@ type TReminder = {
 }
 
 enum EColorTheme {
-    FIRE_AND_ICE = 'FIRE_AND_ICE',
-    NEWSPAPER = 'NEWSPAPER',
     BEACH = 'BEACH',
-    SUNSET = 'SUNSET'
+    NEWSPAPER = 'NEWSPAPER',
+    OUTERSPACE = 'OUTERSPACE',
+    RETRO_FUTURE = 'RETRO_FUTURE',
+    SLATE = 'SLATE',
+    SUNSET = 'SUNSET',
+    UNDER_THE_SEA = 'UNDER_THE_SEA',
 }
 
 type TColor = {
-    FOREGROUND_TEXT: string,
-    PRIMARY_BUTTON: string,
-    ALERT_BUTTON: string
-    FOREGROUND_DISABLED: string
-    BACKGROUND_PRIMARY: string
+    FOREGROUND: string,
+    INTERACTION: string,
+    WARNING: string
+    DISABLED: string
+    BACKGROUND: string
 }
 
 type TSettings = {

@@ -36,7 +36,7 @@ const LabelInDisguise = styled.p`
     font-size: 1rem;
     background-color: transparent;
     font-weight: 700;
-    color: ${({ theme }) => theme.FOREGROUND_TEXT};
+    color: ${({ theme }) => theme.WARNING};
     margin: 0.5rem 0;
 `
 
@@ -135,8 +135,8 @@ const Reports = () => {
                 <div>
                     <LabelInDisguise>Quick Reports</LabelInDisguise>
                     <FiltersWrapper>
-                        <Button variation="PRIMARY_BUTTON" onClick={() => setQuickFilter(TQuickFilterOptions.THIS_WEEK)}>This Week</Button>
-                        <Button variation="PRIMARY_BUTTON" onClick={() => setQuickFilter(TQuickFilterOptions.LAST_WEEK)}>Last Week</Button>
+                        <Button variation="INTERACTION" onClick={() => setQuickFilter(TQuickFilterOptions.THIS_WEEK)}>This Week</Button>
+                        <Button variation="INTERACTION" onClick={() => setQuickFilter(TQuickFilterOptions.LAST_WEEK)}>Last Week</Button>
                     </FiltersWrapper>
 
                 </div>
