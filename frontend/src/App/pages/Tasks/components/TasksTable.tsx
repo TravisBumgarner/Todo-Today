@@ -1,7 +1,7 @@
 import React from 'react'
 
-import { Button, Heading, Table, DropdownMenu, BigBoxOfNothing, ButtonWrapper } from 'sharedComponents'
-import { TProject, TTask } from 'sharedTypes'
+import { Button, Heading, Table, DropdownMenu, BigBoxOfNothing, ButtonWrapper, LabelAndInput } from 'sharedComponents'
+import { ETaskStatus, TProject, TTask } from 'sharedTypes'
 import { projectStatusLookup } from 'utilities'
 import { EditTaskModal, AddTaskModal } from 'sharedModals'
 
@@ -13,6 +13,7 @@ type TasksTableProps = {
 const TasksTable = ({ tasks, project }: TasksTableProps) => {
     const [showAddTaskModal, setShowAddTaskModal] = React.useState<boolean>(false)
     const [selectedTaskId, setSelectedTaskId] = React.useState<string | null>(null)
+
 
     if (!tasks) {
         return <BigBoxOfNothing message="Create a task and then come back!" />
@@ -47,7 +48,7 @@ const TasksTable = ({ tasks, project }: TasksTableProps) => {
 
     return (
         <>
-            <Heading.H2>{project.title}</Heading.H2>
+            <Heading.H3>{project.title}</Heading.H3>
             {
 
                 tasks.length === 0

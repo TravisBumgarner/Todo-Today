@@ -4,5 +4,7 @@
 - [x] Need to clean up when fresh start with app
 - [x] Be able to mark tasks as complete from Todo List
 - [x] Refactor Modals to modals dir
-- [ ] Be able to edit tasks from Todo list
+- [x] Refactor edit task/project to just take in an ID
+- [x] Be able to edit tasks from Todo list
 - [ ] Be able to create new task from Todo List
+- [x] Add filters to Manage Tasks

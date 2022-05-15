@@ -18,7 +18,7 @@ const Filters = ({setStatusFilter, statusFilter}: FilterProps) => {
         <LabelAndInput 
             inputType='checkbox'
             name='projectfilter'
-            label='Filter Project Status'
+            label='Filter Projects By Status'
             handleChange={({checked, value}) => setStatusFilter(prev => {
                 const previousFilters = {...prev}
                 previousFilters[value as EProjectStatus] = checked
