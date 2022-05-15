@@ -6,7 +6,7 @@ import { formatDateDisplayString, projectStatusLookup } from 'utilities'
 import database from 'database'
 import { EProjectStatus, TProject } from 'sharedTypes'
 import { context } from 'Context'
-import EditProjectModal from './EditProjectModal'
+import {EditProjectModal} from 'sharedModals'
 
 type FilterProps = {
     setStatusFilter: React.Dispatch<React.SetStateAction<Record<EProjectStatus, boolean>>>

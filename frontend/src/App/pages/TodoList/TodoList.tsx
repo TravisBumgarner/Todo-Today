@@ -80,7 +80,6 @@ const TodoList = () => {
     if (isLoading) {
         return <Paragraph>One sec</Paragraph>
     }
-    console.log('todolist', todoListItems)
     return (
         <>
             <Heading.H2>{formatDateDisplayString(dateFormat, selectedDate)} {hoursWorkedSelectedDate}</Heading.H2>

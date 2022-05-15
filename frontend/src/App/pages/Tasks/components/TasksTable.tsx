@@ -3,8 +3,7 @@ import React from 'react'
 import { Button, Heading, Table, DropdownMenu, BigBoxOfNothing, ButtonWrapper } from 'sharedComponents'
 import { TProject, TTask } from 'sharedTypes'
 import { projectStatusLookup } from 'utilities'
-import EditTaskModal from './EditTaskModal'
-import AddTaskModal from './AddTaskModal'
+import { EditTaskModal, AddTaskModal } from 'sharedModals'
 
 type TasksTableProps = {
     tasks: TTask[] | null

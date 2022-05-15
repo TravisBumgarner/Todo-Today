@@ -1,0 +1,8 @@
+- [x] Project Should not be submittable if blank
+- [x] For Project - Start Date and End Date should be null at creation
+- [x] Add filter / sort to projects table
+- [x] Need to clean up when fresh start with app
+- [x] Be able to mark tasks as complete from Todo List
+- [x] Refactor Modals to modals dir
+- [ ] Be able to edit tasks from Todo list
+- [ ] Be able to create new task from Todo List

@@ -15,6 +15,7 @@
       "paths": {
         "*": ["src/types/*"],
         "sharedComponents": ["src/sharedComponents"],
+        "sharedModals": ["src/sharedModals"],
         "sharedTypes": ["src/sharedTypes.ts"],
         "theme": ["src/theme.tsx"],
         "utilities": ["src/utilities.ts"],
