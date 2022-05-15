@@ -17,7 +17,7 @@ const StyledNav = styled.ul`
 `
 
 const ALWAYS_VISIBLE_LINKS = [
-    { text: 'Todo List', to: '/' },
+    { text: 'Todo Today', to: '/' },
     { text: 'Manage Projects', to: '/projects' },
     { text: 'Manage Tasks', to: '/tasks' },
     { text: 'Reports', to: '/reports' },

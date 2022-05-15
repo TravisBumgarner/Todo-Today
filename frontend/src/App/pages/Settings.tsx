@@ -4,7 +4,7 @@ import styled from 'styled-components'
 
 import database from 'database'
 import { EColorTheme, EDateFormat, EDaysOfWeek, EBackupInterval } from 'sharedTypes'
-import { Paragraph, ConfirmationModal, Heading, LabelAndInput, Form, Modal, BigBoxOfNothing, Button, ButtonWrapper, Table, DropdownMenu } from 'sharedComponents'
+import { Paragraph, ConfirmationModal, Heading, LabelAndInput, Form, Modal, BigBoxOfNothing, Button, ButtonWrapper, Table, DropdownMenu, LabelInDisguise } from 'sharedComponents'
 import { dateFormatLookup, formatDurationDisplayString, dayOfWeekLabels, colorThemeOptionLabels, backupIntervalLookup, saveFile} from 'utilities'
 import { context } from 'Context'
 import { AddReminderIPC, BackupIPC } from '../../../../shared/types'
@@ -239,7 +239,7 @@ const Settings = () => {
                 />
             </Form>
             <div style={{ marginTop: "2rem" }}>
-                <FakeLabel>Schedule Reminders</FakeLabel>
+                <LabelInDisguise>Schedule Reminders</LabelInDisguise>
                 {state.reminders.length === 0
                     ? <BigBoxOfNothing message="No Reminders yet, click Add Reminder Below" />
                     : <RemindersTable />
