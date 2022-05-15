@@ -14,7 +14,7 @@ type FilterProps = {
 }
 
 const Filters = ({setStatusFilter, statusFilter}: FilterProps) => {
-    return <div>
+    return <div style={{margin: '2rem 0'}}>
         <LabelAndInput 
             inputType='checkbox'
             name='projectfilter'

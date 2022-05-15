@@ -2,10 +2,11 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import React from 'react'
 
 import { ETaskStatus, TProject, TTask } from 'sharedTypes'
-import { BigBoxOfNothing, Heading, LabelAndInput } from 'sharedComponents'
+import { BigBoxOfNothing, Button, ButtonWrapper, Heading, LabelAndInput } from 'sharedComponents'
 import { bucketTasksByProject, taskStatusLookup } from 'utilities'
 import database from 'database'
 import { TasksTable } from './components'
+import { EditTaskModal, AddTaskModal } from 'sharedModals'
 
 type FilterProps = {
     setStatusFilter: React.Dispatch<React.SetStateAction<Record<ETaskStatus, boolean>>>
@@ -13,7 +14,7 @@ type FilterProps = {
 }
 
 const Filters = ({ setStatusFilter, statusFilter }: FilterProps) => {
-    return <div>
+    return <div style={{margin: '2rem 0'}}>
         <LabelAndInput
             inputType='checkbox'
             name='projectfilter'
@@ -43,7 +44,7 @@ const Tasks = () => {
     const projects = useLiveQuery(() => database.projects.toArray())
     const tasks = useLiveQuery(() => database.tasks.toArray())
     const [statusFilter, setStatusFilter] = React.useState<Record<ETaskStatus, boolean>>(DEFAULT_STATUS_FILTER)
-
+    const [showAddTaskModal, setShowAddTaskModal] = React.useState<boolean>(false)
 
     if (!projects || !tasks) {
         return <BigBoxOfNothing message="Create a project and tasks and then come back!" />
@@ -51,8 +52,8 @@ const Tasks = () => {
 
     const filteredTasks = tasks.filter(({ status }) => statusFilter[status])
 
-    if (!filteredTasks) {
-        return <BigBoxOfNothing message="Too many filters applied!" />
+    if (filteredTasks.length === 0) {
+        
     }
 
     const tasksByProject = bucketTasksByProject(projects, filteredTasks)
@@ -65,8 +66,17 @@ const Tasks = () => {
 
     return <div>
         <Heading.H2>Tasks</Heading.H2>
+
+        <ButtonWrapper fullWidth={
+            <Button fullWidth key="edit" variation="INTERACTION" onClick={() => setShowAddTaskModal(true)}>Add Task</Button>
+        }
+        />
         <Filters statusFilter={statusFilter} setStatusFilter={setStatusFilter} />
-        {TasksByProject}
+        {filteredTasks.length === 0 
+            ?  <BigBoxOfNothing message="Too many filters applied!" />
+            : TasksByProject
+        }
+        <AddTaskModal showModal={showAddTaskModal} setShowModal={setShowAddTaskModal} />
     </div>
 }
 

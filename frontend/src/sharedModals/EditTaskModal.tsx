@@ -4,6 +4,7 @@ import { Button, Modal, ButtonWrapper, LabelAndInput, Form } from 'sharedCompone
 import { TProject, TTask, ETaskStatus } from 'sharedTypes'
 import { projectStatusLookup } from 'utilities'
 import database from 'database'
+import { useLiveQuery } from 'dexie-react-hooks'
 
 type EditTaskModalProps = {
     showModal: boolean
@@ -16,17 +17,19 @@ const EditTaskModal = ({ showModal, setShowModal, taskId }: EditTaskModalProps) 
     const [status, setStatus] = React.useState<ETaskStatus>(ETaskStatus.NEW)
     const [projectId, setProjectId] = React.useState<string>('')
     const [submitDisabled, setSubmitDisabled] = React.useState<boolean>(true)
-    const [isLoading, setIsLoading] = React.useState<boolean>(true)
+
+    const projects = useLiveQuery(async () => {
+        return await database.projects.toArray()
+    }, [])
 
     React.useEffect(() => {
         database
             .tasks.where('id').equals(taskId).first()
             .then(task => {
-                const {title, status, projectId} = task as TTask
+                const { title, status, projectId } = task as TTask
                 setTitle(title)
                 setProjectId(projectId)
                 setStatus(status)
-                setIsLoading(false)
             })
     }, [])
 
@@ -40,6 +43,10 @@ const EditTaskModal = ({ showModal, setShowModal, taskId }: EditTaskModalProps) 
         database.tasks.put(editedTask, [taskId])
         setShowModal(false)
     }
+
+    const projectSelectOptions = projects ? projects.map(({ id, title }) => ({ value: id, label: title })) : []
+    projectSelectOptions.unshift({ value: '', label: 'Select a Project' })
+
 
     return (
         <Modal
@@ -62,6 +69,14 @@ const EditTaskModal = ({ showModal, setShowModal, taskId }: EditTaskModalProps) 
                     optionLabels={projectStatusLookup}
                     inputType="select-enum"
                     handleChange={(newStatus: ETaskStatus) => setStatus(newStatus)}
+                />
+                <LabelAndInput
+                    name="project"
+                    value={projectId}
+                    options={projectSelectOptions}
+                    inputType="select-array"
+                    label="Project"
+                    handleChange={(value) => setProjectId(value)}
                 />
                 <ButtonWrapper right={
                     [

@@ -3,7 +3,7 @@ import React from 'react'
 import { Button, Heading, Table, DropdownMenu, BigBoxOfNothing, ButtonWrapper, LabelAndInput } from 'sharedComponents'
 import { ETaskStatus, TProject, TTask } from 'sharedTypes'
 import { projectStatusLookup } from 'utilities'
-import { EditTaskModal, AddTaskModal } from 'sharedModals'
+import { EditTaskModal } from 'sharedModals'
 
 type TasksTableProps = {
     tasks: TTask[] | null
@@ -11,7 +11,6 @@ type TasksTableProps = {
 }
 
 const TasksTable = ({ tasks, project }: TasksTableProps) => {
-    const [showAddTaskModal, setShowAddTaskModal] = React.useState<boolean>(false)
     const [selectedTaskId, setSelectedTaskId] = React.useState<string | null>(null)
 
 
@@ -55,12 +54,8 @@ const TasksTable = ({ tasks, project }: TasksTableProps) => {
                     ? (<BigBoxOfNothing message="Create a tasks and get going!" />)
                     : (TasksTableOnly)
             }
-            <ButtonWrapper fullWidth={
-                <Button fullWidth key="edit" variation="INTERACTION" onClick={() => setShowAddTaskModal(true)}>Add Task to {project.title}</Button>
-            }
-            />
 
-            <AddTaskModal showModal={showAddTaskModal} project={project} setShowModal={setShowAddTaskModal} />
+            
             {selectedTaskId
                 ? (
                     <EditTaskModal
