@@ -9,7 +9,7 @@ import Theme from 'theme'
 import { ConfirmationModal } from 'sharedComponents'
 import { Navigation, Router, Header } from './components'
 import THEMES from '../sharedComponents/colors'
-import { automatedBackup } from './pages/Backups'
+import { automatedBackup } from './pages/Settings'
 
 const ModalBackground = styled.div`
     display: flex;

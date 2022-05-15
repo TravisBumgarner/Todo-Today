@@ -1,7 +1,7 @@
 import moment from 'moment'
 
 const { ipcRenderer } = window.require('electron')
-import { EDateFormat, TProject, EProjectStatus, TTask, TDateISODate, ETaskStatus, EDaysOfWeek, EColorTheme } from 'sharedTypes'
+import { EDateFormat, TProject, EProjectStatus, TTask, TDateISODate, ETaskStatus, EDaysOfWeek, EColorTheme, EBackupInterval } from 'sharedTypes'
 import { NotificationIPC } from '../../shared/types'
 
 const projectStatusLookup: Record<EProjectStatus, string> = {
@@ -9,6 +9,14 @@ const projectStatusLookup: Record<EProjectStatus, string> = {
     [EProjectStatus.COMPLETED]: 'Completed',
     [EProjectStatus.IN_PROGRESS]: 'In Progress',
     [EProjectStatus.NEW]: 'New'
+}
+
+const backupIntervalLookup: Record<EBackupInterval, string> = {
+    [EBackupInterval.HOURLY]: 'Hourly',
+    [EBackupInterval.DAILY]: 'Daily',
+    [EBackupInterval.WEEKLY]: 'Weekly',
+    [EBackupInterval.MONTHLY]: 'Monthly',
+    [EBackupInterval.OFF]: 'Off',
 }
 
 const taskStatusLookup: Record<ETaskStatus, string> = {
@@ -107,6 +115,7 @@ export {
     dateFormatLookup,
     dayOfWeekLabels,
     colorThemeOptionLabels,
+    backupIntervalLookup,
     sumArray,
     saveFile,
     sendNotification

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Routes, Route } from 'react-router'
 
-import { Projects, TodoList, Tasks, Settings, Reports, Backups, Error } from '../pages'
+import { Projects, TodoList, Tasks, Settings, Reports, Error } from '../pages'
 
 const Router = () => {
     return (
@@ -25,10 +25,6 @@ const Router = () => {
             <Route
                 path="/error"
                 element={<Error />}
-            />
-            <Route
-                path="/backups"
-                element={<Backups />}
             />
             <Route
                 path="/*"
