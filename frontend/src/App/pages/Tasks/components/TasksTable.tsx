@@ -65,8 +65,7 @@ const TasksTable = ({ tasks, project }: TasksTableProps) => {
                     <EditTaskModal
                         showModal={selectedTaskId !== null}
                         setShowModal={() => setSelectedTaskId(null)}
-                        task={tasks.find(({ id }) => selectedTaskId === id) as TTask}
-                        project={project}
+                        taskId={selectedTaskId}
                     />
                 )
                 : (null)}

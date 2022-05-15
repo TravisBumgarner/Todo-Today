@@ -83,7 +83,7 @@ const ProjectsTable = () => {
                     <EditProjectModal
                         showModal={selectedProjectId !== null}
                         setShowModal={() => setSelectedProjectId(null)}
-                        project={projects.find(({ id }) => selectedProjectId === id) as TProject}
+                        projectId={selectedProjectId}
                     />
                 )
                 : (null)}
