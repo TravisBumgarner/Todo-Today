@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import { transparentize } from 'polished'
 
 import { TColor } from 'sharedTypes'
 
@@ -10,6 +11,7 @@ const Table = styled.table`
     width: 100%;
     border: 2px solid ${({ theme }) => theme.INTERACTION};
     table-layout: fixed;
+    background-color: ${({ theme }) => transparentize(0.9, theme.INTERACTION)};
 `
 
 const TableHeader = styled.thead`
@@ -21,20 +23,10 @@ const TableBody = styled.tbody`
 `
 
 const TableRow = styled.tr`
-    padding: 10px;
-
-    &:nth-child(2n+1){
-        background-color: ${({ theme }) => theme.BACKGROUND};   
-    }
-
-    &:nth-child(2n){
-        background-color: ${({ theme }) => theme.BACKGROUND};   
-    }
-    
+    padding: 10px;    
 `
 
 const TableHeaderCell = styled.th<{theme: TColor, width?: string, minWidth?: string}>`
-    background-color: ${({ theme }) => theme.BACKGROUND};
     color: ${({ theme }) => theme.INTERACTION}; 
     border-bottom: 2px solid ${({ theme }) => theme.INTERACTION};
     padding: 10px;

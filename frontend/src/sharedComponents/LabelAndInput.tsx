@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import React from 'react'
+import { transparentize } from 'polished'
 
 import { TEnumType } from 'sharedTypes'
 
@@ -12,21 +13,7 @@ const Input = styled.input`
     font-weight: 700;
     color: ${({ theme }) => theme.FOREGROUND};
     border-color: ${({ theme }) => theme.FOREGROUND};
-    width: 100%;
-    box-sizing: border-box;
-    color-scheme: dark;
-    height: 40px;
-`
-
-const Time = styled.input`
-    font-family: 'Comfortaa', cursive;
-    font-size: 1rem;
-    border: 2px solid;
-    padding: 0.5rem 1rem;
-    background-color: transparent;
-    font-weight: 700;
-    color: ${({ theme }) => theme.FOREGROUND};
-    border-color: ${({ theme }) => theme.FOREGROUND};
+    background-color: ${({ theme }) => transparentize(0.9, theme.FOREGROUND)};
     width: 100%;
     box-sizing: border-box;
     color-scheme: dark;
@@ -37,6 +24,7 @@ const CheckboxWrapper = styled.div`
     flex-direction: row;
     border: 2px solid;
     border-color: ${({ theme }) => theme.FOREGROUND};
+    background-color: ${({ theme }) => transparentize(0.9, theme.FOREGROUND)};
     padding: 0.5rem 1rem;
 
     div {
@@ -69,6 +57,7 @@ const TextArea = styled.textarea`
     border-color: ${({ theme }) => theme.FOREGROUND};
     width: 100%;
     box-sizing: border-box;
+    background-color: ${({ theme }) => transparentize(0.9, theme.FOREGROUND)};
 `
 
 const Label = styled.label`
@@ -92,6 +81,7 @@ const Select = styled.select`
     width: 100%;
     box-sizing: border-box;
     color-scheme: dark;
+    background-color: ${({ theme }) => transparentize(0.9, theme.FOREGROUND)};
 `
 
 const LabelAndInputWrapper = styled.div`
