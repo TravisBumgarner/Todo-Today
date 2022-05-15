@@ -3,10 +3,10 @@ import moment from 'moment'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { v4 as uuid4 } from 'uuid'
 
-import { Button, ButtonWrapper, ConfirmationModal, Heading } from 'sharedComponents'
+import { BigBoxOfNothing, Button, ButtonWrapper, ConfirmationModal, Heading, Paragraph } from 'sharedComponents'
 import { formatDateDisplayString, formatDateKeyLookup, formatDurationDisplayString, sumArray } from 'utilities'
 import database from 'database'
-import { TDateISODate } from 'sharedTypes'
+import { ETaskStatus, TDateISODate } from 'sharedTypes'
 import { context } from 'Context'
 import { TodoListTable, ManageTodoListItemsModal } from './components'
 
@@ -15,6 +15,19 @@ const TodoList = () => {
     const [showManagementModal, setShowManagementModal] = React.useState<boolean>(false)
     const [showNothingToCopyModal, setShowNothingToCopyModal] = React.useState<boolean>(false)
     const { state: { dateFormat } } = React.useContext(context)
+    const [isLoading, setIsLoading] = React.useState<boolean>(true)
+    const [taskCount, setTaskCount] = React.useState<number>(0)
+
+    React.useEffect(() => {
+        const fetch = async () => {
+            const tasks = await database.tasks.toArray()
+            setTaskCount(tasks ? tasks.length : 0)
+            setIsLoading(false)
+        }
+        fetch()
+    }, [])
+
+
 
     const todoListItems = useLiveQuery(
         () => database
@@ -40,11 +53,12 @@ const TodoList = () => {
     const getPreviousDatesTasks = async () => {
         const previousDay = await database
             .todoListItems
-            .where('todoListDate')
-            .equals(formatDateKeyLookup(moment(selectedDate).subtract(1, 'days')))
+            .where({
+                todoListDate: formatDateKeyLookup(moment(selectedDate).subtract(1, 'days'))
+            })
             .toArray()
 
-        if(previousDay.length === 0 ){
+        if (previousDay.length === 0) {
             setShowNothingToCopyModal(true)
         } else (
             previousDay.map(async ({ projectId, taskId }) => {
@@ -57,15 +71,15 @@ const TodoList = () => {
                 })
             })
         )
-
-       
-
     }
 
     const hoursWorkedSelectedDate = todoListItems
         ? `(${formatDurationDisplayString(sumArray(todoListItems.map(({ duration }) => duration)))} Worked)`
         : ''
 
+    if (isLoading) {
+        return <Paragraph>One sec</Paragraph>
+    }
     return (
         <>
             <Heading.H2>{formatDateDisplayString(dateFormat, selectedDate)} {hoursWorkedSelectedDate}</Heading.H2>
@@ -79,8 +93,12 @@ const TodoList = () => {
                     <Button key="next" onClick={getNextDate} variation="INTERACTION">&gt;</Button>,
                 ]}
             />
-            <TodoListTable todoListItems={todoListItems} selectedDate={selectedDate} />
-            <Button key="manage" fullWidth onClick={() => setShowManagementModal(true)} variation="INTERACTION">Add Tasks</Button>
+            {taskCount > 0
+                ? <TodoListTable todoListItems={todoListItems} selectedDate={selectedDate} />
+                : <BigBoxOfNothing message="Go create some projects and tasks and come back!" />
+
+            }
+            <Button key="manage" disabled={taskCount === 0} fullWidth onClick={() => setShowManagementModal(true)} variation="INTERACTION">Add Tasks</Button>
             <ManageTodoListItemsModal selectedDate={selectedDate} showModal={showManagementModal} setShowModal={setShowManagementModal} />
             <ConfirmationModal
                 body="It looks like there's nothing to copy from yesterday."

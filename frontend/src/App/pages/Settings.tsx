@@ -2,14 +2,53 @@ import React from 'react'
 import moment, { Moment } from 'moment'
 import styled from 'styled-components'
 
-import { EColorTheme, EDateFormat, TSettings, EDaysOfWeek } from 'sharedTypes'
-import { Heading, LabelAndInput, Form, Modal, BigBoxOfNothing, Button, ButtonWrapper, Table, DropdownMenu } from 'sharedComponents'
-import { dateFormatLookup, formatDurationDisplayString } from 'utilities'
+import database from 'database'
+import { EColorTheme, EDateFormat, EDaysOfWeek, EBackupInterval } from 'sharedTypes'
+import { Paragraph, ConfirmationModal, Heading, LabelAndInput, Form, Modal, BigBoxOfNothing, Button, ButtonWrapper, Table, DropdownMenu } from 'sharedComponents'
+import { dateFormatLookup, formatDurationDisplayString, dayOfWeekLabels, colorThemeOptionLabels, backupIntervalLookup, saveFile} from 'utilities'
 import { context } from 'Context'
-import { AddReminderIPC } from '../../../../shared/types'
+import { AddReminderIPC, BackupIPC } from '../../../../shared/types'
 
 const { ipcRenderer } = window.require('electron')
 
+const createBackup = async () => {
+    const data = {
+        projects: await database.projects.toArray(),
+        tasks: await database.tasks.toArray(),
+        todoListItems: await database.todoListItems.toArray(),
+    }
+    return data
+}
+
+const automatedBackup = (showAutomatedBackupFailedModal: React.Dispatch<React.SetStateAction<boolean>>) => {
+    const backupInterval = localStorage.getItem('backupInterval') as EBackupInterval
+    if (backupInterval === EBackupInterval.OFF) {
+        return
+    }
+    const lastBackup = localStorage.getItem('lastBackup')
+    const backupIntervalLookup = {
+        [EBackupInterval.HOURLY]: 1,
+        [EBackupInterval.DAILY]: 24,
+        [EBackupInterval.WEEKLY]: 24 * 7,
+        [EBackupInterval.MONTHLY]: 24 * 30
+    }
+
+    const lastBackupThreshold = moment().subtract(backupIntervalLookup[backupInterval], 'hours')
+
+    if (!lastBackup || moment(lastBackup) < lastBackupThreshold) {
+        createBackup().then(async (data) => {
+            const response = await ipcRenderer.invoke(
+                'backup',
+                { filename: `${moment().toISOString()}.json`, data: JSON.stringify(data) } as BackupIPC
+            )
+            if (response.isSuccess === true) {
+                localStorage.setItem('lastBackup', moment().toString())
+            } else {
+                showAutomatedBackupFailedModal(true)
+            }
+        })
+    }
+}
 
 const dateFormatForUser = (format: EDateFormat, date: Moment) => {
     return {
@@ -20,31 +59,11 @@ const dateFormatForUser = (format: EDateFormat, date: Moment) => {
     }[format]
 }
 
-const dayOfWeekLabels: Record<EDaysOfWeek, string> = {
-    [EDaysOfWeek.SUNDAY]: 'Sunday',
-    [EDaysOfWeek.MONDAY]: 'Monday',
-    [EDaysOfWeek.TUESDAY]: 'Tuesday',
-    [EDaysOfWeek.WEDNESDAY]: 'Wednesday',
-    [EDaysOfWeek.THURSDAY]: 'Thursday',
-    [EDaysOfWeek.FRIDAY]: 'Friday',
-    [EDaysOfWeek.SATURDAY]: 'Saturday',
-}
-
 const dateFormatOptionLabels: Record<EDateFormat, string> = {
     [EDateFormat.A]: dateFormatForUser(EDateFormat.A, moment()),
     [EDateFormat.B]: dateFormatForUser(EDateFormat.B, moment()),
     [EDateFormat.C]: dateFormatForUser(EDateFormat.C, moment()),
     [EDateFormat.D]: dateFormatForUser(EDateFormat.D, moment()),
-}
-
-const colorThemeOptionLabels: Record<EColorTheme, string> = {
-    [EColorTheme.BEACH]: 'Beach',
-    [EColorTheme.NEWSPAPER]: 'Newspaper',
-    [EColorTheme.OUTERSPACE]: 'Outerspace',
-    [EColorTheme.RETRO_FUTURE]: 'Retro Future',
-    [EColorTheme.SLATE]: 'Slate',
-    [EColorTheme.SUNSET]: 'Sunset',
-    [EColorTheme.UNDER_THE_SEA]: 'Under the Sea',
 }
 
 type ScheduleMakerModalProps = {
@@ -149,14 +168,56 @@ const FakeLabel = styled.p`
 
 const Settings = () => {
     const { state, dispatch } = React.useContext(context)
-    const [showModal, setShowModal] = React.useState<boolean>(false)
+    const [showScheduleMakerModal, setShowScheduleMakerModal] = React.useState<boolean>(false)
+    const [restore, setRestore] = React.useState<File | null>(null)
+    const [showRestoreConfirmModal, setShowRestoreConfirmModal] = React.useState<boolean>(false)
+    const [showNoDataModal, setShowNoDataModal] = React.useState<boolean>(false)
+    const [showInvalidBackupModal, setShowInvalidBackupModal] = React.useState<boolean>(false)
 
-    const handleSubmit = ({key, value}: {key: string, value: string}) => {
-        dispatch({ type: 'EDIT_USER_SETTING', payload: {key, value} })
+    const handleBackup = () => {
+        const data = createBackup()
+        if (!data) {
+            setShowNoDataModal(true)
+        } else {
+            saveFile(`${moment().toISOString()}.json`, data)
+        }
+    }
+
+    const handleRestore = () => {
+        if (restore) {
+            const reader = new FileReader()
+            reader.readAsText(restore, 'UTF-8')
+            reader.onload = async function (event) {
+                if (event.target && event.target.result) {
+                    const newStore = JSON.parse(event.target.result as string)
+
+                    await Promise.all([
+                        database.projects.clear(),
+                        database.tasks.clear(),
+                        database.todoListItems.clear(),
+                    ])
+
+                    await Promise.all([
+                        database.projects.bulkAdd(newStore.projects),
+                        database.tasks.bulkAdd(newStore.tasks),
+                        database.todoListItems.bulkAdd(newStore.todoListItems)
+                    ])
+                    setRestore(null)
+                } else {
+                    setShowInvalidBackupModal(true)
+                }
+            }
+        }
+        setShowRestoreConfirmModal(false)
+    }
+
+
+    const handleSubmit = ({ key, value }: { key: string, value: string }) => {
+        dispatch({ type: 'EDIT_USER_SETTING', payload: { key, value } })
     }
     return (
         <>
-            <Heading.H2>Settings</Heading.H2>
+            <Heading.H2>User Preferences</Heading.H2>
             <Form>
                 <LabelAndInput
                     inputType="select-enum"
@@ -183,11 +244,80 @@ const Settings = () => {
                     ? <BigBoxOfNothing message="No Reminders yet, click Add Reminder Below" />
                     : <RemindersTable />
                 }
-                <Button key="addSchedule" fullWidth onClick={() => setShowModal(true)} variation="INTERACTION">Add Reminder</Button>
+                <Button key="addSchedule" fullWidth onClick={() => setShowScheduleMakerModal(true)} variation="INTERACTION">Add Reminder</Button>
             </div>
-            <ScheduleMakerModal setShowModal={setShowModal} showModal={showModal} />
+            <ScheduleMakerModal setShowModal={setShowScheduleMakerModal} showModal={showScheduleMakerModal} />
+            <div>
+                <Heading.H2>Backups</Heading.H2>
+                <Heading.H3>Manual Backup</Heading.H3>
+                <Paragraph>Create a copy of the entire database.</Paragraph>
+                <ButtonWrapper fullWidth={<Button onClick={() => handleBackup()} fullWidth variation="INTERACTION">Backup</Button>} />
+
+                <Heading.H3>
+                    Automated Backup
+                </Heading.H3>
+                <LabelAndInput
+                    inputType="select-enum"
+                    name="weekStart"
+                    label={`How often would you like automated backups to run? (Last Backup: ${localStorage.getItem('lastBackup')})`}
+                    value={state.backupInterval}
+                    handleChange={(value: EBackupInterval) => dispatch({ type: 'EDIT_USER_SETTING', payload: { key: 'backupInterval', value } })}
+                    options={EBackupInterval}
+                    optionLabels={backupIntervalLookup}
+                />
+                <Heading.H3>Restore</Heading.H3>
+                <Form>
+                    <LabelAndInput handleChange={(file) => setRestore(file)} label="Restore database with a backup copy." name="file" inputType="file" />
+                    <ButtonWrapper
+                        fullWidth={(
+                            <Button
+                                disabled={!restore}
+                                onClick={() => setShowRestoreConfirmModal(true)}
+                                fullWidth
+                                variation="INTERACTION"
+                            >
+                                Restore from Backup
+                            </Button>
+                        )}
+                    />
+                </Form>
+                <Modal
+                    contentLabel="Restore?"
+                    showModal={showRestoreConfirmModal}
+                    closeModal={() => setShowRestoreConfirmModal(false)}
+                >
+                    <Paragraph>If you have data you have not created a backup for, please do that first.</Paragraph>
+                    <Paragraph>Clicking restore will erase everything currently stored in the application.</Paragraph>
+                    <ButtonWrapper
+                        right={[
+                            <Button
+                                key="cancel"
+                                variation="INTERACTION"
+                                onClick={() => setShowRestoreConfirmModal(false)}
+                            >Cancel
+                            </Button>,
+                            <Button key="restore" variation="WARNING" onClick={() => handleRestore()}>Restore</Button>
+                        ]}
+                    />
+                </Modal>
+                <ConfirmationModal
+                    body="There is no data to backup."
+                    title="Heads Up!"
+                    confirmationCallback={() => setShowNoDataModal(false)}
+                    showModal={showNoDataModal}
+                    setShowModal={setShowNoDataModal}
+                />
+                <ConfirmationModal
+                    body="That backup is invalid."
+                    title="Heads Up!"
+                    confirmationCallback={() => setShowInvalidBackupModal(false)}
+                    showModal={showInvalidBackupModal}
+                    setShowModal={setShowInvalidBackupModal}
+                />
+            </div>
         </>
     )
 }
 
 export default Settings
+export { automatedBackup }

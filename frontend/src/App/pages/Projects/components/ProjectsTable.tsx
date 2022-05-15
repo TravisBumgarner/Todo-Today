@@ -1,24 +1,55 @@
 import React from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
 
-import { BigBoxOfNothing, Button, DropdownMenu, Table } from 'sharedComponents'
+import { BigBoxOfNothing, Button, DropdownMenu, LabelAndInput, Paragraph, Table } from 'sharedComponents'
 import { formatDateDisplayString, projectStatusLookup } from 'utilities'
 import database from 'database'
-import { TProject } from 'sharedTypes'
+import { EProjectStatus, TProject } from 'sharedTypes'
 import { context } from 'Context'
-import EditProjectModal from './EditProjectModal'
+import {EditProjectModal} from 'sharedModals'
+
+type FilterProps = {
+    setStatusFilter: React.Dispatch<React.SetStateAction<Record<EProjectStatus, boolean>>>
+    statusFilter: Record<EProjectStatus, boolean>
+}
+
+const Filters = ({setStatusFilter, statusFilter}: FilterProps) => {
+    return <div style={{margin: '2rem 0'}}>
+        <LabelAndInput 
+            inputType='checkbox'
+            name='projectfilter'
+            label='Filter Projects By Status'
+            handleChange={({checked, value}) => setStatusFilter(prev => {
+                const previousFilters = {...prev}
+                previousFilters[value as EProjectStatus] = checked
+                return previousFilters
+            })}
+            options = {
+                Object.values(EProjectStatus).map(status => ({
+                    label: projectStatusLookup[status],
+                    value: status,
+                    checked: statusFilter[status],
+                    name: status
+                }))
+            }
+
+        />
+    </div>
+}
+
+const DEFAULT_STATUS_FILTER = {[EProjectStatus.NEW]: true, [EProjectStatus.IN_PROGRESS]: true, [EProjectStatus.CANCELED]: false, [EProjectStatus.COMPLETED]: false}
 
 const ProjectsTable = () => {
     const projects = useLiveQuery(() => database.projects.toArray())
     const [selectedProjectId, setSelectedProjectId] = React.useState<string | null>(null)
     const { state: { dateFormat } } = React.useContext(context)
-
+    const [statusFilter, setStatusFilter] = React.useState<Record<EProjectStatus, boolean>>(DEFAULT_STATUS_FILTER)
     if (!projects || projects.length === 0) {
         return <BigBoxOfNothing message="Create a project and get going!" />
     }
-
     return (
-        <>
+        <> 
+            <Filters statusFilter={statusFilter} setStatusFilter={setStatusFilter} />
             <Table.Table>
                 <Table.TableHeader>
                     <Table.TableRow>
@@ -30,7 +61,7 @@ const ProjectsTable = () => {
                     </Table.TableRow>
                 </Table.TableHeader>
                 <Table.TableBody>
-                    {projects.map(({ title, status, startDate, endDate, id }) => (
+                    {projects.filter(({status}) => statusFilter[status]).map(({ title, status, startDate, endDate, id }) => (
                         <Table.TableRow key={id}>
                             <Table.TableBodyCell>{title}</Table.TableBodyCell>
                             <Table.TableBodyCell>{projectStatusLookup[status]}</Table.TableBodyCell>
@@ -52,7 +83,7 @@ const ProjectsTable = () => {
                     <EditProjectModal
                         showModal={selectedProjectId !== null}
                         setShowModal={() => setSelectedProjectId(null)}
-                        project={projects.find(({ id }) => selectedProjectId === id) as TProject}
+                        projectId={selectedProjectId}
                     />
                 )
                 : (null)}

@@ -1,7 +1,7 @@
 import moment from 'moment'
 
 const { ipcRenderer } = window.require('electron')
-import { EDateFormat, TProject, EProjectStatus, TTask, TDateISODate, ETaskStatus } from 'sharedTypes'
+import { EDateFormat, TProject, EProjectStatus, TTask, TDateISODate, ETaskStatus, EDaysOfWeek, EColorTheme, EBackupInterval } from 'sharedTypes'
 import { NotificationIPC } from '../../shared/types'
 
 const projectStatusLookup: Record<EProjectStatus, string> = {
@@ -11,11 +11,39 @@ const projectStatusLookup: Record<EProjectStatus, string> = {
     [EProjectStatus.NEW]: 'New'
 }
 
+const backupIntervalLookup: Record<EBackupInterval, string> = {
+    [EBackupInterval.HOURLY]: 'Hourly',
+    [EBackupInterval.DAILY]: 'Daily',
+    [EBackupInterval.WEEKLY]: 'Weekly',
+    [EBackupInterval.MONTHLY]: 'Monthly',
+    [EBackupInterval.OFF]: 'Off',
+}
+
 const taskStatusLookup: Record<ETaskStatus, string> = {
     [ETaskStatus.CANCELED]: 'Canceled',
     [ETaskStatus.COMPLETED]: 'Completed',
     [ETaskStatus.IN_PROGRESS]: 'In Progress',
     [ETaskStatus.NEW]: 'New'
+}
+
+const dayOfWeekLabels: Record<EDaysOfWeek, string> = {
+    [EDaysOfWeek.SUNDAY]: 'Sunday',
+    [EDaysOfWeek.MONDAY]: 'Monday',
+    [EDaysOfWeek.TUESDAY]: 'Tuesday',
+    [EDaysOfWeek.WEDNESDAY]: 'Wednesday',
+    [EDaysOfWeek.THURSDAY]: 'Thursday',
+    [EDaysOfWeek.FRIDAY]: 'Friday',
+    [EDaysOfWeek.SATURDAY]: 'Saturday',
+}
+
+const colorThemeOptionLabels: Record<EColorTheme, string> = {
+    [EColorTheme.BEACH]: 'Beach',
+    [EColorTheme.NEWSPAPER]: 'Newspaper',
+    [EColorTheme.OUTERSPACE]: 'Outerspace',
+    [EColorTheme.RETRO_FUTURE]: 'Retro Future',
+    [EColorTheme.SLATE]: 'Slate',
+    [EColorTheme.SUNSET]: 'Sunset',
+    [EColorTheme.UNDER_THE_SEA]: 'Under the Sea',
 }
 
 const dateFormatLookup = {
@@ -85,6 +113,9 @@ export {
     formatDurationDisplayString,
     bucketTasksByProject,
     dateFormatLookup,
+    dayOfWeekLabels,
+    colorThemeOptionLabels,
+    backupIntervalLookup,
     sumArray,
     saveFile,
     sendNotification

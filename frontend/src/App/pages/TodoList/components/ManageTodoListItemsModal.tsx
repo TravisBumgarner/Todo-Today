@@ -41,8 +41,9 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
     const { state: { dateFormat } } = React.useContext(context)
 
     if (!tasks || !tasks.length || !projects || !projects.length) {
-        return <BigBoxOfNothing message="Go create some tasks and/or projects and come back!" />
+        return <></>
     }
+    
     const tasksByProjectId = getTasksByProjectId('projectId', tasks)
     const taskIdsToTodoListIds = getTaskIdsToTodoListIds(todoListItems || [])
 
@@ -59,7 +60,6 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
     const handleRemove = async (todoListItemId: string) => {
         await database.todoListItems.where({ id: todoListItemId }).delete()
     }
-
     return (
         <Modal
             contentLabel={`Add ${formatDateDisplayString(dateFormat, selectedDate)}'s Tasks`}
@@ -70,7 +70,7 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
                 <Paragraph>Select tasks to add to the todo list.</Paragraph>
                 {
                     projects.map(({ title, id: projectId }) => {
-                        const tasksByProject = tasksByProjectId[projectId].length ? tasksByProjectId[projectId] : []
+                        const tasksByProject = tasksByProjectId[projectId] && tasksByProjectId[projectId].length ? tasksByProjectId[projectId] : []
                         if (!tasksByProject.length) return null
                         return (
                             <div key={projectId}>
