@@ -14,7 +14,7 @@ type FilterProps = {
 }
 
 const Filters = ({ setStatusFilter, statusFilter }: FilterProps) => {
-    return <div style={{margin: '2rem 0'}}>
+    return <div style={{margin: '1rem 0'}}>
         <LabelAndInput
             inputType='checkbox'
             name='projectfilter'
@@ -51,10 +51,6 @@ const Tasks = () => {
     }
 
     const filteredTasks = tasks.filter(({ status }) => statusFilter[status])
-
-    if (filteredTasks.length === 0) {
-        
-    }
 
     const tasksByProject = bucketTasksByProject(projects, filteredTasks)
 

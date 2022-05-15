@@ -114,6 +114,7 @@ const Reports = () => {
 
     return (
         <>
+            <Heading.H2>Reports</Heading.H2>
             <FilterWrapper>
                 <div>
                     <LabelAndInput
@@ -140,8 +141,8 @@ const Reports = () => {
                     </FiltersWrapper>
 
                 </div>
+
             </FilterWrapper>
-            <Heading.H2>Reports</Heading.H2>
             {
                 !filteredTodoListItems || !filteredTodoListItems.length
                     ? <BigBoxOfNothing message="No data exists for these dates." />
