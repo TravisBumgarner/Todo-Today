@@ -2,12 +2,12 @@ import React from 'react'
 import moment from 'moment'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { v4 as uuid4 } from 'uuid'
+import styled from 'styled-components'
 
 import { BigBoxOfNothing, Button, ButtonWrapper, ConfirmationModal, Heading, Paragraph } from 'sharedComponents'
-import { formatDateDisplayString, formatDateKeyLookup, formatDurationDisplayString, sumArray } from 'utilities'
+import { formatDateKeyLookup } from 'utilities'
 import database from 'database'
-import { ETaskStatus, TDateISODate } from 'sharedTypes'
-import { context } from 'Context'
+import { TDateISODate } from 'sharedTypes'
 import { TodoListTable, ManageTodoListItemsModal } from './'
 
 type TodoListProps = {
@@ -39,9 +39,7 @@ const TodoList = ({ selectedDate }: TodoListProps) => {
         [selectedDate]
     )
 
-    const hoursWorkedSelectedDate = todoListItems
-        ? `(${formatDurationDisplayString(sumArray(todoListItems.map(({ duration }) => duration)))} Worked)`
-        : ''
+
 
 
     const getPreviousDatesTasks = async () => {
@@ -74,14 +72,16 @@ const TodoList = ({ selectedDate }: TodoListProps) => {
     }
     return (
         <>
-            <Heading.H3>Todo List {hoursWorkedSelectedDate}</Heading.H3>
-            <ButtonWrapper
-                left={[
-                    <Button key="today" disabled={todoListItems && todoListItems.length > 0} onClick={getPreviousDatesTasks} variation="INTERACTION">Copy Yesterday</Button>,
-                    <Button key="manage" disabled={taskCount === 0} onClick={() => setShowManagementModal(true)} variation="INTERACTION">Manage Tasks</Button>,            
-                    <Button key="add" onClick={() => console.log('add')} variation="INTERACTION">Add New Task</Button>               
-                ]}
-            />
+            <Heading.H3>Todo List</Heading.H3>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <ButtonWrapper
+                    left={[
+                        <Button key="today" disabled={todoListItems && todoListItems.length > 0} onClick={getPreviousDatesTasks} variation="INTERACTION">Copy Yesterday</Button>,
+                        <Button key="manage" disabled={taskCount === 0} onClick={() => setShowManagementModal(true)} variation="INTERACTION">Manage Tasks</Button>,
+                        <Button key="add" onClick={() => console.log('add')} variation="INTERACTION">Add New Task</Button>
+                    ]}
+                />
+            </div>
             {taskCount > 0
                 ? <TodoListTable todoListItems={todoListItems} selectedDate={selectedDate} />
                 : <BigBoxOfNothing message="Go create some projects and tasks and come back!" />

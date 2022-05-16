@@ -3,7 +3,7 @@ import moment from 'moment'
 
 import { TodoList, Successes } from './components'
 import { Heading, Button, ButtonWrapper } from 'sharedComponents'
-import { formatDateDisplayString, formatDateKeyLookup, formatDurationDisplayString, sumArray } from 'utilities'
+import { formatDateDisplayString, formatDateKeyLookup } from 'utilities'
 import { TDateISODate } from 'sharedTypes'
 import { context } from 'Context'
 
@@ -29,13 +29,13 @@ const Today = () => {
     return (
         <>
             <Heading.H2>{formatDateDisplayString(dateFormat, selectedDate)}</Heading.H2>
-            <ButtonWrapper
-                left={[
-                    <Button key="today" onClick={getToday} variation="INTERACTION">Today</Button>,
-                    <Button key="previous" onClick={setPreviousDate} variation="INTERACTION">&lt;</Button>,
-                    <Button key="next" onClick={getNextDate} variation="INTERACTION">&gt;</Button>,
-                ]}
-            />
+                <ButtonWrapper
+                    left={[
+                        <Button key="today" onClick={getToday} variation="INTERACTION">Today</Button>,
+                        <Button key="previous" onClick={setPreviousDate} variation="INTERACTION">&lt;</Button>,
+                        <Button key="next" onClick={getNextDate} variation="INTERACTION">&gt;</Button>,
+                    ]}
+                />
             <Successes />
             <TodoList selectedDate={selectedDate} />
 

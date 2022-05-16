@@ -78,7 +78,7 @@ const ReportsTable = ({ crunchedNumbers, startDate, endDate }: ReportTableProps)
                     )
                 })}
                 <Table.TableRow style={{ fontWeight: 900 }} key="all">
-                    <Table.TableBodyCell>All Projects</Table.TableBodyCell>
+                    <Table.TableBodyCell>Summary</Table.TableBodyCell>
                     <Table.TableBodyCell>{sumAndDisplay(Object.values(crunchedNumbers.all))}</Table.TableBodyCell>
                     {
                         dateColumns.map((date) => {
