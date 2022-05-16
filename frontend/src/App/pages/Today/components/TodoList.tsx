@@ -10,11 +10,14 @@ import { ETaskStatus, TDateISODate } from 'sharedTypes'
 import { context } from 'Context'
 import { TodoListTable, ManageTodoListItemsModal } from './'
 
-const TodoList = () => {
-    const [selectedDate, setSelectedDate] = React.useState<TDateISODate>(formatDateKeyLookup(moment()))
+type TodoListProps = {
+    selectedDate: TDateISODate
+}
+
+const TodoList = ({ selectedDate }: TodoListProps) => {
     const [showManagementModal, setShowManagementModal] = React.useState<boolean>(false)
     const [showNothingToCopyModal, setShowNothingToCopyModal] = React.useState<boolean>(false)
-    const { state: { dateFormat } } = React.useContext(context)
+
     const [isLoading, setIsLoading] = React.useState<boolean>(true)
     const [taskCount, setTaskCount] = React.useState<number>(0)
 
@@ -27,8 +30,6 @@ const TodoList = () => {
         fetch()
     }, [])
 
-
-
     const todoListItems = useLiveQuery(
         () => database
             .todoListItems
@@ -38,17 +39,10 @@ const TodoList = () => {
         [selectedDate]
     )
 
-    const setPreviousDate = () => {
-        setSelectedDate(formatDateKeyLookup(moment(selectedDate).subtract(1, 'day')))
-    }
+    const hoursWorkedSelectedDate = todoListItems
+        ? `(${formatDurationDisplayString(sumArray(todoListItems.map(({ duration }) => duration)))} Worked)`
+        : ''
 
-    const getNextDate = () => {
-        setSelectedDate(formatDateKeyLookup(moment(selectedDate).add(1, 'day')))
-    }
-
-    const getToday = () => {
-        setSelectedDate(formatDateKeyLookup(moment()))
-    }
 
     const getPreviousDatesTasks = async () => {
         const previousDay = await database
@@ -73,24 +67,19 @@ const TodoList = () => {
         )
     }
 
-    const hoursWorkedSelectedDate = todoListItems
-        ? `(${formatDurationDisplayString(sumArray(todoListItems.map(({ duration }) => duration)))} Worked)`
-        : ''
+
 
     if (isLoading) {
         return <Paragraph>One sec</Paragraph>
     }
     return (
         <>
-            <Heading.H2>{formatDateDisplayString(dateFormat, selectedDate)} {hoursWorkedSelectedDate}</Heading.H2>
+            <Heading.H3>Todo List {hoursWorkedSelectedDate}</Heading.H3>
             <ButtonWrapper
                 left={[
-                    <Button key="today" disabled={todoListItems && todoListItems.length > 0} onClick={getPreviousDatesTasks} variation="INTERACTION">Copy Yesterday</Button>
-                ]}
-                right={[
-                    <Button key="today" onClick={getToday} variation="INTERACTION">Today</Button>,
-                    <Button key="previous" onClick={setPreviousDate} variation="INTERACTION">&lt;</Button>,
-                    <Button key="next" onClick={getNextDate} variation="INTERACTION">&gt;</Button>,
+                    <Button key="today" disabled={todoListItems && todoListItems.length > 0} onClick={getPreviousDatesTasks} variation="INTERACTION">Copy Yesterday</Button>,
+                    <Button key="manage" disabled={taskCount === 0} onClick={() => setShowManagementModal(true)} variation="INTERACTION">Manage Tasks</Button>,            
+                    <Button key="add" onClick={() => console.log('add')} variation="INTERACTION">Add New Task</Button>               
                 ]}
             />
             {taskCount > 0
@@ -98,7 +87,6 @@ const TodoList = () => {
                 : <BigBoxOfNothing message="Go create some projects and tasks and come back!" />
 
             }
-            <Button key="manage" disabled={taskCount === 0} fullWidth onClick={() => setShowManagementModal(true)} variation="INTERACTION">Add Tasks</Button>
             <ManageTodoListItemsModal selectedDate={selectedDate} showModal={showManagementModal} setShowModal={setShowManagementModal} />
             <ConfirmationModal
                 body="It looks like there's nothing to copy from yesterday."
@@ -107,7 +95,6 @@ const TodoList = () => {
                 showModal={showNothingToCopyModal}
                 setShowModal={setShowNothingToCopyModal}
             />
-            <Heading.H2>Track Achievements</Heading.H2>
         </>
     )
 }
