@@ -8,7 +8,7 @@ import { formatDateDisplayString, formatDateKeyLookup, formatDurationDisplayStri
 import database from 'database'
 import { ETaskStatus, TDateISODate } from 'sharedTypes'
 import { context } from 'Context'
-import { TodoListTable, ManageTodoListItemsModal } from './components'
+import { TodoListTable, ManageTodoListItemsModal } from './'
 
 const TodoList = () => {
     const [selectedDate, setSelectedDate] = React.useState<TDateISODate>(formatDateKeyLookup(moment()))

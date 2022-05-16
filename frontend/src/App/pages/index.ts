@@ -1,5 +1,5 @@
 import Projects from './Projects'
-import TodoList from './TodoList/TodoList'
+import TodoList from './Today/Today'
 import Tasks from './Tasks'
 import Settings from './Settings'
 import Reports from './Reports'
