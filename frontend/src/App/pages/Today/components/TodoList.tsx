@@ -2,13 +2,13 @@ import React from 'react'
 import moment from 'moment'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { v4 as uuid4 } from 'uuid'
-import styled from 'styled-components'
 
 import { BigBoxOfNothing, Button, ButtonWrapper, ConfirmationModal, Heading, LabelInDisguise, Paragraph } from 'sharedComponents'
 import { formatDateKeyLookup } from 'utilities'
 import database from 'database'
 import { TDateISODate } from 'sharedTypes'
 import { TodoListTable, ManageTodoListItemsModal } from './'
+import { AddTaskModal } from 'sharedModals'
 
 type TodoListProps = {
     selectedDate: TDateISODate
@@ -17,6 +17,7 @@ type TodoListProps = {
 const TodoList = ({ selectedDate }: TodoListProps) => {
     const [showManagementModal, setShowManagementModal] = React.useState<boolean>(false)
     const [showNothingToCopyModal, setShowNothingToCopyModal] = React.useState<boolean>(false)
+    const [showAddNewTaskModal, setShowAddNewTaskModal] = React.useState<boolean>(false)
 
     const [isLoading, setIsLoading] = React.useState<boolean>(true)
     const [taskCount, setTaskCount] = React.useState<number>(0)
@@ -38,9 +39,6 @@ const TodoList = ({ selectedDate }: TodoListProps) => {
             .toArray(),
         [selectedDate]
     )
-
-
-
 
     const getPreviousDatesTasks = async () => {
         const previousDay = await database
@@ -73,14 +71,25 @@ const TodoList = ({ selectedDate }: TodoListProps) => {
     return (
         <>
             <Heading.H3>Todo List</Heading.H3>
-            <LabelInDisguise>Plan the Day</LabelInDisguise>
-            <ButtonWrapper
-                left={[
-                    <Button key="today" disabled={todoListItems && todoListItems.length > 0} onClick={getPreviousDatesTasks} variation="INTERACTION">Copy Yesterday</Button>,
-                    <Button key="manage" disabled={taskCount === 0} onClick={() => setShowManagementModal(true)} variation="INTERACTION">Manage Tasks</Button>,
-                    <Button key="add" onClick={() => console.log('add')} variation="INTERACTION">Add New Task</Button>
-                ]}
-            />
+            <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                <div>
+                    <LabelInDisguise>Keep Going</LabelInDisguise>
+                    <ButtonWrapper
+                        left={[
+                            <Button key="today" disabled={todoListItems && todoListItems.length > 0} onClick={getPreviousDatesTasks} variation="INTERACTION">Copy Yesterday</Button>,
+                            <Button key="manage" disabled={taskCount === 0} onClick={() => setShowManagementModal(true)} variation="INTERACTION">Manage Tasks</Button>,
+                        ]}
+                    />
+                </div>
+                <div>
+                    <LabelInDisguise>Incoming Work</LabelInDisguise>
+                    <ButtonWrapper
+                        left={[
+                            <Button key="add" onClick={() => console.log('add')} variation="INTERACTION">Add New Task</Button>
+                        ]}
+                    />
+                </div>
+            </div>
 
             {taskCount > 0
                 ? <TodoListTable todoListItems={todoListItems} selectedDate={selectedDate} />
@@ -95,6 +104,8 @@ const TodoList = ({ selectedDate }: TodoListProps) => {
                 showModal={showNothingToCopyModal}
                 setShowModal={setShowNothingToCopyModal}
             />
+            <AddTaskModal showModal={showAddNewTaskModal} setShowModal={setShowAddNewTaskModal} />
+
         </>
     )
 }

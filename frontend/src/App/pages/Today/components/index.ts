@@ -7,5 +7,5 @@ export {
     TodoListTable,
     ManageTodoListItemsModal,
     TodoList,
-    Successes
+    Successes,
 }
