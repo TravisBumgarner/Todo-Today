@@ -10,6 +10,13 @@ enum EProjectStatus {
     CANCELED = 'CANCELED',
 }
 
+type TSuccess = {
+    id: string
+    description: string
+    date: TDateISODate
+    projectId: TProject['id']
+}
+
 type TProject = {
     id: string
     title: string
@@ -123,5 +130,6 @@ export {
     TDateISODate,
     EBackupInterval,
     EDaysOfWeek,
-    TReminder
+    TReminder,
+    TSuccess
 }

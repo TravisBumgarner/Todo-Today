@@ -4,7 +4,7 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import { v4 as uuid4 } from 'uuid'
 import styled from 'styled-components'
 
-import { BigBoxOfNothing, Button, ButtonWrapper, ConfirmationModal, Heading, Paragraph } from 'sharedComponents'
+import { BigBoxOfNothing, Button, ButtonWrapper, ConfirmationModal, Heading, LabelInDisguise, Paragraph } from 'sharedComponents'
 import { formatDateKeyLookup } from 'utilities'
 import database from 'database'
 import { TDateISODate } from 'sharedTypes'
@@ -73,15 +73,15 @@ const TodoList = ({ selectedDate }: TodoListProps) => {
     return (
         <>
             <Heading.H3>Todo List</Heading.H3>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <ButtonWrapper
-                    left={[
-                        <Button key="today" disabled={todoListItems && todoListItems.length > 0} onClick={getPreviousDatesTasks} variation="INTERACTION">Copy Yesterday</Button>,
-                        <Button key="manage" disabled={taskCount === 0} onClick={() => setShowManagementModal(true)} variation="INTERACTION">Manage Tasks</Button>,
-                        <Button key="add" onClick={() => console.log('add')} variation="INTERACTION">Add New Task</Button>
-                    ]}
-                />
-            </div>
+            <LabelInDisguise>Plan the Day</LabelInDisguise>
+            <ButtonWrapper
+                left={[
+                    <Button key="today" disabled={todoListItems && todoListItems.length > 0} onClick={getPreviousDatesTasks} variation="INTERACTION">Copy Yesterday</Button>,
+                    <Button key="manage" disabled={taskCount === 0} onClick={() => setShowManagementModal(true)} variation="INTERACTION">Manage Tasks</Button>,
+                    <Button key="add" onClick={() => console.log('add')} variation="INTERACTION">Add New Task</Button>
+                ]}
+            />
+
             {taskCount > 0
                 ? <TodoListTable todoListItems={todoListItems} selectedDate={selectedDate} />
                 : <BigBoxOfNothing message="Go create some projects and tasks and come back!" />
