@@ -204,7 +204,7 @@ const TodoListTable = ({ selectedDate, todoListItems }: TodoListTableProps) => {
                                                         setModifiedTask(taskId)
                                                     }}
                                                 >
-                                                    Mark Task Complete
+                                                    Mark Completed
                                                 </Button>
                                                 <Button
                                                     fullWidth
@@ -212,7 +212,7 @@ const TodoListTable = ({ selectedDate, todoListItems }: TodoListTableProps) => {
                                                     variation="INTERACTION"
                                                     onClick={async () => setSelectedTaskId(taskId)}
                                                 >
-                                                    Edit Task
+                                                    Edit
                                                 </Button>
                                                 <Button
                                                     fullWidth
@@ -222,7 +222,7 @@ const TodoListTable = ({ selectedDate, todoListItems }: TodoListTableProps) => {
                                                         await database.todoListItems.where({ id: todoListItemId }).delete()
                                                     }}
                                                 >
-                                                    Remove from Today
+                                                    Remove
                                                 </Button>
                                             </DropdownMenu>
                                         </Table.TableBodyCell>

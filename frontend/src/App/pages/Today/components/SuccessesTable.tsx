@@ -4,7 +4,7 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import database from 'database'
 import { BigBoxOfNothing, Button, DropdownMenu, Table } from 'sharedComponents'
 import { TDateISODate, TProject } from 'sharedTypes'
-import { EditTaskModal } from 'sharedModals'
+import EditSuccessModal from './EditSuccessModal'
 
 
 type SuccessesTableProps = {
@@ -12,6 +12,8 @@ type SuccessesTableProps = {
 }
 
 const SuccessesTable = ({ selectedDate }: SuccessesTableProps) => {
+    const [selectedSuccessId, setSelectedSuccessId] = React.useState<string | null>(null)
+
     const tableRows = useLiveQuery(async () => {
         const successes = await database.successes.toArray()
 
@@ -61,7 +63,7 @@ const SuccessesTable = ({ selectedDate }: SuccessesTableProps) => {
                                                     fullWidth
                                                     key="edit"
                                                     variation="INTERACTION"
-                                                    onClick={() => console.log('hi')}
+                                                    onClick={() => setSelectedSuccessId(id)}
                                                 >
                                                     Edit
                                                 </Button>
@@ -69,9 +71,13 @@ const SuccessesTable = ({ selectedDate }: SuccessesTableProps) => {
                                                     fullWidth
                                                     key="remove"
                                                     variation="INTERACTION"
-                                                    onClick={() => console.log('hi')}
+                                                    onClick={async () => {
+                                                        const r = await database.successes
+                                                            .where({ id })
+                                                            .delete()
+                                                    }}
                                                 >
-                                                    Remove
+                                                    Delete
                                                 </Button>
                                             </DropdownMenu>
                                         </Table.TableBodyCell>
@@ -81,6 +87,15 @@ const SuccessesTable = ({ selectedDate }: SuccessesTableProps) => {
                     }
                 </Table.TableBody>
             </Table.Table>
+            {selectedSuccessId
+                ? (
+                    <EditSuccessModal
+                        showModal={selectedSuccessId !== null}
+                        setShowModal={() => setSelectedSuccessId(null)}
+                        successId={selectedSuccessId}
+                    />
+                )
+                : (null)}
         </>
     )
 }
