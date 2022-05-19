@@ -16,6 +16,7 @@ import Icon from './Icon'
 import BigBoxOfNothing from './BigBoxOfNothing'
 import Form from './Form'
 import ConfirmationModal from './ConfirmationModal'
+import LabelInDisguise from './LabelInDisguise'
 
 export {
     Loading,
@@ -35,5 +36,6 @@ export {
     Icon,
     BigBoxOfNothing,
     Form,
-    ConfirmationModal
+    ConfirmationModal,
+    LabelInDisguise
 }

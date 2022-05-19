@@ -1,6 +1,5 @@
 import React from 'react'
 import moment, { Moment } from 'moment'
-import { useLiveQuery } from 'dexie-react-hooks'
 
 import { Button, Modal, ButtonWrapper, LabelAndInput, Form, Paragraph } from 'sharedComponents'
 import { TProject, EProjectStatus } from 'sharedTypes'
@@ -24,12 +23,11 @@ const EditProjectModal = ({ showModal, setShowModal, projectId }: EditProjectMod
     React.useEffect(() => {
         database
             .projects.where('id').equals(projectId).first()
-            .then(project => {
-                const {title, startDate, endDate, status} = project as TProject
-                setTitle(title)
-                setStartDate(startDate ? moment(startDate) : null)
-                setEndDate(endDate ? moment(endDate) : null)
-                setStatus(status)
+            .then((project: TProject) => {
+                setTitle(project.title)
+                setStartDate(project.startDate ? moment(project.startDate) : null)
+                setEndDate(project.endDate ? moment(project.endDate) : null)
+                setStatus(project.status)
                 setIsLoading(false)
             })
     }, [])
@@ -96,7 +94,6 @@ const EditProjectModal = ({ showModal, setShowModal, projectId }: EditProjectMod
                         </Form>
                     )
             }
-
 
         </Modal>
     )

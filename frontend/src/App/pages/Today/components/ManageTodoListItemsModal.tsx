@@ -2,7 +2,7 @@ import React from 'react'
 import { v4 as uuid4 } from 'uuid'
 import { useLiveQuery } from 'dexie-react-hooks'
 
-import { Modal, Paragraph, BigBoxOfNothing, Button, Heading, ButtonWrapper } from 'sharedComponents'
+import { Modal, Paragraph, Button, Heading, ButtonWrapper } from 'sharedComponents'
 import { formatDateDisplayString } from 'utilities'
 import { TDateISODate, TTask, TTodoListItem } from 'sharedTypes'
 import database from 'database'
@@ -41,9 +41,9 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
     const { state: { dateFormat } } = React.useContext(context)
 
     if (!tasks || !tasks.length || !projects || !projects.length) {
-        return <></>
+        return <>This situation is not possible...</>
     }
-    
+
     const tasksByProjectId = getTasksByProjectId('projectId', tasks)
     const taskIdsToTodoListIds = getTaskIdsToTodoListIds(todoListItems || [])
 

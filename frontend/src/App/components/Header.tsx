@@ -58,7 +58,6 @@ const FunHeaderWrapper = styled.div`
     }
 `
 
-
 const FunHeader = () => {
     return (
         <FunHeaderWrapper>

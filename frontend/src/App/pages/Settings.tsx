@@ -1,11 +1,23 @@
 import React from 'react'
 import moment, { Moment } from 'moment'
-import styled from 'styled-components'
 
 import database from 'database'
 import { EColorTheme, EDateFormat, EDaysOfWeek, EBackupInterval } from 'sharedTypes'
-import { Paragraph, ConfirmationModal, Heading, LabelAndInput, Form, Modal, BigBoxOfNothing, Button, ButtonWrapper, Table, DropdownMenu } from 'sharedComponents'
-import { dateFormatLookup, formatDurationDisplayString, dayOfWeekLabels, colorThemeOptionLabels, backupIntervalLookup, saveFile} from 'utilities'
+import {
+    Paragraph,
+    ConfirmationModal,
+    Heading,
+    LabelAndInput,
+    Form,
+    Modal,
+    BigBoxOfNothing,
+    Button,
+    ButtonWrapper,
+    Table,
+    DropdownMenu,
+    LabelInDisguise
+} from 'sharedComponents'
+import { dateFormatLookup, formatDurationDisplayString, dayOfWeekLabels, colorThemeOptionLabels, backupIntervalLookup, saveFile } from 'utilities'
 import { context } from 'Context'
 import { AddReminderIPC, BackupIPC } from '../../../../shared/types'
 
@@ -26,12 +38,6 @@ const automatedBackup = (showAutomatedBackupFailedModal: React.Dispatch<React.Se
         return
     }
     const lastBackup = localStorage.getItem('lastBackup')
-    const backupIntervalLookup = {
-        [EBackupInterval.HOURLY]: 1,
-        [EBackupInterval.DAILY]: 24,
-        [EBackupInterval.WEEKLY]: 24 * 7,
-        [EBackupInterval.MONTHLY]: 24 * 30
-    }
 
     const lastBackupThreshold = moment().subtract(backupIntervalLookup[backupInterval], 'hours')
 
@@ -99,19 +105,19 @@ const ScheduleMakerModal = ({ showModal, setShowModal }: ScheduleMakerModalProps
                     inputType="select-enum"
                     options={EDaysOfWeek}
                     optionLabels={dayOfWeekLabels}
-                    handleChange={(dayOfWeek: EDaysOfWeek) => setDayOfWeek(dayOfWeek)}
+                    handleChange={(value: EDaysOfWeek) => setDayOfWeek(value)}
                 />
                 <LabelAndInput
                     label="Time"
                     name="timeOfDay"
                     value={timeOfDay}
                     inputType="time"
-                    handleChange={(timeOfDay: unknown) => setTimeOfDay(timeOfDay)}
+                    handleChange={(value: unknown) => setTimeOfDay(value)}
                 />
                 <ButtonWrapper right={
                     [
                         <Button key="cancel" variation="WARNING" onClick={() => setShowModal(false)}>Cancel</Button>,
-                        <Button key="save" variation="INTERACTION" type='button' onClick={handleSubmit}>Save</Button>
+                        <Button key="save" variation="INTERACTION" type="button" onClick={handleSubmit}>Save</Button>
                     ]
                 }
                 />
@@ -154,17 +160,7 @@ const RemindersTable = () => {
             </Table.TableBody>
         </Table.Table>
     )
-
 }
-
-const FakeLabel = styled.p`
-    font-family: 'Comfortaa',cursive;
-    font-size: 1rem;
-    background-color: transparent;
-    font-weight: 700;
-    color: ${({ theme }) => theme.WARNING};
-    margin: 0.5rem 0;
-`
 
 const Settings = () => {
     const { state, dispatch } = React.useContext(context)
@@ -211,7 +207,6 @@ const Settings = () => {
         setShowRestoreConfirmModal(false)
     }
 
-
     const handleSubmit = ({ key, value }: { key: string, value: string }) => {
         dispatch({ type: 'EDIT_USER_SETTING', payload: { key, value } })
     }
@@ -238,12 +233,11 @@ const Settings = () => {
                     optionLabels={colorThemeOptionLabels}
                 />
             </Form>
-            <div style={{ marginTop: "2rem" }}>
-                <FakeLabel>Schedule Reminders</FakeLabel>
+            <div style={{ marginTop: '2rem' }}>
+                <LabelInDisguise>Schedule Reminders</LabelInDisguise>
                 {state.reminders.length === 0
                     ? <BigBoxOfNothing message="No Reminders yet, click Add Reminder Below" />
-                    : <RemindersTable />
-                }
+                    : <RemindersTable />}
                 <Button key="addSchedule" fullWidth onClick={() => setShowScheduleMakerModal(true)} variation="INTERACTION">Add Reminder</Button>
             </div>
             <ScheduleMakerModal setShowModal={setShowScheduleMakerModal} showModal={showScheduleMakerModal} />
@@ -267,7 +261,12 @@ const Settings = () => {
                 />
                 <Heading.H3>Restore</Heading.H3>
                 <Form>
-                    <LabelAndInput handleChange={(file) => setRestore(file)} label="Restore database with a backup copy." name="file" inputType="file" />
+                    <LabelAndInput
+                        handleChange={(file) => setRestore(file)}
+                        label="Restore database with a backup copy."
+                        name="file"
+                        inputType="file"
+                    />
                     <ButtonWrapper
                         fullWidth={(
                             <Button

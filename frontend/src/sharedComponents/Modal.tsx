@@ -43,6 +43,7 @@ const Modal = ({
         <ReactModal
             isOpen={showModal}
             onBackgroundClick={closeModal}
+            onEscapeKeydown={closeModal}
         >
             <ModalWrapper>
                 <HeaderWrapper>

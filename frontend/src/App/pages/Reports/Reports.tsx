@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { useLiveQuery } from 'dexie-react-hooks'
 
 import database from 'database'
-import { Heading, LabelAndInput, Button, BigBoxOfNothing } from 'sharedComponents'
+import { Heading, LabelAndInput, Button, BigBoxOfNothing, LabelInDisguise } from 'sharedComponents'
 import { TDateISODate, TTodoListItem } from 'sharedTypes'
 import { formatDateKeyLookup } from 'utilities'
 import { ReportsTable } from './components'
@@ -29,15 +29,6 @@ const FilterWrapper = styled.div`
             margin-top: 0.5rem;
         }
     }
-`
-
-const LabelInDisguise = styled.p`
-    font-family: 'Comfortaa', cursive;
-    font-size: 1rem;
-    background-color: transparent;
-    font-weight: 700;
-    color: ${({ theme }) => theme.WARNING};
-    margin: 0.5rem 0;
 `
 
 const FiltersWrapper = styled.div`

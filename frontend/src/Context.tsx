@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { EDateFormat, EColorTheme, EBackupInterval, TSettings, EDaysOfWeek, TReminder } from 'sharedTypes'
+import { EDateFormat, EColorTheme, EBackupInterval, TSettings, TReminder } from 'sharedTypes'
 import { RefreshRemindersIPC } from '../../shared/types'
 
 const { ipcRenderer } = window.require('electron')
@@ -56,12 +56,12 @@ type EditUserSettings = {
 }
 
 type AddReminder = {
-    type: "ADD_REMINDER",
+    type: 'ADD_REMINDER',
     payload: TReminder
 }
 
 type DeleteReminder = {
-    type: "DELETE_REMINDER",
+    type: 'DELETE_REMINDER',
     payload: {
         deletedReminderIndex: string
     }
@@ -75,21 +75,21 @@ type Action =
 
 const reducer = (state: State, action: Action): State => {
     switch (action.type) {
-        case "HYDRATE_USER_SETTINGS": {
+        case 'HYDRATE_USER_SETTINGS': {
             return { ...state, ...action.payload }
         }
-        case "EDIT_USER_SETTING": {
-            const {key, value} = action.payload
+        case 'EDIT_USER_SETTING': {
+            const { key, value } = action.payload
             localStorage.setItem(key, JSON.stringify(value))
-            return { ...state, [key]: value}
+            return { ...state, [key]: value }
         }
-        case "ADD_REMINDER": {
+        case 'ADD_REMINDER': {
             const reminders = [...state.reminders]
             reminders.push(action.payload)
             localStorage.setItem('reminders', JSON.stringify(reminders))
             return { ...state, reminders }
         }
-        case "DELETE_REMINDER": {
+        case 'DELETE_REMINDER': {
             const reminders = [...state.reminders.filter(({ reminderIndex }) => reminderIndex !== action.payload.deletedReminderIndex)]
             localStorage.setItem('reminders', JSON.stringify(reminders))
             return { ...state, reminders }
@@ -111,11 +111,9 @@ const context = React.createContext(
 
 const prepareRemindersPayload = (reminders: TReminder[]) => {
     const payload: RefreshRemindersIPC = reminders.map(({ hours, minutes, dayOfWeek }) => {
-        const payload = { hours: parseInt(hours, 10), minutes: parseInt(minutes, 10), dayOfWeek: parseInt(dayOfWeek, 10) }
-        return payload
+        return { hours: parseInt(hours, 10), minutes: parseInt(minutes, 10), dayOfWeek: parseInt(dayOfWeek, 10) }
     })
     return payload
-
 }
 
 const ResultsContext = ({ children }: { children: React.ReactChild }) => {
@@ -127,7 +125,7 @@ const ResultsContext = ({ children }: { children: React.ReactChild }) => {
                 initialSetup()
                 setIsLoading(false)
             } else {
-                // On Restart, reminderIndexes are stale because they don't exist on the backend anymore. 
+                // On Restart, reminderIndexes are stale because they don't exist on the backend anymore.
                 const currentLocalStorage = getKeysFromStorage()
                 const refreshedReminders = await ipcRenderer.invoke('refresh-reminder-ids', prepareRemindersPayload(currentLocalStorage.reminders))
                 dispatch({ type: 'HYDRATE_USER_SETTINGS', payload: { ...currentLocalStorage, reminders: refreshedReminders } })

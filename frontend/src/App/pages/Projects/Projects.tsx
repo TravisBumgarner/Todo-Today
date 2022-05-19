@@ -1,8 +1,8 @@
 import React from 'react'
 
 import { Button, ButtonWrapper, Heading } from 'sharedComponents'
-import {  ProjectsTable } from './components'
-import { AddProjectModal} from 'sharedModals'
+import { AddProjectModal } from 'sharedModals'
+import { ProjectsTable } from './components'
 
 const Projects = () => {
     const [showAddProjectModal, setShowAddProjectModal] = React.useState<boolean>(false)

@@ -1,8 +1,8 @@
 import moment from 'moment'
-
-const { ipcRenderer } = window.require('electron')
 import { EDateFormat, TProject, EProjectStatus, TTask, TDateISODate, ETaskStatus, EDaysOfWeek, EColorTheme, EBackupInterval } from 'sharedTypes'
 import { NotificationIPC } from '../../shared/types'
+
+const { ipcRenderer } = window.require('electron')
 
 const projectStatusLookup: Record<EProjectStatus, string> = {
     [EProjectStatus.CANCELED]: 'Canceled',
@@ -102,7 +102,7 @@ const saveFile = async (fileName: string, jsonData: Object) => {
 }
 
 const sendNotification = (title: string, body: string) => {
-    ipcRenderer.send('notification', {title, body} as NotificationIPC)
+    ipcRenderer.send('notification', { title, body } as NotificationIPC)
 }
 
 export {

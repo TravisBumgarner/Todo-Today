@@ -18,6 +18,13 @@ type TProject = {
     status: EProjectStatus
 }
 
+type TSuccess = {
+    id: string
+    description: string
+    date: TDateISODate
+    projectId: TProject['id']
+}
+
 enum ETaskStatus {
     NEW = 'NEW',
     IN_PROGRESS = 'IN_PROGRESS',
@@ -56,13 +63,13 @@ enum EBackupInterval {
 }
 
 enum EDaysOfWeek {
-    SUNDAY = "0",
-    MONDAY = "1",
-    TUESDAY = "2",
-    WEDNESDAY = "3",
-    THURSDAY = "4",
-    FRIDAY = "5",
-    SATURDAY = "6",
+    SUNDAY = '0',
+    MONDAY = '1',
+    TUESDAY = '2',
+    WEDNESDAY = '3',
+    THURSDAY = '4',
+    FRIDAY = '5',
+    SATURDAY = '6',
 
 }
 
@@ -123,5 +130,6 @@ export {
     TDateISODate,
     EBackupInterval,
     EDaysOfWeek,
-    TReminder
+    TReminder,
+    TSuccess
 }

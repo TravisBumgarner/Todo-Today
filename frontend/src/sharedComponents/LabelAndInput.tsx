@@ -200,15 +200,15 @@ const LabelAndInput = (props: LabelAndInputProps) => {
                 value={value}
             />
         )
-    } else if(props.inputType === 'time'){
+    } else if (props.inputType === 'time') {
         const { inputType, handleChange, name, value } = props
         InputElement = (
             <Input
-            type={'time'}
-            name={name}
-            onChange={(event) => handleChange(event.target.value)}
-            value={value}
-        /> 
+                name={name}
+                onChange={(event) => handleChange(event.target.value)}
+                value={value}
+                type={inputType}
+            />
         )
     } else {
         const { inputType, handleChange, name, value } = props
