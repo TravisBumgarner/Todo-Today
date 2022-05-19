@@ -7,8 +7,8 @@ import { BigBoxOfNothing, Button, ButtonWrapper, ConfirmationModal, Heading, Lab
 import { formatDateKeyLookup } from 'utilities'
 import database from 'database'
 import { TDateISODate } from 'sharedTypes'
-import { TodoListTable, ManageTodoListItemsModal } from './'
 import { AddTaskModal } from 'sharedModals'
+import { TodoListTable, ManageTodoListItemsModal } from '.'
 
 type TodoListProps = {
     selectedDate: TDateISODate
@@ -50,20 +50,20 @@ const TodoList = ({ selectedDate }: TodoListProps) => {
 
         if (previousDay.length === 0) {
             setShowNothingToCopyModal(true)
-        } else (
-            previousDay.map(async ({ projectId, taskId }) => {
-                await database.todoListItems.add({
-                    projectId,
-                    taskId,
-                    duration: 0,
-                    id: uuid4(),
-                    todoListDate: selectedDate
+        } else {
+            (
+                previousDay.map(async ({ projectId, taskId }) => {
+                    await database.todoListItems.add({
+                        projectId,
+                        taskId,
+                        duration: 0,
+                        id: uuid4(),
+                        todoListDate: selectedDate
+                    })
                 })
-            })
-        )
+            )
+        }
     }
-
-
 
     if (isLoading) {
         return <Paragraph>One sec</Paragraph>
@@ -71,13 +71,27 @@ const TodoList = ({ selectedDate }: TodoListProps) => {
     return (
         <>
             <Heading.H3>Todo List</Heading.H3>
-            <div style={{display: 'flex', justifyContent: 'space-between'}}>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <div>
                     <LabelInDisguise>Keep Going</LabelInDisguise>
                     <ButtonWrapper
                         left={[
-                            <Button key="today" disabled={todoListItems && todoListItems.length > 0} onClick={getPreviousDatesTasks} variation="INTERACTION">Copy Yesterday</Button>,
-                            <Button key="manage" disabled={taskCount === 0} onClick={() => setShowManagementModal(true)} variation="INTERACTION">Manage Tasks</Button>,
+                            <Button
+                                key="today"
+                                disabled={todoListItems && todoListItems.length > 0}
+                                onClick={getPreviousDatesTasks}
+                                variation="INTERACTION"
+                            >
+                                Copy Yesterday
+                            </Button>,
+                            <Button
+                                key="manage"
+                                disabled={taskCount === 0}
+                                onClick={() => setShowManagementModal(true)}
+                                variation="INTERACTION"
+                            >
+                                Manage Tasks
+                            </Button>,
                         ]}
                     />
                 </div>
@@ -93,9 +107,7 @@ const TodoList = ({ selectedDate }: TodoListProps) => {
 
             {taskCount > 0
                 ? <TodoListTable todoListItems={todoListItems} selectedDate={selectedDate} />
-                : <BigBoxOfNothing message="Go create some projects and tasks and come back!" />
-
-            }
+                : <BigBoxOfNothing message="Go create some projects and tasks and come back!" />}
             <ManageTodoListItemsModal selectedDate={selectedDate} showModal={showManagementModal} setShowModal={setShowManagementModal} />
             <ConfirmationModal
                 body="It looks like there's nothing to copy from yesterday."

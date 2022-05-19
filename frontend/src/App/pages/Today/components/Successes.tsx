@@ -9,8 +9,8 @@ type SuccessesProps = {
     selectedDate: TDateISODate
 }
 
-const Successes = ({selectedDate}: SuccessesProps) => {
-    const [showSuccessModal, setShowSuccessModal ] = React.useState<boolean>(false)
+const Successes = ({ selectedDate }: SuccessesProps) => {
+    const [showSuccessModal, setShowSuccessModal] = React.useState<boolean>(false)
 
     return (
         <div>

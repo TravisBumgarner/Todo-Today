@@ -10,19 +10,19 @@ enum EProjectStatus {
     CANCELED = 'CANCELED',
 }
 
-type TSuccess = {
-    id: string
-    description: string
-    date: TDateISODate
-    projectId: TProject['id']
-}
-
 type TProject = {
     id: string
     title: string
     startDate: TDateISODate | null
     endDate: TDateISODate | null
     status: EProjectStatus
+}
+
+type TSuccess = {
+    id: string
+    description: string
+    date: TDateISODate
+    projectId: TProject['id']
 }
 
 enum ETaskStatus {
@@ -63,13 +63,13 @@ enum EBackupInterval {
 }
 
 enum EDaysOfWeek {
-    SUNDAY = "0",
-    MONDAY = "1",
-    TUESDAY = "2",
-    WEDNESDAY = "3",
-    THURSDAY = "4",
-    FRIDAY = "5",
-    SATURDAY = "6",
+    SUNDAY = '0',
+    MONDAY = '1',
+    TUESDAY = '2',
+    WEDNESDAY = '3',
+    THURSDAY = '4',
+    FRIDAY = '5',
+    SATURDAY = '6',
 
 }
 

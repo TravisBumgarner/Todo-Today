@@ -2,11 +2,11 @@ import React from 'react'
 import moment from 'moment'
 import styled from 'styled-components'
 
-import { TodoList, Successes } from './components'
 import { Heading, Button, ButtonWrapper } from 'sharedComponents'
 import { formatDateDisplayString, formatDateKeyLookup } from 'utilities'
 import { TDateISODate } from 'sharedTypes'
 import { context } from 'Context'
+import { TodoList, Successes } from './components'
 
 const HeadingWrapper = styled.div`
     display: flex;
@@ -21,8 +21,6 @@ const HeadingWrapper = styled.div`
 const Today = () => {
     const { state: { dateFormat } } = React.useContext(context)
     const [selectedDate, setSelectedDate] = React.useState<TDateISODate>(formatDateKeyLookup(moment()))
-
-
 
     const setPreviousDate = () => {
         setSelectedDate(formatDateKeyLookup(moment(selectedDate).subtract(1, 'day')))
@@ -49,7 +47,7 @@ const Today = () => {
                 />
             </HeadingWrapper>
             <TodoList selectedDate={selectedDate} />
-            <Successes selectedDate= {selectedDate} />
+            <Successes selectedDate={selectedDate} />
         </>
     )
 }

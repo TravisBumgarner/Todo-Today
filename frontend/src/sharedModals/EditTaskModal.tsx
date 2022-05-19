@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { Button, Modal, ButtonWrapper, LabelAndInput, Form } from 'sharedComponents'
-import { TProject, TTask, ETaskStatus } from 'sharedTypes'
+import { TTask, ETaskStatus } from 'sharedTypes'
 import { projectStatusLookup } from 'utilities'
 import database from 'database'
 import { useLiveQuery } from 'dexie-react-hooks'
@@ -19,17 +19,16 @@ const EditTaskModal = ({ showModal, setShowModal, taskId }: EditTaskModalProps) 
     const [submitDisabled, setSubmitDisabled] = React.useState<boolean>(true)
 
     const projects = useLiveQuery(async () => {
-        return await database.projects.toArray()
+        return database.projects.toArray()
     }, [])
 
     React.useEffect(() => {
         database
             .tasks.where('id').equals(taskId).first()
-            .then(task => {
-                const { title, status, projectId } = task as TTask
-                setTitle(title)
-                setProjectId(projectId)
-                setStatus(status)
+            .then((t: TTask) => {
+                setTitle(t.title)
+                setProjectId(t.projectId)
+                setStatus(t.status)
             })
     }, [])
 
@@ -44,9 +43,8 @@ const EditTaskModal = ({ showModal, setShowModal, taskId }: EditTaskModalProps) 
         setShowModal(false)
     }
 
-    const projectSelectOptions = projects ? projects.map(({ id, title }) => ({ value: id, label: title })) : []
+    const projectSelectOptions = projects ? projects.map(p => ({ value: p.id, label: p.title })) : []
     projectSelectOptions.unshift({ value: '', label: 'Select a Project' })
-
 
     return (
         <Modal
@@ -59,7 +57,7 @@ const EditTaskModal = ({ showModal, setShowModal, taskId }: EditTaskModalProps) 
                     label="Task"
                     name="title"
                     value={title}
-                    handleChange={(data) => setTitle(data)}
+                    handleChange={(value) => setTitle(value)}
                 />
                 <LabelAndInput
                     label="Status"
@@ -68,7 +66,7 @@ const EditTaskModal = ({ showModal, setShowModal, taskId }: EditTaskModalProps) 
                     options={ETaskStatus}
                     optionLabels={projectStatusLookup}
                     inputType="select-enum"
-                    handleChange={(newStatus: ETaskStatus) => setStatus(newStatus)}
+                    handleChange={(value: ETaskStatus) => setStatus(value)}
                 />
                 <LabelAndInput
                     name="project"

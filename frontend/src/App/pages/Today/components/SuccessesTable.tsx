@@ -3,15 +3,10 @@ import { useLiveQuery } from 'dexie-react-hooks'
 
 import database from 'database'
 import { BigBoxOfNothing, Button, DropdownMenu, Table } from 'sharedComponents'
-import { TDateISODate, TProject } from 'sharedTypes'
+import { TProject } from 'sharedTypes'
 import EditSuccessModal from './EditSuccessModal'
 
-
-type SuccessesTableProps = {
-    selectedDate: TDateISODate
-}
-
-const SuccessesTable = ({ selectedDate }: SuccessesTableProps) => {
+const SuccessesTable = () => {
     const [selectedSuccessId, setSelectedSuccessId] = React.useState<string | null>(null)
 
     const tableRows = useLiveQuery(async () => {
@@ -72,7 +67,7 @@ const SuccessesTable = ({ selectedDate }: SuccessesTableProps) => {
                                                     key="remove"
                                                     variation="INTERACTION"
                                                     onClick={async () => {
-                                                        const r = await database.successes
+                                                        await database.successes
                                                             .where({ id })
                                                             .delete()
                                                     }}

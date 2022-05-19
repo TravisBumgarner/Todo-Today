@@ -1,4 +1,4 @@
-import styled from "styled-components"
+import styled from 'styled-components'
 
 const LabelInDisguise = styled.p`
     font-family: 'Comfortaa', cursive;

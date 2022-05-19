@@ -48,6 +48,7 @@ module.exports = {
         'arrow-body-style': ['off'],
         'react/jsx-props-no-spreading': ['off'],
         'react/destructuring-assignment': ['off'],
-        'func-names': ['off']
-    },
+        'func-names': ['off'],
+        'arrow-parens': ['off']
+    }
 }

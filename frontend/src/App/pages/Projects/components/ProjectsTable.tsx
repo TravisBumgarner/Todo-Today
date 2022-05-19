@@ -1,43 +1,50 @@
 import React from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
 
-import { BigBoxOfNothing, Button, DropdownMenu, LabelAndInput, Paragraph, Table } from 'sharedComponents'
+import { BigBoxOfNothing, Button, DropdownMenu, LabelAndInput, Table } from 'sharedComponents'
 import { formatDateDisplayString, projectStatusLookup } from 'utilities'
 import database from 'database'
-import { EProjectStatus, TProject } from 'sharedTypes'
+import { EProjectStatus } from 'sharedTypes'
 import { context } from 'Context'
-import {EditProjectModal} from 'sharedModals'
+import { EditProjectModal } from 'sharedModals'
 
 type FilterProps = {
     setStatusFilter: React.Dispatch<React.SetStateAction<Record<EProjectStatus, boolean>>>
     statusFilter: Record<EProjectStatus, boolean>
 }
 
-const Filters = ({setStatusFilter, statusFilter}: FilterProps) => {
-    return <div style={{margin: '1rem 0'}}>
-        <LabelAndInput 
-            inputType='checkbox'
-            name='projectfilter'
-            label='Filter Projects By Status'
-            handleChange={({checked, value}) => setStatusFilter(prev => {
-                const previousFilters = {...prev}
-                previousFilters[value as EProjectStatus] = checked
-                return previousFilters
-            })}
-            options = {
-                Object.values(EProjectStatus).map(status => ({
-                    label: projectStatusLookup[status],
-                    value: status,
-                    checked: statusFilter[status],
-                    name: status
-                }))
-            }
+const Filters = ({ setStatusFilter, statusFilter }: FilterProps) => {
+    return (
+        <div style={{ margin: '1rem 0' }}>
+            <LabelAndInput
+                inputType="checkbox"
+                name="projectfilter"
+                label="Filter Projects By Status"
+                handleChange={({ checked, value }) => setStatusFilter((prev) => {
+                    const previousFilters = { ...prev }
+                    previousFilters[value as EProjectStatus] = checked
+                    return previousFilters
+                })}
+                options={
+                    Object.values(EProjectStatus).map((status) => ({
+                        label: projectStatusLookup[status],
+                        value: status,
+                        checked: statusFilter[status],
+                        name: status
+                    }))
+                }
 
-        />
-    </div>
+            />
+        </div>
+    )
 }
 
-const DEFAULT_STATUS_FILTER = {[EProjectStatus.NEW]: true, [EProjectStatus.IN_PROGRESS]: true, [EProjectStatus.CANCELED]: false, [EProjectStatus.COMPLETED]: false}
+const DEFAULT_STATUS_FILTER = {
+    [EProjectStatus.NEW]: true,
+    [EProjectStatus.IN_PROGRESS]: true,
+    [EProjectStatus.CANCELED]: false,
+    [EProjectStatus.COMPLETED]: false
+}
 
 const ProjectsTable = () => {
     const projects = useLiveQuery(() => database.projects.toArray())
@@ -48,7 +55,7 @@ const ProjectsTable = () => {
         return <BigBoxOfNothing message="Create a project and get going!" />
     }
     return (
-        <> 
+        <>
             <Filters statusFilter={statusFilter} setStatusFilter={setStatusFilter} />
             <Table.Table>
                 <Table.TableHeader>
@@ -61,7 +68,7 @@ const ProjectsTable = () => {
                     </Table.TableRow>
                 </Table.TableHeader>
                 <Table.TableBody>
-                    {projects.filter(({status}) => statusFilter[status]).map(({ title, status, startDate, endDate, id }) => (
+                    {projects.filter(({ status }) => statusFilter[status]).map(({ title, status, startDate, endDate, id }) => (
                         <Table.TableRow key={id}>
                             <Table.TableBodyCell>{title}</Table.TableBodyCell>
                             <Table.TableBodyCell>{projectStatusLookup[status]}</Table.TableBodyCell>
@@ -78,7 +85,7 @@ const ProjectsTable = () => {
                     ))}
                 </Table.TableBody>
             </Table.Table>
-            { selectedProjectId
+            {selectedProjectId
                 ? (
                     <EditProjectModal
                         showModal={selectedProjectId !== null}

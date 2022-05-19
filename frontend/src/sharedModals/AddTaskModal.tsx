@@ -20,12 +20,12 @@ const AddTaskModal = ({ showModal, setShowModal, project }: AddTaskModalProps) =
     const [addToToday, setAddToToday] = React.useState<'yes' | 'no'>('no')
 
     const projects = useLiveQuery(async () => {
-        return await database.projects.toArray()
+        return database.projects.toArray()
     }, [])
 
     const handleSubmit = async () => {
         const taskId = uuid4()
-        
+
         const newTask = {
             title,
             status: ETaskStatus.NEW,
@@ -34,8 +34,7 @@ const AddTaskModal = ({ showModal, setShowModal, project }: AddTaskModalProps) =
         }
         await database.tasks.add(newTask)
 
-        if(addToToday === 'yes'){
-            console.log('adding')
+        if (addToToday === 'yes') {
             await database.todoListItems.add({
                 projectId,
                 taskId,
@@ -47,12 +46,12 @@ const AddTaskModal = ({ showModal, setShowModal, project }: AddTaskModalProps) =
         setShowModal(false)
     }
 
-    const projectSelectOptions = projects ? projects.map(({ id, title }) => ({ value: id, label: title })) : []
+    const projectSelectOptions = projects ? projects.map((p) => ({ value: p.id, label: p.title })) : []
     projectSelectOptions.unshift({ value: '', label: 'Select a Project' })
 
     return (
         <Modal
-            contentLabel={`Add Task`}
+            contentLabel="Add Task"
             showModal={showModal}
             closeModal={() => setShowModal(false)}
         >
@@ -75,8 +74,8 @@ const AddTaskModal = ({ showModal, setShowModal, project }: AddTaskModalProps) =
                     name="addtotoday"
                     value={addToToday}
                     options={[
-                        {value: 'no', label: "No"},
-                        {value: 'yes', label: "Yes"},
+                        { value: 'no', label: 'No' },
+                        { value: 'yes', label: 'Yes' },
                     ]}
                     inputType="select-array"
                     label="Add to today's tasks?"
@@ -85,8 +84,22 @@ const AddTaskModal = ({ showModal, setShowModal, project }: AddTaskModalProps) =
 
                 <ButtonWrapper right={
                     [
-                        <Button key="cancel" variation="WARNING" onClick={() => setShowModal(false)}>Cancel</Button>,
-                        <Button type='button' disabled={title.length === 0 || projectId.length === 0} key="save" variation="INTERACTION" onClick={handleSubmit}>Save</Button>
+                        <Button
+                            key="cancel"
+                            variation="WARNING"
+                            onClick={() => setShowModal(false)}
+                        >
+                            Cancel
+                        </Button>,
+                        <Button
+                            type="button"
+                            disabled={title.length === 0 || projectId.length === 0}
+                            key="save"
+                            variation="INTERACTION"
+                            onClick={handleSubmit}
+                        >
+                            Save
+                        </Button>
                     ]
                 }
                 />

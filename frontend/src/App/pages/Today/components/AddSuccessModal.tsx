@@ -20,11 +20,10 @@ const AddSuccessModal = ({ showModal, setShowModal, selectedDate }: AddSuccessMo
     const [date, setDate] = React.useState<TProject['id'] | ''>(selectedDate)
 
     const projects = useLiveQuery(async () => {
-        return await database.projects.toArray()
+        return database.projects.toArray()
     }, [])
 
     const handleSubmit = () => {
-        console.log('hi')
         const newSuccess = {
             description,
             id: uuid4(),
@@ -35,12 +34,12 @@ const AddSuccessModal = ({ showModal, setShowModal, selectedDate }: AddSuccessMo
         setShowModal(false)
     }
 
-    const projectSelectOptions = projects ? projects.map(({ id, title }) => ({ value: id, label: title })) : []
+    const projectSelectOptions = projects ? projects.map((p) => ({ value: p.id, label: p.title })) : []
     projectSelectOptions.unshift({ value: '', label: 'Select a Project' })
 
     return (
         <Modal
-            contentLabel={`Add Success`}
+            contentLabel="Add Success"
             showModal={showModal}
             closeModal={() => setShowModal(false)}
         >
@@ -49,7 +48,7 @@ const AddSuccessModal = ({ showModal, setShowModal, selectedDate }: AddSuccessMo
                     label="Description"
                     name="description"
                     value={description}
-                    handleChange={(description) => setDescription(description)}
+                    handleChange={(value) => setDescription(value)}
                 />
                 <LabelAndInput
                     name="project"
@@ -64,7 +63,7 @@ const AddSuccessModal = ({ showModal, setShowModal, selectedDate }: AddSuccessMo
                     name="date"
                     value={moment(date).format('YYYY-MM-DD')}
                     inputType="date"
-                    handleChange={(date) => setDate(date)}
+                    handleChange={(value) => setDate(value)}
                 />
                 <ButtonWrapper right={
                     [
