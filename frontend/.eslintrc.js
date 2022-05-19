@@ -49,6 +49,7 @@ module.exports = {
         'react/jsx-props-no-spreading': ['off'],
         'react/destructuring-assignment': ['off'],
         'func-names': ['off'],
-        'arrow-parens': ['off']
+        'arrow-parens': ['off'],
+        'react/jsx-curly-newline': ['off']
     }
 }
