@@ -99,7 +99,7 @@ const TodoList = ({ selectedDate }: TodoListProps) => {
                     <LabelInDisguise>Incoming Work</LabelInDisguise>
                     <ButtonWrapper
                         left={[
-                            <Button key="add" onClick={() => console.log('add')} variation="INTERACTION">Add New Task</Button>
+                            <Button key="add" onClick={() => setShowAddNewTaskModal(true)} variation="INTERACTION">Add New Task</Button>
                         ]}
                     />
                 </div>
@@ -116,7 +116,7 @@ const TodoList = ({ selectedDate }: TodoListProps) => {
                 showModal={showNothingToCopyModal}
                 setShowModal={setShowNothingToCopyModal}
             />
-            <AddTaskModal showModal={showAddNewTaskModal} setShowModal={setShowAddNewTaskModal} />
+            <AddTaskModal addToTodayDefaultValue="yes" showModal={showAddNewTaskModal} setShowModal={setShowAddNewTaskModal} />
 
         </>
     )

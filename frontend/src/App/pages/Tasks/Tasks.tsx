@@ -78,7 +78,7 @@ const Tasks = () => {
             {filteredTasks.length === 0
                 ? <BigBoxOfNothing message="Too many filters applied!" />
                 : TasksByProject}
-            <AddTaskModal showModal={showAddTaskModal} setShowModal={setShowAddTaskModal} />
+            <AddTaskModal addToTodayDefaultValue="no" showModal={showAddTaskModal} setShowModal={setShowAddTaskModal} />
         </div>
     )
 }

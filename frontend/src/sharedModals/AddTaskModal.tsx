@@ -12,12 +12,13 @@ type AddTaskModalProps = {
     showModal: boolean
     project?: TProject
     setShowModal: (showModal: boolean) => void
+    addToTodayDefaultValue: 'yes' | 'no'
 }
 
-const AddTaskModal = ({ showModal, setShowModal, project }: AddTaskModalProps) => {
+const AddTaskModal = ({ showModal, setShowModal, project, addToTodayDefaultValue }: AddTaskModalProps) => {
     const [title, setTitle] = React.useState<string>('')
     const [projectId, setProjectId] = React.useState<TProject['id'] | ''>(project ? project.id : '')
-    const [addToToday, setAddToToday] = React.useState<'yes' | 'no'>('no')
+    const [addToToday, setAddToToday] = React.useState<'yes' | 'no'>(addToTodayDefaultValue)
 
     const projects = useLiveQuery(async () => {
         return database.projects.toArray()
