@@ -17,6 +17,7 @@ const Button = styled.button<ButtonProps>`
     padding: 0.5rem 1rem;
     background-color: transparent;
     font-weight: 700;
+    height: 2.5rem; // To Match Inputs
     
     &:hover {
     cursor: pointer;

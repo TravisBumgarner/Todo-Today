@@ -71,40 +71,28 @@ const TodoList = ({ selectedDate }: TodoListProps) => {
     return (
         <>
             <Heading.H3>Todo List</Heading.H3>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <div>
-                    <LabelInDisguise>Keep Going</LabelInDisguise>
-                    <ButtonWrapper
-                        left={[
-                            <Button
-                                key="today"
-                                disabled={todoListItems && todoListItems.length > 0}
-                                onClick={getPreviousDatesTasks}
-                                variation="INTERACTION"
-                            >
-                                Copy Yesterday
-                            </Button>,
-                            <Button
-                                key="manage"
-                                disabled={taskCount === 0}
-                                onClick={() => setShowManagementModal(true)}
-                                variation="INTERACTION"
-                            >
-                                Manage Tasks
-                            </Button>,
-                        ]}
-                    />
-                </div>
-                <div>
-                    <LabelInDisguise>Incoming Work</LabelInDisguise>
-                    <ButtonWrapper
-                        left={[
-                            <Button key="add" onClick={() => setShowAddNewTaskModal(true)} variation="INTERACTION">Add New Task</Button>
-                        ]}
-                    />
-                </div>
-            </div>
+            <ButtonWrapper
+                left={[
+                    <Button
+                        key="today"
+                        disabled={todoListItems && todoListItems.length > 0}
+                        onClick={getPreviousDatesTasks}
+                        variation="INTERACTION"
+                    >
+                        Copy Yesterday
+                    </Button>,
+                    <Button
+                        key="manage"
+                        disabled={taskCount === 0}
+                        onClick={() => setShowManagementModal(true)}
+                        variation="INTERACTION"
+                    >
+                        Manage Tasks
+                    </Button>,
+                    <Button key="add" onClick={() => setShowAddNewTaskModal(true)} variation="INTERACTION">Add New Task</Button>
 
+                ]}
+            />
             {taskCount > 0
                 ? <TodoListTable todoListItems={todoListItems} selectedDate={selectedDate} />
                 : <BigBoxOfNothing message="Go create some projects and tasks and come back!" />}

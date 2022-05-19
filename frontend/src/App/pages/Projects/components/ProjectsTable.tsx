@@ -43,8 +43,8 @@ const ProjectsTable = ({ statusFilter }: ProjectTableProps) => {
                         <Table.TableRow key={id}>
                             <Table.TableBodyCell>{title}</Table.TableBodyCell>
                             <Table.TableBodyCell>{projectStatusLookup[status]}</Table.TableBodyCell>
-                            <Table.TableBodyCell>{formatDateDisplayString(dateFormat, startDate)}</Table.TableBodyCell>
-                            <Table.TableBodyCell>{formatDateDisplayString(dateFormat, endDate)}</Table.TableBodyCell>
+                            <Table.TableBodyCell>{formatDateDisplayString(dateFormat, startDate) || 'Ongoing'}</Table.TableBodyCell>
+                            <Table.TableBodyCell>{formatDateDisplayString(dateFormat, endDate) || 'Ongoing'}</Table.TableBodyCell>
                             <Table.TableBodyCell>
                                 <DropdownMenu title="Actions">{
                                     [<Button fullWidth key="edit" variation="INTERACTION" onClick={() => setSelectedProjectId(id)}>Edit</Button>]

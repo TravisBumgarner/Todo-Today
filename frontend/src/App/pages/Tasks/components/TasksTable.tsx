@@ -6,16 +6,12 @@ import { projectStatusLookup } from 'utilities'
 import { EditTaskModal } from 'sharedModals'
 
 type TasksTableProps = {
-    tasks: TTask[] | null
+    tasks: TTask[]
     project: TProject
 }
 
 const TasksTable = ({ tasks, project }: TasksTableProps) => {
     const [selectedTaskId, setSelectedTaskId] = React.useState<string | null>(null)
-
-    if (!tasks) {
-        return <BigBoxOfNothing message="Create a task and then come back!" />
-    }
 
     const TasksTableOnly = (
         <Table.Table>
@@ -46,9 +42,8 @@ const TasksTable = ({ tasks, project }: TasksTableProps) => {
 
     return (
         <>
-            <Heading.H3>{project.title}</Heading.H3>
+            <Heading.H3>{project.title} ({projectStatusLookup[project.status]})</Heading.H3>
             {
-
                 tasks.length === 0
                     ? (<BigBoxOfNothing message="Create a tasks and get going!" />)
                     : (TasksTableOnly)

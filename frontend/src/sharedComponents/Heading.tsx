@@ -8,13 +8,13 @@ const H1 = styled.h1`
 
 const H2 = styled.h2`
     color: ${({ theme }) => theme.WARNING};
-    margin: 2rem 0 1.5rem 0;
+    margin: 2rem 0 2rem 0;
     font-size: 2.5rem;
 `
 
 const H3 = styled.h3`
     color: ${({ theme }) => theme.WARNING};
-    margin: 2rem 0 1.5rem 0;
+    margin: 1.5rem 0 1.5rem 0;
     font-size: 1.8rem;
 `
 

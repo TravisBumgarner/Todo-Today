@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { ButtonWrapper, Heading, Button, LabelAndInput } from 'sharedComponents'
+import { ButtonWrapper, Heading, Button, LabelAndInput, LabelInDisguise } from 'sharedComponents'
 import { AddProjectModal } from 'sharedModals'
 import { projectStatusLookup } from 'utilities'
 import { EProjectStatus } from 'sharedTypes'
@@ -20,7 +20,7 @@ type FilterProps = {
 
 const Filters = ({ setStatusFilter, statusFilter }: FilterProps) => {
     return (
-        <div style={{ margin: '1rem 0' }}>
+        <div style={{ margin: '1.5rem 0' }}>
             <LabelAndInput
                 inputType="checkbox"
                 name="projectfilter"
@@ -52,11 +52,11 @@ const Projects = () => {
         <>
             <Heading.H2>Projects</Heading.H2>
             <Filters statusFilter={statusFilter} setStatusFilter={setStatusFilter} />
-            <ProjectsTable statusFilter={statusFilter} />
-            <ButtonWrapper fullWidth={
-                <Button fullWidth key="edit" variation="INTERACTION" onClick={() => setShowAddProjectModal(true)}>Add Project</Button>
-            }
+            <ButtonWrapper
+                left={[<Button key="edit" variation="INTERACTION" onClick={() => setShowAddProjectModal(true)}>Add Project</Button>]}
             />
+
+            <ProjectsTable statusFilter={statusFilter} />
 
             <AddProjectModal showModal={showAddProjectModal} setShowModal={setShowAddProjectModal} />
         </>

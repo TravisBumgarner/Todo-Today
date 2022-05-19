@@ -136,7 +136,7 @@ const Reports = () => {
             </FilterWrapper>
             {
                 !filteredTodoListItems || !filteredTodoListItems.length
-                    ? <BigBoxOfNothing message="No data exists for these dates." />
+                    ? <BigBoxOfNothing message="No data exists for these dates!" />
                     : <ReportsTable startDate={startDate} endDate={endDate} crunchedNumbers={crunchTheNumbers(filteredTodoListItems)} />
             }
         </>

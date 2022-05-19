@@ -24,7 +24,7 @@ const SuccessesTable = () => {
     if (!tableRows || tableRows.length === 0) {
         return (
             <BigBoxOfNothing
-                message="Get to it!"
+                message="What was something that went well today?"
             />
         )
     }
