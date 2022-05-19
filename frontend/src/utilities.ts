@@ -53,7 +53,7 @@ const dateFormatLookup = {
     [EDateFormat.D]: 'DD/MM/YY',
 }
 
-const formatDateDisplayString = (dateFormat: EDateFormat, date: TDateISODate| null): string => {
+const formatDateDisplayString = (dateFormat: EDateFormat, date: TDateISODate | null): string => {
     if (date === null) {
         return ''
     }
@@ -81,7 +81,9 @@ const bucketTasksByProject = (projects: TProject[], tasks: TTask[] | undefined) 
 
     if (tasks) {
         Object.values(tasks).forEach((curr) => {
-            accumulator[curr.projectId].push(curr)
+            if (curr.projectId in accumulator) {
+                accumulator[curr.projectId].push(curr)
+            }
         })
     }
 
