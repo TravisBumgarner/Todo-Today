@@ -38,7 +38,7 @@ function createWindow() {
         mainWindow.loadURL('http://localhost:3003')
     } else {
         if (isDebugProduction) mainWindow.webContents.openDevTools();
-        mainWindow.loadFile(path.resolve(__dirname, 'react-dist', 'index.html'))
+        mainWindow.loadFile(path.resolve(__dirname, '..', '..', 'react-dist', 'index.html'))
 
     }
 }
