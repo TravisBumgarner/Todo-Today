@@ -21,7 +21,7 @@ const Successes = ({ selectedDate }: SuccessesProps) => {
                     <Button key="add" onClick={() => setShowSuccessModal(true)} variation="INTERACTION">Add New Success</Button>
                 ]}
             />
-            <SuccessesTable selectedDate={selectedDate} />
+            <SuccessesTable />
             <AddSuccessModal selectedDate={selectedDate} showModal={showSuccessModal} setShowModal={setShowSuccessModal} />
         </div>
     )
