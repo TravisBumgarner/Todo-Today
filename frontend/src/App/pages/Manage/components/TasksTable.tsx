@@ -3,7 +3,7 @@ import React from 'react'
 import { Button, Heading, Table, DropdownMenu, BigBoxOfNothing } from 'sharedComponents'
 import { TProject, TTask } from 'sharedTypes'
 import { projectStatusLookup } from 'utilities'
-import { EditTaskModal } from 'sharedModals'
+import { EditTaskModal, EditProjectModal } from 'sharedModals'
 
 type TasksTableProps = {
     tasks: TTask[]
@@ -12,6 +12,7 @@ type TasksTableProps = {
 
 const TasksTable = ({ tasks, project }: TasksTableProps) => {
     const [selectedTaskId, setSelectedTaskId] = React.useState<string | null>(null)
+    const [selectedProjectId, setSelectedProjectId] = React.useState<string | null>(null)
 
     const TasksTableOnly = (
         <Table.Table>
@@ -42,7 +43,13 @@ const TasksTable = ({ tasks, project }: TasksTableProps) => {
 
     return (
         <>
-            <Heading.H3>{project.title} ({projectStatusLookup[project.status]})</Heading.H3>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Heading.H3>{project.title} ({projectStatusLookup[project.status]})</Heading.H3>
+                <DropdownMenu title="Actions">{
+                    [<Button fullWidth key="edit" variation="INTERACTION" onClick={() => setSelectedProjectId(project.id)}>Edit</Button>]
+                }
+                </DropdownMenu>
+            </div>
             {
                 tasks.length === 0
                     ? (<BigBoxOfNothing message="Create a tasks and get going!" />)
@@ -57,7 +64,18 @@ const TasksTable = ({ tasks, project }: TasksTableProps) => {
                         taskId={selectedTaskId}
                     />
                 )
-                : (null)}
+                : (null)
+            }
+            {selectedProjectId
+                ? (
+                    <EditProjectModal
+                        showModal={selectedProjectId !== null}
+                        setShowModal={() => setSelectedProjectId(null)}
+                        projectId={selectedProjectId}
+                    />
+                )
+                : (null)
+            }
         </>
     )
 }

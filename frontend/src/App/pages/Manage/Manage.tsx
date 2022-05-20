@@ -1,5 +1,6 @@
 import { useLiveQuery } from 'dexie-react-hooks'
 import React from 'react'
+import styled from 'styled-components'
 
 import { EProjectStatus, ETaskStatus } from 'sharedTypes'
 import { BigBoxOfNothing, Button, ButtonWrapper, Heading, LabelAndInput } from 'sharedComponents'
@@ -8,6 +9,25 @@ import database from 'database'
 import { AddTaskModal } from 'sharedModals'
 import { TasksTable } from './components'
 
+const FilterWrapper = styled.div`
+    display: flex;
+    justify-content: space-between;
+
+    > div {
+        width: 48%;
+        margin: 1.5rem 0;
+    }
+
+    @media (max-width: 1100px) {
+        flex-direction: column;
+         
+        > div {
+            margin: 0.5rem 0;
+            width: 100%;
+        }
+    }
+`
+
 type TaskFilterProps = {
     setStatusFilter: React.Dispatch<React.SetStateAction<Record<ETaskStatus, boolean>>>
     statusFilter: Record<ETaskStatus, boolean>
@@ -15,7 +35,7 @@ type TaskFilterProps = {
 
 const TaskFilters = ({ setStatusFilter, statusFilter }: TaskFilterProps) => {
     return (
-        <div style={{ margin: '1.5rem 0' }}>
+        <div>
             <LabelAndInput
                 inputType="checkbox"
                 name="projectfilter"
@@ -46,7 +66,7 @@ type ProjectFilterProps = {
 
 const ProjectFilters = ({ setStatusFilter, statusFilter }: ProjectFilterProps) => {
     return (
-        <div style={{ margin: '1.5rem 0' }}>
+        <div>
             <LabelAndInput
                 inputType="checkbox"
                 name="projectfilter"
@@ -120,10 +140,12 @@ const Tasks = () => {
     return (
         <div>
             <Heading.H2>Tasks</Heading.H2>
-            <ProjectFilters statusFilter={projectStatusFilter} setStatusFilter={setProjectStatusFilter} />
-            <TaskFilters statusFilter={taskStatusFilter} setStatusFilter={setTaskStatusFilter} />
+            <FilterWrapper>
+                <ProjectFilters statusFilter={projectStatusFilter} setStatusFilter={setProjectStatusFilter} />
+                <TaskFilters statusFilter={taskStatusFilter} setStatusFilter={setTaskStatusFilter} />
+            </FilterWrapper>
             <ButtonWrapper
-                left={[<Button fullWidth key="edit" variation="INTERACTION" onClick={() => setShowAddTaskModal(true)}>Add Task</Button>]}
+                left={[<Button fullWidth key="edit" variation="INTERACTION" onClick={() => setShowAddTaskModal(true)}>Add New Task</Button>]}
             />
             {Contents}
             <AddTaskModal addToTodayDefaultValue="no" showModal={showAddTaskModal} setShowModal={setShowAddTaskModal} />

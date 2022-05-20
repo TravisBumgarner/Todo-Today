@@ -44,6 +44,11 @@ const Button = styled.button<ButtonProps>`
                 border-color: ${theme.FOREGROUND};
                 background-color: ${transparentize(0.9, theme.FOREGROUND)};
 
+                // border-left-color: ${theme.FOREGROUND};
+                // border-right-color: ${theme.INTERACTION};
+                // border-bottom-color: ${theme.WARNING};
+                // border-top-color: ${theme.DISABLED};
+
                 &:hover {
                     color: ${theme.INTERACTION};
                     border-color: ${theme.INTERACTION};
