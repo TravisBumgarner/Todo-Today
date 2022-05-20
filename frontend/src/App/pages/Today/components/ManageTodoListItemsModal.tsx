@@ -7,6 +7,7 @@ import { formatDateDisplayString } from 'utilities'
 import { TDateISODate, TTask, TTodoListItem } from 'sharedTypes'
 import database from 'database'
 import { context } from 'Context'
+import styled from 'styled-components'
 
 type ManageTodoListItemsModalProps = {
     showModal: boolean
@@ -33,6 +34,23 @@ const getTaskIdsToTodoListIds = (todoListItems: TTodoListItem[]) => {
         return accumulator
     }, {} as Record<string, string>)
 }
+
+const RowWrapper = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 1rem 0;
+
+    ${Paragraph} {
+        margin: 0 1rem 0 0;
+    }
+
+    ${Button} {
+        width: 200px;
+        min-width: 200px;
+        max-width: 200px;
+    }
+`
 
 const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: ManageTodoListItemsModalProps) => {
     const tasks = useLiveQuery(() => database.tasks.toArray())
@@ -75,32 +93,33 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
                         return (
                             <div key={projectId}>
                                 <Heading.H2>{title}</Heading.H2>
-                                <ButtonWrapper
-                                    vertical={tasksByProject.map(({ title: taskTitle, id: taskId }) => {
-                                        return (
-                                            Object.keys(taskIdsToTodoListIds).includes(taskId)
+                                {tasksByProject.map(({ title: taskTitle, id: taskId }) => {
+                                    return (
+                                        <RowWrapper>
+                                            <Paragraph>{taskTitle}</Paragraph>
+                                            {Object.keys(taskIdsToTodoListIds).includes(taskId)
                                                 ? (
                                                     <Button
                                                         key={`${taskId}-remove`}
-                                                        fullWidth
                                                         variation="WARNING"
                                                         onClick={() => handleRemove(taskIdsToTodoListIds[taskId])}
                                                     >
-                                                        Remove {taskTitle}
+                                                        Remove
                                                     </Button>
                                                 ) : (
                                                     <Button
                                                         key={`${taskId}-add`}
-                                                        fullWidth
                                                         variation="INTERACTION"
                                                         onClick={() => handleAdd({ projectId, taskId })}
                                                     >
-                                                        Add {taskTitle}
+                                                        Add
                                                     </Button>
                                                 )
-                                        )
-                                    })}
-                                />
+                                            }
+                                        </RowWrapper>
+
+                                    )
+                                })}
                             </div>
                         )
                     })

@@ -18,14 +18,13 @@ const StyledNav = styled.ul`
 
 const ALWAYS_VISIBLE_LINKS = [
     { text: 'Todo Today', to: '/' },
-    { text: 'Manage Projects', to: '/projects' },
-    { text: 'Manage Tasks', to: '/tasks' },
+    { text: 'Manage', to: '/manage' },
     { text: 'Reports', to: '/reports' },
     { text: 'Settings', to: '/settings' },
 ]
 
 const NavLi = styled.li`
-    font-weight: ${(props: {isActive: boolean}) => {
+    font-weight: ${(props: { isActive: boolean }) => {
         return props.isActive ? 700 : 100
     }};
 `

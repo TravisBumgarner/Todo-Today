@@ -62,19 +62,19 @@ const FunHeader = () => {
     return (
         <FunHeaderWrapper>
             <Heading.H1>
-                TODO TODAY
+                Todo Today
             </Heading.H1>
             <Heading.H1>
-                TODO TODAY
+                Todo Today
             </Heading.H1>
             <Heading.H1>
-                TODO TODAY
+                Todo Today
             </Heading.H1>
             <Heading.H1>
-                TODO TODAY
+                Todo Today
             </Heading.H1>
             <Heading.H1>
-                TODO TODAY
+                Todo Today
             </Heading.H1>
         </FunHeaderWrapper>
     )

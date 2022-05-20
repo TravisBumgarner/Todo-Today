@@ -87,7 +87,15 @@ const EditProjectModal = ({ showModal, setShowModal, projectId }: EditProjectMod
                             <ButtonWrapper right={
                                 [
                                     <Button key="cancel" variation="INTERACTION" onClick={() => setShowModal(false)}>Cancel</Button>,
-                                    <Button key="save" disabled={submitDisabled} variation="WARNING" onClick={handleSubmit}>Save</Button>
+                                    <Button
+                                        key="save"
+                                        type="button"
+                                        disabled={submitDisabled}
+                                        variation="WARNING"
+                                        onClick={handleSubmit}
+                                    >
+                                        Save
+                                    </Button>
                                 ]
                             }
                             />
