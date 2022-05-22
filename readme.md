@@ -4,7 +4,7 @@
 
 # Features
 
-- It's a Todo List!
+- It's a Todo List! 😂
 - Create Projects, tasks, and todo list items!
 - Track time spent on projects!
 - Generate reports of work completed - Broken down by date and project!
