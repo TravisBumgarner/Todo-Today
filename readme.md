@@ -1,6 +1,8 @@
 ![alt text](./readme/logo.png "Logo")
 
+
 > Todo List for Consulting - Track projects, tasks, work completed, achievements, and more.
+
 
 # Features
 
