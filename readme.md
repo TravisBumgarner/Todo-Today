@@ -7,6 +7,7 @@
 - It's a Todo List! 😂
 - Create Projects, tasks, and todo list items!
 - Track time spent on projects!
+- Track your successes so you have evidence when it comes time for promotion, or just feeling good!
 - Generate reports of work completed - Broken down by date and project!
 - Automated and manual backups!
 - Create Notifications!
@@ -14,7 +15,8 @@
 
 # Features in Development
 
-- Add ability to track misc things each day.
+- Add more Granular ways of tracking time. 
+
 
 # Contributing
 
