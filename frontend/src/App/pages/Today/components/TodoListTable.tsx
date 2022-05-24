@@ -7,6 +7,19 @@ import { ETaskStatus, TDateISODate, TProject, TTask, TTodoListItem } from 'share
 import { taskStatusLookup, formatDurationDisplayString, sumArray } from 'utilities'
 
 import { EditTaskModal } from 'sharedModals'
+import EditTodoListItemModal from './AddEditTodoListItemDetailsModal'
+
+type TableRow = {
+    id: string
+    projectTitle: string
+    taskTitle: string
+    status: ETaskStatus
+    duration: number
+    taskId: string
+    todoListItemId: string
+    projectId: string
+    details: string
+}
 
 type TodoListTableProps = {
     selectedDate: TDateISODate
@@ -114,8 +127,90 @@ const AVAILABLE_DURATIONS = [
     { value: 1440, label: '24H00' }
 ]
 
+type TodoListTableRowProps = {
+    tableRow: TableRow,
+    selectedDate: TDateISODate
+    setSelectedTaskId: React.Dispatch<React.SetStateAction<string | null>>
+}
+
+const TodoListTableRow = ({ tableRow, selectedDate, setSelectedTaskId }: TodoListTableRowProps) => {
+    const [showEditDetailsModal, setShowEditDetailsModal] = React.useState<boolean>(false)
+
+    const { id, details, taskId, duration, projectTitle, taskTitle, status, todoListItemId, projectId } = tableRow
+
+    return (
+        <Table.TableRow>
+            <Table.TableBodyCell>{projectTitle} - {taskTitle}</Table.TableBodyCell>
+            <Table.TableBodyCell style={{ whiteSpace: 'pre-line' }}>
+                {details}
+            </Table.TableBodyCell>
+            <Table.TableBodyCell>{taskStatusLookup[status]}</Table.TableBodyCell>
+            <Table.TableBodyCell>
+                <LabelAndInput
+                    name="duration"
+                    value={`${duration}`}
+                    options={AVAILABLE_DURATIONS}
+                    inputType="select-array"
+                    handleChange={(value) => {
+                        database.todoListItems.put({
+                            projectId,
+                            id: todoListItemId,
+                            taskId,
+                            duration: parseInt(value, 10),
+                            todoListDate: selectedDate,
+                            details: ''
+                        }, [todoListItemId])
+                    }}
+                />
+            </Table.TableBodyCell>
+            <Table.TableBodyCell>
+                <DropdownMenu title="Actions">
+                    <Button
+                        fullWidth
+                        key="mark-task-completed"
+                        variation="INTERACTION"
+                        onClick={async () => {
+                            await database.tasks
+                                .where({ id: taskId })
+                                .modify({ status: ETaskStatus.COMPLETED })
+                        }}
+                    >
+                        Mark Completed
+                    </Button>
+                    <Button
+                        fullWidth
+                        key="edit-task"
+                        variation="INTERACTION"
+                        onClick={async () => setSelectedTaskId(taskId)}
+                    >
+                        Edit Task
+                    </Button>
+                    <Button
+                        fullWidth
+                        key="edit-details"
+                        variation="INTERACTION"
+                        onClick={async () => setShowEditDetailsModal(true)}
+                    >
+                        Add or Edit Details
+                    </Button>
+                    <Button
+                        fullWidth
+                        key="remove"
+                        variation="INTERACTION"
+                        onClick={async () => {
+                            await database.todoListItems.where({ id: todoListItemId }).delete()
+                        }}
+                    >
+                        Remove
+                    </Button>
+                </DropdownMenu>
+            </Table.TableBodyCell>
+            <EditTodoListItemModal todoListItem={{ details, id }} showModal={showEditDetailsModal} setShowModal={setShowEditDetailsModal} />
+        </Table.TableRow>
+    )
+}
+
 const TodoListTable = ({ selectedDate, todoListItems }: TodoListTableProps) => {
-    const [modifiedTask, setModifiedTask] = React.useState<string | null>(null)
     const [selectedTaskId, setSelectedTaskId] = React.useState<TTask['id'] | null>(null)
 
     const tableRows = useLiveQuery(async () => {
@@ -123,16 +218,18 @@ const TodoListTable = ({ selectedDate, todoListItems }: TodoListTableProps) => {
             const task = (await database.tasks.where({ id: todoListItem.taskId }).first()) as TTask
             const project = (await database.projects.where({ id: todoListItem.projectId }).first()) as TProject
             return {
+                id: todoListItem.id,
                 projectTitle: project.title,
                 taskTitle: task.title,
                 status: task.status,
                 duration: todoListItem.duration,
                 taskId: task.id,
                 todoListItemId: todoListItem.id,
-                projectId: todoListItem.projectId
+                projectId: todoListItem.projectId,
+                details: todoListItem.details
             }
         }))
-    }, [todoListItems, modifiedTask])
+    }, [todoListItems])
 
     if (!tableRows || tableRows.length === 0) {
         return (
@@ -168,68 +265,14 @@ const TodoListTable = ({ selectedDate, todoListItems }: TodoListTableProps) => {
                                 if (a.taskTitle.toLowerCase() > b.taskTitle.toLowerCase()) return 1
                                 return 0
                             })
-                            .map(({ taskId, duration, projectTitle, taskTitle, status, todoListItemId, projectId }) => {
-                                return (
-                                    <Table.TableRow key={taskId}>
-                                        <Table.TableBodyCell>{projectTitle} - {taskTitle}</Table.TableBodyCell>
-                                        <Table.TableBodyCell>Details here.</Table.TableBodyCell>
-                                        <Table.TableBodyCell>{taskStatusLookup[status]}</Table.TableBodyCell>
-                                        <Table.TableBodyCell>
-                                            <LabelAndInput
-                                                name="duration"
-                                                value={`${duration}`}
-                                                options={AVAILABLE_DURATIONS}
-                                                inputType="select-array"
-                                                handleChange={(value) => {
-                                                    database.todoListItems.put({
-                                                        projectId,
-                                                        id: todoListItemId,
-                                                        taskId,
-                                                        duration: parseInt(value, 10),
-                                                        todoListDate: selectedDate,
-                                                        details: ''
-                                                    }, [todoListItemId])
-                                                }}
-                                            />
-                                        </Table.TableBodyCell>
-                                        <Table.TableBodyCell>
-                                            <DropdownMenu title="Actions">
-                                                <Button
-                                                    fullWidth
-                                                    key="mark-task-completed"
-                                                    variation="INTERACTION"
-                                                    onClick={async () => {
-                                                        await database.tasks
-                                                            .where({ id: taskId })
-                                                            .modify({ status: ETaskStatus.COMPLETED })
-                                                        setModifiedTask(taskId)
-                                                    }}
-                                                >
-                                                    Mark Completed
-                                                </Button>
-                                                <Button
-                                                    fullWidth
-                                                    key="edit"
-                                                    variation="INTERACTION"
-                                                    onClick={async () => setSelectedTaskId(taskId)}
-                                                >
-                                                    Edit
-                                                </Button>
-                                                <Button
-                                                    fullWidth
-                                                    key="remove"
-                                                    variation="INTERACTION"
-                                                    onClick={async () => {
-                                                        await database.todoListItems.where({ id: todoListItemId }).delete()
-                                                    }}
-                                                >
-                                                    Remove
-                                                </Button>
-                                            </DropdownMenu>
-                                        </Table.TableBodyCell>
-                                    </Table.TableRow>
-                                )
-                            })
+                            .map((tableRow) => (
+                                <TodoListTableRow
+                                    key={tableRow.todoListItemId}
+                                    setSelectedTaskId={setSelectedTaskId}
+                                    selectedDate={selectedDate}
+                                    tableRow={tableRow}
+                                />
+                            ))
                     }
                     <Table.TableRow style={{ fontWeight: 900 }}>
                         <Table.TableBodyCell>Summary</Table.TableBodyCell>

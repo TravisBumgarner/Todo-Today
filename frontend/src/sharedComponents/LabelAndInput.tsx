@@ -116,6 +116,7 @@ type InputProps = {
 type TextAreaProps = {
     inputType: 'textarea'
     handleChange: (value: string) => void
+    rows?: number
 }
 
 type CheckboxProps = {
@@ -148,8 +149,16 @@ const LabelAndInput = (props: LabelAndInputProps) => {
     let InputElement: JSX.Element
 
     if (props.inputType === 'textarea') {
-        const { name, handleChange, value } = props
-        InputElement = <TextArea rows={5} autoComplete="on" name={name} onChange={(event) => handleChange(event.target.value)} value={value} />
+        const { name, handleChange, value, rows } = props
+        InputElement = (
+            <TextArea
+                rows={rows ? rows : 5}
+                autoComplete="on"
+                name={name}
+                onChange={(event) => handleChange(event.target.value)}
+                value={value}
+            />
+        )
     } else if (props.inputType === 'select-enum') {
         const { options, name, value, handleChange, optionLabels } = props
         InputElement = (
