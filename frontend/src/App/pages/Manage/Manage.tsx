@@ -12,10 +12,11 @@ import { TasksTable } from './components'
 const FilterWrapper = styled.div`
     display: flex;
     justify-content: space-between;
+    margin: 1.5rem 0;
 
     > div {
-        width: 48%;
-        margin: 1.5rem 0;
+        max-width: 48%;
+        width: fit-content;
     }
 
     @media (max-width: 1100px) {
@@ -23,7 +24,8 @@ const FilterWrapper = styled.div`
          
         > div {
             margin: 0.5rem 0;
-            width: 100%;
+            width: fit-content;
+            max-width: 100%;
         }
     }
 `
@@ -111,14 +113,12 @@ const Tasks = () => {
     const [projectStatusFilter, setProjectStatusFilter] = React.useState<Record<ETaskStatus, boolean>>(DEFAULT_PROJECT_STATUS_FILTER)
     const [showAddTaskModal, setShowAddTaskModal] = React.useState<boolean>(false)
 
-    if (!projects || !projects.length) {
-        return <BigBoxOfNothing message="Create a project and then come back!" />
-    }
 
 
     let Contents
-
-    if (tasks && tasks.length) {
+    if (!projects || !projects.length) {
+        Contents = <BigBoxOfNothing message="Create a project and then come back!" />
+    } else if (tasks && tasks.length) {
         const filteredTasks = tasks.filter(({ status }) => taskStatusFilter[status])
         const filteredProjects = projects.filter(({ status }) => projectStatusFilter[status])
 
@@ -139,7 +139,7 @@ const Tasks = () => {
 
     return (
         <div>
-            <Heading.H2>Tasks</Heading.H2>
+            <Heading.H2>Manage</Heading.H2>
             <FilterWrapper>
                 <ProjectFilters statusFilter={projectStatusFilter} setStatusFilter={setProjectStatusFilter} />
                 <TaskFilters statusFilter={taskStatusFilter} setStatusFilter={setTaskStatusFilter} />

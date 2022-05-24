@@ -2,7 +2,7 @@ import React from 'react'
 import { v4 as uuid4 } from 'uuid'
 import { useLiveQuery } from 'dexie-react-hooks'
 
-import { Modal, Paragraph, Button, Heading, ButtonWrapper } from 'sharedComponents'
+import { Modal, Paragraph, Button, Heading } from 'sharedComponents'
 import { formatDateDisplayString } from 'utilities'
 import { TDateISODate, TTask, TTodoListItem } from 'sharedTypes'
 import database from 'database'
@@ -71,7 +71,8 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
             taskId,
             duration: 0,
             id: uuid4(),
-            todoListDate: selectedDate
+            todoListDate: selectedDate,
+            details: ''
         })
     }
 
@@ -95,7 +96,7 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
                                 <Heading.H2>{title}</Heading.H2>
                                 {tasksByProject.map(({ title: taskTitle, id: taskId }) => {
                                     return (
-                                        <RowWrapper>
+                                        <RowWrapper key={taskId}>
                                             <Paragraph>{taskTitle}</Paragraph>
                                             {Object.keys(taskIdsToTodoListIds).includes(taskId)
                                                 ? (
