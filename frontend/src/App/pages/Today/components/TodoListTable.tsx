@@ -3,7 +3,7 @@ import database from 'database'
 import { useLiveQuery } from 'dexie-react-hooks'
 
 import { BigBoxOfNothing, Button, DropdownMenu, LabelAndInput, Table } from 'sharedComponents'
-import { ETaskStatus, TDateISODate, TProject, TTask, TTodoListItem } from 'sharedTypes'
+import { ETaskStatus, TProject, TTask, TTodoListItem } from 'sharedTypes'
 import { taskStatusLookup, formatDurationDisplayString, sumArray } from 'utilities'
 
 import { EditTaskModal } from 'sharedModals'
@@ -22,8 +22,8 @@ type TableRow = {
 }
 
 type TodoListTableProps = {
-    selectedDate: TDateISODate
     todoListItems: TTodoListItem[] | undefined
+    setLastEditedDuration: React.Dispatch<React.SetStateAction<string | null>>
 }
 
 // It is what it is. lol
@@ -129,14 +129,14 @@ const AVAILABLE_DURATIONS = [
 
 type TodoListTableRowProps = {
     tableRow: TableRow,
-    selectedDate: TDateISODate
     setSelectedTaskId: React.Dispatch<React.SetStateAction<string | null>>
+    setLastEditedDuration: React.Dispatch<React.SetStateAction<string | null>>
 }
 
-const TodoListTableRow = ({ tableRow, selectedDate, setSelectedTaskId }: TodoListTableRowProps) => {
+const TodoListTableRow = ({ tableRow, setSelectedTaskId, setLastEditedDuration }: TodoListTableRowProps) => {
     const [showEditDetailsModal, setShowEditDetailsModal] = React.useState<boolean>(false)
 
-    const { id, details, taskId, duration, projectTitle, taskTitle, status, todoListItemId, projectId } = tableRow
+    const { id, details, taskId, duration, projectTitle, taskTitle, status, todoListItemId } = tableRow
 
     return (
         <Table.TableRow>
@@ -151,15 +151,12 @@ const TodoListTableRow = ({ tableRow, selectedDate, setSelectedTaskId }: TodoLis
                     value={`${duration}`}
                     options={AVAILABLE_DURATIONS}
                     inputType="select-array"
-                    handleChange={(value) => {
-                        database.todoListItems.put({
-                            projectId,
-                            id: todoListItemId,
-                            taskId,
-                            duration: parseInt(value, 10),
-                            todoListDate: selectedDate,
-                            details: ''
-                        }, [todoListItemId])
+                    handleChange={async (value) => {
+                        await database.todoListItems
+                            .where({ id: todoListItemId })
+                            .modify({ duration: parseInt(value, 10) })
+                        setLastEditedDuration(todoListItemId) // This feels bad. lol
+                        setLastEditedDuration(null)
                     }}
                 />
             </Table.TableBodyCell>
@@ -210,7 +207,7 @@ const TodoListTableRow = ({ tableRow, selectedDate, setSelectedTaskId }: TodoLis
     )
 }
 
-const TodoListTable = ({ selectedDate, todoListItems }: TodoListTableProps) => {
+const TodoListTable = ({ setLastEditedDuration, todoListItems }: TodoListTableProps) => {
     const [selectedTaskId, setSelectedTaskId] = React.useState<TTask['id'] | null>(null)
 
     const tableRows = useLiveQuery(async () => {
@@ -267,9 +264,9 @@ const TodoListTable = ({ selectedDate, todoListItems }: TodoListTableProps) => {
                             })
                             .map((tableRow) => (
                                 <TodoListTableRow
+                                    setLastEditedDuration={setLastEditedDuration}
                                     key={tableRow.todoListItemId}
                                     setSelectedTaskId={setSelectedTaskId}
-                                    selectedDate={selectedDate}
                                     tableRow={tableRow}
                                 />
                             ))

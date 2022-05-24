@@ -19,6 +19,8 @@ const TodoList = ({ selectedDate }: TodoListProps) => {
     const [showNothingToCopyModal, setShowNothingToCopyModal] = React.useState<boolean>(false)
     const [showAddNewTaskModal, setShowAddNewTaskModal] = React.useState<boolean>(false)
     const [showAddNewProjectModal, setShowAddNewProjectModal] = React.useState<boolean>(false)
+    // Dropdown of duration change doesn't trigger rerender
+    const [lastEditedDuration, setLastEditedDuration] = React.useState<string | null>(null)
 
     const projects = useLiveQuery(() => database.projects.toArray())
     const tasks = useLiveQuery(() => database.tasks.toArray())
@@ -30,7 +32,7 @@ const TodoList = ({ selectedDate }: TodoListProps) => {
             .where('todoListDate')
             .equals(selectedDate)
             .toArray(),
-        [selectedDate]
+        [selectedDate, lastEditedDuration]
     )
 
     const getPreviousDatesTasks = async () => {
@@ -45,14 +47,14 @@ const TodoList = ({ selectedDate }: TodoListProps) => {
             setShowNothingToCopyModal(true)
         } else {
             (
-                previousDay.map(async ({ projectId, taskId }) => {
+                previousDay.map(async ({ projectId, taskId, details }) => {
                     await database.todoListItems.add({
                         projectId,
                         taskId,
                         duration: 0,
                         id: uuid4(),
                         todoListDate: selectedDate,
-                        details: ''
+                        details
                     })
                 })
             )
@@ -101,7 +103,7 @@ const TodoList = ({ selectedDate }: TodoListProps) => {
                 ]}
             />
             {tasks && tasks.length !== 0
-                ? <TodoListTable todoListItems={todoListItems} selectedDate={selectedDate} />
+                ? <TodoListTable todoListItems={todoListItems} setLastEditedDuration={setLastEditedDuration} />
                 : <BigBoxOfNothing message="Go create some projects and tasks and come back!" />}
             <ManageTodoListItemsModal selectedDate={selectedDate} showModal={showManagementModal} setShowModal={setShowManagementModal} />
             <ConfirmationModal
