@@ -151,8 +151,8 @@ const TodoListTable = ({ selectedDate, todoListItems }: TodoListTableProps) => {
             <Table.Table>
                 <Table.TableHeader>
                     <Table.TableRow>
-                        <Table.TableHeaderCell width="30%">Project</Table.TableHeaderCell>
-                        <Table.TableHeaderCell width="30%">Task</Table.TableHeaderCell>
+                        <Table.TableHeaderCell width="30%">Project - Task</Table.TableHeaderCell>
+                        <Table.TableHeaderCell width="30%">Details</Table.TableHeaderCell>
                         <Table.TableHeaderCell width="60px">Status</Table.TableHeaderCell>
                         <Table.TableHeaderCell width="110px">Duration</Table.TableHeaderCell>
                         <Table.TableHeaderCell width="100px">Actions</Table.TableHeaderCell>
@@ -171,8 +171,8 @@ const TodoListTable = ({ selectedDate, todoListItems }: TodoListTableProps) => {
                             .map(({ taskId, duration, projectTitle, taskTitle, status, todoListItemId, projectId }) => {
                                 return (
                                     <Table.TableRow key={taskId}>
-                                        <Table.TableBodyCell>{projectTitle}</Table.TableBodyCell>
-                                        <Table.TableBodyCell>{taskTitle}</Table.TableBodyCell>
+                                        <Table.TableBodyCell>{projectTitle} - {taskTitle}</Table.TableBodyCell>
+                                        <Table.TableBodyCell>Details here.</Table.TableBodyCell>
                                         <Table.TableBodyCell>{taskStatusLookup[status]}</Table.TableBodyCell>
                                         <Table.TableBodyCell>
                                             <LabelAndInput
@@ -186,7 +186,8 @@ const TodoListTable = ({ selectedDate, todoListItems }: TodoListTableProps) => {
                                                         id: todoListItemId,
                                                         taskId,
                                                         duration: parseInt(value, 10),
-                                                        todoListDate: selectedDate
+                                                        todoListDate: selectedDate,
+                                                        details: ''
                                                     }, [todoListItemId])
                                                 }}
                                             />

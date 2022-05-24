@@ -41,7 +41,8 @@ const AddTaskModal = ({ showModal, setShowModal, project, addToTodayDefaultValue
                 taskId,
                 duration: 0,
                 id: taskId,
-                todoListDate: formatDateKeyLookup(moment())
+                todoListDate: formatDateKeyLookup(moment()),
+                details: ''
             })
         }
         setShowModal(false)

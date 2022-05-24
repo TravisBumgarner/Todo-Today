@@ -58,7 +58,8 @@ const TodoList = ({ selectedDate }: TodoListProps) => {
                         taskId,
                         duration: 0,
                         id: uuid4(),
-                        todoListDate: selectedDate
+                        todoListDate: selectedDate,
+                        details: ''
                     })
                 })
             )

@@ -16,7 +16,7 @@ const EditTaskModal = ({ showModal, setShowModal, taskId }: EditTaskModalProps) 
     const [title, setTitle] = React.useState<string>('')
     const [status, setStatus] = React.useState<ETaskStatus>(ETaskStatus.NEW)
     const [projectId, setProjectId] = React.useState<string>('')
-    const [submitDisabled, setSubmitDisabled] = React.useState<boolean>(true)
+    const [formEdited, setFormEdited] = React.useState<boolean>(false)
 
     const projects = useLiveQuery(async () => {
         return database.projects.toArray()
@@ -52,7 +52,7 @@ const EditTaskModal = ({ showModal, setShowModal, taskId }: EditTaskModalProps) 
             showModal={showModal}
             closeModal={() => setShowModal(false)}
         >
-            <Form onChange={() => setSubmitDisabled(false)}>
+            <Form onChange={() => setFormEdited(true)}>
                 <LabelAndInput
                     label="Task"
                     name="title"
@@ -79,7 +79,15 @@ const EditTaskModal = ({ showModal, setShowModal, taskId }: EditTaskModalProps) 
                 <ButtonWrapper right={
                     [
                         <Button key="cancel" variation="INTERACTION" onClick={() => setShowModal(false)}>Cancel</Button>,
-                        <Button type="button" key="save" disabled={submitDisabled} variation="WARNING" onClick={handleSubmit}>Save</Button>
+                        <Button
+                            type="button"
+                            key="save"
+                            disabled={!formEdited || projectId === ''}
+                            variation="WARNING"
+                            onClick={handleSubmit}
+                        >
+                            Save
+                        </Button>
                     ]
                 }
                 />
