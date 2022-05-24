@@ -3,11 +3,11 @@ import moment from 'moment'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { v4 as uuid4 } from 'uuid'
 
-import { BigBoxOfNothing, Button, ButtonWrapper, ConfirmationModal, Heading, LabelInDisguise, Paragraph } from 'sharedComponents'
+import { BigBoxOfNothing, Button, ButtonWrapper, ConfirmationModal, Heading } from 'sharedComponents'
 import { formatDateKeyLookup } from 'utilities'
 import database from 'database'
 import { TDateISODate } from 'sharedTypes'
-import { AddTaskModal } from 'sharedModals'
+import { AddTaskModal, AddProjectModal } from 'sharedModals'
 import { TodoListTable, ManageTodoListItemsModal } from '.'
 
 type TodoListProps = {
@@ -18,18 +18,11 @@ const TodoList = ({ selectedDate }: TodoListProps) => {
     const [showManagementModal, setShowManagementModal] = React.useState<boolean>(false)
     const [showNothingToCopyModal, setShowNothingToCopyModal] = React.useState<boolean>(false)
     const [showAddNewTaskModal, setShowAddNewTaskModal] = React.useState<boolean>(false)
+    const [showAddNewProjectModal, setShowAddNewProjectModal] = React.useState<boolean>(false)
 
-    const [isLoading, setIsLoading] = React.useState<boolean>(true)
-    const [taskCount, setTaskCount] = React.useState<number>(0)
+    const projects = useLiveQuery(() => database.projects.toArray())
+    const tasks = useLiveQuery(() => database.tasks.toArray())
 
-    React.useEffect(() => {
-        const fetch = async () => {
-            const tasks = await database.tasks.toArray()
-            setTaskCount(tasks ? tasks.length : 0)
-            setIsLoading(false)
-        }
-        fetch()
-    }, [])
 
     const todoListItems = useLiveQuery(
         () => database
@@ -66,9 +59,6 @@ const TodoList = ({ selectedDate }: TodoListProps) => {
         }
     }
 
-    if (isLoading) {
-        return <Paragraph>One sec</Paragraph>
-    }
     return (
         <>
             <Heading.H3>Todo List</Heading.H3>
@@ -84,17 +74,33 @@ const TodoList = ({ selectedDate }: TodoListProps) => {
                     </Button>,
                     <Button
                         key="manage"
-                        disabled={taskCount === 0}
+                        disabled={tasks && tasks.length === 0}
+                        title={tasks && tasks.length === 0 ? 'You need to create a task first!' : 'Manage'}
                         onClick={() => setShowManagementModal(true)}
                         variation="INTERACTION"
                     >
                         Manage Tasks
                     </Button>,
-                    <Button key="add" onClick={() => setShowAddNewTaskModal(true)} variation="INTERACTION">Add New Task</Button>
-
+                    <Button
+                        key="add-project"
+                        onClick={() => setShowAddNewProjectModal(true)}
+                        variation="INTERACTION"
+                        title="Add new Project"
+                    >
+                        Add New Project
+                    </Button>,
+                    <Button
+                        key="add-task"
+                        disabled={projects && projects.length === 0}
+                        onClick={() => setShowAddNewTaskModal(true)}
+                        variation="INTERACTION"
+                        title={projects && projects.length === 0 ? 'You need to create a project first!' : 'Add New Task'}
+                    >
+                        Add New Task
+                    </Button>
                 ]}
             />
-            {taskCount > 0
+            {tasks && tasks.length !== 0
                 ? <TodoListTable todoListItems={todoListItems} selectedDate={selectedDate} />
                 : <BigBoxOfNothing message="Go create some projects and tasks and come back!" />}
             <ManageTodoListItemsModal selectedDate={selectedDate} showModal={showManagementModal} setShowModal={setShowManagementModal} />
@@ -106,7 +112,7 @@ const TodoList = ({ selectedDate }: TodoListProps) => {
                 setShowModal={setShowNothingToCopyModal}
             />
             <AddTaskModal addToTodayDefaultValue="yes" showModal={showAddNewTaskModal} setShowModal={setShowAddNewTaskModal} />
-
+            <AddProjectModal showModal={showAddNewProjectModal} setShowModal={setShowAddNewProjectModal} />
         </>
     )
 }
