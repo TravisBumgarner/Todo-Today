@@ -6,7 +6,6 @@ import { BigBoxOfNothing, Button, DropdownMenu, LabelAndInput, Table } from 'sha
 import { ETaskStatus, TProject, TTask, TTodoListItem } from 'sharedTypes'
 import { taskStatusLookup, formatDurationDisplayString, sumArray } from 'utilities'
 
-import { EditTaskModal } from 'sharedModals'
 import EditTodoListItemModal from './AddEditTodoListItemDetailsModal'
 
 type TableRow = {
@@ -129,14 +128,13 @@ const AVAILABLE_DURATIONS = [
 
 type TodoListTableRowProps = {
     tableRow: TableRow,
-    setSelectedTaskId: React.Dispatch<React.SetStateAction<string | null>>
     setLastEditedDuration: React.Dispatch<React.SetStateAction<string | null>>
 }
 
-const TodoListTableRow = ({ tableRow, setSelectedTaskId, setLastEditedDuration }: TodoListTableRowProps) => {
+const TodoListTableRow = ({ tableRow, setLastEditedDuration }: TodoListTableRowProps) => {
     const [showEditDetailsModal, setShowEditDetailsModal] = React.useState<boolean>(false)
 
-    const { id, details, taskId, duration, projectTitle, taskTitle, status, todoListItemId } = tableRow
+    const { id, details, duration, projectTitle, taskTitle, status, todoListItemId } = tableRow
 
     return (
         <Table.TableRow>
@@ -173,14 +171,14 @@ const TodoListTableRow = ({ tableRow, setSelectedTaskId, setLastEditedDuration }
                     >
                         Mark Completed
                     </Button> */}
-                    <Button
+                    {/* <Button
                         fullWidth
                         key="edit-task"
                         variation="INTERACTION"
                         onClick={async () => setSelectedTaskId(taskId)}
                     >
                         Edit Task
-                    </Button>
+                    </Button> */}
                     <Button
                         fullWidth
                         key="edit-details"
@@ -207,8 +205,6 @@ const TodoListTableRow = ({ tableRow, setSelectedTaskId, setLastEditedDuration }
 }
 
 const TodoListTable = ({ setLastEditedDuration, todoListItems }: TodoListTableProps) => {
-    const [selectedTaskId, setSelectedTaskId] = React.useState<TTask['id'] | null>(null)
-
     const tableRows = useLiveQuery(async () => {
         return Promise.all([...todoListItems || []].map(async (todoListItem) => {
             const task = (await database.tasks.where({ id: todoListItem.taskId }).first()) as TTask
@@ -240,55 +236,43 @@ const TodoListTable = ({ setLastEditedDuration, todoListItems }: TodoListTablePr
         : ''
 
     return (
-        <>
-            <Table.Table>
-                <Table.TableHeader>
-                    <Table.TableRow>
-                        <Table.TableHeaderCell width="15%">Project</Table.TableHeaderCell>
-                        <Table.TableHeaderCell width="15%">Task</Table.TableHeaderCell>
-                        <Table.TableHeaderCell width="30%">Details</Table.TableHeaderCell>
-                        <Table.TableHeaderCell width="60px">Status</Table.TableHeaderCell>
-                        <Table.TableHeaderCell width="110px">Duration</Table.TableHeaderCell>
-                        <Table.TableHeaderCell width="100px">Actions</Table.TableHeaderCell>
-                    </Table.TableRow>
-                </Table.TableHeader>
-                <Table.TableBody>
-                    {
-                        tableRows
-                            .sort((a, b) => {
-                                if (a.projectTitle.toLowerCase() < b.projectTitle.toLowerCase()) return -1
-                                if (a.projectTitle.toLowerCase() > b.projectTitle.toLowerCase()) return 1
-                                if (a.taskTitle.toLowerCase() < b.taskTitle.toLowerCase()) return -1
-                                if (a.taskTitle.toLowerCase() > b.taskTitle.toLowerCase()) return 1
-                                return 0
-                            })
-                            .map((tableRow) => (
-                                <TodoListTableRow
-                                    setLastEditedDuration={setLastEditedDuration}
-                                    key={tableRow.todoListItemId}
-                                    setSelectedTaskId={setSelectedTaskId}
-                                    tableRow={tableRow}
-                                />
-                            ))
-                    }
-                    <Table.TableRow style={{ fontWeight: 900 }}>
-                        <Table.TableBodyCell>Summary</Table.TableBodyCell>
-                        <Table.TableBodyCell colSpan={2} />
-                        <Table.TableBodyCell>{hoursWorkedSelectedDate}</Table.TableBodyCell>
-                        <Table.TableBodyCell colSpan={2} />
-                    </Table.TableRow>
-                </Table.TableBody>
-            </Table.Table>
-            {
-                selectedTaskId ? (
-                    <EditTaskModal
-                        showModal={selectedTaskId !== null}
-                        setShowModal={() => setSelectedTaskId(null)}
-                        taskId={selectedTaskId}
-                    />
-                ) : (null)
-            }
-        </>
+        <Table.Table>
+            <Table.TableHeader>
+                <Table.TableRow>
+                    <Table.TableHeaderCell width="15%">Project</Table.TableHeaderCell>
+                    <Table.TableHeaderCell width="15%">Task</Table.TableHeaderCell>
+                    <Table.TableHeaderCell width="30%">Details</Table.TableHeaderCell>
+                    <Table.TableHeaderCell width="60px">Status</Table.TableHeaderCell>
+                    <Table.TableHeaderCell width="110px">Duration</Table.TableHeaderCell>
+                    <Table.TableHeaderCell width="100px">Actions</Table.TableHeaderCell>
+                </Table.TableRow>
+            </Table.TableHeader>
+            <Table.TableBody>
+                {
+                    tableRows
+                        .sort((a, b) => {
+                            if (a.projectTitle.toLowerCase() < b.projectTitle.toLowerCase()) return -1
+                            if (a.projectTitle.toLowerCase() > b.projectTitle.toLowerCase()) return 1
+                            if (a.taskTitle.toLowerCase() < b.taskTitle.toLowerCase()) return -1
+                            if (a.taskTitle.toLowerCase() > b.taskTitle.toLowerCase()) return 1
+                            return 0
+                        })
+                        .map((tableRow) => (
+                            <TodoListTableRow
+                                setLastEditedDuration={setLastEditedDuration}
+                                key={tableRow.todoListItemId}
+                                tableRow={tableRow}
+                            />
+                        ))
+                }
+                <Table.TableRow style={{ fontWeight: 900 }}>
+                    <Table.TableBodyCell>Summary</Table.TableBodyCell>
+                    <Table.TableBodyCell colSpan={2} />
+                    <Table.TableBodyCell>{hoursWorkedSelectedDate}</Table.TableBodyCell>
+                    <Table.TableBodyCell colSpan={2} />
+                </Table.TableRow>
+            </Table.TableBody>
+        </Table.Table>
     )
 }
 

@@ -2,30 +2,16 @@ import React from 'react'
 import { v4 as uuid4 } from 'uuid'
 import { useLiveQuery } from 'dexie-react-hooks'
 
-import { Modal, Paragraph, Button, Heading } from 'sharedComponents'
+import { Modal, Paragraph, Button, Table } from 'sharedComponents'
 import { formatDateDisplayString } from 'utilities'
-import { TDateISODate, TTask, TTodoListItem } from 'sharedTypes'
+import { TDateISODate, TProject, TTodoListItem } from 'sharedTypes'
 import database from 'database'
 import { context } from 'Context'
-import styled from 'styled-components'
 
 type ManageTodoListItemsModalProps = {
     showModal: boolean
     setShowModal: (showModal: boolean) => void
     selectedDate: TDateISODate
-}
-
-const getTasksByProjectId = <T extends TTask>(key: keyof TTask, arrayItems: T[]) => {
-    return arrayItems.reduce(
-        (accumulator, current) => {
-            if (!(current[key] in accumulator)) {
-                accumulator[current[key]] = []
-            }
-            accumulator[current[key]].push(current)
-            return accumulator
-        },
-        {} as Record<string, T[]>
-    )
 }
 
 const getTaskIdsToTodoListIds = (todoListItems: TTodoListItem[]) => {
@@ -35,34 +21,24 @@ const getTaskIdsToTodoListIds = (todoListItems: TTodoListItem[]) => {
     }, {} as Record<string, string>)
 }
 
-const RowWrapper = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin: 1rem 0;
-
-    ${Paragraph} {
-        margin: 0 1rem 0 0;
-    }
-
-    ${Button} {
-        width: 200px;
-        min-width: 200px;
-        max-width: 200px;
-    }
-`
-
 const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: ManageTodoListItemsModalProps) => {
-    const tasks = useLiveQuery(() => database.tasks.toArray())
-    const projects = useLiveQuery(() => database.projects.toArray())
+    const tasks = useLiveQuery(async () => {
+        const items = await database.tasks.toArray()
+        return Promise.all(items.map(async (item) => {
+            const project = (await database.projects.where({ id: item.projectId }).first()) as TProject
+            return {
+                projectTitle: project.title,
+                ...item
+            }
+        }))
+    })
     const todoListItems = useLiveQuery(() => database.todoListItems.where({ todoListDate: selectedDate }).toArray(), [selectedDate])
     const { state: { dateFormat } } = React.useContext(context)
 
-    if (!tasks || !tasks.length || !projects || !projects.length) {
+    if (!tasks || !tasks.length || !todoListItems) {
         return <>This situation is not possible...</>
     }
 
-    const tasksByProjectId = getTasksByProjectId('projectId', tasks)
     const taskIdsToTodoListIds = getTaskIdsToTodoListIds(todoListItems || [])
 
     const handleAdd = ({ projectId, taskId }: { projectId: string, taskId: string }) => {
@@ -81,51 +57,58 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
     }
     return (
         <Modal
-            contentLabel={`Add ${formatDateDisplayString(dateFormat, selectedDate)}'s Tasks`}
+            contentLabel={`Manage Tasks for ${formatDateDisplayString(dateFormat, selectedDate)}`}
             showModal={showModal}
             closeModal={() => setShowModal(false)}
         >
             <>
-                <Paragraph>Select tasks to add to the todo list.</Paragraph>
-                {
-                    projects.map(({ title, id: projectId }) => {
-                        const tasksByProject = tasksByProjectId[projectId] && tasksByProjectId[projectId].length ? tasksByProjectId[projectId] : []
-                        if (!tasksByProject.length) return null
-                        return (
-                            <div key={projectId}>
-                                <Heading.H2>{title}</Heading.H2>
-                                {tasksByProject.map(({ title: taskTitle, id: taskId }) => {
-                                    return (
-                                        <RowWrapper key={taskId}>
-                                            <Paragraph>{taskTitle}</Paragraph>
-                                            {Object.keys(taskIdsToTodoListIds).includes(taskId)
-                                                ? (
-                                                    <Button
-                                                        key={`${taskId}-remove`}
-                                                        variation="WARNING"
-                                                        onClick={() => handleRemove(taskIdsToTodoListIds[taskId])}
-                                                    >
-                                                        Remove
-                                                    </Button>
-                                                ) : (
-                                                    <Button
-                                                        key={`${taskId}-add`}
-                                                        variation="INTERACTION"
-                                                        onClick={() => handleAdd({ projectId, taskId })}
-                                                    >
-                                                        Add
-                                                    </Button>
-                                                )
+                <Table.Table>
+                    <Table.TableHeader>
+                        <Table.TableRow>
+                            <Table.TableHeaderCell>Project</Table.TableHeaderCell>
+                            <Table.TableHeaderCell>Task</Table.TableHeaderCell>
+                            <Table.TableHeaderCell width="110px">Actions</Table.TableHeaderCell>
+                        </Table.TableRow>
+                    </Table.TableHeader>
+                    <Table.TableBody>
+                        {
+                            tasks.map(({ title, id: taskId, projectId, projectTitle }) => {
+                                return (
+                                    <Table.TableRow key={taskId}>
+                                        <Table.TableBodyCell>{projectTitle}</Table.TableBodyCell>
+                                        <Table.TableBodyCell>{title}</Table.TableBodyCell>
+                                        <Table.TableBodyCell>
+                                            {
+                                                Object.keys(taskIdsToTodoListIds).includes(taskId)
+                                                    ? (
+                                                        <Button
+                                                            style={{ width: '100px' }}
+                                                            key="remove"
+                                                            variation="WARNING"
+                                                            onClick={() => handleRemove(taskIdsToTodoListIds[taskId])}
+                                                        >
+                                                            Remove
+                                                        </Button>
+                                                    ) : (
+                                                        <Button
+                                                            style={{ width: '100px' }}
+                                                            key="add"
+                                                            variation="INTERACTION"
+                                                            onClick={() => handleAdd({ projectId, taskId })}
+                                                        >
+                                                            Add
+                                                        </Button>
+                                                    )
                                             }
-                                        </RowWrapper>
+                                        </Table.TableBodyCell>
+                                    </Table.TableRow>
+                                )
+                            })
+                        }
+                    </Table.TableBody>
 
-                                    )
-                                })}
-                            </div>
-                        )
-                    })
-                }
-                <Heading.H2>Done Adding Tasks?</Heading.H2>
+                </Table.Table>
+                <Paragraph>Done Adding Tasks?</Paragraph>
                 <Button key="finished" fullWidth variation="INTERACTION" onClick={() => setShowModal(false)}>Done!</Button>
             </>
         </Modal>
