@@ -21,7 +21,6 @@ const Input = styled.input`
 `
 
 const CheckboxWrapper = styled.div`
-    flex-direction: row;
     border: 2px solid;
     border-color: ${({ theme }) => theme.FOREGROUND};
     background-color: ${({ theme }) => transparentize(0.9, theme.FOREGROUND)};
@@ -152,7 +151,7 @@ const LabelAndInput = (props: LabelAndInputProps) => {
         const { name, handleChange, value, rows } = props
         InputElement = (
             <TextArea
-                rows={rows ? rows : 5}
+                rows={rows || 5}
                 autoComplete="on"
                 name={name}
                 onChange={(event) => handleChange(event.target.value)}

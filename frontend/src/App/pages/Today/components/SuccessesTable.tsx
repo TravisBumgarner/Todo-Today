@@ -53,7 +53,7 @@ const SuccessesTable = () => {
                                         <Table.TableBodyCell>{projectTitle}</Table.TableBodyCell>
                                         <Table.TableBodyCell>{description}</Table.TableBodyCell>
                                         <Table.TableBodyCell>
-                                            <DropdownMenu title="Actions">
+                                            <DropdownMenu openDirection="left" title="Actions">
                                                 <Button
                                                     fullWidth
                                                     key="edit"

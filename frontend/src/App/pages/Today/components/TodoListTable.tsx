@@ -158,7 +158,7 @@ const TodoListTableRow = ({ tableRow, setLastEditedDuration }: TodoListTableRowP
                 />
             </Table.TableBodyCell>
             <Table.TableBodyCell>
-                <DropdownMenu title="Actions">
+                <DropdownMenu openDirection="left" title="Actions">
                     {/* <Button
                         fullWidth
                         key="mark-task-completed"

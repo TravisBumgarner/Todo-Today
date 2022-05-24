@@ -149,7 +149,7 @@ const RemindersTable = () => {
                         <Table.TableBodyCell>{dayOfWeekLabels[dayOfWeek]}</Table.TableBodyCell>
                         <Table.TableBodyCell>{formatDurationDisplayString(parseInt(hours, 10) * 60 + parseInt(minutes, 10))}</Table.TableBodyCell>
                         <Table.TableBodyCell>
-                            <DropdownMenu title="Actions">{
+                            <DropdownMenu openDirection="left" title="Actions">{
                                 [<Button fullWidth key="edit" variation="INTERACTION" onClick={() => handleDelete(reminderIndex)}>Remove</Button>]
                             }
                             </DropdownMenu>
