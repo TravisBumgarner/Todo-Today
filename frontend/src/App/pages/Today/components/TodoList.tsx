@@ -115,8 +115,14 @@ const TodoList = ({ selectedDate }: TodoListProps) => {
                 showModal={showNothingToCopyModal}
                 setShowModal={setShowNothingToCopyModal}
             />
-            <AddTaskModal addToTodayDefaultValue="yes" showModal={showAddNewTaskModal} setShowModal={setShowAddNewTaskModal} />
-            <AddProjectModal showModal={showAddNewProjectModal} setShowModal={setShowAddNewProjectModal} />
+            {showAddNewTaskModal
+                ? <AddTaskModal addToTodayDefaultValue="yes" showModal={showAddNewTaskModal} setShowModal={setShowAddNewTaskModal} />
+                : null
+            }
+            {showAddNewProjectModal
+                ? <AddProjectModal showModal={showAddNewProjectModal} setShowModal={setShowAddNewProjectModal} />
+                : null
+            }
         </>
     )
 }
