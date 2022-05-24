@@ -140,10 +140,9 @@ const TodoListTableRow = ({ tableRow, setSelectedTaskId, setLastEditedDuration }
 
     return (
         <Table.TableRow>
-            <Table.TableBodyCell>{projectTitle} - {taskTitle}</Table.TableBodyCell>
-            <Table.TableBodyCell style={{ whiteSpace: 'pre-line' }}>
-                {details}
-            </Table.TableBodyCell>
+            <Table.TableBodyCell>{projectTitle}</Table.TableBodyCell>
+            <Table.TableBodyCell>{taskTitle}</Table.TableBodyCell>
+            <Table.TableBodyCell style={{ whiteSpace: 'pre-line' }}>{details}</Table.TableBodyCell>
             <Table.TableBodyCell>{taskStatusLookup[status]}</Table.TableBodyCell>
             <Table.TableBodyCell>
                 <LabelAndInput
@@ -162,7 +161,7 @@ const TodoListTableRow = ({ tableRow, setSelectedTaskId, setLastEditedDuration }
             </Table.TableBodyCell>
             <Table.TableBodyCell>
                 <DropdownMenu title="Actions">
-                    <Button
+                    {/* <Button
                         fullWidth
                         key="mark-task-completed"
                         variation="INTERACTION"
@@ -173,7 +172,7 @@ const TodoListTableRow = ({ tableRow, setSelectedTaskId, setLastEditedDuration }
                         }}
                     >
                         Mark Completed
-                    </Button>
+                    </Button> */}
                     <Button
                         fullWidth
                         key="edit-task"
@@ -245,7 +244,8 @@ const TodoListTable = ({ setLastEditedDuration, todoListItems }: TodoListTablePr
             <Table.Table>
                 <Table.TableHeader>
                     <Table.TableRow>
-                        <Table.TableHeaderCell width="30%">Project - Task</Table.TableHeaderCell>
+                        <Table.TableHeaderCell width="15%">Project</Table.TableHeaderCell>
+                        <Table.TableHeaderCell width="15%">Task</Table.TableHeaderCell>
                         <Table.TableHeaderCell width="30%">Details</Table.TableHeaderCell>
                         <Table.TableHeaderCell width="60px">Status</Table.TableHeaderCell>
                         <Table.TableHeaderCell width="110px">Duration</Table.TableHeaderCell>
@@ -275,7 +275,7 @@ const TodoListTable = ({ setLastEditedDuration, todoListItems }: TodoListTablePr
                         <Table.TableBodyCell>Summary</Table.TableBodyCell>
                         <Table.TableBodyCell colSpan={2} />
                         <Table.TableBodyCell>{hoursWorkedSelectedDate}</Table.TableBodyCell>
-                        <Table.TableBodyCell colSpan={1} />
+                        <Table.TableBodyCell colSpan={2} />
                     </Table.TableRow>
                 </Table.TableBody>
             </Table.Table>

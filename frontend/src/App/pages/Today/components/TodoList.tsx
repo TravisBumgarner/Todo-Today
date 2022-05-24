@@ -82,8 +82,10 @@ const TodoList = ({ selectedDate }: TodoListProps) => {
                         variation="INTERACTION"
                     >
                         Manage Tasks
-                    </Button>,
-                    <Button
+                    </Button>
+                ]}
+                right={[
+                    < Button
                         key="add-project"
                         onClick={() => setShowAddNewProjectModal(true)}
                         variation="INTERACTION"
