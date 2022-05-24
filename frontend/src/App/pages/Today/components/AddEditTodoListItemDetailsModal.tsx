@@ -60,7 +60,6 @@ const AddEditTodoListItemDetailsModal = ({ showModal, setShowModal, todoListItem
                 }
                 />
             </Form>
-
         </Modal>
     )
 }

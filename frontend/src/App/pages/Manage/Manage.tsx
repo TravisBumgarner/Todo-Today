@@ -148,7 +148,10 @@ const Tasks = () => {
                 left={[<Button fullWidth key="edit" variation="INTERACTION" onClick={() => setShowAddTaskModal(true)}>Add New Task</Button>]}
             />
             {Contents}
-            <AddTaskModal addToTodayDefaultValue="no" showModal={showAddTaskModal} setShowModal={setShowAddTaskModal} />
+            {showAddTaskModal
+                ? <AddTaskModal addToTodayDefaultValue="no" showModal={showAddTaskModal} setShowModal={setShowAddTaskModal} />
+                : null
+            }
         </div>
     )
 }

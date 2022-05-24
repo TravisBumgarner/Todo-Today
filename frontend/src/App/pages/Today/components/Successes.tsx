@@ -21,7 +21,12 @@ const Successes = ({ selectedDate }: SuccessesProps) => {
                 ]}
             />
             <SuccessesTable />
-            <AddSuccessModal selectedDate={selectedDate} showModal={showSuccessModal} setShowModal={setShowSuccessModal} />
+            {
+                showSuccessModal
+                    ? <AddSuccessModal selectedDate={selectedDate} showModal={showSuccessModal} setShowModal={setShowSuccessModal} />
+                    : null
+            }
+
         </div>
     )
 }

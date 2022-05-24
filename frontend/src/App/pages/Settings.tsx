@@ -240,7 +240,11 @@ const Settings = () => {
                     : <RemindersTable />}
                 <Button key="addSchedule" fullWidth onClick={() => setShowScheduleMakerModal(true)} variation="INTERACTION">Add Reminder</Button>
             </div>
-            <ScheduleMakerModal setShowModal={setShowScheduleMakerModal} showModal={showScheduleMakerModal} />
+            {
+                showScheduleMakerModal
+                    ? <ScheduleMakerModal setShowModal={setShowScheduleMakerModal} showModal={showScheduleMakerModal} />
+                    : null
+            }
             <div>
                 <Heading.H2>Backups</Heading.H2>
                 <Heading.H3>Manual Backup</Heading.H3>
@@ -280,25 +284,29 @@ const Settings = () => {
                         )}
                     />
                 </Form>
-                <Modal
-                    contentLabel="Restore?"
-                    showModal={showRestoreConfirmModal}
-                    closeModal={() => setShowRestoreConfirmModal(false)}
-                >
-                    <Paragraph>If you have data you have not created a backup for, please do that first.</Paragraph>
-                    <Paragraph>Clicking restore will erase everything currently stored in the application.</Paragraph>
-                    <ButtonWrapper
-                        right={[
-                            <Button
-                                key="cancel"
-                                variation="INTERACTION"
-                                onClick={() => setShowRestoreConfirmModal(false)}
-                            >Cancel
-                            </Button>,
-                            <Button key="restore" variation="WARNING" onClick={() => handleRestore()}>Restore</Button>
-                        ]}
-                    />
-                </Modal>
+                {
+                    showRestoreConfirmModal ? (
+                        <Modal
+                            contentLabel="Restore?"
+                            showModal={showRestoreConfirmModal}
+                            closeModal={() => setShowRestoreConfirmModal(false)}
+                        >
+                            <Paragraph>If you have data you have not created a backup for, please do that first.</Paragraph>
+                            <Paragraph>Clicking restore will erase everything currently stored in the application.</Paragraph>
+                            <ButtonWrapper
+                                right={[
+                                    <Button
+                                        key="cancel"
+                                        variation="INTERACTION"
+                                        onClick={() => setShowRestoreConfirmModal(false)}
+                                    >Cancel
+                                    </Button>,
+                                    <Button key="restore" variation="WARNING" onClick={() => handleRestore()}>Restore</Button>
+                                ]}
+                            />
+                        </Modal>
+                    ) : (null)
+                }
                 <ConfirmationModal
                     body="There is no data to backup."
                     title="Heads Up!"
