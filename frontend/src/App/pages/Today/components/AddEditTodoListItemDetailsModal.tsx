@@ -14,7 +14,7 @@ type AddEditTodoListItemDetailsModalProps = {
 }
 
 const AddEditTodoListItemDetailsModal = ({ showModal, setShowModal, todoListItem }: AddEditTodoListItemDetailsModalProps) => {
-    const [details, setDetails] = React.useState<string>(todoListItem.details)
+    const [details, setDetails] = React.useState<string>(todoListItem.details || '')
 
     const handleSubmit = async () => {
         await database
@@ -45,14 +45,16 @@ const AddEditTodoListItemDetailsModal = ({ showModal, setShowModal, todoListItem
                             key="cancel"
                             variation="WARNING"
                             onClick={() => setShowModal(false)}
+                            type="button"
                         >
                             Cancel
                         </Button>,
                         <Button
-                            disabled={details.length === 0}
+                            disabled={!details || details.length === 0}
                             key="save"
                             variation="INTERACTION"
                             onClick={handleSubmit}
+                            type="button"
                         >
                             Save
                         </Button>

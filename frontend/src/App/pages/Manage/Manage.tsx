@@ -145,7 +145,17 @@ const Tasks = () => {
                 <TaskFilters statusFilter={taskStatusFilter} setStatusFilter={setTaskStatusFilter} />
             </FilterWrapper>
             <ButtonWrapper
-                left={[<Button fullWidth key="edit" variation="INTERACTION" onClick={() => setShowAddTaskModal(true)}>Add New Task</Button>]}
+                left={[
+                    <Button
+                        type="button"
+                        fullWidth
+                        key="edit"
+                        variation="INTERACTION"
+                        onClick={() => setShowAddTaskModal(true)}
+                    >
+                        Add New Task
+                    </Button>
+                ]}
             />
             {Contents}
             {showAddTaskModal

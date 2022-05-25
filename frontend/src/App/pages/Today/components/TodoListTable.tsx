@@ -222,7 +222,7 @@ const TodoListTable = ({ setLastEditedDuration, todoListItems }: TodoListTablePr
             }
         }))
     }, [todoListItems])
-
+    console.log('rows', tableRows)
     if (!tableRows || tableRows.length === 0) {
         return (
             <BigBoxOfNothing

@@ -116,8 +116,8 @@ const ScheduleMakerModal = ({ showModal, setShowModal }: ScheduleMakerModalProps
                 />
                 <ButtonWrapper right={
                     [
-                        <Button key="cancel" variation="WARNING" onClick={() => setShowModal(false)}>Cancel</Button>,
-                        <Button key="save" variation="INTERACTION" type="button" onClick={handleSubmit}>Save</Button>
+                        <Button type="button" key="cancel" variation="WARNING" onClick={() => setShowModal(false)}>Cancel</Button>,
+                        <Button type="button" key="save" variation="INTERACTION" onClick={handleSubmit}>Save</Button>
                     ]
                 }
                 />
@@ -150,7 +150,17 @@ const RemindersTable = () => {
                         <Table.TableBodyCell>{formatDurationDisplayString(parseInt(hours, 10) * 60 + parseInt(minutes, 10))}</Table.TableBodyCell>
                         <Table.TableBodyCell>
                             <DropdownMenu openDirection="left" title="Actions">{
-                                [<Button fullWidth key="edit" variation="INTERACTION" onClick={() => handleDelete(reminderIndex)}>Remove</Button>]
+                                [
+                                    <Button
+                                        fullWidth
+                                        type="button"
+                                        key="edit"
+                                        variation="INTERACTION"
+                                        onClick={() => handleDelete(reminderIndex)}
+                                    >
+                                        Remove
+                                    </Button>
+                                ]
                             }
                             </DropdownMenu>
 
@@ -238,7 +248,15 @@ const Settings = () => {
                 {state.reminders.length === 0
                     ? <BigBoxOfNothing message="No Reminders yet, click Add Reminder Below" />
                     : <RemindersTable />}
-                <Button key="addSchedule" fullWidth onClick={() => setShowScheduleMakerModal(true)} variation="INTERACTION">Add Reminder</Button>
+                <Button
+                    type="button"
+                    key="addSchedule"
+                    fullWidth
+                    onClick={() => setShowScheduleMakerModal(true)}
+                    variation="INTERACTION"
+                >
+                    Add Reminder
+                </Button>
             </div>
             {
                 showScheduleMakerModal
@@ -249,7 +267,7 @@ const Settings = () => {
                 <Heading.H2>Backups</Heading.H2>
                 <Heading.H3>Manual Backup</Heading.H3>
                 <Paragraph>Create a copy of the entire database.</Paragraph>
-                <ButtonWrapper fullWidth={<Button onClick={() => handleBackup()} fullWidth variation="INTERACTION">Backup</Button>} />
+                <ButtonWrapper fullWidth={<Button type="button" onClick={() => handleBackup()} fullWidth variation="INTERACTION">Backup</Button>} />
 
                 <Heading.H3>
                     Automated Backup
@@ -278,6 +296,7 @@ const Settings = () => {
                                 onClick={() => setShowRestoreConfirmModal(true)}
                                 fullWidth
                                 variation="INTERACTION"
+                                type="button"
                             >
                                 Restore from Backup
                             </Button>
@@ -299,9 +318,17 @@ const Settings = () => {
                                         key="cancel"
                                         variation="INTERACTION"
                                         onClick={() => setShowRestoreConfirmModal(false)}
+                                        type="button"
                                     >Cancel
                                     </Button>,
-                                    <Button key="restore" variation="WARNING" onClick={() => handleRestore()}>Restore</Button>
+                                    <Button
+                                        key="restore"
+                                        type="button"
+                                        variation="WARNING"
+                                        onClick={() => handleRestore()}
+                                    >
+                                        Restore
+                                    </Button>
                                 ]}
                             />
                         </Modal>
