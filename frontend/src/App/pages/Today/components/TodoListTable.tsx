@@ -6,6 +6,7 @@ import { BigBoxOfNothing, Button, DropdownMenu, LabelAndInput, Table } from 'sha
 import { ETaskStatus, TProject, TTask, TTodoListItem } from 'sharedTypes'
 import { taskStatusLookup, formatDurationDisplayString, sumArray } from 'utilities'
 
+import { EditTaskModal } from 'sharedModals'
 import EditTodoListItemModal from './AddEditTodoListItemDetailsModal'
 
 type TableRow = {
@@ -129,12 +130,13 @@ const AVAILABLE_DURATIONS = [
 type TodoListTableRowProps = {
     tableRow: TableRow,
     setLastEditedDuration: React.Dispatch<React.SetStateAction<string | null>>
+    setSelectedTaskId: React.Dispatch<React.SetStateAction<string | null>>
 }
 
-const TodoListTableRow = ({ tableRow, setLastEditedDuration }: TodoListTableRowProps) => {
+const TodoListTableRow = ({ tableRow, setLastEditedDuration, setSelectedTaskId }: TodoListTableRowProps) => {
     const [showEditDetailsModal, setShowEditDetailsModal] = React.useState<boolean>(false)
 
-    const { id, details, duration, projectTitle, taskTitle, status, todoListItemId } = tableRow
+    const { id, details, duration, projectTitle, taskTitle, status, todoListItemId, taskId } = tableRow
 
     return (
         <Table.TableRow>
@@ -159,7 +161,7 @@ const TodoListTableRow = ({ tableRow, setLastEditedDuration }: TodoListTableRowP
             </Table.TableBodyCell>
             <Table.TableBodyCell>
                 <DropdownMenu openDirection="left" title="Actions">
-                    {/* <Button
+                    <Button
                         fullWidth
                         key="mark-task-completed"
                         variation="INTERACTION"
@@ -170,15 +172,15 @@ const TodoListTableRow = ({ tableRow, setLastEditedDuration }: TodoListTableRowP
                         }}
                     >
                         Mark Completed
-                    </Button> */}
-                    {/* <Button
+                    </Button>
+                    <Button
                         fullWidth
                         key="edit-task"
                         variation="INTERACTION"
                         onClick={async () => setSelectedTaskId(taskId)}
                     >
                         Edit Task
-                    </Button> */}
+                    </Button>
                     <Button
                         fullWidth
                         key="edit-details"
@@ -205,6 +207,8 @@ const TodoListTableRow = ({ tableRow, setLastEditedDuration }: TodoListTableRowP
 }
 
 const TodoListTable = ({ setLastEditedDuration, todoListItems }: TodoListTableProps) => {
+    const [selectedTaskId, setSelectedTaskId] = React.useState<TTask['id'] | null>(null)
+
     const tableRows = useLiveQuery(async () => {
         return Promise.all([...todoListItems || []].map(async (todoListItem) => {
             const task = (await database.tasks.where({ id: todoListItem.taskId }).first()) as TTask
@@ -222,7 +226,7 @@ const TodoListTable = ({ setLastEditedDuration, todoListItems }: TodoListTablePr
             }
         }))
     }, [todoListItems])
-    console.log('rows', tableRows)
+
     if (!tableRows || tableRows.length === 0) {
         return (
             <BigBoxOfNothing
@@ -262,6 +266,7 @@ const TodoListTable = ({ setLastEditedDuration, todoListItems }: TodoListTablePr
                                 setLastEditedDuration={setLastEditedDuration}
                                 key={tableRow.todoListItemId}
                                 tableRow={tableRow}
+                                setSelectedTaskId={setSelectedTaskId}
                             />
                         ))
                 }
@@ -272,7 +277,17 @@ const TodoListTable = ({ setLastEditedDuration, todoListItems }: TodoListTablePr
                     <Table.TableBodyCell colSpan={2} />
                 </Table.TableRow>
             </Table.TableBody>
+            {
+                selectedTaskId ? (
+                    <EditTaskModal
+                        showModal={selectedTaskId !== null}
+                        setShowModal={() => setSelectedTaskId(null)}
+                        taskId={selectedTaskId}
+                    />
+                ) : (null)
+            }
         </Table.Table>
+
     )
 }
 
