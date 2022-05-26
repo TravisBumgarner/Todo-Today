@@ -31,7 +31,7 @@ const AddProjectModal = ({ showModal, setShowModal }: AddProjectModalProps) => {
     }
 
     React.useEffect(() => {
-        if(status === EProjectStatus.REOCURRING){
+        if (status === EProjectStatus.REOCURRING) {
             setStartDate(null)
             setEndDate(null)
         }
@@ -55,7 +55,7 @@ const AddProjectModal = ({ showModal, setShowModal }: AddProjectModalProps) => {
                     name="status"
                     value={status}
                     options={EProjectStatus}
-                    optionLabels={{...projectStatusLookup, [EProjectStatus.REOCURRING]: 'Reoccuring (PTO, Sick Time, etc.)'}}
+                    optionLabels={{ ...projectStatusLookup, [EProjectStatus.REOCURRING]: 'Reoccuring (PTO, Sick Time, etc.)' }}
                     inputType="select-enum"
                     handleChange={(newStatus: EProjectStatus) => setStatus(newStatus)}
                 />
@@ -78,7 +78,15 @@ const AddProjectModal = ({ showModal, setShowModal }: AddProjectModalProps) => {
                 <ButtonWrapper right={
                     [
                         <Button key="cancel" variation="WARNING" onClick={() => setShowModal(false)}>Cancel</Button>,
-                        <Button key="save" type="button" disabled={title.length === 0 || status === ''} variation="INTERACTION" onClick={handleSubmit}>Save</Button>
+                        <Button
+                            key="save"
+                            type="button"
+                            disabled={title.length === 0 || status === ''}
+                            variation="INTERACTION"
+                            onClick={handleSubmit}
+                        >
+                            Save
+                        </Button>
                     ]
                 }
                 />

@@ -45,7 +45,7 @@ const EditProjectModal = ({ showModal, setShowModal, projectId }: EditProjectMod
     }
 
     React.useEffect(() => {
-        if(status === EProjectStatus.REOCURRING){
+        if (status === EProjectStatus.REOCURRING) {
             setStartDate(null)
             setEndDate(null)
         }
@@ -68,12 +68,12 @@ const EditProjectModal = ({ showModal, setShowModal, projectId }: EditProjectMod
                                 value={title}
                                 handleChange={(data) => setTitle(data)}
                             />
-                             <LabelAndInput
+                            <LabelAndInput
                                 label="Status"
                                 name="status"
                                 value={status}
                                 options={EProjectStatus}
-                                optionLabels={{...projectStatusLookup, [EProjectStatus.REOCURRING]: 'Reoccuring (PTO, Sick Time, etc.)'}}
+                                optionLabels={{ ...projectStatusLookup, [EProjectStatus.REOCURRING]: 'Reoccuring (PTO, Sick Time, etc.)' }}
                                 inputType="select-enum"
                                 handleChange={(newStatus: EProjectStatus) => setStatus(newStatus)}
                             />
@@ -93,7 +93,7 @@ const EditProjectModal = ({ showModal, setShowModal, projectId }: EditProjectMod
                                 inputType="date"
                                 handleChange={(date) => setEndDate(moment(date))}
                             />
-                           
+
                             <ButtonWrapper right={
                                 [
                                     <Button key="cancel" variation="INTERACTION" onClick={() => setShowModal(false)}>Cancel</Button>,

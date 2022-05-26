@@ -235,7 +235,7 @@ const LabelAndInput = (props: LabelAndInputProps) => {
             </Select>
         )
     } else if (props.inputType === 'checkbox') {
-        const { options, handleChange, disabled} = props
+        const { options, handleChange, disabled } = props
         InputElement = (
             <CheckboxWrapper>
                 {options.map((option) => (
@@ -257,7 +257,7 @@ const LabelAndInput = (props: LabelAndInputProps) => {
             </CheckboxWrapper>
         )
     } else if (props.inputType === 'file') {
-        const { inputType, handleChange, name, value, disabled} = props
+        const { inputType, handleChange, name, value, disabled } = props
         InputElement = (
             <Input
                 disabled={disabled}

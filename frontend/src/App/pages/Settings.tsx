@@ -67,11 +67,11 @@ const runAutomatedBackup = (showAutomatedBackupFailedModal: React.Dispatch<React
 }
 
 const createNewBackupInterval = (
-        showAutomatedBackupFailedModal: React.Dispatch<React.SetStateAction<boolean>>,
-        backupIntervalInMilliseconds: number
-    ) => {
+    showAutomatedBackupFailedModal: React.Dispatch<React.SetStateAction<boolean>>,
+    backupIntervalInMilliseconds: number
+) => {
     clearInterval(window.automatedBackupIntervalId)
-    window.automatedBackupIntervalId = setInterval(( ) => {
+    window.automatedBackupIntervalId = setInterval(() => {
         runAutomatedBackup(showAutomatedBackupFailedModal)
     }, backupIntervalInMilliseconds)
 }
@@ -85,7 +85,7 @@ const setupAutomatedBackup = (showAutomatedBackupFailedModal: React.Dispatch<Rea
 
     const lastBackupThreshold = moment()
     lastBackupThreshold.subtract(backupIntervalToMilliseconds[backupInterval], 'milliseconds')
-    
+
     if (!lastBackup || moment(lastBackup) < lastBackupThreshold) {
         runAutomatedBackup(showAutomatedBackupFailedModal)
     }
@@ -308,7 +308,11 @@ const Settings = () => {
             }
             <div>
                 <Heading.H3>Backups</Heading.H3>
-                <ButtonWrapper fullWidth={<Button type="button" onClick={() => handleBackup()} fullWidth variation="INTERACTION">Create Backup</Button>} />
+                <ButtonWrapper
+                    fullWidth={
+                        <Button type="button" onClick={() => handleBackup()} fullWidth variation="INTERACTION">Create Backup</Button>
+                    }
+                />
                 <LabelAndInput
                     inputType="select-enum"
                     name="weekStart"

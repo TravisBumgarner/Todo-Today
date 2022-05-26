@@ -26,7 +26,7 @@ const EMPTY_STATE: State = {
 const initialSetup = () => {
     Object
         .keys(EMPTY_STATE)
-        .forEach((key: keyof typeof EMPTY_STATE) =>setLocalStorage(key, EMPTY_STATE[key]))
+        .forEach((key: keyof typeof EMPTY_STATE) => setLocalStorage(key, EMPTY_STATE[key]))
 
     setLocalStorage(HAS_DONE_WARM_START, TRUE)
 }

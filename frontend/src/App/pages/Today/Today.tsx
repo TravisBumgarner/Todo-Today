@@ -1,6 +1,5 @@
 import React from 'react'
 import moment from 'moment'
-import styled from 'styled-components'
 
 import { Heading, Button, ButtonWrapper, PageHeader } from 'sharedComponents'
 import { formatDateDisplayString, formatDateKeyLookup } from 'utilities'
