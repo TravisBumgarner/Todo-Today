@@ -55,7 +55,7 @@ const AddProjectModal = ({ showModal, setShowModal }: AddProjectModalProps) => {
                     name="status"
                     value={status}
                     options={EProjectStatus}
-                    optionLabels={projectStatusLookup}
+                    optionLabels={{...projectStatusLookup, [EProjectStatus.REOCURRING]: 'Reoccuring (PTO, Sick Time, etc.)'}}
                     inputType="select-enum"
                     handleChange={(newStatus: EProjectStatus) => setStatus(newStatus)}
                 />

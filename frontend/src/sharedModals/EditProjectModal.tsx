@@ -73,7 +73,7 @@ const EditProjectModal = ({ showModal, setShowModal, projectId }: EditProjectMod
                                 name="status"
                                 value={status}
                                 options={EProjectStatus}
-                                optionLabels={projectStatusLookup}
+                                optionLabels={{...projectStatusLookup, [EProjectStatus.REOCURRING]: 'Reoccuring (PTO, Sick Time, etc.)'}}
                                 inputType="select-enum"
                                 handleChange={(newStatus: EProjectStatus) => setStatus(newStatus)}
                             />

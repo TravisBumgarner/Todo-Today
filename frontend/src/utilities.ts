@@ -5,7 +5,7 @@ import { NotificationIPC } from '../../shared/types'
 const { ipcRenderer } = window.require('electron')
 
 const projectStatusLookup: Record<EProjectStatus, string> = {
-    [EProjectStatus.REOCURRING]: 'Reoccuring (PTO, Sick Time, etc.)',
+    [EProjectStatus.REOCURRING]: 'Reoccuring',
     [EProjectStatus.CANCELED]: 'Canceled',
     [EProjectStatus.COMPLETED]: 'Completed',
     [EProjectStatus.IN_PROGRESS]: 'In Progress',
