@@ -3,7 +3,7 @@ import React from 'react'
 import styled from 'styled-components'
 
 import { EProjectStatus, ETaskStatus } from 'sharedTypes'
-import { BigBoxOfNothing, Button, ButtonWrapper, Heading, LabelAndInput } from 'sharedComponents'
+import { BigBoxOfNothing, Button, ButtonWrapper, Heading, LabelAndInput, PageHeader } from 'sharedComponents'
 import { bucketTasksByProject, projectStatusLookup, taskStatusLookup } from 'utilities'
 import database from 'database'
 import { AddTaskModal } from 'sharedModals'
@@ -145,7 +145,9 @@ const Tasks = () => {
 
     return (
         <div>
-            <Heading.H2>Manage</Heading.H2>
+            <PageHeader>
+                <Heading.H2>Manage</Heading.H2>
+            </PageHeader>
             <FilterWrapper>
                 <ProjectFilters statusFilter={projectStatusFilter} setStatusFilter={setProjectStatusFilter} />
                 <TaskFilters statusFilter={taskStatusFilter} setStatusFilter={setTaskStatusFilter} />

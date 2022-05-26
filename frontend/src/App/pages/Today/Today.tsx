@@ -2,21 +2,11 @@ import React from 'react'
 import moment from 'moment'
 import styled from 'styled-components'
 
-import { Heading, Button, ButtonWrapper } from 'sharedComponents'
+import { Heading, Button, ButtonWrapper, PageHeader } from 'sharedComponents'
 import { formatDateDisplayString, formatDateKeyLookup } from 'utilities'
 import { TDateISODate } from 'sharedTypes'
 import { context } from 'Context'
 import { TodoList, Successes } from './components'
-
-const HeadingWrapper = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    ${Heading.H2} {
-        margin: 0;
-    }
-`
 
 const Today = () => {
     const { state: { dateFormat } } = React.useContext(context)
@@ -35,8 +25,8 @@ const Today = () => {
     }
 
     return (
-        <>
-            <HeadingWrapper>
+        <div>
+            <PageHeader>
                 <Heading.H2>{formatDateDisplayString(dateFormat, selectedDate)}</Heading.H2>
                 <ButtonWrapper
                     left={[
@@ -45,10 +35,10 @@ const Today = () => {
                         <Button key="next" onClick={getNextDate} variation="INTERACTION">&gt;</Button>,
                     ]}
                 />
-            </HeadingWrapper>
+            </PageHeader>
             <TodoList selectedDate={selectedDate} />
             <Successes selectedDate={selectedDate} />
-        </>
+        </div>
     )
 }
 

@@ -15,7 +15,8 @@ import {
     ButtonWrapper,
     Table,
     DropdownMenu,
-    LabelInDisguise
+    LabelInDisguise,
+    PageHeader
 } from 'sharedComponents'
 import { dateFormatLookup, formatDurationDisplayString, dayOfWeekLabels, colorThemeOptionLabels, backupIntervalLookup, saveFile } from 'utilities'
 import { context } from 'Context'
@@ -221,8 +222,13 @@ const Settings = () => {
         dispatch({ type: 'EDIT_USER_SETTING', payload: { key, value } })
     }
     return (
-        <>
-            <Heading.H2>User Preferences</Heading.H2>
+        <div>
+            <PageHeader>
+                <Heading.H2>
+                    Settings
+                </Heading.H2>
+            </PageHeader>
+            <Heading.H3>User Preferences</Heading.H3>
             <Form>
                 <LabelAndInput
                     inputType="select-enum"
@@ -264,18 +270,12 @@ const Settings = () => {
                     : null
             }
             <div>
-                <Heading.H2>Backups</Heading.H2>
-                <Heading.H3>Manual Backup</Heading.H3>
-                <Paragraph>Create a copy of the entire database.</Paragraph>
-                <ButtonWrapper fullWidth={<Button type="button" onClick={() => handleBackup()} fullWidth variation="INTERACTION">Backup</Button>} />
-
-                <Heading.H3>
-                    Automated Backup
-                </Heading.H3>
+                <Heading.H3>Backups</Heading.H3>
+                <ButtonWrapper fullWidth={<Button type="button" onClick={() => handleBackup()} fullWidth variation="INTERACTION">Create Backup</Button>} />
                 <LabelAndInput
                     inputType="select-enum"
                     name="weekStart"
-                    label={`How often would you like automated backups to run? (Last Backup: ${localStorage.getItem('lastBackup')})`}
+                    label={`Would you like to automate backups? (Last Backup: ${localStorage.getItem('lastBackup')})`}
                     value={state.backupInterval}
                     handleChange={(value: EBackupInterval) => dispatch({ type: 'EDIT_USER_SETTING', payload: { key: 'backupInterval', value } })}
                     options={EBackupInterval}
@@ -349,7 +349,7 @@ const Settings = () => {
                     setShowModal={setShowInvalidBackupModal}
                 />
             </div>
-        </>
+        </div>
     )
 }
 

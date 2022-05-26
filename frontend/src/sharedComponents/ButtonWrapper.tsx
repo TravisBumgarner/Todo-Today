@@ -19,12 +19,18 @@ const LeftRightWrapper = styled.div`
         ${Button}{
             margin-right: 0.5rem;
         }
+        ${Button}:last-child{
+            margin-right: 0rem;
+        }
     }
 
     div:nth-child(2){
         text-align: right;
         ${Button}{
             margin-left: 0.5rem;
+        }
+        ${Button}:first-child{
+            margin-left: 0rem;
         }
     }
 

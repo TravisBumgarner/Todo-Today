@@ -81,7 +81,7 @@ const TodoList = ({ selectedDate }: TodoListProps) => {
                         onClick={() => setShowManagementModal(true)}
                         variation="INTERACTION"
                     >
-                        Manage Tasks
+                        Select Tasks
                     </Button>
                 ]}
                 right={[

@@ -2,7 +2,7 @@ import React from 'react'
 import { v4 as uuid4 } from 'uuid'
 import { useLiveQuery } from 'dexie-react-hooks'
 
-import { Modal, Paragraph, Button, Table, BigBoxOfNothing } from 'sharedComponents'
+import { Modal, Paragraph, Button, Table, BigBoxOfNothing, ButtonWrapper } from 'sharedComponents'
 import { formatDateDisplayString } from 'utilities'
 import { TDateISODate, TProject, TTodoListItem, ETaskStatus } from 'sharedTypes'
 import database from 'database'
@@ -37,7 +37,7 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
 
     const taskIdsToTodoListIds = getTaskIdsToTodoListIds(todoListItems || [])
 
-    const handleAdd = ({ projectId, taskId }: { projectId: string, taskId: string }) => {
+    const handleSelect = ({ projectId, taskId }: { projectId: string, taskId: string }) => {
         database.todoListItems.add({
             projectId,
             taskId,
@@ -48,7 +48,7 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
         })
     }
 
-    const handleRemove = async (todoListItemId: string) => {
+    const handleDeselect = async (todoListItemId: string) => {
         await database.todoListItems.where({ id: todoListItemId }).delete()
     }
 
@@ -88,20 +88,20 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
                                                         ? (
                                                             <Button
                                                                 style={{ width: '100px' }}
-                                                                key="remove"
+                                                                key="deselect"
                                                                 variation="WARNING"
-                                                                onClick={() => handleRemove(taskIdsToTodoListIds[taskId])}
+                                                                onClick={() => handleDeselect(taskIdsToTodoListIds[taskId])}
                                                             >
-                                                                Remove
+                                                                Deselect
                                                             </Button>
                                                         ) : (
                                                             <Button
                                                                 style={{ width: '100px' }}
-                                                                key="add"
+                                                                key="select"
                                                                 variation="INTERACTION"
-                                                                onClick={() => handleAdd({ projectId, taskId })}
+                                                                onClick={() => handleSelect({ projectId, taskId })}
                                                             >
-                                                                Add
+                                                                Select
                                                             </Button>
                                                         )
                                                 }
@@ -112,15 +112,18 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
                         }
                     </Table.TableBody>
                 </Table.Table>
-                <Paragraph>Done Adding Tasks?</Paragraph>
-                <Button key="finished" fullWidth variation="INTERACTION" onClick={() => setShowModal(false)}>Done!</Button>
+                <ButtonWrapper 
+                    right={[
+                        <Button key="finished" variation="INTERACTION" onClick={() => setShowModal(false)}>Done!</Button>         
+                    ]}
+                />
             </>
         )
     }
 
     return (
         <Modal
-            contentLabel={`Manage Tasks for ${formatDateDisplayString(dateFormat, selectedDate)}`}
+            contentLabel={`Select Tasks for ${formatDateDisplayString(dateFormat, selectedDate)}`}
             showModal={showModal}
             closeModal={() => setShowModal(false)}
         >

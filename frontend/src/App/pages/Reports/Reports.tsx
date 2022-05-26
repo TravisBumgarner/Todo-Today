@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { useLiveQuery } from 'dexie-react-hooks'
 
 import database from 'database'
-import { Heading, LabelAndInput, Button, BigBoxOfNothing, LabelInDisguise } from 'sharedComponents'
+import { Heading, LabelAndInput, Button, BigBoxOfNothing, LabelInDisguise, PageHeader } from 'sharedComponents'
 import { TDateISODate, TTodoListItem } from 'sharedTypes'
 import { formatDateKeyLookup } from 'utilities'
 import { ReportsTable } from './components'
@@ -104,8 +104,10 @@ const Reports = () => {
     }
 
     return (
-        <>
-            <Heading.H2>Reports</Heading.H2>
+        <div>
+            <PageHeader>
+                <Heading.H2>Reports</Heading.H2>
+            </PageHeader>
             <FilterWrapper>
                 <div>
                     <LabelAndInput
@@ -139,7 +141,7 @@ const Reports = () => {
                     ? <BigBoxOfNothing message="No data exists for these dates!" />
                     : <ReportsTable startDate={startDate} endDate={endDate} crunchedNumbers={crunchTheNumbers(filteredTodoListItems)} />
             }
-        </>
+        </div>
     )
 }
 

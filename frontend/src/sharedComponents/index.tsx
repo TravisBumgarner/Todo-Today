@@ -17,6 +17,7 @@ import BigBoxOfNothing from './BigBoxOfNothing'
 import Form from './Form'
 import ConfirmationModal from './ConfirmationModal'
 import LabelInDisguise from './LabelInDisguise'
+import PageHeader from './PageHeader'
 
 export {
     Loading,
@@ -37,5 +38,6 @@ export {
     BigBoxOfNothing,
     Form,
     ConfirmationModal,
-    LabelInDisguise
+    LabelInDisguise, 
+    PageHeader
 }
