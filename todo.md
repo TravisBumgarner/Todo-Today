@@ -1,2 +1,1 @@
-- [x] Add Ability to Track Reoccuring Projects
-- [x] Add disabled to all inputs
+- [ ] Change project statuses to "ACTIVE" "CANCELED" "COMPLETED" "REOCCURING"

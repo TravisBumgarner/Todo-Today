@@ -245,7 +245,7 @@ const TodoListTable = ({ setLastEditedDuration, todoListItems }: TodoListTablePr
                 <Table.TableRow>
                     <Table.TableHeaderCell width="15%">Project</Table.TableHeaderCell>
                     <Table.TableHeaderCell width="15%">Task</Table.TableHeaderCell>
-                    <Table.TableHeaderCell width="30%">Details</Table.TableHeaderCell>
+                    <Table.TableHeaderCell width="30%">Day&apos;s Details</Table.TableHeaderCell>
                     <Table.TableHeaderCell width="60px">Status</Table.TableHeaderCell>
                     <Table.TableHeaderCell width="110px">Duration</Table.TableHeaderCell>
                     <Table.TableHeaderCell width="100px">Actions</Table.TableHeaderCell>

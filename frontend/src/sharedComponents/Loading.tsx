@@ -59,7 +59,7 @@ const Loading = ({ fullscreen }: LoadingProps) => {
     return (
         <LoadingWrapper fullscreen={fullscreen}>
             <Paragraph style={{ transform: `rotate(${rotation}deg)` }}>Loading</Paragraph>
-            <Heading.H1>One moment please!</Heading.H1>
+            <Heading.H2>One moment please!</Heading.H2>
         </LoadingWrapper>
     )
 }
