@@ -113,7 +113,7 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
                     </Table.TableBody>
                 </Table.Table>
                 <Paragraph>Done Adding Tasks?</Paragraph>
-                <Button key="finished" fullWidth variation="INTERACTION" onClick={() => setShowModal(false)}>Done!</Button>)
+                <Button key="finished" fullWidth variation="INTERACTION" onClick={() => setShowModal(false)}>Done!</Button>
             </>
         )
     }

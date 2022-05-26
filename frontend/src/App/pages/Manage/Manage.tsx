@@ -126,7 +126,13 @@ const Tasks = () => {
             Contents = <BigBoxOfNothing message="Too many filters applied!" />
         } else {
             const bucketedTasksByProject = bucketTasksByProject(filteredProjects, filteredTasks)
-            const TasksByProject = filteredProjects.map((project) => {
+            const TasksByProject = filteredProjects
+            .sort((a, b) => {
+                if (a.title.toLowerCase() < b.title.toLowerCase()) return -1
+                if (a.title.toLowerCase() > b.title.toLowerCase()) return 1
+                return 0
+            })
+            .map((project) => {
                 return (
                     <TasksTable key={project.id} project={project} tasks={bucketedTasksByProject[project.id]} />
                 )
