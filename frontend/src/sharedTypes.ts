@@ -57,6 +57,7 @@ enum EDateFormat {
 }
 
 enum EBackupInterval {
+    MINUTELY = 'MINITELY',
     HOURLY = 'HOURLY',
     DAILY = 'DAILY',
     WEEKLY = 'WEEKLY',

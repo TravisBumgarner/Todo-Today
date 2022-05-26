@@ -18,7 +18,16 @@ import {
     LabelInDisguise,
     PageHeader
 } from 'sharedComponents'
-import { dateFormatLookup, formatDurationDisplayString, dayOfWeekLabels, colorThemeOptionLabels, backupIntervalLookup, saveFile } from 'utilities'
+import {
+    dateFormatLookup,
+    formatDurationDisplayString,
+    dayOfWeekLabels,
+    colorThemeOptionLabels,
+    backupIntervalLookup,
+    saveFile,
+    getLocalStorage,
+    setLocalStorage
+} from 'utilities'
 import { context } from 'Context'
 import { AddReminderIPC, BackupIPC } from '../../../../shared/types'
 
@@ -29,19 +38,29 @@ const createBackup = async () => {
         projects: await database.projects.toArray(),
         tasks: await database.tasks.toArray(),
         todoListItems: await database.todoListItems.toArray(),
+        successes: await database.successes.toArray(),
     }
     return data
 }
 
-const automatedBackup = (showAutomatedBackupFailedModal: React.Dispatch<React.SetStateAction<boolean>>) => {
-    const backupInterval = localStorage.getItem('backupInterval') as EBackupInterval
+const backupIntervalToMoment = {
+    [EBackupInterval.MINUTELY]: 'minutes',
+    [EBackupInterval.HOURLY]: 'hours',
+    [EBackupInterval.DAILY]: 'days',
+    [EBackupInterval.WEEKLY]: 'weeks',
+    [EBackupInterval.MONTHLY]: 'months',
+} as const
+
+const setupAutomatedBackup = (showAutomatedBackupFailedModal: React.Dispatch<React.SetStateAction<boolean>>) => {
+    const backupInterval = getLocalStorage('backupInterval') as EBackupInterval
     if (backupInterval === EBackupInterval.OFF) {
         return
     }
-    const lastBackup = localStorage.getItem('lastBackup')
+    const lastBackup = getLocalStorage('lastBackup')
 
-    const lastBackupThreshold = moment().subtract(backupIntervalLookup[backupInterval], 'hours')
-
+    const lastBackupThreshold = moment()
+    lastBackupThreshold.subtract(1, backupIntervalToMoment[backupInterval])
+    
     if (!lastBackup || moment(lastBackup) < lastBackupThreshold) {
         createBackup().then(async (data) => {
             const response = await ipcRenderer.invoke(
@@ -49,7 +68,7 @@ const automatedBackup = (showAutomatedBackupFailedModal: React.Dispatch<React.Se
                 { filename: `${moment().toISOString()}.json`, data: JSON.stringify(data) } as BackupIPC
             )
             if (response.isSuccess === true) {
-                localStorage.setItem('lastBackup', moment().toString())
+                setLocalStorage('lastBackup', moment().toString())
             } else {
                 showAutomatedBackupFailedModal(true)
             }
@@ -181,8 +200,8 @@ const Settings = () => {
     const [showNoDataModal, setShowNoDataModal] = React.useState<boolean>(false)
     const [showInvalidBackupModal, setShowInvalidBackupModal] = React.useState<boolean>(false)
 
-    const handleBackup = () => {
-        const data = createBackup()
+    const handleBackup = async () => {
+        const data = await createBackup()
         if (!data) {
             setShowNoDataModal(true)
         } else {
@@ -202,12 +221,14 @@ const Settings = () => {
                         database.projects.clear(),
                         database.tasks.clear(),
                         database.todoListItems.clear(),
+                        database.successes.clear()
                     ])
 
                     await Promise.all([
                         database.projects.bulkAdd(newStore.projects),
                         database.tasks.bulkAdd(newStore.tasks),
-                        database.todoListItems.bulkAdd(newStore.todoListItems)
+                        database.todoListItems.bulkAdd(newStore.todoListItems),
+                        database.successes.bulkAdd(newStore.successes)
                     ])
                     setRestore(null)
                 } else {
@@ -275,7 +296,7 @@ const Settings = () => {
                 <LabelAndInput
                     inputType="select-enum"
                     name="weekStart"
-                    label={`Would you like to automate backups? (Last Backup: ${localStorage.getItem('lastBackup')})`}
+                    label={`Would you like to automate backups? (Last Backup: ${getLocalStorage('lastBackup')})`}
                     value={state.backupInterval}
                     handleChange={(value: EBackupInterval) => dispatch({ type: 'EDIT_USER_SETTING', payload: { key: 'backupInterval', value } })}
                     options={EBackupInterval}
@@ -354,4 +375,4 @@ const Settings = () => {
 }
 
 export default Settings
-export { automatedBackup }
+export { setupAutomatedBackup }

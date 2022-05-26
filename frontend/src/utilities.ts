@@ -13,10 +13,11 @@ const projectStatusLookup: Record<EProjectStatus, string> = {
 }
 
 const backupIntervalLookup: Record<EBackupInterval, string> = {
-    [EBackupInterval.HOURLY]: 'Hourly',
-    [EBackupInterval.DAILY]: 'Daily',
-    [EBackupInterval.WEEKLY]: 'Weekly',
-    [EBackupInterval.MONTHLY]: 'Monthly',
+    [EBackupInterval.MINUTELY]: 'Every Minute',
+    [EBackupInterval.HOURLY]: 'Ever Hour',
+    [EBackupInterval.DAILY]: 'Every Day',
+    [EBackupInterval.WEEKLY]: 'Every Week',
+    [EBackupInterval.MONTHLY]: 'Every Month',
     [EBackupInterval.OFF]: 'Off',
 }
 
@@ -108,6 +109,15 @@ const sendNotification = (title: string, body: string) => {
     ipcRenderer.send('notification', { title, body } as NotificationIPC)
 }
 
+const getLocalStorage = (key: string) => {
+    const result = localStorage.getItem(key)
+    return result ? JSON.parse(result) : ''
+}  
+
+const setLocalStorage = (key: string, value: any) => {
+    localStorage.setItem(key, JSON.stringify(value))
+}
+
 export {
     projectStatusLookup,
     taskStatusLookup,
@@ -121,5 +131,7 @@ export {
     backupIntervalLookup,
     sumArray,
     saveFile,
-    sendNotification
+    sendNotification,
+    getLocalStorage,
+    setLocalStorage
 }

@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { EDateFormat, EColorTheme, EBackupInterval, TSettings, TReminder } from 'sharedTypes'
+import { getLocalStorage, setLocalStorage } from 'utilities'
 import { RefreshRemindersIPC } from '../../shared/types'
 
 const { ipcRenderer } = window.require('electron')
@@ -25,9 +26,9 @@ const EMPTY_STATE: State = {
 const initialSetup = () => {
     Object
         .keys(EMPTY_STATE)
-        .forEach((key: keyof typeof EMPTY_STATE) => localStorage.setItem(key, JSON.stringify(EMPTY_STATE[key])))
+        .forEach((key: keyof typeof EMPTY_STATE) =>setLocalStorage(key, EMPTY_STATE[key]))
 
-    localStorage.setItem(HAS_DONE_WARM_START, TRUE)
+    setLocalStorage(HAS_DONE_WARM_START, TRUE)
 }
 
 const getKeysFromStorage = () => {
@@ -37,7 +38,7 @@ const getKeysFromStorage = () => {
     Object
         .keys(EMPTY_STATE)
         .forEach((key: string) => {
-            output[key] = (JSON.parse(localStorage.getItem(key) as string))
+            output[key] = getLocalStorage(key) as string
         })
     return output as unknown as State
 }
@@ -80,18 +81,18 @@ const reducer = (state: State, action: Action): State => {
         }
         case 'EDIT_USER_SETTING': {
             const { key, value } = action.payload
-            localStorage.setItem(key, JSON.stringify(value))
+            setLocalStorage(key, value)
             return { ...state, [key]: value }
         }
         case 'ADD_REMINDER': {
             const reminders = [...state.reminders]
             reminders.push(action.payload)
-            localStorage.setItem('reminders', JSON.stringify(reminders))
+            setLocalStorage('reminders', reminders)
             return { ...state, reminders }
         }
         case 'DELETE_REMINDER': {
             const reminders = [...state.reminders.filter(({ reminderIndex }) => reminderIndex !== action.payload.deletedReminderIndex)]
-            localStorage.setItem('reminders', JSON.stringify(reminders))
+            setLocalStorage('reminders', reminders)
             return { ...state, reminders }
         }
         default:
@@ -121,7 +122,7 @@ const ResultsContext = ({ children }: { children: React.ReactChild }) => {
     const [isLoading, setIsLoading] = React.useState<boolean>(true)
     React.useEffect(() => {
         const fetchData = async () => {
-            if (localStorage.getItem(HAS_DONE_WARM_START) !== TRUE) {
+            if (getLocalStorage(HAS_DONE_WARM_START) !== TRUE) {
                 initialSetup()
                 setIsLoading(false)
             } else {
