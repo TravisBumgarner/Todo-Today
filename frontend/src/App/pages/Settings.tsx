@@ -43,13 +43,38 @@ const createBackup = async () => {
     return data
 }
 
-const backupIntervalToMoment = {
-    [EBackupInterval.MINUTELY]: 'minutes',
-    [EBackupInterval.HOURLY]: 'hours',
-    [EBackupInterval.DAILY]: 'days',
-    [EBackupInterval.WEEKLY]: 'weeks',
-    [EBackupInterval.MONTHLY]: 'months',
+const MINUTE_IN_MS = 1000 * 60
+const backupIntervalToMilliseconds = {
+    [EBackupInterval.MINUTELY]: MINUTE_IN_MS,
+    [EBackupInterval.HOURLY]: MINUTE_IN_MS * 60,
+    [EBackupInterval.DAILY]: MINUTE_IN_MS * 60 * 24,
+    [EBackupInterval.WEEKLY]: MINUTE_IN_MS * 60 * 24 * 7,
+    [EBackupInterval.MONTHLY]: MINUTE_IN_MS * 60 * 24 * 30,
 } as const
+
+const runAutomatedBackup = (showAutomatedBackupFailedModal: React.Dispatch<React.SetStateAction<boolean>>) => {
+    createBackup().then(async (data) => {
+        const response = await ipcRenderer.invoke(
+            'backup',
+            { filename: `${moment().toISOString()}.json`, data: JSON.stringify(data) } as BackupIPC
+        )
+        if (response.isSuccess === true) {
+            setLocalStorage('lastBackup', moment().toString())
+        } else {
+            showAutomatedBackupFailedModal(true)
+        }
+    })
+}
+
+const createNewBackupInterval = (
+        showAutomatedBackupFailedModal: React.Dispatch<React.SetStateAction<boolean>>,
+        backupIntervalInMilliseconds: number
+    ) => {
+    clearInterval(window.automatedBackupIntervalId)
+    window.automatedBackupIntervalId = setInterval(( ) => {
+        runAutomatedBackup(showAutomatedBackupFailedModal)
+    }, backupIntervalInMilliseconds)
+}
 
 const setupAutomatedBackup = (showAutomatedBackupFailedModal: React.Dispatch<React.SetStateAction<boolean>>) => {
     const backupInterval = getLocalStorage('backupInterval') as EBackupInterval
@@ -59,21 +84,12 @@ const setupAutomatedBackup = (showAutomatedBackupFailedModal: React.Dispatch<Rea
     const lastBackup = getLocalStorage('lastBackup')
 
     const lastBackupThreshold = moment()
-    lastBackupThreshold.subtract(1, backupIntervalToMoment[backupInterval])
+    lastBackupThreshold.subtract(backupIntervalToMilliseconds[backupInterval], 'milliseconds')
     
     if (!lastBackup || moment(lastBackup) < lastBackupThreshold) {
-        createBackup().then(async (data) => {
-            const response = await ipcRenderer.invoke(
-                'backup',
-                { filename: `${moment().toISOString()}.json`, data: JSON.stringify(data) } as BackupIPC
-            )
-            if (response.isSuccess === true) {
-                setLocalStorage('lastBackup', moment().toString())
-            } else {
-                showAutomatedBackupFailedModal(true)
-            }
-        })
+        runAutomatedBackup(showAutomatedBackupFailedModal)
     }
+    createNewBackupInterval(showAutomatedBackupFailedModal, backupIntervalToMilliseconds[backupInterval])
 }
 
 const dateFormatForUser = (format: EDateFormat, date: Moment) => {

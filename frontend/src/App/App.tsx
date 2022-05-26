@@ -41,7 +41,7 @@ const ModalBackground = styled.div`
 const App = () => {
     const { state } = React.useContext(context)
     const [showAutomatedBackupModal, setShowAutomatedBackupModal] = React.useState<boolean>(false)
-    React.useEffect(() => setupAutomatedBackup(setShowAutomatedBackupModal), [])
+    React.useEffect(() => setupAutomatedBackup(setShowAutomatedBackupModal), [state.backupInterval])
 
     return (
         <ThemeProvider theme={THEMES[state.colorTheme]}>
