@@ -2,7 +2,7 @@ import React from 'react'
 import moment, { Moment } from 'moment'
 
 import database from 'database'
-import { EColorTheme, EDateFormat, EDaysOfWeek, EBackupInterval } from 'sharedTypes'
+import { EColorTheme, EDateFormat, EDaysOfWeek, EBackupInterval, TReminder } from 'sharedTypes'
 import {
     Paragraph,
     ConfirmationModal,
@@ -30,7 +30,7 @@ import {
     setLocalStorage
 } from 'utilities'
 import { context } from 'Context'
-import { AddReminderIPC, BackupIPC } from '../../../../shared/types'
+import { AddReminderIPC, EditReminderIPC, BackupIPC } from '../../../../shared/types'
 
 const { ipcRenderer } = window.require('electron')
 
@@ -109,22 +109,41 @@ const dateFormatOptionLabels: Record<EDateFormat, string> = {
     [EDateFormat.D]: dateFormatForUser(EDateFormat.D, moment()),
 }
 
-type ScheduleMakerModalProps = {
+type AddEditReminderModalProps = {
     showModal: boolean
     setShowModal: (showModal: boolean) => void
+    reminderToEdit?: TReminder
 }
 
-const ScheduleMakerModal = ({ showModal, setShowModal }: ScheduleMakerModalProps) => {
-    const [dayOfWeek, setDayOfWeek] = React.useState<EDaysOfWeek>(EDaysOfWeek.MONDAY)
-    const [timeOfDay, setTimeOfDay] = React.useState<any>('17:00')
+const AddEditReminderModal = ({ showModal, setShowModal, reminderToEdit }: AddEditReminderModalProps) => {
+    const [dayOfWeek, setDayOfWeek] = React.useState<EDaysOfWeek>(reminderToEdit ? reminderToEdit.dayOfWeek : EDaysOfWeek.MONDAY)
+    const [timeOfDay, setTimeOfDay] = React.useState<any>(reminderToEdit
+        ? formatDurationDisplayString(parseInt(reminderToEdit.hours, 10) * 60 + parseInt(reminderToEdit.minutes, 10))
+        : '17:00')
     const { dispatch } = React.useContext(context)
 
-    const handleSubmit = async () => {
+    const handleAdd = async () => {
+        console.log("handle add")
         const [hours, minutes] = timeOfDay.split(':')
         const payload = { hours: parseInt(hours, 10), minutes: parseInt(minutes, 10), dayOfWeek: parseInt(dayOfWeek, 10) } as AddReminderIPC
         const reminderIndex = await ipcRenderer.invoke('add-reminder', payload)
 
         dispatch({ type: 'ADD_REMINDER', payload: { dayOfWeek, hours, minutes, reminderIndex } })
+        setShowModal(false)
+    }
+
+    const handleEdit = async () => {
+        console.log("handle edit")
+        const [hours, minutes] = timeOfDay.split(':')
+        const payload = {
+            reminderIndex: reminderToEdit!.reminderIndex,
+            hours: parseInt(hours, 10),
+            minutes: parseInt(minutes, 10),
+            dayOfWeek: parseInt(dayOfWeek, 10)
+        } as EditReminderIPC
+        await ipcRenderer.invoke('edit-reminder', payload)
+
+        dispatch({ type: 'EDIT_REMINDER', payload: { dayOfWeek, hours, minutes, reminderIndex: reminderToEdit!.reminderIndex } })
         setShowModal(false)
     }
 
@@ -154,7 +173,7 @@ const ScheduleMakerModal = ({ showModal, setShowModal }: ScheduleMakerModalProps
                 <ButtonWrapper right={
                     [
                         <Button type="button" key="cancel" variation="WARNING" onClick={() => setShowModal(false)}>Cancel</Button>,
-                        <Button type="button" key="save" variation="INTERACTION" onClick={handleSubmit}>Save</Button>
+                        <Button type="button" key="save" variation="INTERACTION" onClick={reminderToEdit ? handleEdit : handleAdd}>Save</Button>
                     ]
                 }
                 />
@@ -165,12 +184,14 @@ const ScheduleMakerModal = ({ showModal, setShowModal }: ScheduleMakerModalProps
 
 const RemindersTable = () => {
     const { state, dispatch } = React.useContext(context)
+    const [selectedReminderIndex, setSelectedReminderIndex] = React.useState<string | null>()
 
     const handleDelete = async (reminderIndex: string) => {
         const deletedReminderIndex = await ipcRenderer.invoke('remove-reminder', reminderIndex)
 
         dispatch({ type: 'DELETE_REMINDER', payload: { deletedReminderIndex } })
     }
+
     return (
         <Table.Table>
             <Table.TableHeader>
@@ -193,6 +214,15 @@ const RemindersTable = () => {
                                         type="button"
                                         key="edit"
                                         variation="INTERACTION"
+                                        onClick={() => setSelectedReminderIndex(reminderIndex)}
+                                    >
+                                        Edit
+                                    </Button>,
+                                    <Button
+                                        fullWidth
+                                        type="button"
+                                        key="remove"
+                                        variation="INTERACTION"
                                         onClick={() => handleDelete(reminderIndex)}
                                     >
                                         Remove
@@ -205,13 +235,23 @@ const RemindersTable = () => {
                     </Table.TableRow>
                 ))}
             </Table.TableBody>
+            {
+                selectedReminderIndex
+                    ? (
+                        <AddEditReminderModal
+                            reminderToEdit={state.reminders.find(({ reminderIndex }) => reminderIndex === selectedReminderIndex)}
+                            setShowModal={() => setSelectedReminderIndex(null)}
+                            showModal={selectedReminderIndex !== null}
+                        />
+                    ) : null
+            }
         </Table.Table>
     )
 }
 
 const Settings = () => {
     const { state, dispatch } = React.useContext(context)
-    const [showScheduleMakerModal, setShowScheduleMakerModal] = React.useState<boolean>(false)
+    const [showAddReminderModal, setShowAddReminderModal] = React.useState<boolean>(false)
     const [restore, setRestore] = React.useState<File | null>(null)
     const [showRestoreConfirmModal, setShowRestoreConfirmModal] = React.useState<boolean>(false)
     const [showNoDataModal, setShowNoDataModal] = React.useState<boolean>(false)
@@ -296,15 +336,15 @@ const Settings = () => {
                     type="button"
                     key="addSchedule"
                     fullWidth
-                    onClick={() => setShowScheduleMakerModal(true)}
+                    onClick={() => setShowAddReminderModal(true)}
                     variation="INTERACTION"
                 >
                     Add Reminder
                 </Button>
             </div>
             {
-                showScheduleMakerModal
-                    ? <ScheduleMakerModal setShowModal={setShowScheduleMakerModal} showModal={showScheduleMakerModal} />
+                showAddReminderModal
+                    ? <AddEditReminderModal setShowModal={setShowAddReminderModal} showModal={showAddReminderModal} />
                     : null
             }
             <div>
