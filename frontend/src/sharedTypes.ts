@@ -107,6 +107,7 @@ type TSettings = {
     colorTheme: EColorTheme
     backupInterval: EBackupInterval
     reminders: TReminder[]
+    backupDir: string
 }
 
 type TEnumTypeString<TEnum extends string> =

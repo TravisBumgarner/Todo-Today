@@ -16,7 +16,8 @@ import {
     Table,
     DropdownMenu,
     LabelInDisguise,
-    PageHeader
+    PageHeader,
+    SmallParagraph
 } from 'sharedComponents'
 import {
     dateFormatLookup,
@@ -316,12 +317,15 @@ const Settings = () => {
                 <LabelAndInput
                     inputType="select-enum"
                     name="weekStart"
-                    label={`Would you like to automate backups? (Last Backup: ${getLocalStorage('lastBackup')})`}
+                    label="Would you like to automate backups?"
                     value={state.backupInterval}
                     handleChange={(value: EBackupInterval) => dispatch({ type: 'EDIT_USER_SETTING', payload: { key: 'backupInterval', value } })}
                     options={EBackupInterval}
                     optionLabels={backupIntervalLookup}
                 />
+                <SmallParagraph>Last Backup: {getLocalStorage('lastBackup')}</SmallParagraph>
+                <SmallParagraph>Backup Location: {state.backupDir}</SmallParagraph>
+
                 <Heading.H3>Restore</Heading.H3>
                 <Form>
                     <LabelAndInput
