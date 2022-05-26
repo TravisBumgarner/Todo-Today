@@ -113,7 +113,7 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
         const projects = await database
             .projects
             .where('status')
-            .anyOf(EProjectStatus.NEW, EProjectStatus.IN_PROGRESS, EProjectStatus.REOCURRING)
+            .anyOf(EProjectStatus.ACTIVE, EProjectStatus.BLOCKED, EProjectStatus.REOCURRING)
             .toArray()
 
         return Promise.all(projects.map(async (project) => {
@@ -151,6 +151,7 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
                 {
                     tasksByProject.map(({ project, tasks }) => (
                         <TasksByProjectTable
+                            key={project.id}
                             selectedDate={selectedDate}
                             project={project}
                             tasks={tasks}

@@ -8,8 +8,8 @@ const projectStatusLookup: Record<EProjectStatus, string> = {
     [EProjectStatus.REOCURRING]: 'Reoccuring',
     [EProjectStatus.CANCELED]: 'Canceled',
     [EProjectStatus.COMPLETED]: 'Completed',
-    [EProjectStatus.IN_PROGRESS]: 'In Progress',
-    [EProjectStatus.NEW]: 'New',
+    [EProjectStatus.ACTIVE]: 'Active',
+    [EProjectStatus.BLOCKED]: 'Blocked',
 }
 
 const backupIntervalLookup: Record<EBackupInterval, string> = {
@@ -25,7 +25,8 @@ const taskStatusLookup: Record<ETaskStatus, string> = {
     [ETaskStatus.CANCELED]: 'Canceled',
     [ETaskStatus.COMPLETED]: 'Completed',
     [ETaskStatus.IN_PROGRESS]: 'In Progress',
-    [ETaskStatus.NEW]: 'New'
+    [ETaskStatus.NEW]: 'New',
+    [EProjectStatus.BLOCKED]: 'Blocked'
 }
 
 const dayOfWeekLabels: Record<EDaysOfWeek, string> = {

@@ -4,11 +4,11 @@ type TDay = `${number}${number}`;
 type TDateISODate = `${TYear}-${TMonth}-${TDay}`;
 
 enum EProjectStatus {
+    ACTIVE = 'ACTIVE',
     REOCURRING = 'REOCURRING',
-    NEW = 'NEW',
-    IN_PROGRESS = 'IN_PROGRESS',
     COMPLETED = 'COMPLETED',
     CANCELED = 'CANCELED',
+    BLOCKED = 'BLOCKED'
 }
 
 type TProject = {
@@ -31,6 +31,7 @@ enum ETaskStatus {
     IN_PROGRESS = 'IN_PROGRESS',
     COMPLETED = 'COMPLETED',
     CANCELED = 'CANCELED',
+    BLOCKED = 'BLOCKED'
 }
 
 type TTask = {

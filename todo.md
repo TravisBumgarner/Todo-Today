@@ -1,1 +1,2 @@
-- [ ] Change project statuses to "ACTIVE" "CANCELED" "COMPLETED" "REOCCURING"
+- [x] Seperate Tasks in Mange modal by project
+- [x] Change project statuses to "ACTIVE" "CANCELED" "COMPLETED" "REOCCURING"

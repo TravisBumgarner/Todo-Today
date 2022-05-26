@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Button, Heading, Table, DropdownMenu, BigBoxOfNothing } from 'sharedComponents'
 import { TProject, TTask } from 'sharedTypes'
-import { projectStatusLookup } from 'utilities'
+import { projectStatusLookup, taskStatusLookup } from 'utilities'
 import { EditTaskModal, EditProjectModal } from 'sharedModals'
 
 type TasksTableProps = {
@@ -27,7 +27,7 @@ const TasksTable = ({ tasks, project }: TasksTableProps) => {
                 {tasks.map(({ title, status, id }) => (
                     <Table.TableRow key={id}>
                         <Table.TableBodyCell>{title}</Table.TableBodyCell>
-                        <Table.TableBodyCell>{projectStatusLookup[status]}</Table.TableBodyCell>
+                        <Table.TableBodyCell>{taskStatusLookup[status]}</Table.TableBodyCell>
                         <Table.TableBodyCell>
                             <DropdownMenu openDirection="left" title="Actions">{
                                 [<Button fullWidth key="edit" variation="INTERACTION" onClick={() => setSelectedTaskId(id)}>Edit</Button>]
