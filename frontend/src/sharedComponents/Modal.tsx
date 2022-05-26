@@ -30,7 +30,14 @@ const HeaderWrapper = styled.div`
         fill: ${({ theme }) => theme.FOREGROUND};
         }
     }
-    `
+    ${Heading.H2}{
+        font-size: 2rem;
+    }
+
+    ${Heading.H3}{
+        font-size: 1.25rem;
+    }
+`
 
 const ModalWrapper = styled.div`
     min-width: 400px;
@@ -47,7 +54,7 @@ const Modal = ({
         >
             <ModalWrapper>
                 <HeaderWrapper>
-                    <Heading.H1>{contentLabel}</Heading.H1>
+                    <Heading.H2>{contentLabel}</Heading.H2>
                     <Icon name="close" onClick={closeModal} />
                 </HeaderWrapper>
                 {children}

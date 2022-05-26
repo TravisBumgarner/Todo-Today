@@ -14,11 +14,24 @@ type AddReminderIPC = {
     dayOfWeek: number
 }
 
+type EditReminderIPC = {
+    minutes: number
+    hours: number
+    dayOfWeek: number
+    reminderIndex: string
+}
+
+type AppStartIPC = {
+    backupDir: string
+}
+
 type RefreshRemindersIPC = AddReminderIPC[]
 
 export {
     NotificationIPC,
     BackupIPC,
     AddReminderIPC,
-    RefreshRemindersIPC
+    EditReminderIPC,
+    RefreshRemindersIPC,
+    AppStartIPC
 }

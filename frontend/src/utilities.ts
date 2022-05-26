@@ -8,8 +8,8 @@ const projectStatusLookup: Record<EProjectStatus, string> = {
     [EProjectStatus.REOCURRING]: 'Reoccuring',
     [EProjectStatus.CANCELED]: 'Canceled',
     [EProjectStatus.COMPLETED]: 'Completed',
-    [EProjectStatus.IN_PROGRESS]: 'In Progress',
-    [EProjectStatus.NEW]: 'New',
+    [EProjectStatus.ACTIVE]: 'Active',
+    [EProjectStatus.BLOCKED]: 'Blocked',
 }
 
 const backupIntervalLookup: Record<EBackupInterval, string> = {
@@ -25,7 +25,8 @@ const taskStatusLookup: Record<ETaskStatus, string> = {
     [ETaskStatus.CANCELED]: 'Canceled',
     [ETaskStatus.COMPLETED]: 'Completed',
     [ETaskStatus.IN_PROGRESS]: 'In Progress',
-    [ETaskStatus.NEW]: 'New'
+    [ETaskStatus.NEW]: 'New',
+    [EProjectStatus.BLOCKED]: 'Blocked'
 }
 
 const dayOfWeekLabels: Record<EDaysOfWeek, string> = {
@@ -71,7 +72,7 @@ const formatDurationDisplayString = (rawMinutes: number) => {
     const hours = Math.floor(rawMinutes / 60)
     const minutes = rawMinutes % 60
     const paddedMinutes = minutes < 10 ? `0${minutes}` : minutes
-    return `${hours}H${paddedMinutes}`
+    return `${hours}:${paddedMinutes}`
 }
 
 const bucketTasksByProject = (projects: TProject[], tasks: TTask[] | undefined) => {

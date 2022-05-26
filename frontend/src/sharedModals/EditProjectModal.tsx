@@ -14,7 +14,7 @@ type EditProjectModalProps = {
 
 const EditProjectModal = ({ showModal, setShowModal, projectId }: EditProjectModalProps) => {
     const [title, setTitle] = React.useState<string>('')
-    const [status, setStatus] = React.useState<EProjectStatus>(EProjectStatus.NEW)
+    const [status, setStatus] = React.useState<EProjectStatus>(EProjectStatus.ACTIVE)
     const [startDate, setStartDate] = React.useState<Moment | null>(null)
     const [endDate, setEndDate] = React.useState<Moment | null>(null)
     const [submitDisabled, setSubmitDisabled] = React.useState<boolean>(true)

@@ -18,6 +18,7 @@ import Form from './Form'
 import ConfirmationModal from './ConfirmationModal'
 import LabelInDisguise from './LabelInDisguise'
 import PageHeader from './PageHeader'
+import SmallParagraph from './SmallParagraph'
 
 export {
     Loading,
@@ -39,5 +40,6 @@ export {
     Form,
     ConfirmationModal,
     LabelInDisguise,
-    PageHeader
+    PageHeader,
+    SmallParagraph
 }

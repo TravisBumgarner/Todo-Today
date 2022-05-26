@@ -1,2 +1,2 @@
-- [x] Add Ability to Track Reoccuring Projects
-- [x] Add disabled to all inputs
+- [x] Seperate Tasks in Mange modal by project
+- [x] Change project statuses to "ACTIVE" "CANCELED" "COMPLETED" "REOCCURING"

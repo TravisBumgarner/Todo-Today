@@ -95,13 +95,14 @@ const DEFAULT_TASK_STATUS_FILTER = {
     [ETaskStatus.NEW]: true,
     [ETaskStatus.IN_PROGRESS]: true,
     [ETaskStatus.CANCELED]: true,
-    [ETaskStatus.COMPLETED]: true
+    [ETaskStatus.COMPLETED]: true,
+    [ETaskStatus.BLOCKED]: true
 }
 
 const DEFAULT_PROJECT_STATUS_FILTER = {
     [EProjectStatus.REOCURRING]: true,
-    [EProjectStatus.NEW]: true,
-    [EProjectStatus.IN_PROGRESS]: true,
+    [EProjectStatus.ACTIVE]: true,
+    [EProjectStatus.BLOCKED]: true,
     [EProjectStatus.CANCELED]: true,
     [EProjectStatus.COMPLETED]: true,
 }

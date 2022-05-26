@@ -7,7 +7,6 @@ import { ETaskStatus, TProject, TTask, TTodoListItem } from 'sharedTypes'
 import { taskStatusLookup, formatDurationDisplayString, sumArray } from 'utilities'
 
 import { EditTaskModal } from 'sharedModals'
-import EditTodoListItemModal from './AddEditTodoListItemDetailsModal'
 
 type TableRow = {
     id: string
@@ -19,11 +18,6 @@ type TableRow = {
     todoListItemId: string
     projectId: string
     details: string
-}
-
-type TodoListTableProps = {
-    todoListItems: TTodoListItem[] | undefined
-    setLastEditedDuration: React.Dispatch<React.SetStateAction<string | null>>
 }
 
 // It is what it is. lol
@@ -128,36 +122,61 @@ const AVAILABLE_DURATIONS = [
 ]
 
 type TodoListTableRowProps = {
-    tableRow: TableRow,
+    tableRow: TableRow
+    isReadOnly: boolean
     setLastEditedDuration: React.Dispatch<React.SetStateAction<string | null>>
-    setSelectedTaskId: React.Dispatch<React.SetStateAction<string | null>>
+    // setSelectedTaskId: React.Dispatch<React.SetStateAction<string | null>>
 }
 
-const TodoListTableRow = ({ tableRow, setLastEditedDuration, setSelectedTaskId }: TodoListTableRowProps) => {
-    const [showEditDetailsModal, setShowEditDetailsModal] = React.useState<boolean>(false)
+const TodoListTableRow = ({ tableRow, setLastEditedDuration, isReadOnly }: TodoListTableRowProps) => {
+    const { details, duration, projectTitle, taskTitle, status, todoListItemId, taskId } = tableRow
+    const [modifiedDetails, setModifiedDetails] = React.useState<string>(details)
 
-    const { id, details, duration, projectTitle, taskTitle, status, todoListItemId, taskId } = tableRow
+    React.useEffect(() => {
+        database
+            .todoListItems
+            .where({ id: todoListItemId })
+            .modify({ details: modifiedDetails })
+    }, [modifiedDetails])
 
     return (
         <Table.TableRow>
             <Table.TableBodyCell>{projectTitle}</Table.TableBodyCell>
             <Table.TableBodyCell>{taskTitle}</Table.TableBodyCell>
-            <Table.TableBodyCell style={{ whiteSpace: 'pre-line' }}>{details}</Table.TableBodyCell>
             <Table.TableBodyCell>{taskStatusLookup[status]}</Table.TableBodyCell>
+            <Table.TableBodyCell style={{ whiteSpace: 'pre-line' }}>
+                {isReadOnly
+                    ? (modifiedDetails)
+                    : (
+                        <LabelAndInput
+                            value={modifiedDetails}
+                            handleChange={(value) => setModifiedDetails(value)}
+                            name="details"
+                            inputType="textarea"
+                            rows={5}
+                        />
+                    )}
+            </Table.TableBodyCell>
             <Table.TableBodyCell>
-                <LabelAndInput
-                    name="duration"
-                    value={`${duration}`}
-                    options={AVAILABLE_DURATIONS}
-                    inputType="select-array"
-                    handleChange={async (value) => {
-                        await database.todoListItems
-                            .where({ id: todoListItemId })
-                            .modify({ duration: parseInt(value, 10) })
-                        setLastEditedDuration(todoListItemId) // This feels bad. lol
-                        setLastEditedDuration(null)
-                    }}
-                />
+                {isReadOnly
+                    ? (formatDurationDisplayString(duration))
+                    : (
+                        <LabelAndInput
+                            name="duration"
+                            value={`${duration}`}
+                            options={AVAILABLE_DURATIONS}
+                            inputType="select-array"
+                            handleChange={async (value) => {
+                                await database.todoListItems
+                                    .where({ id: todoListItemId })
+                                    .modify({ duration: parseInt(value, 10) })
+                                setLastEditedDuration(todoListItemId) // This feels bad. lol
+                                setLastEditedDuration(null)
+                            }}
+                        />
+                    )
+                }
+
             </Table.TableBodyCell>
             <Table.TableBodyCell>
                 <DropdownMenu openDirection="left" title="Actions">
@@ -173,22 +192,14 @@ const TodoListTableRow = ({ tableRow, setLastEditedDuration, setSelectedTaskId }
                     >
                         Mark Completed
                     </Button>
-                    <Button
+                    {/* <Button
                         fullWidth
                         key="edit-task"
                         variation="INTERACTION"
                         onClick={async () => setSelectedTaskId(taskId)}
                     >
                         Edit Task
-                    </Button>
-                    <Button
-                        fullWidth
-                        key="edit-details"
-                        variation="INTERACTION"
-                        onClick={async () => setShowEditDetailsModal(true)}
-                    >
-                        Add or Edit Details
-                    </Button>
+                    </Button> */}
                     <Button
                         fullWidth
                         key="remove"
@@ -201,12 +212,17 @@ const TodoListTableRow = ({ tableRow, setLastEditedDuration, setSelectedTaskId }
                     </Button>
                 </DropdownMenu>
             </Table.TableBodyCell>
-            <EditTodoListItemModal todoListItem={{ details, id }} showModal={showEditDetailsModal} setShowModal={setShowEditDetailsModal} />
         </Table.TableRow>
     )
 }
 
-const TodoListTable = ({ setLastEditedDuration, todoListItems }: TodoListTableProps) => {
+type TodoListTableProps = {
+    todoListItems: TTodoListItem[] | undefined
+    setLastEditedDuration: React.Dispatch<React.SetStateAction<string | null>>
+    isReadOnly: boolean
+}
+
+const TodoListTable = ({ setLastEditedDuration, todoListItems, isReadOnly }: TodoListTableProps) => {
     const [selectedTaskId, setSelectedTaskId] = React.useState<TTask['id'] | null>(null)
 
     const tableRows = useLiveQuery(async () => {
@@ -245,8 +261,8 @@ const TodoListTable = ({ setLastEditedDuration, todoListItems }: TodoListTablePr
                 <Table.TableRow>
                     <Table.TableHeaderCell width="15%">Project</Table.TableHeaderCell>
                     <Table.TableHeaderCell width="15%">Task</Table.TableHeaderCell>
-                    <Table.TableHeaderCell width="30%">Details</Table.TableHeaderCell>
-                    <Table.TableHeaderCell width="60px">Status</Table.TableHeaderCell>
+                    <Table.TableHeaderCell width="15%">Status</Table.TableHeaderCell>
+                    <Table.TableHeaderCell width="40%">Day&apos;s Details</Table.TableHeaderCell>
                     <Table.TableHeaderCell width="110px">Duration</Table.TableHeaderCell>
                     <Table.TableHeaderCell width="100px">Actions</Table.TableHeaderCell>
                 </Table.TableRow>
@@ -266,7 +282,8 @@ const TodoListTable = ({ setLastEditedDuration, todoListItems }: TodoListTablePr
                                 setLastEditedDuration={setLastEditedDuration}
                                 key={tableRow.todoListItemId}
                                 tableRow={tableRow}
-                                setSelectedTaskId={setSelectedTaskId}
+                                // setSelectedTaskId={setSelectedTaskId}
+                                isReadOnly={isReadOnly}
                             />
                         ))
                 }

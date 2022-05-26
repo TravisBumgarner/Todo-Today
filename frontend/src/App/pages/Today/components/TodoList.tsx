@@ -21,6 +21,7 @@ const TodoList = ({ selectedDate }: TodoListProps) => {
     const [showAddNewProjectModal, setShowAddNewProjectModal] = React.useState<boolean>(false)
     // Dropdown of duration change doesn't trigger rerender
     const [lastEditedDuration, setLastEditedDuration] = React.useState<string | null>(null)
+    const [isReadOnly, toggleIsReadOnly] = React.useState<boolean>(true)
 
     const projects = useLiveQuery(() => database.projects.toArray())
     const tasks = useLiveQuery(() => database.tasks.toArray())
@@ -81,9 +82,7 @@ const TodoList = ({ selectedDate }: TodoListProps) => {
                         variation="INTERACTION"
                     >
                         Select Tasks
-                    </Button>
-                ]}
-                right={[
+                    </Button>,
                     <Button
                         key="add-project"
                         onClick={() => setShowAddNewProjectModal(true)}
@@ -102,9 +101,19 @@ const TodoList = ({ selectedDate }: TodoListProps) => {
                         Add New Task
                     </Button>
                 ]}
+                right={[
+                    <Button
+                        key="toggle-read-only"
+                        onClick={() => toggleIsReadOnly(!isReadOnly)}
+                        variation="INTERACTION"
+                        title={isReadOnly ? 'Toggle Edit Mode' : 'Toggle Read Mode'}
+                    >
+                        {isReadOnly ? 'Toggle Edit Mode' : 'Toggle Read Mode'}
+                    </Button>
+                ]}
             />
             {tasks && tasks.length !== 0
-                ? <TodoListTable todoListItems={todoListItems} setLastEditedDuration={setLastEditedDuration} />
+                ? <TodoListTable isReadOnly={isReadOnly} todoListItems={todoListItems} setLastEditedDuration={setLastEditedDuration} />
                 : <BigBoxOfNothing message="Go create some projects and tasks and come back!" />}
             <ManageTodoListItemsModal selectedDate={selectedDate} showModal={showManagementModal} setShowModal={setShowManagementModal} />
             <ConfirmationModal

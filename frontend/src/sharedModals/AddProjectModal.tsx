@@ -14,7 +14,7 @@ type AddProjectModalProps = {
 
 const AddProjectModal = ({ showModal, setShowModal }: AddProjectModalProps) => {
     const [title, setTitle] = React.useState<string>('')
-    const [status, setStatus] = React.useState<EProjectStatus | ''>(EProjectStatus.NEW)
+    const [status, setStatus] = React.useState<EProjectStatus>(EProjectStatus.ACTIVE)
     const [startDate, setStartDate] = React.useState<Moment | null>(null)
     const [endDate, setEndDate] = React.useState<Moment | null>(null)
 
@@ -24,7 +24,7 @@ const AddProjectModal = ({ showModal, setShowModal }: AddProjectModalProps) => {
             title,
             startDate: endDate ? formatDateKeyLookup(moment(startDate)) : null,
             endDate: endDate ? formatDateKeyLookup(moment(endDate)) : null,
-            status: EProjectStatus.NEW,
+            status,
         }
         await database.projects.add(newProject)
         setShowModal(false)
@@ -81,7 +81,7 @@ const AddProjectModal = ({ showModal, setShowModal }: AddProjectModalProps) => {
                         <Button
                             key="save"
                             type="button"
-                            disabled={title.length === 0 || status === ''}
+                            disabled={title.length === 0}
                             variation="INTERACTION"
                             onClick={handleSubmit}
                         >
