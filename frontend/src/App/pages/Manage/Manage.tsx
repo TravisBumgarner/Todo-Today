@@ -6,7 +6,7 @@ import { EProjectStatus, ETaskStatus } from 'sharedTypes'
 import { BigBoxOfNothing, Button, ButtonWrapper, Heading, LabelAndInput, PageHeader } from 'sharedComponents'
 import { bucketTasksByProject, projectStatusLookup, taskStatusLookup } from 'utilities'
 import database from 'database'
-import { AddTaskModal } from 'sharedModals'
+import { AddProjectModal, AddTaskModal } from 'sharedModals'
 import { TasksTable } from './components'
 
 const FilterWrapper = styled.div`
@@ -95,23 +95,25 @@ const ProjectFilters = ({ setStatusFilter, statusFilter }: ProjectFilterProps) =
 const DEFAULT_TASK_STATUS_FILTER = {
     [ETaskStatus.NEW]: true,
     [ETaskStatus.IN_PROGRESS]: true,
-    [ETaskStatus.CANCELED]: false,
-    [ETaskStatus.COMPLETED]: false
+    [ETaskStatus.CANCELED]: true,
+    [ETaskStatus.COMPLETED]: true
 }
 
 const DEFAULT_PROJECT_STATUS_FILTER = {
+    [EProjectStatus.REOCURRING]: true,
     [EProjectStatus.NEW]: true,
     [EProjectStatus.IN_PROGRESS]: true,
-    [EProjectStatus.CANCELED]: false,
-    [EProjectStatus.COMPLETED]: false
+    [EProjectStatus.CANCELED]: true,
+    [EProjectStatus.COMPLETED]: true,
 }
 
 const Tasks = () => {
     const projects = useLiveQuery(() => database.projects.toArray())
     const tasks = useLiveQuery(() => database.tasks.toArray())
     const [taskStatusFilter, setTaskStatusFilter] = React.useState<Record<ETaskStatus, boolean>>(DEFAULT_TASK_STATUS_FILTER)
-    const [projectStatusFilter, setProjectStatusFilter] = React.useState<Record<ETaskStatus, boolean>>(DEFAULT_PROJECT_STATUS_FILTER)
+    const [projectStatusFilter, setProjectStatusFilter] = React.useState<Record<EProjectStatus, boolean>>(DEFAULT_PROJECT_STATUS_FILTER)
     const [showAddTaskModal, setShowAddTaskModal] = React.useState<boolean>(false)
+    const [showAddProjectModal, setShowAddProjectModal] = React.useState<boolean>(false)
 
 
 
@@ -127,16 +129,16 @@ const Tasks = () => {
         } else {
             const bucketedTasksByProject = bucketTasksByProject(filteredProjects, filteredTasks)
             const TasksByProject = filteredProjects
-            .sort((a, b) => {
-                if (a.title.toLowerCase() < b.title.toLowerCase()) return -1
-                if (a.title.toLowerCase() > b.title.toLowerCase()) return 1
-                return 0
-            })
-            .map((project) => {
-                return (
-                    <TasksTable key={project.id} project={project} tasks={bucketedTasksByProject[project.id]} />
-                )
-            })
+                .sort((a, b) => {
+                    if (a.title.toLowerCase() < b.title.toLowerCase()) return -1
+                    if (a.title.toLowerCase() > b.title.toLowerCase()) return 1
+                    return 0
+                })
+                .map((project) => {
+                    return (
+                        <TasksTable key={project.id} project={project} tasks={bucketedTasksByProject[project.id]} />
+                    )
+                })
             Contents = TasksByProject
         }
     } else {
@@ -156,18 +158,30 @@ const Tasks = () => {
                 left={[
                     <Button
                         type="button"
-                        fullWidth
+                        key="edit"
+                        variation="INTERACTION"
+                        onClick={() => setShowAddProjectModal(true)}
+                    >
+                        Add Project
+                    </Button>,
+                    <Button
+                        type="button"
                         key="edit"
                         variation="INTERACTION"
                         onClick={() => setShowAddTaskModal(true)}
                     >
-                        Add New Task
+                        Add Task
                     </Button>
+
                 ]}
             />
             {Contents}
             {showAddTaskModal
                 ? <AddTaskModal addToTodayDefaultValue="no" showModal={showAddTaskModal} setShowModal={setShowAddTaskModal} />
+                : null
+            }
+            {showAddProjectModal
+                ? <AddProjectModal showModal={showAddProjectModal} setShowModal={setShowAddProjectModal} />
                 : null
             }
         </div>

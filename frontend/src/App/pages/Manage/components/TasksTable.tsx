@@ -44,7 +44,7 @@ const TasksTable = ({ tasks, project }: TasksTableProps) => {
     return (
         <>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Heading.H3>{project.title} ({projectStatusLookup[project.status]})</Heading.H3>
+                <Heading.H3>{project.title}</Heading.H3>
                 <DropdownMenu openDirection="left" title="Actions">{
                     [<Button fullWidth key="edit" variation="INTERACTION" onClick={() => setSelectedProjectId(project.id)}>Edit</Button>]
                 }
