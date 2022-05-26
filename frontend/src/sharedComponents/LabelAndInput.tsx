@@ -18,6 +18,20 @@ const Input = styled.input`
     box-sizing: border-box;
     color-scheme: dark;
     height: 40px;
+
+    ${({ theme, disabled }) => {
+        if (disabled) {
+            return `
+                color: ${theme.DISABLED};
+                border-color: ${theme.DISABLED};
+                background-color: ${transparentize(0.9, theme.DISABLED)};
+
+                &:hover {
+                    cursor: not-allowed;
+                }
+            `
+        }
+    }}
 `
 
 const CheckboxWrapper = styled.div`
@@ -35,6 +49,20 @@ const CheckboxWrapper = styled.div`
 const Checkbox = styled.input`
     color-scheme: dark;
     accent-color: ${({ theme }) => theme.FOREGROUND};
+
+    ${({ theme, disabled }) => {
+        if (disabled) {
+            return `
+                color: ${theme.DISABLED};
+                border-color: ${theme.DISABLED};
+                background-color: ${transparentize(0.9, theme.DISABLED)};
+
+                &:hover {
+                    cursor: not-allowed;
+                }
+            `
+        }
+    }}
 `
 
 const CheckboxLabel = styled.label`
@@ -57,6 +85,20 @@ const TextArea = styled.textarea`
     width: 100%;
     box-sizing: border-box;
     background-color: ${({ theme }) => transparentize(0.9, theme.FOREGROUND)};
+
+    ${({ theme, disabled }) => {
+        if (disabled) {
+            return `
+                color: ${theme.DISABLED};
+                border-color: ${theme.DISABLED};
+                background-color: ${transparentize(0.9, theme.DISABLED)};
+
+                &:hover {
+                    cursor: not-allowed;
+                }
+            `
+        }
+    }}
 `
 
 const Label = styled.label`
@@ -81,6 +123,20 @@ const Select = styled.select`
     box-sizing: border-box;
     color-scheme: dark;
     background-color: ${({ theme }) => transparentize(0.9, theme.FOREGROUND)};
+
+    ${({ theme, disabled }) => {
+        if (disabled) {
+            return `
+                color: ${theme.DISABLED};
+                border-color: ${theme.DISABLED};
+                background-color: ${transparentize(0.9, theme.DISABLED)};
+
+                &:hover {
+                    cursor: not-allowed;
+                }
+            `
+        }
+    }}
 `
 
 const LabelAndInputWrapper = styled.div`
@@ -100,6 +156,7 @@ type GenericProps = {
     name: string
     label?: string
     value?: string
+    disabled?: boolean
 }
 
 type FileProps = {
@@ -148,7 +205,7 @@ const LabelAndInput = (props: LabelAndInputProps) => {
     let InputElement: JSX.Element
 
     if (props.inputType === 'textarea') {
-        const { name, handleChange, value, rows } = props
+        const { name, handleChange, value, rows, disabled } = props
         InputElement = (
             <TextArea
                 rows={rows || 5}
@@ -156,33 +213,35 @@ const LabelAndInput = (props: LabelAndInputProps) => {
                 name={name}
                 onChange={(event) => handleChange(event.target.value)}
                 value={value}
+                disabled={disabled}
             />
         )
     } else if (props.inputType === 'select-enum') {
-        const { options, name, value, handleChange, optionLabels } = props
+        const { options, name, value, handleChange, optionLabels, disabled } = props
         InputElement = (
-            <Select id={name} value={value} onChange={(event) => handleChange(event.target.value)}>
+            <Select disabled={disabled} id={name} value={value} onChange={(event) => handleChange(event.target.value)}>
                 {
                     Object.values(options).map((option) => <option key={option} value={option}>{optionLabels[option]}</option>)
                 }
             </Select>
         )
     } else if (props.inputType === 'select-array') {
-        const { options, name, value, handleChange } = props
+        const { options, name, value, handleChange, disabled } = props
         InputElement = (
-            <Select id={name} value={value} onChange={(event) => handleChange(event.target.value)}>
+            <Select disabled={disabled} id={name} value={value} onChange={(event) => handleChange(event.target.value)}>
                 {
                     options.map((option) => <option key={option.label} value={option.value}>{option.label}</option>)
                 }
             </Select>
         )
     } else if (props.inputType === 'checkbox') {
-        const { options, handleChange } = props
+        const { options, handleChange, disabled } = props
         InputElement = (
             <CheckboxWrapper>
                 {options.map((option) => (
                     <div key={option.name}>
                         <Checkbox
+                            disabled={disabled}
                             type="checkbox"
                             name={option.name}
                             value={option.value}
@@ -198,9 +257,10 @@ const LabelAndInput = (props: LabelAndInputProps) => {
             </CheckboxWrapper>
         )
     } else if (props.inputType === 'file') {
-        const { inputType, handleChange, name, value } = props
+        const { inputType, handleChange, name, value, disabled } = props
         InputElement = (
             <Input
+                disabled={disabled}
                 autoComplete="off"
                 type={inputType}
                 name={name}
@@ -209,9 +269,10 @@ const LabelAndInput = (props: LabelAndInputProps) => {
             />
         )
     } else if (props.inputType === 'time') {
-        const { inputType, handleChange, name, value } = props
+        const { inputType, handleChange, name, value, disabled } = props
         InputElement = (
             <Input
+                disabled={disabled}
                 name={name}
                 onChange={(event) => handleChange(event.target.value)}
                 value={value}
@@ -219,9 +280,10 @@ const LabelAndInput = (props: LabelAndInputProps) => {
             />
         )
     } else {
-        const { inputType, handleChange, name, value } = props
+        const { inputType, handleChange, name, value, disabled } = props
         InputElement = (
             <Input
+                disabled={disabled}
                 autoComplete="on"
                 type={inputType || 'text'}
                 name={name}

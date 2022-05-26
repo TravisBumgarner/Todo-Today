@@ -25,7 +25,6 @@ const TodoList = ({ selectedDate }: TodoListProps) => {
     const projects = useLiveQuery(() => database.projects.toArray())
     const tasks = useLiveQuery(() => database.tasks.toArray())
 
-
     const todoListItems = useLiveQuery(
         () => database
             .todoListItems
@@ -85,7 +84,7 @@ const TodoList = ({ selectedDate }: TodoListProps) => {
                     </Button>
                 ]}
                 right={[
-                    < Button
+                    <Button
                         key="add-project"
                         onClick={() => setShowAddNewProjectModal(true)}
                         variation="INTERACTION"

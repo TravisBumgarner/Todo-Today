@@ -38,6 +38,6 @@ export {
     BigBoxOfNothing,
     Form,
     ConfirmationModal,
-    LabelInDisguise, 
+    LabelInDisguise,
     PageHeader
 }

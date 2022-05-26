@@ -30,7 +30,7 @@ const BigBoxOfNothing = ({ message, callToActionButton }: BigBoxOfNothingProps) 
             <Paragraph>
                 {message}
             </Paragraph>
-            {callToActionButton ? callToActionButton : ''}
+            {callToActionButton || ''}
         </BigBoxOfNothingWrapper>
     )
 }

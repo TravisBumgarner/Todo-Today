@@ -2,7 +2,7 @@ import React from 'react'
 import { v4 as uuid4 } from 'uuid'
 import { useLiveQuery } from 'dexie-react-hooks'
 
-import { Modal, Paragraph, Button, Table, BigBoxOfNothing, ButtonWrapper } from 'sharedComponents'
+import { Modal, Button, Table, BigBoxOfNothing, ButtonWrapper } from 'sharedComponents'
 import { formatDateDisplayString } from 'utilities'
 import { TDateISODate, TProject, TTodoListItem, ETaskStatus } from 'sharedTypes'
 import database from 'database'
@@ -112,9 +112,9 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
                         }
                     </Table.TableBody>
                 </Table.Table>
-                <ButtonWrapper 
+                <ButtonWrapper
                     right={[
-                        <Button key="finished" variation="INTERACTION" onClick={() => setShowModal(false)}>Done!</Button>         
+                        <Button key="finished" variation="INTERACTION" onClick={() => setShowModal(false)}>Done!</Button>
                     ]}
                 />
             </>

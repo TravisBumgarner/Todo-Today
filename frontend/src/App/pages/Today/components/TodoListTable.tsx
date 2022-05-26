@@ -272,9 +272,9 @@ const TodoListTable = ({ setLastEditedDuration, todoListItems }: TodoListTablePr
                 }
                 <Table.TableRow style={{ fontWeight: 900 }}>
                     <Table.TableBodyCell>Summary</Table.TableBodyCell>
-                    <Table.TableBodyCell colSpan={2} />
+                    <Table.TableBodyCell colSpan={3} />
                     <Table.TableBodyCell>{hoursWorkedSelectedDate}</Table.TableBodyCell>
-                    <Table.TableBodyCell colSpan={2} />
+                    <Table.TableBodyCell colSpan={1} />
                 </Table.TableRow>
             </Table.TableBody>
             {
