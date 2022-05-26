@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Button, Heading, Table, DropdownMenu, BigBoxOfNothing } from 'sharedComponents'
 import { TProject, TTask } from 'sharedTypes'
-import { projectStatusLookup, taskStatusLookup } from 'utilities'
+import { taskStatusLookup } from 'utilities'
 import { EditTaskModal, EditProjectModal } from 'sharedModals'
 
 type TasksTableProps = {

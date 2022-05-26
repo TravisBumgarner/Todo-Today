@@ -123,7 +123,6 @@ const AddEditReminderModal = ({ showModal, setShowModal, reminderToEdit }: AddEd
     const { dispatch } = React.useContext(context)
 
     const handleAdd = async () => {
-        console.log("handle add")
         const [hours, minutes] = timeOfDay.split(':')
         const payload = { hours: parseInt(hours, 10), minutes: parseInt(minutes, 10), dayOfWeek: parseInt(dayOfWeek, 10) } as AddReminderIPC
         const reminderIndex = await ipcRenderer.invoke('add-reminder', payload)
@@ -133,7 +132,6 @@ const AddEditReminderModal = ({ showModal, setShowModal, reminderToEdit }: AddEd
     }
 
     const handleEdit = async () => {
-        console.log("handle edit")
         const [hours, minutes] = timeOfDay.split(':')
         const payload = {
             reminderIndex: reminderToEdit!.reminderIndex,
