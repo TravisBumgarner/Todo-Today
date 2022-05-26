@@ -51,7 +51,7 @@ const ReportsTable = ({ crunchedNumbers, startDate, endDate }: ReportTableProps)
                     <Table.TableHeaderCell />
                     {
                         dateColumns.map((date) => (
-                            <Table.TableHeaderCell key={date} scope="col">{date}</Table.TableHeaderCell>
+                            <Table.TableHeaderCell key={date} scope="col">{moment(date).format('ddd')}</Table.TableHeaderCell>
                         ))
                     }
                 </Table.TableRow>

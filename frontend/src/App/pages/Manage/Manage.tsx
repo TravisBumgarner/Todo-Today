@@ -15,11 +15,10 @@ const FilterWrapper = styled.div`
     margin: 1.5rem 0;
 
     > div {
-        max-width: 48%;
         width: fit-content;
     }
 
-    @media (max-width: 1100px) {
+    @media (max-width: 1200px) {
         flex-direction: column;
          
         > div {
@@ -114,8 +113,6 @@ const Tasks = () => {
     const [projectStatusFilter, setProjectStatusFilter] = React.useState<Record<EProjectStatus, boolean>>(DEFAULT_PROJECT_STATUS_FILTER)
     const [showAddTaskModal, setShowAddTaskModal] = React.useState<boolean>(false)
     const [showAddProjectModal, setShowAddProjectModal] = React.useState<boolean>(false)
-
-
 
     let Contents
     if (!projects || !projects.length) {
