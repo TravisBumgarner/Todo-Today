@@ -72,7 +72,7 @@ const TodoList = ({ selectedDate }: TodoListProps) => {
                         onClick={getPreviousDatesTasks}
                         variation="INTERACTION"
                     >
-                        Copy Yesterday
+                        Copy Previous Day
                     </Button>,
                     <Button
                         key="manage"
