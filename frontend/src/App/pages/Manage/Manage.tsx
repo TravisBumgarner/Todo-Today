@@ -156,7 +156,7 @@ const Tasks = () => {
                 left={[
                     <Button
                         type="button"
-                        key="edit"
+                        key="add-project"
                         variation="INTERACTION"
                         onClick={() => setShowAddProjectModal(true)}
                     >
@@ -164,7 +164,7 @@ const Tasks = () => {
                     </Button>,
                     <Button
                         type="button"
-                        key="edit"
+                        key="add-task"
                         variation="INTERACTION"
                         onClick={() => setShowAddTaskModal(true)}
                     >
