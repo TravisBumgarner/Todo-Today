@@ -200,38 +200,47 @@ const RemindersTable = () => {
                 </Table.TableRow>
             </Table.TableHeader>
             <Table.TableBody>
-                {state.reminders.map(({ dayOfWeek, minutes, hours, reminderIndex }) => (
-                    <Table.TableRow key={reminderIndex}>
-                        <Table.TableBodyCell>{dayOfWeekLabels[dayOfWeek]}</Table.TableBodyCell>
-                        <Table.TableBodyCell>{formatDurationDisplayString(parseInt(hours, 10) * 60 + parseInt(minutes, 10))}</Table.TableBodyCell>
-                        <Table.TableBodyCell>
-                            <DropdownMenu openDirection="left" title="Actions">{
-                                [
-                                    <Button
-                                        fullWidth
-                                        type="button"
-                                        key="edit"
-                                        variation="INTERACTION"
-                                        onClick={() => setSelectedReminderIndex(reminderIndex)}
-                                    >
-                                        Edit
-                                    </Button>,
-                                    <Button
-                                        fullWidth
-                                        type="button"
-                                        key="remove"
-                                        variation="INTERACTION"
-                                        onClick={() => handleDelete(reminderIndex)}
-                                    >
-                                        Remove
-                                    </Button>
-                                ]
-                            }
-                            </DropdownMenu>
+                {state.reminders
+                    .sort((a, b) => {
+                        // Sort in one go. Might be a better way :shrug:
+                        const aString = `${a.dayOfWeek} ${formatDurationDisplayString(parseInt(a.hours, 10) * 60 + parseInt(a.minutes, 10))}`
+                        const bString = `${b.dayOfWeek} ${formatDurationDisplayString(parseInt(b.hours, 10) * 60 + parseInt(b.minutes, 10))}`
+                        if (aString < bString) return -1
+                        if (aString > bString) return 1
+                        return 0
+                    })
+                    .map(({ dayOfWeek, minutes, hours, reminderIndex }) => (
+                        <Table.TableRow key={reminderIndex}>
+                            <Table.TableBodyCell>{dayOfWeekLabels[dayOfWeek]}</Table.TableBodyCell>
+                            <Table.TableBodyCell>{formatDurationDisplayString(parseInt(hours, 10) * 60 + parseInt(minutes, 10))}</Table.TableBodyCell>
+                            <Table.TableBodyCell>
+                                <DropdownMenu openDirection="left" title="Actions">{
+                                    [
+                                        <Button
+                                            fullWidth
+                                            type="button"
+                                            key="edit"
+                                            variation="INTERACTION"
+                                            onClick={() => setSelectedReminderIndex(reminderIndex)}
+                                        >
+                                            Edit
+                                        </Button>,
+                                        <Button
+                                            fullWidth
+                                            type="button"
+                                            key="remove"
+                                            variation="INTERACTION"
+                                            onClick={() => handleDelete(reminderIndex)}
+                                        >
+                                            Remove
+                                        </Button>
+                                    ]
+                                }
+                                </DropdownMenu>
 
-                        </Table.TableBodyCell>
-                    </Table.TableRow>
-                ))}
+                            </Table.TableBodyCell>
+                        </Table.TableRow>
+                    ))}
             </Table.TableBody>
             {
                 selectedReminderIndex
