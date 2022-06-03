@@ -3,14 +3,18 @@ import { useLiveQuery } from 'dexie-react-hooks'
 
 import database from 'database'
 import { BigBoxOfNothing, Button, DropdownMenu, Table } from 'sharedComponents'
-import { TProject } from 'sharedTypes'
+import { TProject, TDateISODate } from 'sharedTypes'
 import EditSuccessModal from './EditSuccessModal'
 
-const SuccessesTable = () => {
+type SuccessesTableProps = {
+    selectedDate: TDateISODate
+}
+
+const SuccessesTable = ({ selectedDate }: SuccessesTableProps) => {
     const [selectedSuccessId, setSelectedSuccessId] = React.useState<string | null>(null)
 
     const tableRows = useLiveQuery(async () => {
-        const successes = await database.successes.toArray()
+        const successes = await database.successes.where('date').equals(selectedDate).toArray()
 
         return Promise.all(successes.map(async (success) => {
             const project = (await database.projects.where({ id: success.projectId }).first()) as TProject
@@ -19,7 +23,7 @@ const SuccessesTable = () => {
                 ...success
             }
         }))
-    }, [])
+    }, [selectedDate])
 
     if (!tableRows || tableRows.length === 0) {
         return (

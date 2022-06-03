@@ -1,1 +1,2 @@
-- [ ] Sort Settings by Day of week
+- [x] Sort Settings by Day of week
+- [x] Successes should only show for that day

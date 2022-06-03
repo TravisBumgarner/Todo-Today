@@ -79,7 +79,6 @@ ipcMain.handle('remove-reminder', async (event, reminderIndex: string) => {
 })
 
 ipcMain.handle('app-start', async () => {
-    console.log('returning', BACKUPS_DIR)
     return {
         backupDir: BACKUPS_DIR
     } as AppStartIPC
