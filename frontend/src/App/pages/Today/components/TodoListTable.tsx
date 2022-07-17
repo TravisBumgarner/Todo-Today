@@ -2,7 +2,7 @@ import React from 'react'
 import database from 'database'
 import { useLiveQuery } from 'dexie-react-hooks'
 
-import { BigBoxOfNothing, Button, DropdownMenu, LabelAndInput, Table } from 'sharedComponents'
+import { BigBoxOfNothing, Icon, LabelAndInput, Table } from 'sharedComponents'
 import { ETaskStatus, TProject, TTask, TTodoListItem } from 'sharedTypes'
 import { taskStatusLookup } from 'utilities'
 
@@ -54,30 +54,22 @@ const TodoListTableRow = ({ tableRow, isReadOnly }: TodoListTableRowProps) => {
                     )}
             </Table.TableBodyCell>
             <Table.TableBodyCell>
-                <DropdownMenu openDirection="left" title="Actions">
-                    <Button
-                        fullWidth
-                        key="mark-task-completed"
-                        variation="INTERACTION"
-                        onClick={async () => {
-                            await database.tasks
-                                .where({ id: taskId })
-                                .modify({ status: ETaskStatus.COMPLETED })
-                        }}
-                    >
-                        Mark Completed
-                    </Button>
-                    <Button
-                        fullWidth
-                        key="remove"
-                        variation="INTERACTION"
-                        onClick={async () => {
-                            await database.todoListItems.where({ id: todoListItemId }).delete()
-                        }}
-                    >
-                        Remove
-                    </Button>
-                </DropdownMenu>
+                <Icon
+                    key="mark-task-completed"
+                    name="done"
+                    onClick={async () => {
+                        await database.tasks
+                            .where({ id: taskId })
+                            .modify({ status: ETaskStatus.COMPLETED })
+                    }}
+                />
+                <Icon
+                    key="mark-task-removed"
+                    name="delete"
+                    onClick={async () => {
+                        await database.todoListItems.where({ id: todoListItemId }).delete()
+                    }}
+                />
             </Table.TableBodyCell>
         </Table.TableRow>
     )
@@ -141,16 +133,10 @@ const TodoListTable = ({ todoListItems, isReadOnly }: TodoListTableProps) => {
                             <TodoListTableRow
                                 key={tableRow.todoListItemId}
                                 tableRow={tableRow}
-                                // setSelectedTaskId={setSelectedTaskId}
                                 isReadOnly={isReadOnly}
                             />
                         ))
                 }
-                <Table.TableRow style={{ fontWeight: 900 }}>
-                    <Table.TableBodyCell>Summary</Table.TableBodyCell>
-                    <Table.TableBodyCell colSpan={3} />
-                    <Table.TableBodyCell colSpan={1} />
-                </Table.TableRow>
             </Table.TableBody>
             {
                 selectedTaskId ? (
