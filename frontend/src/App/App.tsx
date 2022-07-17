@@ -48,8 +48,10 @@ const App = () => {
             <Theme.GlobalStyle />
             <ModalProvider backgroundComponent={ModalBackground}>
                 <div>
-                    <Header />
-                    <Navigation />
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <Header />
+                        <Navigation />
+                    </div>
                     <Router />
                 </div>
                 <ConfirmationModal

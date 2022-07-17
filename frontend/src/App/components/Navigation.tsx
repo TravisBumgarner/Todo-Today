@@ -12,7 +12,7 @@ const StyledNav = styled.ul`
     flex-direction: row;
 
     li {
-        margin-right: 1rem;
+        margin-left: 1rem;
     }
 `
 

@@ -1,1 +1,3 @@
-- [ ] Strip out reporting and hours tracking
+PR - 6
+
+- [ ] Remove dropdowns in place for icons
