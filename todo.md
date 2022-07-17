@@ -1,1 +1,0 @@
-- [ ] Strip out reporting and hours tracking
