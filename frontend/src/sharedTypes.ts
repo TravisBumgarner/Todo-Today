@@ -42,7 +42,6 @@ type TTask = {
 }
 
 type TTodoListItem = {
-    duration: number
     projectId: string
     taskId: string
     todoListDate: string

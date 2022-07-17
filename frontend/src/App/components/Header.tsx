@@ -12,7 +12,7 @@ const HeaderWrapper = styled.div`
 `
 
 const FunHeaderWrapper = styled.div`
-    height: 4rem;
+    height: 5rem;
     position: relative;
    
     ${Heading.H1}{

@@ -19,8 +19,6 @@ const TodoList = ({ selectedDate }: TodoListProps) => {
     const [showNothingToCopyModal, setShowNothingToCopyModal] = React.useState<boolean>(false)
     const [showAddNewTaskModal, setShowAddNewTaskModal] = React.useState<boolean>(false)
     const [showAddNewProjectModal, setShowAddNewProjectModal] = React.useState<boolean>(false)
-    // Dropdown of duration change doesn't trigger rerender
-    const [lastEditedDuration, setLastEditedDuration] = React.useState<string | null>(null)
     const [isReadOnly, toggleIsReadOnly] = React.useState<boolean>(true)
 
     const projects = useLiveQuery(() => database.projects.toArray())
@@ -32,7 +30,7 @@ const TodoList = ({ selectedDate }: TodoListProps) => {
             .where('todoListDate')
             .equals(selectedDate)
             .toArray(),
-        [selectedDate, lastEditedDuration]
+        [selectedDate]
     )
 
     const getPreviousDatesTasks = async () => {
@@ -51,7 +49,6 @@ const TodoList = ({ selectedDate }: TodoListProps) => {
                     await database.todoListItems.add({
                         projectId,
                         taskId,
-                        duration: 0,
                         id: uuid4(),
                         todoListDate: selectedDate,
                         details
@@ -113,7 +110,7 @@ const TodoList = ({ selectedDate }: TodoListProps) => {
                 ]}
             />
             {tasks && tasks.length !== 0
-                ? <TodoListTable isReadOnly={isReadOnly} todoListItems={todoListItems} setLastEditedDuration={setLastEditedDuration} />
+                ? <TodoListTable isReadOnly={isReadOnly} todoListItems={todoListItems} />
                 : <BigBoxOfNothing message="Go create some projects and tasks and come back!" />}
             <ManageTodoListItemsModal selectedDate={selectedDate} showModal={showManagementModal} setShowModal={setShowManagementModal} />
             <ConfirmationModal

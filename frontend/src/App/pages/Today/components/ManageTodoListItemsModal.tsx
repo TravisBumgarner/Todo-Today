@@ -33,7 +33,6 @@ const TasksByProjectTable = ({ project, tasks, taskIdsToTodoListIds, selectedDat
         database.todoListItems.add({
             projectId,
             taskId,
-            duration: 0,
             id: uuid4(),
             todoListDate: selectedDate,
             details: ''

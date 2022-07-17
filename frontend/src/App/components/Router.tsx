@@ -1,7 +1,7 @@
 import React from 'react'
 import { Routes, Route } from 'react-router'
 
-import { TodoList, Manage, Settings, Reports, Error } from '../pages'
+import { TodoList, Manage, Settings, Error } from '../pages'
 
 const Router = () => {
     return (
@@ -9,10 +9,6 @@ const Router = () => {
             <Route
                 path="/manage"
                 element={<Manage />}
-            />
-            <Route
-                path="/reports"
-                element={<Reports />}
             />
             <Route
                 path="/settings"

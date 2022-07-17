@@ -39,7 +39,6 @@ const AddTaskModal = ({ showModal, setShowModal, project, addToTodayDefaultValue
             await database.todoListItems.add({
                 projectId,
                 taskId,
-                duration: 0,
                 id: taskId,
                 todoListDate: formatDateKeyLookup(moment()),
                 details: ''
