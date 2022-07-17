@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Button, Heading, Table, DropdownMenu, BigBoxOfNothing } from 'sharedComponents'
+import { Button, Heading, Table, DropdownMenu, BigBoxOfNothing, Icon } from 'sharedComponents'
 import { TProject, TTask } from 'sharedTypes'
 import { taskStatusLookup } from 'utilities'
 import { EditTaskModal, EditProjectModal } from 'sharedModals'
@@ -29,11 +29,11 @@ const TasksTable = ({ tasks, project }: TasksTableProps) => {
                         <Table.TableBodyCell>{title}</Table.TableBodyCell>
                         <Table.TableBodyCell>{taskStatusLookup[status]}</Table.TableBodyCell>
                         <Table.TableBodyCell>
-                            <DropdownMenu openDirection="left" title="Actions">{
-                                [<Button fullWidth key="edit" variation="INTERACTION" onClick={() => setSelectedTaskId(id)}>Edit</Button>]
-                            }
-                            </DropdownMenu>
-
+                            <Icon
+                                key="edit"
+                                name="edit"
+                                onClick={() => setSelectedTaskId(id)}
+                            />
                         </Table.TableBodyCell>
                     </Table.TableRow>
                 ))}

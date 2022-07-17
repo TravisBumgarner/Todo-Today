@@ -17,7 +17,8 @@ import {
     DropdownMenu,
     LabelInDisguise,
     PageHeader,
-    SmallParagraph
+    SmallParagraph,
+    Icon
 } from 'sharedComponents'
 import {
     dateFormatLookup,
@@ -214,30 +215,16 @@ const RemindersTable = () => {
                             <Table.TableBodyCell>{dayOfWeekLabels[dayOfWeek]}</Table.TableBodyCell>
                             <Table.TableBodyCell>{formatDurationDisplayString(parseInt(hours, 10) * 60 + parseInt(minutes, 10))}</Table.TableBodyCell>
                             <Table.TableBodyCell>
-                                <DropdownMenu openDirection="left" title="Actions">{
-                                    [
-                                        <Button
-                                            fullWidth
-                                            type="button"
-                                            key="edit"
-                                            variation="INTERACTION"
-                                            onClick={() => setSelectedReminderIndex(reminderIndex)}
-                                        >
-                                            Edit
-                                        </Button>,
-                                        <Button
-                                            fullWidth
-                                            type="button"
-                                            key="remove"
-                                            variation="INTERACTION"
-                                            onClick={() => handleDelete(reminderIndex)}
-                                        >
-                                            Remove
-                                        </Button>
-                                    ]
-                                }
-                                </DropdownMenu>
-
+                                <Icon
+                                    key="edit"
+                                    name="edit"
+                                    onClick={() => setSelectedReminderIndex(reminderIndex)}
+                                />
+                                <Icon
+                                    key="remove"
+                                    name="delete"
+                                    onClick={() => handleDelete(reminderIndex)}
+                                />
                             </Table.TableBodyCell>
                         </Table.TableRow>
                     ))}
