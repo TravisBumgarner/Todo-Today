@@ -1,3 +1,3 @@
 PR - 6
 
-- [ ] Todo List should haw
+- [ ] Remove dropdowns in place for icons
