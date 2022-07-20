@@ -49,7 +49,7 @@ const TodoListTableRow = ({ tableRow, isReadOnly }: TodoListTableRowProps) => {
                             handleChange={(value) => setModifiedDetails(value)}
                             name="details"
                             inputType="textarea"
-                            rows={5}
+                            rows={2}
                         />
                     )}
             </Table.TableBodyCell>

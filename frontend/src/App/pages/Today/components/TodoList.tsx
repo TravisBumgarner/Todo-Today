@@ -19,7 +19,7 @@ const TodoList = ({ selectedDate }: TodoListProps) => {
     const [showNothingToCopyModal, setShowNothingToCopyModal] = React.useState<boolean>(false)
     const [showAddNewTaskModal, setShowAddNewTaskModal] = React.useState<boolean>(false)
     const [showAddNewProjectModal, setShowAddNewProjectModal] = React.useState<boolean>(false)
-    const [isReadOnly, toggleIsReadOnly] = React.useState<boolean>(true)
+    const [isReadOnly, toggleIsReadOnly] = React.useState<boolean>(false)
 
     const projects = useLiveQuery(() => database.projects.toArray())
     const tasks = useLiveQuery(() => database.tasks.toArray())
@@ -111,14 +111,14 @@ const TodoList = ({ selectedDate }: TodoListProps) => {
                     </Button>
                 ]}
                 right={[
-                    <Button
-                        key="toggle-read-only"
-                        onClick={() => toggleIsReadOnly(!isReadOnly)}
-                        variation="INTERACTION"
-                        title={isReadOnly ? 'Toggle Edit Mode' : 'Toggle Read Mode'}
-                    >
-                        {isReadOnly ? 'Toggle Edit Mode' : 'Toggle Read Mode'}
-                    </Button>
+                    // <Button
+                    //     key="toggle-read-only"
+                    //     onClick={() => toggleIsReadOnly(!isReadOnly)}
+                    //     variation="INTERACTION"
+                    //     title={isReadOnly ? 'Toggle Edit Mode' : 'Toggle Read Mode'}
+                    // >
+                    //     {isReadOnly ? 'Toggle Edit Mode' : 'Toggle Read Mode'}
+                    // </Button>
                 ]}
             />
             {tasks && tasks.length !== 0
