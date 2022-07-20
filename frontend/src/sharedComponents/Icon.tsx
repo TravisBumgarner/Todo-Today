@@ -4,7 +4,7 @@ import styled from 'styled-components'
 // For More: https://fonts.google.com/icons
 
 type IconProps = {
-    name: 'mic' | 'delete' | 'close' | 'done' | 'edit'
+    name: 'mic' | 'delete' | 'close' | 'done' | 'edit' | 'settings'
     onClick?: () => void
 }
 

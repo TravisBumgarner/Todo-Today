@@ -6,7 +6,7 @@ import { BigBoxOfNothing, Icon, LabelAndInput, Table } from 'sharedComponents'
 import { ETaskStatus, TProject, TTask, TTodoListItem } from 'sharedTypes'
 import { taskStatusLookup } from 'utilities'
 
-import { EditTaskModal } from 'sharedModals'
+import { EditProjectModal, EditTaskModal } from 'sharedModals'
 
 type TableRow = {
     id: string
@@ -25,9 +25,12 @@ type TodoListTableRowProps = {
 }
 
 const TodoListTableRow = ({ tableRow, isReadOnly }: TodoListTableRowProps) => {
-    const { details, projectTitle, taskTitle, status, todoListItemId, taskId } = tableRow
+    const { details, projectTitle, projectId, taskTitle, status, todoListItemId, taskId } = tableRow
     const [modifiedDetails, setModifiedDetails] = React.useState<string>(details)
     const [modifiedStatus, setModifiedStatus] = React.useState<string>(status)
+    const [selectedProjectId, setSelectedProjectId] = React.useState<string | null>(null)
+    const [selectedTaskId, setSelectedTaskId] = React.useState<string | null>(null)
+
 
     React.useEffect(() => {
         database
@@ -44,26 +47,21 @@ const TodoListTableRow = ({ tableRow, isReadOnly }: TodoListTableRowProps) => {
     }, [modifiedStatus])
 
     return (
+        <>
         <Table.TableRow>
             <Table.TableBodyCell>
                 {projectTitle}
-                {/* <Icon
-                    key="mark-task-removed"
+                <Icon
                     name="edit"
-                    onClick={async () => {
-                        await database.todoListItems.where({ id: todoListItemId }).delete()
-                    }}
-                />                 */}
+                    onClick={() => setSelectedProjectId(projectId)}
+                />                
             </Table.TableBodyCell>
             <Table.TableBodyCell>
                 {taskTitle}
-                {/* <Icon
-                    key="mark-task-removed"
+                <Icon
                     name="edit"
-                    onClick={async () => {
-                        await database.todoListItems.where({ id: todoListItemId }).delete()
-                    }}
-                />       */}
+                    onClick={() => setSelectedTaskId(taskId)}
+                />      
             </Table.TableBodyCell>
             <Table.TableBodyCell>
                 <LabelAndInput
@@ -98,6 +96,27 @@ const TodoListTableRow = ({ tableRow, isReadOnly }: TodoListTableRowProps) => {
                 />
             </Table.TableBodyCell>
         </Table.TableRow>
+        {selectedTaskId
+                ? (
+                    <EditTaskModal
+                        showModal={selectedTaskId !== null}
+                        setShowModal={() => setSelectedTaskId(null)}
+                        taskId={selectedTaskId}
+                    />
+                )
+                : (null)
+            }
+            {selectedProjectId
+                ? (
+                    <EditProjectModal
+                        showModal={selectedProjectId !== null}
+                        setShowModal={() => setSelectedProjectId(null)}
+                        projectId={selectedProjectId}
+                    />
+                )
+                : (null)
+            }
+                        </>
     )
 }
 

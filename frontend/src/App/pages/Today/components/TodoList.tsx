@@ -92,6 +92,9 @@ const TodoList = ({ selectedDate }: TodoListProps) => {
                     >
                         Select Tasks
                     </Button>,
+                    
+                ]}
+                right={[
                     <Button
                         key="add-project"
                         onClick={() => setShowAddNewProjectModal(true)}
@@ -109,8 +112,6 @@ const TodoList = ({ selectedDate }: TodoListProps) => {
                     >
                         Add New Task
                     </Button>
-                ]}
-                right={[
                     // <Button
                     //     key="toggle-read-only"
                     //     onClick={() => toggleIsReadOnly(!isReadOnly)}

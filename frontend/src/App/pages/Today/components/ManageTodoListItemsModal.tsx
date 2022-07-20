@@ -108,6 +108,20 @@ const TasksByProjectTable = ({ project, tasks, taskIdsToTodoListIds, selectedDat
 }
 
 const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: ManageTodoListItemsModalProps) => {
+    const [showCanceledCompletedTasks, setShowCanceledCompletedTasks] = React.useState<boolean>(false)
+    
+    const taskStatusFilter = [
+        ETaskStatus.NEW,
+        ETaskStatus.IN_PROGRESS,
+        ETaskStatus.BLOCKED,
+        ...(showCanceledCompletedTasks ? [
+            ETaskStatus.CANCELED,
+            ETaskStatus.COMPLETED
+        ] : [])
+    ]
+    console.log(taskStatusFilter)
+        
+
     const tasksByProject = useLiveQuery(async () => {
         const projects = await database
             .projects
@@ -116,14 +130,17 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
             .toArray()
 
         return Promise.all(projects.map(async (project) => {
-            const tasks = await database.tasks.where({ projectId: project.id }).toArray()
+            const tasks = await database.tasks
+                .where({ projectId: project.id })
+                .and((item) => taskStatusFilter.includes(item.status))
+                .toArray()
 
             return {
                 project,
                 tasks
             }
         }))
-    })
+    }, [taskStatusFilter.length])
 
     const tasksWithProject = useLiveQuery(async () => {
         const tasks = await database.tasks.where('status').anyOf(ETaskStatus.NEW, ETaskStatus.IN_PROGRESS).toArray()
@@ -147,6 +164,7 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
     } else {
         Content = (
             <>
+                <Button key="finished" variation="INTERACTION" onClick={() => setShowCanceledCompletedTasks(!showCanceledCompletedTasks)}>Toggle All Tasks</Button>
                 {
                     tasksByProject.map(({ project, tasks }) => (
                         <TasksByProjectTable
