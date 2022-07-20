@@ -6,7 +6,7 @@ import { v4 as uuid4 } from 'uuid'
 import { BigBoxOfNothing, Button, ButtonWrapper, ConfirmationModal, Heading } from 'sharedComponents'
 import { formatDateKeyLookup } from 'utilities'
 import database from 'database'
-import { TDateISODate } from 'sharedTypes'
+import { ETaskStatus, TDateISODate } from 'sharedTypes'
 import { AddTaskModal, AddProjectModal } from 'sharedModals'
 import { TodoListTable, ManageTodoListItemsModal } from '.'
 
@@ -46,13 +46,25 @@ const TodoList = ({ selectedDate }: TodoListProps) => {
         } else {
             (
                 previousDay.map(async ({ projectId, taskId, details }) => {
-                    await database.todoListItems.add({
-                        projectId,
-                        taskId,
-                        id: uuid4(),
-                        todoListDate: selectedDate,
-                        details
-                    })
+                    const task = await database
+                    .tasks
+                    .where('id')
+                    .equals(taskId)
+                    .first()
+
+                    if (
+                        task?.status === ETaskStatus.NEW ||
+                        task?.status === ETaskStatus.IN_PROGRESS ||
+                        task?.status === ETaskStatus.BLOCKED
+                    ) {
+                        await database.todoListItems.add({
+                            projectId,
+                            taskId,
+                            id: uuid4(),
+                            todoListDate: selectedDate,
+                            details
+                        })
+                    }
                 })
             )
         }
