@@ -160,7 +160,7 @@ const Tasks = () => {
                         variation="INTERACTION"
                         onClick={() => setShowAddProjectModal(true)}
                     >
-                        Add Project
+                        Add New Project
                     </Button>,
                     <Button
                         type="button"
