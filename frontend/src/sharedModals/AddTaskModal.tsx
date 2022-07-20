@@ -52,7 +52,7 @@ const AddTaskModal = ({ showModal, setShowModal, project, addToTodayDefaultValue
 
     return (
         <Modal
-            contentLabel="Add Task"
+            contentLabel="Add New Task"
             showModal={showModal}
             closeModal={() => setShowModal(false)}
         >

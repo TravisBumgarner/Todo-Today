@@ -148,10 +148,10 @@ const Tasks = () => {
             <PageHeader>
                 <Heading.H2>Manage</Heading.H2>
             </PageHeader>
-            <FilterWrapper>
+            {/* <FilterWrapper>
                 <ProjectFilters statusFilter={projectStatusFilter} setStatusFilter={setProjectStatusFilter} />
                 <TaskFilters statusFilter={taskStatusFilter} setStatusFilter={setTaskStatusFilter} />
-            </FilterWrapper>
+            </FilterWrapper> */}
             <ButtonWrapper
                 left={[
                     <Button
@@ -160,7 +160,7 @@ const Tasks = () => {
                         variation="INTERACTION"
                         onClick={() => setShowAddProjectModal(true)}
                     >
-                        Add Project
+                        Add New Project
                     </Button>,
                     <Button
                         type="button"

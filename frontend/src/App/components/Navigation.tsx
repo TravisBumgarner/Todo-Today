@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { useLocation } from 'react-router-dom'
 
-import { StyledNavLink } from 'sharedComponents'
+import { Icon, StyledNavLink } from 'sharedComponents'
 
 const StyledNav = styled.ul`
     list-style: none;
@@ -16,10 +16,15 @@ const StyledNav = styled.ul`
     }
 `
 
+// const ALWAYS_VISIBLE_LINKS = [
+//     { text: 'Todo Today', to: '/' },
+//     { text: 'Manage', to: '/manage' },
+//     { text: 'Settings', to: '/settings' },
+// ]
+
 const ALWAYS_VISIBLE_LINKS = [
-    { text: 'Todo Today', to: '/' },
-    { text: 'Manage', to: '/manage' },
-    { text: 'Settings', to: '/settings' },
+    { text: <Icon name="edit" />, to: '/manage' },
+    { text: <Icon name="settings" />, to: '/settings' },
 ]
 
 const NavLi = styled.li`

@@ -19,8 +19,8 @@ const TasksTable = ({ tasks, project }: TasksTableProps) => {
             <Table.TableHeader>
                 <Table.TableRow>
                     <Table.TableHeaderCell>Task</Table.TableHeaderCell>
-                    <Table.TableHeaderCell width="70px">Status</Table.TableHeaderCell>
-                    <Table.TableHeaderCell width="110px">Actions</Table.TableHeaderCell>
+                    <Table.TableHeaderCell width="200px">Status</Table.TableHeaderCell>
+                    <Table.TableHeaderCell width="30px"></Table.TableHeaderCell>
                 </Table.TableRow>
             </Table.TableHeader>
             <Table.TableBody>
@@ -43,12 +43,8 @@ const TasksTable = ({ tasks, project }: TasksTableProps) => {
 
     return (
         <>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Heading.H3>{project.title}</Heading.H3>
-                <DropdownMenu openDirection="left" title="Actions">{
-                    [<Button fullWidth key="edit" variation="INTERACTION" onClick={() => setSelectedProjectId(project.id)}>Edit</Button>]
-                }
-                </DropdownMenu>
+            <div style={{ display: 'flex', alignItems: 'left' }}>
+                <Heading.H3>{project.title}</Heading.H3> <Icon name="edit" onClick={() => setSelectedProjectId(project.id)}/>
             </div>
             {
                 tasks.length === 0
