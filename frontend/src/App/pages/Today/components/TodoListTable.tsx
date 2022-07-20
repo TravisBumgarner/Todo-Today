@@ -27,6 +27,7 @@ type TodoListTableRowProps = {
 const TodoListTableRow = ({ tableRow, isReadOnly }: TodoListTableRowProps) => {
     const { details, projectTitle, taskTitle, status, todoListItemId, taskId } = tableRow
     const [modifiedDetails, setModifiedDetails] = React.useState<string>(details)
+    const [modifiedStatus, setModifiedStatus] = React.useState<string>(status)
 
     React.useEffect(() => {
         database
@@ -35,11 +36,45 @@ const TodoListTableRow = ({ tableRow, isReadOnly }: TodoListTableRowProps) => {
             .modify({ details: modifiedDetails })
     }, [modifiedDetails])
 
+    React.useEffect(() => {
+        database
+            .tasks
+            .where({ id: taskId })
+            .modify({ status: modifiedStatus })
+    }, [modifiedStatus])
+
     return (
         <Table.TableRow>
-            <Table.TableBodyCell>{projectTitle}</Table.TableBodyCell>
-            <Table.TableBodyCell>{taskTitle}</Table.TableBodyCell>
-            <Table.TableBodyCell>{taskStatusLookup[status]}</Table.TableBodyCell>
+            <Table.TableBodyCell>
+                {projectTitle}
+                {/* <Icon
+                    key="mark-task-removed"
+                    name="edit"
+                    onClick={async () => {
+                        await database.todoListItems.where({ id: todoListItemId }).delete()
+                    }}
+                />                 */}
+            </Table.TableBodyCell>
+            <Table.TableBodyCell>
+                {taskTitle}
+                {/* <Icon
+                    key="mark-task-removed"
+                    name="edit"
+                    onClick={async () => {
+                        await database.todoListItems.where({ id: todoListItemId }).delete()
+                    }}
+                />       */}
+            </Table.TableBodyCell>
+            <Table.TableBodyCell>
+                <LabelAndInput
+                    name="status"
+                    value={modifiedStatus}
+                    options={ETaskStatus}
+                    optionLabels={taskStatusLookup}
+                    inputType="select-enum"
+                    handleChange={(value: ETaskStatus) => setModifiedStatus(value)}
+                />
+            </Table.TableBodyCell>
             <Table.TableBodyCell style={{ whiteSpace: 'pre-line' }}>
                 {isReadOnly
                     ? (modifiedDetails)
@@ -55,17 +90,8 @@ const TodoListTableRow = ({ tableRow, isReadOnly }: TodoListTableRowProps) => {
             </Table.TableBodyCell>
             <Table.TableBodyCell>
                 <Icon
-                    key="mark-task-completed"
-                    name="done"
-                    onClick={async () => {
-                        await database.tasks
-                            .where({ id: taskId })
-                            .modify({ status: ETaskStatus.COMPLETED })
-                    }}
-                />
-                <Icon
                     key="mark-task-removed"
-                    name="delete"
+                    name="close"
                     onClick={async () => {
                         await database.todoListItems.where({ id: todoListItemId }).delete()
                     }}
@@ -114,9 +140,9 @@ const TodoListTable = ({ todoListItems, isReadOnly }: TodoListTableProps) => {
                 <Table.TableRow>
                     <Table.TableHeaderCell width="15%">Project</Table.TableHeaderCell>
                     <Table.TableHeaderCell width="15%">Task</Table.TableHeaderCell>
-                    <Table.TableHeaderCell width="15%">Status</Table.TableHeaderCell>
+                    <Table.TableHeaderCell width="20%">Status</Table.TableHeaderCell>
                     <Table.TableHeaderCell width="40%">Day&apos;s Details</Table.TableHeaderCell>
-                    <Table.TableHeaderCell width="100px">Actions</Table.TableHeaderCell>
+                    <Table.TableHeaderCell width="25px"></Table.TableHeaderCell>
                 </Table.TableRow>
             </Table.TableHeader>
             <Table.TableBody>
