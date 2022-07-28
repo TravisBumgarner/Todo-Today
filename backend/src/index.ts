@@ -14,9 +14,9 @@ if (isDev) require('electron-reloader')(module)
 
 let mainWindow
 
-const BACKUPS_DIR = path.resolve(app.getPath('appData'), app.name, 'backups')
+const BACKUPS_DIR = path.resolve(app.getPath('documents'), app.name, 'backups')
 if (!fs.existsSync(BACKUPS_DIR)) {
-    fs.mkdirSync(BACKUPS_DIR);
+    fs.mkdirSync(BACKUPS_DIR, {recursive: true});
 }
 
 contextMenu({ showInspectElement: isDev });
