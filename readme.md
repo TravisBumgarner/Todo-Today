@@ -8,17 +8,16 @@
 
 - It's a Todo List! 😂
 - Create Projects, tasks, and todo list items!
-- Track time spent on projects!
 - Track your successes so you have evidence when it comes time for promotion, or just feeling good!
-- Generate reports of work completed - Broken down by date and project!
 - Automated and manual backups!
 - Create Notifications!
 - Super awesome color themes!
 
 # Features in Development
 
-- Add more Granular ways of tracking time. 
-
+- Make UI/UX more User Friendly
+- (Maybe) Windows / Linux Support
+- Figure out how to create installers that don't require cloning the repository
 
 # Contributing
 
