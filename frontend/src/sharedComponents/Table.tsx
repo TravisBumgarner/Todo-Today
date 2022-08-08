@@ -23,7 +23,7 @@ const TableBody = styled.tbody`
 `
 
 const TableRow = styled.tr`
-    padding: 10px;    
+    padding: 10px;
 `
 
 const TableHeaderCell = styled.th<{ theme: TColor, width?: string, minWidth?: string }>`
@@ -39,6 +39,7 @@ const TableBodyCell = styled.td`
     border-bottom: 2px solid ${({ theme }) => theme.INTERACTION};
     padding: 10px;
     color: ${({ theme }) => theme.INTERACTION};
+    vertical-align: center;
 `
 
 export {

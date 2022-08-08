@@ -5,6 +5,7 @@ import styled from 'styled-components'
 
 type IconProps = {
     name: 'mic' | 'delete' | 'close' | 'done' | 'edit' | 'settings'
+    size?: string
     onClick?: () => void
 }
 
@@ -18,11 +19,11 @@ const Button = styled.button`
     }
 `
 
-const Icon = ({ name, onClick }: IconProps) => {
+const Icon = ({ name, onClick, size }: IconProps) => {
     return (
         onClick ? (
             <Button onClick={onClick} type="button">
-                <span className="material-symbols-outlined">
+                <span style={{ fontSize: size || '1rem' }} className="material-symbols-outlined">
                     {name}
                 </span>
             </Button>
