@@ -7,20 +7,21 @@ import { darken } from 'polished'
 import Context, { context } from 'Context'
 import Theme from 'theme'
 import { ConfirmationModal } from 'sharedComponents'
-import { Navigation, Router, Header } from './components'
+import { Navigation, Router, Footer } from './components'
 import THEMES from '../sharedComponents/colors'
 import { setupAutomatedBackup } from './pages/Settings'
 
 const ModalBackground = styled.div`
-    display: flex;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 30;
-    
-    background-color: ${(props) => {
+display: flex;
+position: fixed;
+top: 0;
+left: 0;
+width: 100vw;
+height: 100vh;
+z-index: 30;
+import { Navigation, Router, Footer } from './components'
+
+background-color: ${(props) => {
         return darken(0.05, props.theme.BACKGROUND)
     }};
     display: flex;
@@ -29,7 +30,7 @@ const ModalBackground = styled.div`
     
     > div {
         padding: 2rem;
-        border: ${({ theme }) => theme.FOREGROUND} solid 2px;
+        border: ${({ theme }) => theme.FOREGROUND} solid 1px;
         background-color: ${({ theme }) => theme.BACKGROUND};
         position: static;
         max-width: 80vw;
@@ -46,14 +47,23 @@ const App = () => {
     return (
         <ThemeProvider theme={THEMES[state.colorTheme]}>
             <Theme.GlobalStyle />
-            <ModalProvider backgroundComponent={ModalBackground}>
-                <div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <Header />
-                        <Navigation />
-                    </div>
+            <div style={{
+                display: 'flex',
+                boxSizing: 'border-box',
+                padding: '1rem',
+                height: '100vh',
+                flexDirection: 'column',
+                justifyContent: 'space-between'
+            }}
+            >
+                <div style={{ maxHeight: '90vh', overflowY: 'auto' }}>
                     <Router />
                 </div>
+                <div style={{ display: 'flex', justifyContent: 'end' }}>
+                    <Navigation />
+                </div>
+            </div>
+            <ModalProvider backgroundComponent={ModalBackground}>
                 <ConfirmationModal
                     body="The automated backup failed to run."
                     title="Heads Up!"
@@ -62,6 +72,7 @@ const App = () => {
                     setShowModal={setShowAutomatedBackupModal}
                 />
             </ModalProvider>
+
         </ThemeProvider>
     )
 }

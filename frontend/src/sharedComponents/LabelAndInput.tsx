@@ -7,7 +7,7 @@ import { TEnumType } from 'sharedTypes'
 const Input = styled.input`
     font-family: 'Comfortaa', cursive;
     font-size: 1rem;
-    border: 2px solid;
+    border: 1px solid;
     padding: 0.5rem 1rem;
     background-color: transparent;
     font-weight: 700;
@@ -35,7 +35,7 @@ const Input = styled.input`
 `
 
 const CheckboxWrapper = styled.div`
-    border: 2px solid;
+    border: 1px solid;
     border-color: ${({ theme }) => theme.FOREGROUND};
     background-color: ${({ theme }) => transparentize(0.9, theme.FOREGROUND)};
     padding: 0.5rem 1rem;
@@ -76,7 +76,7 @@ const CheckboxLabel = styled.label`
 const TextArea = styled.textarea`
     font-family: 'Comfortaa', cursive;
     font-size: 1rem;
-    border: 2px solid;
+    border: 1px solid;
     padding: 0.5rem 1rem;
     background-color: transparent;
     font-weight: 700;
@@ -113,7 +113,7 @@ const Label = styled.label`
 const Select = styled.select`
     font-family: 'Comfortaa', cursive;
     font-size: 1rem;
-    border: 2px solid;
+    border: 1px solid;
     padding: 0.5rem 1rem;
     background-color: transparent;
     font-weight: 700;

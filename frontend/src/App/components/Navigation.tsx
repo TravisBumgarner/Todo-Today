@@ -6,7 +6,7 @@ import { Icon, StyledNavLink } from 'sharedComponents'
 
 const StyledNav = styled.ul`
     list-style: none;
-    margin: 2rem 0;
+    margin: 2rem 0 0 0;
     padding: 0rem;
     display: flex;
     flex-direction: row;
