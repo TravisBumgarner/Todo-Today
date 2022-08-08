@@ -1,9 +1,9 @@
 import Navigation from './Navigation'
 import Router from './Router'
-import Footer from './Footer'
+import Logo from './Logo'
 
 export {
     Navigation,
     Router,
-    Footer
+    Logo
 }

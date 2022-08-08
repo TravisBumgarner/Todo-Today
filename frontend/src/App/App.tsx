@@ -7,7 +7,7 @@ import { darken } from 'polished'
 import Context, { context } from 'Context'
 import Theme from 'theme'
 import { ConfirmationModal } from 'sharedComponents'
-import { Navigation, Router, Footer } from './components'
+import { Navigation, Router } from './components'
 import THEMES from '../sharedComponents/colors'
 import { setupAutomatedBackup } from './pages/Settings'
 
@@ -19,7 +19,7 @@ left: 0;
 width: 100vw;
 height: 100vh;
 z-index: 30;
-import { Navigation, Router, Footer } from './components'
+
 
 background-color: ${(props) => {
         return darken(0.05, props.theme.BACKGROUND)

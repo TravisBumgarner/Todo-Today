@@ -5,6 +5,7 @@ const StyledNavLink = styled(NavLink)`
     color: ${(props) => {
         return props.theme.FOREGROUND
     }};
+    text-decoration: none;
 
     &:hover {
         color: ${(props) => {
