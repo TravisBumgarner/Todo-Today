@@ -3,7 +3,7 @@ import styled from 'styled-components'
 const H1 = styled.h1`
     color: ${({ theme }) => theme.WARNING};
     margin: 0;
-    font-size: 3rem;
+    font-size: 1rem;
     font-family: 'Comfortaa', cursive;
 `
 

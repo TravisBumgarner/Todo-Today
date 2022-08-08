@@ -26,7 +26,7 @@ const StyledNav = styled.ul<{ openDirection: 'left' | 'right', showMenu: boolean
     flex-direction: row;
     padding: 1rem;
     background-color: ${({ theme }) => theme.BACKGROUND};
-    border: 2px solid ${({ theme }) => theme.FOREGROUND};
+    border: 1px solid ${({ theme }) => theme.FOREGROUND};
     margin: 0.5rem;
 
     ${Button} {

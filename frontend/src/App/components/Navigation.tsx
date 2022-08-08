@@ -3,26 +3,23 @@ import styled from 'styled-components'
 import { useLocation } from 'react-router-dom'
 
 import { Icon, StyledNavLink } from 'sharedComponents'
+import Logo from './Logo'
 
 const StyledNav = styled.ul`
     list-style: none;
-    margin: 2rem 0;
+    margin: 2rem 0 0 0;
     padding: 0rem;
     display: flex;
     flex-direction: row;
+    align-items: center;
 
     li {
         margin-left: 1rem;
     }
 `
 
-// const ALWAYS_VISIBLE_LINKS = [
-//     { text: 'Todo Today', to: '/' },
-//     { text: 'Manage', to: '/manage' },
-//     { text: 'Settings', to: '/settings' },
-// ]
-
 const ALWAYS_VISIBLE_LINKS = [
+    { text: <Logo />, to: '/' },
     { text: <Icon name="edit" />, to: '/manage' },
     { text: <Icon name="settings" />, to: '/settings' },
 ]

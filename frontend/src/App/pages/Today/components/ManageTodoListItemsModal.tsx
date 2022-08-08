@@ -109,7 +109,7 @@ const TasksByProjectTable = ({ project, tasks, taskIdsToTodoListIds, selectedDat
 
 const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: ManageTodoListItemsModalProps) => {
     const [showCanceledCompletedTasks, setShowCanceledCompletedTasks] = React.useState<boolean>(false)
-    
+
     const taskStatusFilter = [
         ETaskStatus.NEW,
         ETaskStatus.IN_PROGRESS,
@@ -119,8 +119,6 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
             ETaskStatus.COMPLETED
         ] : [])
     ]
-    console.log(taskStatusFilter)
-        
 
     const tasksByProject = useLiveQuery(async () => {
         const projects = await database
