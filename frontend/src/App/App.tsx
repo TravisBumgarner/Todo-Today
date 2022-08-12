@@ -46,24 +46,24 @@ const App = () => {
 
     return (
         <ThemeProvider theme={THEMES[state.colorTheme]}>
-            <Theme.GlobalStyle />
-            <div style={{
-                display: 'flex',
-                boxSizing: 'border-box',
-                padding: '1rem',
-                height: '100vh',
-                flexDirection: 'column',
-                justifyContent: 'space-between'
-            }}
-            >
-                <div style={{ maxHeight: '90vh', overflowY: 'auto' }}>
-                    <Router />
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'end' }}>
-                    <Navigation />
-                </div>
-            </div>
             <ModalProvider backgroundComponent={ModalBackground}>
+                <Theme.GlobalStyle />
+                <div style={{
+                    display: 'flex',
+                    boxSizing: 'border-box',
+                    padding: '1rem',
+                    height: '100vh',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between'
+                }}
+                >
+                    <div style={{ maxHeight: '90vh', overflowY: 'auto' }}>
+                        <Router />
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'end' }}>
+                        <Navigation />
+                    </div>
+                </div>
                 <ConfirmationModal
                     body="The automated backup failed to run."
                     title="Heads Up!"
