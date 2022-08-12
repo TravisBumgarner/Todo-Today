@@ -1,14 +1,14 @@
 import React from 'react'
 import { Routes, Route } from 'react-router'
 
-import { TodoList, Manage, Settings, Error } from '../pages'
+import { TodoList, History, Settings, Error } from '../pages'
 
 const Router = () => {
     return (
         <Routes>
             <Route
-                path="/manage"
-                element={<Manage />}
+                path="/history"
+                element={<History />}
             />
             <Route
                 path="/settings"

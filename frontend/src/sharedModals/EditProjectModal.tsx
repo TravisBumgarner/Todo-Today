@@ -15,8 +15,6 @@ type EditProjectModalProps = {
 const EditProjectModal = ({ showModal, setShowModal, projectId }: EditProjectModalProps) => {
     const [title, setTitle] = React.useState<string>('')
     const [status, setStatus] = React.useState<EProjectStatus>(EProjectStatus.ACTIVE)
-    const [startDate, setStartDate] = React.useState<Moment | null>(null)
-    const [endDate, setEndDate] = React.useState<Moment | null>(null)
     const [submitDisabled, setSubmitDisabled] = React.useState<boolean>(true)
     const [isLoading, setIsLoading] = React.useState<boolean>(true)
 
@@ -25,8 +23,6 @@ const EditProjectModal = ({ showModal, setShowModal, projectId }: EditProjectMod
             .projects.where('id').equals(projectId).first()
             .then((project: TProject) => {
                 setTitle(project.title)
-                setStartDate(project.startDate ? moment(project.startDate) : null)
-                setEndDate(project.endDate ? moment(project.endDate) : null)
                 setStatus(project.status)
                 setIsLoading(false)
             })
@@ -35,21 +31,12 @@ const EditProjectModal = ({ showModal, setShowModal, projectId }: EditProjectMod
     const handleSubmit = () => {
         const editedProject = {
             title,
-            startDate: startDate ? formatDateKeyLookup(startDate) : null,
-            endDate: endDate ? formatDateKeyLookup(endDate) : null,
             status,
             id: projectId
         }
         database.projects.put(editedProject, [projectId])
         setShowModal(false)
     }
-
-    React.useEffect(() => {
-        if (status === EProjectStatus.REOCURRING) {
-            setStartDate(null)
-            setEndDate(null)
-        }
-    }, [status])
 
     return (
         <Modal
@@ -77,23 +64,6 @@ const EditProjectModal = ({ showModal, setShowModal, projectId }: EditProjectMod
                                 inputType="select-enum"
                                 handleChange={(newStatus: EProjectStatus) => setStatus(newStatus)}
                             />
-                            <LabelAndInput
-                                disabled={status === EProjectStatus.REOCURRING}
-                                label="Start Date (Optional)"
-                                name="startDate"
-                                value={startDate ? startDate.format('YYYY-MM-DD') : ''}
-                                inputType="date"
-                                handleChange={(date) => setStartDate(moment(date))}
-                            />
-                            <LabelAndInput
-                                disabled={status === EProjectStatus.REOCURRING}
-                                label="End Date (Optional)"
-                                name="endDate"
-                                value={endDate ? endDate.format('YYYY-MM-DD') : ''}
-                                inputType="date"
-                                handleChange={(date) => setEndDate(moment(date))}
-                            />
-
                             <ButtonWrapper right={
                                 [
                                     <Button key="cancel" variation="INTERACTION" onClick={() => setShowModal(false)}>Cancel</Button>,

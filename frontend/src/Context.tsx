@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { EDateFormat, EColorTheme, EBackupInterval, TSettings, TReminder } from 'sharedTypes'
+import { EColorTheme, EBackupInterval, TSettings, TReminder } from 'sharedTypes'
 import { getLocalStorage, setLocalStorage } from 'utilities'
 import { RefreshRemindersIPC, AppStartIPC } from '../../shared/types'
 
@@ -10,7 +10,6 @@ const HAS_DONE_WARM_START = 'HAS_DONE_WARM_START'
 const TRUE = 'TRUE'
 
 type State = {
-    dateFormat: EDateFormat
     colorTheme: EColorTheme
     backupInterval: EBackupInterval
     reminders: TReminder[]
@@ -18,7 +17,6 @@ type State = {
 }
 
 const EMPTY_STATE: State = {
-    dateFormat: EDateFormat.A,
     colorTheme: EColorTheme.BEACH,
     backupInterval: EBackupInterval.DAILY,
     reminders: [],

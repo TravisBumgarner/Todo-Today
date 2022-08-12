@@ -14,8 +14,6 @@ enum EProjectStatus {
 type TProject = {
     id: string
     title: string
-    startDate: TDateISODate | null
-    endDate: TDateISODate | null
     status: EProjectStatus
 }
 
@@ -47,13 +45,6 @@ type TTodoListItem = {
     todoListDate: string
     id: string
     details: string
-}
-
-enum EDateFormat {
-    A = 'A',
-    B = 'B',
-    C = 'C',
-    D = 'D',
 }
 
 enum EBackupInterval {
@@ -102,7 +93,6 @@ type TColor = {
 }
 
 type TSettings = {
-    dateFormat: EDateFormat
     colorTheme: EColorTheme
     backupInterval: EBackupInterval
     reminders: TReminder[]
@@ -128,7 +118,6 @@ export {
     TTodoListItem,
     TEnumType,
     TSettings,
-    EDateFormat,
     EColorTheme,
     TColor,
     TDateISODate,

@@ -6,7 +6,6 @@ import { Modal, Button, Table, BigBoxOfNothing, ButtonWrapper, Heading } from 's
 import { formatDateDisplayString, taskStatusLookup } from 'utilities'
 import { TDateISODate, TProject, TTodoListItem, ETaskStatus, EProjectStatus, TTask } from 'sharedTypes'
 import database from 'database'
-import { context } from 'Context'
 
 type ManageTodoListItemsModalProps = {
     showModal: boolean
@@ -108,18 +107,6 @@ const TasksByProjectTable = ({ project, tasks, taskIdsToTodoListIds, selectedDat
 }
 
 const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: ManageTodoListItemsModalProps) => {
-    const [showCanceledCompletedTasks, setShowCanceledCompletedTasks] = React.useState<boolean>(false)
-
-    const taskStatusFilter = [
-        ETaskStatus.NEW,
-        ETaskStatus.IN_PROGRESS,
-        ETaskStatus.BLOCKED,
-        ...(showCanceledCompletedTasks ? [
-            ETaskStatus.CANCELED,
-            ETaskStatus.COMPLETED
-        ] : [])
-    ]
-
     const tasksByProject = useLiveQuery(async () => {
         const projects = await database
             .projects
@@ -130,7 +117,11 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
         return Promise.all(projects.map(async (project) => {
             const tasks = await database.tasks
                 .where({ projectId: project.id })
-                .and((item) => taskStatusFilter.includes(item.status))
+                .and((item) => [
+                    ETaskStatus.NEW,
+                    ETaskStatus.IN_PROGRESS,
+                    ETaskStatus.BLOCKED,
+                ].includes(item.status))
                 .toArray()
 
             return {
@@ -138,7 +129,7 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
                 tasks
             }
         }))
-    }, [taskStatusFilter.length])
+    }, [])
 
     const tasksWithProject = useLiveQuery(async () => {
         const tasks = await database.tasks.where('status').anyOf(ETaskStatus.NEW, ETaskStatus.IN_PROGRESS).toArray()
@@ -151,7 +142,6 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
         }))
     })
     const todoListItems = useLiveQuery(() => database.todoListItems.where({ todoListDate: selectedDate }).toArray(), [selectedDate])
-    const { state: { dateFormat } } = React.useContext(context)
 
     const taskIdsToTodoListIds = getTaskIdsToTodoListIds(todoListItems || [])
 
@@ -162,7 +152,6 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
     } else {
         Content = (
             <>
-                <Button key="finished" variation="INTERACTION" onClick={() => setShowCanceledCompletedTasks(!showCanceledCompletedTasks)}>Toggle All Tasks</Button>
                 {
                     tasksByProject.map(({ project, tasks }) => (
                         <TasksByProjectTable
@@ -185,7 +174,7 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
 
     return (
         <Modal
-            contentLabel={`Select Tasks for ${formatDateDisplayString(dateFormat, selectedDate)}`}
+            contentLabel={`Select Tasks for ${formatDateDisplayString(selectedDate)}`}
             showModal={showModal}
             closeModal={() => setShowModal(false)}
         >

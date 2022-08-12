@@ -3,7 +3,7 @@ import React from 'react'
 import styled from 'styled-components'
 
 import { EProjectStatus, ETaskStatus } from 'sharedTypes'
-import { BigBoxOfNothing, Button, ButtonWrapper, Heading, LabelAndInput, PageHeader } from 'sharedComponents'
+import { BigBoxOfNothing, Heading, LabelAndInput, PageHeader } from 'sharedComponents'
 import { bucketTasksByProject, projectStatusLookup, taskStatusLookup } from 'utilities'
 import database from 'database'
 import { AddProjectModal, AddTaskModal } from 'sharedModals'
@@ -114,12 +114,15 @@ const Tasks = () => {
     const [projectStatusFilter, setProjectStatusFilter] = React.useState<Record<EProjectStatus, boolean>>(DEFAULT_PROJECT_STATUS_FILTER)
     const [showAddTaskModal, setShowAddTaskModal] = React.useState<boolean>(false)
     const [showAddProjectModal, setShowAddProjectModal] = React.useState<boolean>(false)
+    const [searchText, setSearchText] = React.useState<string>('')
 
     let Contents
     if (!projects || !projects.length) {
         Contents = <BigBoxOfNothing message="Create a project and then come back!" />
     } else if (tasks && tasks.length) {
-        const filteredTasks = tasks.filter(({ status }) => taskStatusFilter[status])
+        const filteredTasks = tasks
+            .filter(({ status }) => taskStatusFilter[status])
+            .filter(task => task.title.toLowerCase().includes(searchText.toLowerCase()))
         const filteredProjects = projects.filter(({ status }) => projectStatusFilter[status])
 
         if (filteredTasks.length === 0 || filteredProjects.length === 0) {
@@ -148,31 +151,16 @@ const Tasks = () => {
             <PageHeader>
                 <Heading.H2>Manage</Heading.H2>
             </PageHeader>
-            {/* <FilterWrapper>
+            <FilterWrapper>
+                <LabelAndInput
+                    value={searchText}
+                    name="search"
+                    handleChange={(value) => setSearchText(value)}
+                    label="Search Tasks"
+                />
                 <ProjectFilters statusFilter={projectStatusFilter} setStatusFilter={setProjectStatusFilter} />
                 <TaskFilters statusFilter={taskStatusFilter} setStatusFilter={setTaskStatusFilter} />
-            </FilterWrapper> */}
-            <ButtonWrapper
-                left={[
-                    <Button
-                        type="button"
-                        key="add-project"
-                        variation="INTERACTION"
-                        onClick={() => setShowAddProjectModal(true)}
-                    >
-                        Add New Project
-                    </Button>,
-                    <Button
-                        type="button"
-                        key="add-task"
-                        variation="INTERACTION"
-                        onClick={() => setShowAddTaskModal(true)}
-                    >
-                        Add Task
-                    </Button>
-
-                ]}
-            />
+            </FilterWrapper>
             {Contents}
             {showAddTaskModal
                 ? <AddTaskModal addToTodayDefaultValue="no" showModal={showAddTaskModal} setShowModal={setShowAddTaskModal} />

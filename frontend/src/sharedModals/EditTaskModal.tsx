@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Button, Modal, ButtonWrapper, LabelAndInput, Form } from 'sharedComponents'
 import { TTask, ETaskStatus } from 'sharedTypes'
-import { projectStatusLookup } from 'utilities'
+import { taskStatusLookup } from 'utilities'
 import database from 'database'
 import { useLiveQuery } from 'dexie-react-hooks'
 
@@ -64,7 +64,7 @@ const EditTaskModal = ({ showModal, setShowModal, taskId }: EditTaskModalProps) 
                     name="status"
                     value={status}
                     options={ETaskStatus}
-                    optionLabels={projectStatusLookup}
+                    optionLabels={taskStatusLookup}
                     inputType="select-enum"
                     handleChange={(value: ETaskStatus) => setStatus(value)}
                 />

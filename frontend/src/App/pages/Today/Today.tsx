@@ -4,11 +4,9 @@ import moment from 'moment'
 import { Heading, Button, ButtonWrapper, PageHeader } from 'sharedComponents'
 import { formatDateDisplayString, formatDateKeyLookup } from 'utilities'
 import { TDateISODate } from 'sharedTypes'
-import { context } from 'Context'
 import { TodoList, Successes } from './components'
 
 const Today = () => {
-    const { state: { dateFormat } } = React.useContext(context)
     const [selectedDate, setSelectedDate] = React.useState<TDateISODate>(formatDateKeyLookup(moment()))
 
     const setPreviousDate = () => {
@@ -26,7 +24,7 @@ const Today = () => {
     return (
         <div>
             <PageHeader>
-                <Heading.H2>{formatDateDisplayString(dateFormat, selectedDate)}</Heading.H2>
+                <Heading.H2>{formatDateDisplayString(selectedDate)}</Heading.H2>
                 <ButtonWrapper
                     left={[
                         <Button key="today" onClick={getToday} variation="INTERACTION">Today</Button>,
