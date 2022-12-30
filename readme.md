@@ -25,8 +25,8 @@
 - If you have an issue, please submit it [here](https://github.com/TravisBumgarner/todotoday/issues).
 - New Features
   1. Clone the code.
-  2. Run `npm run fill-it` from the project root.
-  3. Run `npm run sd` from the project root.
+  2. Run `yarn run fill-it` from the project root.
+  3. Run `yarn run sd` from the project root.
   4. Get to coding.
   5. Create a pull request.
 
@@ -34,4 +34,4 @@ Create new color themes!!
 
 # Building
 
-1. Run `npm run build` from root.
+1. Run `yarn run build` from root.
