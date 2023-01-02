@@ -14,13 +14,12 @@ type AddProjectModalProps = {
 
 const AddProjectModal = ({ showModal, setShowModal }: AddProjectModalProps) => {
     const [title, setTitle] = React.useState<string>('')
-    const [status, setStatus] = React.useState<EProjectStatus>(EProjectStatus.ACTIVE)
 
     const handleSubmit = async () => {
         const newProject: TProject = {
             id: uuid4(),
             title,
-            status,
+            status: EProjectStatus.ACTIVE,
         }
         await database.projects.add(newProject)
         setShowModal(false)
@@ -38,15 +37,6 @@ const AddProjectModal = ({ showModal, setShowModal }: AddProjectModalProps) => {
                     name="title"
                     value={title}
                     handleChange={(data) => setTitle(data)}
-                />
-                <LabelAndInput
-                    label="Status"
-                    name="status"
-                    value={status}
-                    options={EProjectStatus}
-                    optionLabels={projectStatusLookup}
-                    inputType="select-enum"
-                    handleChange={(newStatus: EProjectStatus) => setStatus(newStatus)}
                 />
                 <ButtonWrapper right={
                     [

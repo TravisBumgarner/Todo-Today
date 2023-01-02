@@ -100,11 +100,8 @@ const DEFAULT_TASK_STATUS_FILTER = {
 }
 
 const DEFAULT_PROJECT_STATUS_FILTER = {
-    [EProjectStatus.REOCURRING]: true,
+    [EProjectStatus.INACTIVE]: false,
     [EProjectStatus.ACTIVE]: true,
-    [EProjectStatus.BLOCKED]: true,
-    [EProjectStatus.CANCELED]: true,
-    [EProjectStatus.COMPLETED]: true,
 }
 
 const Tasks = () => {
@@ -148,31 +145,10 @@ const Tasks = () => {
             <PageHeader>
                 <Heading.H2>Manage</Heading.H2>
             </PageHeader>
-            {/* <FilterWrapper>
+            <FilterWrapper>
                 <ProjectFilters statusFilter={projectStatusFilter} setStatusFilter={setProjectStatusFilter} />
                 <TaskFilters statusFilter={taskStatusFilter} setStatusFilter={setTaskStatusFilter} />
-            </FilterWrapper> */}
-            <ButtonWrapper
-                left={[
-                    <Button
-                        type="button"
-                        key="add-project"
-                        variation="INTERACTION"
-                        onClick={() => setShowAddProjectModal(true)}
-                    >
-                        Add New Project
-                    </Button>,
-                    <Button
-                        type="button"
-                        key="add-task"
-                        variation="INTERACTION"
-                        onClick={() => setShowAddTaskModal(true)}
-                    >
-                        Add Task
-                    </Button>
-
-                ]}
-            />
+            </FilterWrapper>
             {Contents}
             {showAddTaskModal
                 ? <AddTaskModal addToTodayDefaultValue="no" showModal={showAddTaskModal} setShowModal={setShowAddTaskModal} />

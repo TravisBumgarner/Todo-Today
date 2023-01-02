@@ -5,11 +5,8 @@ import { NotificationIPC } from '../../shared/types'
 const { ipcRenderer } = window.require('electron')
 
 const projectStatusLookup: Record<EProjectStatus, string> = {
-    [EProjectStatus.REOCURRING]: 'Reoccuring',
-    [EProjectStatus.CANCELED]: 'Canceled',
-    [EProjectStatus.COMPLETED]: 'Completed',
+    [EProjectStatus.INACTIVE]: 'Inactive',
     [EProjectStatus.ACTIVE]: 'Active',
-    [EProjectStatus.BLOCKED]: 'Blocked',
 }
 
 const backupIntervalLookup: Record<EBackupInterval, string> = {
@@ -26,7 +23,7 @@ const taskStatusLookup: Record<ETaskStatus, string> = {
     [ETaskStatus.COMPLETED]: 'Completed',
     [ETaskStatus.IN_PROGRESS]: 'In Progress',
     [ETaskStatus.NEW]: 'New',
-    [EProjectStatus.BLOCKED]: 'Blocked'
+    [ETaskStatus.BLOCKED]: 'Blocked'
 }
 
 const dayOfWeekLabels: Record<EDaysOfWeek, string> = {

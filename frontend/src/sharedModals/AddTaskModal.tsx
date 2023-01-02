@@ -3,7 +3,7 @@ import { v4 as uuid4 } from 'uuid'
 import moment from 'moment'
 
 import { Button, Modal, ButtonWrapper, LabelAndInput, Form } from 'sharedComponents'
-import { TProject, ETaskStatus } from 'sharedTypes'
+import { TProject, ETaskStatus, EProjectStatus } from 'sharedTypes'
 import database from 'database'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { formatDateKeyLookup } from 'utilities'
@@ -21,7 +21,11 @@ const AddTaskModal = ({ showModal, setShowModal, project, addToTodayDefaultValue
     const [addToToday, setAddToToday] = React.useState<'yes' | 'no'>(addToTodayDefaultValue)
 
     const projects = useLiveQuery(async () => {
-        return database.projects.toArray()
+        return await database
+            .projects
+            .where('status')
+            .anyOf(EProjectStatus.ACTIVE)
+            .toArray()
     }, [])
 
     const handleSubmit = async () => {

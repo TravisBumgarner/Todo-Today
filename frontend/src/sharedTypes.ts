@@ -5,10 +5,7 @@ type TDateISODate = `${TYear}-${TMonth}-${TDay}`;
 
 enum EProjectStatus {
     ACTIVE = 'ACTIVE',
-    REOCURRING = 'REOCURRING',
-    COMPLETED = 'COMPLETED',
-    CANCELED = 'CANCELED',
-    BLOCKED = 'BLOCKED'
+    INACTIVE = 'INACTIVE',
 }
 
 type TProject = {
