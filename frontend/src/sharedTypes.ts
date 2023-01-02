@@ -14,8 +14,6 @@ enum EProjectStatus {
 type TProject = {
     id: string
     title: string
-    startDate: TDateISODate | null
-    endDate: TDateISODate | null
     status: EProjectStatus
 }
 
