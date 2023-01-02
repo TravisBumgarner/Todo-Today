@@ -45,6 +45,7 @@ const colorThemeOptionLabels: Record<EColorTheme, string> = {
     [EColorTheme.SUNSET]: 'Sunset',
     [EColorTheme.UNDER_THE_SEA]: 'Under the Sea',
     [EColorTheme.MEXICO]: 'Mexico',
+    [EColorTheme.FRUITS]: 'Fruits',
 }
 
 const dateFormatLookup = {

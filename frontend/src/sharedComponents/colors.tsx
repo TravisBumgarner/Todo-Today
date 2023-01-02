@@ -56,6 +56,13 @@ const THEMES: Record<EColorTheme, TColor> = {
         WARNING: '#ca6e5f',
         DISABLED: '#c8cdd2',
         BACKGROUND: '#1f1f1f',
+    },
+    FRUITS: {
+        FOREGROUND: '#DBD56E',
+        INTERACTION: '#2D93AD',
+        WARNING: '#DE8F6E',
+        DISABLED: '#a8afb1',
+        BACKGROUND: '#0a4b48',
     }
 }
 
