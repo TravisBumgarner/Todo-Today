@@ -17,7 +17,7 @@ class MySubClassedDexie extends Dexie {
         this.version(1).stores({
             projects: '[id], id, title, status',
             tasks: '[id], id, projectId, title, status',
-            todoListItems: '[id], id, projectId, taskId, todoListDate',
+            todoListItems: '[id], id, projectId, taskId, [todoListDate]',
             successes: '[id], id, description, date, projectId'
         })
     }

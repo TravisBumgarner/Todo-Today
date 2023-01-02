@@ -34,40 +34,50 @@ const TodoList = ({ selectedDate }: TodoListProps) => {
     )
 
     const getPreviousDatesTasks = async () => {
-        const previousDay = await database
-            .todoListItems
-            .where({
-                todoListDate: formatDateKeyLookup(moment(selectedDate).subtract(1, 'days'))
-            })
-            .toArray()
-
-        if (previousDay.length === 0) {
-            setShowNothingToCopyModal(true)
-        } else {
-            (
-                previousDay.map(async ({ projectId, taskId, details }) => {
-                    const task = await database
-                    .tasks
-                    .where('id')
-                    .equals(taskId)
-                    .first()
-
-                    if (
-                        task?.status === ETaskStatus.NEW ||
-                        task?.status === ETaskStatus.IN_PROGRESS ||
-                        task?.status === ETaskStatus.BLOCKED
-                    ) {
-                        await database.todoListItems.add({
-                            projectId,
-                            taskId,
-                            id: uuid4(),
-                            todoListDate: selectedDate,
-                            details
-                        })
-                    }
+        const lastDate = await database.todoListItems.orderBy('todoListDate').last()
+        if (lastDate) {
+            const previousDay = await database
+                .todoListItems
+                .where({
+                    todoListDate: lastDate.todoListDate
                 })
-            )
+                .toArray()
+
+            if (previousDay.length === 0) {
+                setShowNothingToCopyModal(true)
+            } else {
+                (
+                    previousDay.map(async ({ projectId, taskId, details }) => {
+                        const task = await database
+                            .tasks
+                            .where('id')
+                            .equals(taskId)
+                            .first()
+
+                        if (
+                            task?.status === ETaskStatus.NEW ||
+                            task?.status === ETaskStatus.IN_PROGRESS ||
+                            task?.status === ETaskStatus.BLOCKED
+                        ) {
+                            await database.todoListItems.add({
+                                projectId,
+                                taskId,
+                                id: uuid4(),
+                                todoListDate: selectedDate,
+                                details
+                            })
+                        }
+                    })
+                )
+            }
+        } else {
+            setShowNothingToCopyModal(true)
         }
+
+
+
+
+
     }
 
     return (
@@ -81,7 +91,7 @@ const TodoList = ({ selectedDate }: TodoListProps) => {
                         onClick={getPreviousDatesTasks}
                         variation="INTERACTION"
                     >
-                        Copy Previous Day
+                        Copy Previous
                     </Button>,
                     <Button
                         key="manage"
@@ -92,7 +102,7 @@ const TodoList = ({ selectedDate }: TodoListProps) => {
                     >
                         Select Tasks
                     </Button>,
-                    
+
                 ]}
                 right={[
                     <Button

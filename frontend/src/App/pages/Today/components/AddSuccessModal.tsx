@@ -17,7 +17,6 @@ type AddSuccessModalProps = {
 const AddSuccessModal = ({ showModal, setShowModal, selectedDate }: AddSuccessModalProps) => {
     const [description, setDescription] = React.useState<string>('')
     const [projectId, setProjectId] = React.useState<TProject['id'] | ''>('')
-    const [date, setDate] = React.useState<TProject['id'] | ''>(selectedDate)
 
     const projects = useLiveQuery(async () => {
         return database.projects.toArray()
@@ -28,7 +27,7 @@ const AddSuccessModal = ({ showModal, setShowModal, selectedDate }: AddSuccessMo
             description,
             id: uuid4(),
             projectId,
-            date: formatDateKeyLookup(moment(date))
+            date: formatDateKeyLookup(moment())
         }
         database.successes.add(newSuccess)
         setShowModal(false)
@@ -57,13 +56,6 @@ const AddSuccessModal = ({ showModal, setShowModal, selectedDate }: AddSuccessMo
                     inputType="select-array"
                     label="Project (Optional)"
                     handleChange={(value) => setProjectId(value)}
-                />
-                <LabelAndInput
-                    label="Date"
-                    name="date"
-                    value={moment(date).format('YYYY-MM-DD')}
-                    inputType="date"
-                    handleChange={(value) => setDate(value)}
                 />
                 <ButtonWrapper right={
                     [
