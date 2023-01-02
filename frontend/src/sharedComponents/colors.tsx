@@ -49,22 +49,14 @@ const THEMES: Record<EColorTheme, TColor> = {
         WARNING: '#536271',
         DISABLED: '#3E4C5E',
         BACKGROUND: '#2C3D55',
+    },
+    MEXICO: {
+        FOREGROUND: '#0260a9',
+        INTERACTION: '#c4ba68',
+        WARNING: '#ca6e5f',
+        DISABLED: '#c8cdd2',
+        BACKGROUND: '#1f1f1f',
     }
 }
-
-// const randomColor = (colors: string[]) => colors[Math.floor(Math.random() * colors.length)];
-
-// const shouldSurpriseMe = false
-
-// const surpriseMe = () => {
-//     return {
-//         FOREGROUND: randomColor(['#7bff7f', '#7bc3ff', '#ffcc7b']),
-//         INTERACTION: randomColor(['#7bff7f', '#7bc3ff', '#ffcc7b']),
-//         WARNING: randomColor(['#793fff', '#3ff9ff', '#ff553f']),
-//         DISABLED: randomColor(['#555555', '#23455a', '#632657']),
-//         BACKGROUND: randomColor(['#1b1b1b', '#1b1b1b', '#1b1b1b']),
-//     }
-
-// }
 
 export default THEMES
