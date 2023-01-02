@@ -48,55 +48,55 @@ const TodoListTableRow = ({ tableRow, isReadOnly }: TodoListTableRowProps) => {
 
     return (
         <>
-        <Table.TableRow>
-            <Table.TableBodyCell>
-                {projectTitle}
-                <Icon
-                    name="edit"
-                    onClick={() => setSelectedProjectId(projectId)}
-                />                
-            </Table.TableBodyCell>
-            <Table.TableBodyCell>
-                {taskTitle}
-                <Icon
-                    name="edit"
-                    onClick={() => setSelectedTaskId(taskId)}
-                />      
-            </Table.TableBodyCell>
-            <Table.TableBodyCell>
-                <LabelAndInput
-                    name="status"
-                    value={modifiedStatus}
-                    options={ETaskStatus}
-                    optionLabels={taskStatusLookup}
-                    inputType="select-enum"
-                    handleChange={(value: ETaskStatus) => setModifiedStatus(value)}
-                />
-            </Table.TableBodyCell>
-            <Table.TableBodyCell style={{ whiteSpace: 'pre-line' }}>
-                {isReadOnly
-                    ? (modifiedDetails)
-                    : (
-                        <LabelAndInput
-                            value={modifiedDetails}
-                            handleChange={(value) => setModifiedDetails(value)}
-                            name="details"
-                            inputType="textarea"
-                            rows={2}
-                        />
-                    )}
-            </Table.TableBodyCell>
-            <Table.TableBodyCell>
-                <Icon
-                    key="mark-task-removed"
-                    name="close"
-                    onClick={async () => {
-                        await database.todoListItems.where({ id: todoListItemId }).delete()
-                    }}
-                />
-            </Table.TableBodyCell>
-        </Table.TableRow>
-        {selectedTaskId
+            <Table.TableRow>
+                <Table.TableBodyCell>
+                    {projectTitle}
+                    <Icon
+                        name="edit"
+                        onClick={() => setSelectedProjectId(projectId)}
+                    />
+                </Table.TableBodyCell>
+                <Table.TableBodyCell>
+                    {taskTitle}
+                    <Icon
+                        name="edit"
+                        onClick={() => setSelectedTaskId(taskId)}
+                    />
+                </Table.TableBodyCell>
+                <Table.TableBodyCell>
+                    <LabelAndInput
+                        name="status"
+                        value={modifiedStatus}
+                        options={ETaskStatus}
+                        optionLabels={taskStatusLookup}
+                        inputType="select-enum"
+                        handleChange={(value: ETaskStatus) => setModifiedStatus(value)}
+                    />
+                </Table.TableBodyCell>
+                <Table.TableBodyCell style={{ whiteSpace: 'pre-line' }}>
+                    {isReadOnly
+                        ? (modifiedDetails)
+                        : (
+                            <LabelAndInput
+                                value={modifiedDetails}
+                                handleChange={(value) => setModifiedDetails(value)}
+                                name="details"
+                                inputType="textarea"
+                                rows={2}
+                            />
+                        )}
+                </Table.TableBodyCell>
+                <Table.TableBodyCell>
+                    <Icon
+                        key="mark-task-removed"
+                        name="close"
+                        onClick={async () => {
+                            await database.todoListItems.where({ id: todoListItemId }).delete()
+                        }}
+                    />
+                </Table.TableBodyCell>
+            </Table.TableRow>
+            {selectedTaskId
                 ? (
                     <EditTaskModal
                         showModal={selectedTaskId !== null}
@@ -116,7 +116,7 @@ const TodoListTableRow = ({ tableRow, isReadOnly }: TodoListTableRowProps) => {
                 )
                 : (null)
             }
-                        </>
+        </>
     )
 }
 
@@ -157,11 +157,11 @@ const TodoListTable = ({ todoListItems, isReadOnly }: TodoListTableProps) => {
         <Table.Table>
             <Table.TableHeader>
                 <Table.TableRow>
-                    <Table.TableHeaderCell width="15%">Project</Table.TableHeaderCell>
-                    <Table.TableHeaderCell width="15%">Task</Table.TableHeaderCell>
-                    <Table.TableHeaderCell width="20%">Status</Table.TableHeaderCell>
-                    <Table.TableHeaderCell width="40%">Day&apos;s Details</Table.TableHeaderCell>
-                    <Table.TableHeaderCell width="25px"></Table.TableHeaderCell>
+                    <Table.TableHeaderCell width="20%">Project</Table.TableHeaderCell>
+                    <Table.TableHeaderCell width="30%">Task</Table.TableHeaderCell>
+                    <Table.TableHeaderCell width="15%">Status</Table.TableHeaderCell>
+                    <Table.TableHeaderCell width="30%">Day&apos;s Details</Table.TableHeaderCell>
+                    <Table.TableHeaderCell width="5%"></Table.TableHeaderCell>
                 </Table.TableRow>
             </Table.TableHeader>
             <Table.TableBody>

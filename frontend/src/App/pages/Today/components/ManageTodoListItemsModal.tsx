@@ -164,15 +164,17 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
             <>
                 <Button key="finished" variation="INTERACTION" onClick={() => setShowCanceledCompletedTasks(!showCanceledCompletedTasks)}>Toggle All Tasks</Button>
                 {
-                    tasksByProject.map(({ project, tasks }) => (
-                        <TasksByProjectTable
-                            key={project.id}
-                            selectedDate={selectedDate}
-                            project={project}
-                            tasks={tasks}
-                            taskIdsToTodoListIds={taskIdsToTodoListIds}
-                        />
-                    ))
+                    tasksByProject
+                        .filter(({ tasks }) => tasks.length > 0)
+                        .map(({ project, tasks }) => (
+                            <TasksByProjectTable
+                                key={project.id}
+                                selectedDate={selectedDate}
+                                project={project}
+                                tasks={tasks}
+                                taskIdsToTodoListIds={taskIdsToTodoListIds}
+                            />
+                        ))
                 }
                 <ButtonWrapper
                     right={[
