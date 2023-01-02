@@ -1,5 +1,5 @@
 import moment from 'moment'
-import { EDateFormat, TProject, EProjectStatus, TTask, TDateISODate, ETaskStatus, EDaysOfWeek, EColorTheme, EBackupInterval } from 'sharedTypes'
+import { TProject, EProjectStatus, TTask, TDateISODate, ETaskStatus, EDaysOfWeek, EColorTheme, EBackupInterval } from 'sharedTypes'
 import { NotificationIPC } from '../../shared/types'
 
 const { ipcRenderer } = window.require('electron')
@@ -48,19 +48,12 @@ const colorThemeOptionLabels: Record<EColorTheme, string> = {
     [EColorTheme.FRUITS]: 'Fruits',
 }
 
-const dateFormatLookup = {
-    [EDateFormat.A]: 'dddd MMMM Do YYYY',
-    [EDateFormat.B]: 'dddd MMMM Do',
-    [EDateFormat.C]: 'MM/DD/YY',
-    [EDateFormat.D]: 'DD/MM/YY',
-}
-
-const formatDateDisplayString = (dateFormat: EDateFormat, date: TDateISODate | null): string => {
+const formatDateDisplayString = (date: TDateISODate | null): string => {
     if (date === null) {
         return ''
     }
 
-    return moment(date).format(dateFormatLookup[dateFormat])
+    return moment(date).format('dddd MMMM Do YYYY')
 }
 
 const formatDateKeyLookup = (date: moment.Moment): TDateISODate => {
@@ -125,7 +118,6 @@ export {
     formatDateKeyLookup,
     formatDurationDisplayString,
     bucketTasksByProject,
-    dateFormatLookup,
     dayOfWeekLabels,
     colorThemeOptionLabels,
     backupIntervalLookup,

@@ -1,11 +1,11 @@
 import TodoList from './Today/Today'
-import Manage from './Manage'
+import History from './History'
 import Settings from './Settings'
 import Error from './Error'
 
 export {
     TodoList,
-    Manage,
+    History,
     Settings,
     Error
 }

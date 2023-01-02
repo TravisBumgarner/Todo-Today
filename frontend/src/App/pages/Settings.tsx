@@ -1,8 +1,8 @@
 import React from 'react'
-import moment, { Moment } from 'moment'
+import moment from 'moment'
 
 import database from 'database'
-import { EColorTheme, EDateFormat, EDaysOfWeek, EBackupInterval, TReminder } from 'sharedTypes'
+import { EColorTheme, EDaysOfWeek, EBackupInterval, TReminder } from 'sharedTypes'
 import {
     Paragraph,
     ConfirmationModal,
@@ -14,14 +14,12 @@ import {
     Button,
     ButtonWrapper,
     Table,
-    DropdownMenu,
     LabelInDisguise,
     PageHeader,
     SmallParagraph,
     Icon
 } from 'sharedComponents'
 import {
-    dateFormatLookup,
     formatDurationDisplayString,
     dayOfWeekLabels,
     colorThemeOptionLabels,
@@ -92,22 +90,6 @@ const setupAutomatedBackup = (showAutomatedBackupFailedModal: React.Dispatch<Rea
         runAutomatedBackup(showAutomatedBackupFailedModal)
     }
     createNewBackupInterval(showAutomatedBackupFailedModal, backupIntervalToMilliseconds[backupInterval])
-}
-
-const dateFormatForUser = (format: EDateFormat, date: Moment) => {
-    return {
-        [EDateFormat.A]: `${moment(date).format(dateFormatLookup[EDateFormat.A])} `,
-        [EDateFormat.B]: `${moment(date).format((dateFormatLookup[EDateFormat.B]))}`,
-        [EDateFormat.C]: `${moment(date).format((dateFormatLookup[EDateFormat.C]))} (Month/Day/Year)`,
-        [EDateFormat.D]: `${moment(date).format((dateFormatLookup[EDateFormat.D]))} (Day/Month/Year)`,
-    }[format]
-}
-
-const dateFormatOptionLabels: Record<EDateFormat, string> = {
-    [EDateFormat.A]: dateFormatForUser(EDateFormat.A, moment()),
-    [EDateFormat.B]: dateFormatForUser(EDateFormat.B, moment()),
-    [EDateFormat.C]: dateFormatForUser(EDateFormat.C, moment()),
-    [EDateFormat.D]: dateFormatForUser(EDateFormat.D, moment()),
 }
 
 type AddEditReminderModalProps = {
@@ -302,15 +284,6 @@ const Settings = () => {
             </PageHeader>
             <Heading.H3>User Preferences</Heading.H3>
             <Form>
-                <LabelAndInput
-                    inputType="select-enum"
-                    name="dateFormat"
-                    label="Preferred Date Format"
-                    value={state.dateFormat}
-                    handleChange={(value: EDateFormat) => handleSubmit({ key: 'dateFormat', value })}
-                    options={EDateFormat}
-                    optionLabels={dateFormatOptionLabels}
-                />
                 <LabelAndInput
                     inputType="select-enum"
                     name="colorTheme"

@@ -1,8 +1,6 @@
 ![alt text](./readme/logo.png "Logo")
 
-
 > Todo List for Consulting - Track projects, tasks, work completed, achievements, and more.
-
 
 # Features
 
@@ -32,6 +30,7 @@
 
 Create new color themes!!
 
-# Building
+# Installing
 
-1. Run `yarn run build` from root.
+1. Run `npm run build` from root.
+2. For Mac - installer is contained in `backend/dist-electron/mac-arm64/TODO\ TODAY.app`

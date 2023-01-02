@@ -1,12 +1,27 @@
 import React from 'react'
 import database from 'database'
 import { useLiveQuery } from 'dexie-react-hooks'
+import styled from 'styled-components'
 
 import { BigBoxOfNothing, Icon, LabelAndInput, Table } from 'sharedComponents'
 import { ETaskStatus, TProject, TTask, TTodoListItem } from 'sharedTypes'
 import { taskStatusLookup } from 'utilities'
 
 import { EditProjectModal, EditTaskModal } from 'sharedModals'
+
+const HoverWrapper = styled.div`
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+`
+
+const ICON_SIZE = '1rem'
 
 type TableRow = {
     id: string
@@ -30,7 +45,8 @@ const TodoListTableRow = ({ tableRow, isReadOnly }: TodoListTableRowProps) => {
     const [modifiedStatus, setModifiedStatus] = React.useState<string>(status)
     const [selectedProjectId, setSelectedProjectId] = React.useState<string | null>(null)
     const [selectedTaskId, setSelectedTaskId] = React.useState<string | null>(null)
-
+    const [showProjectEdit, setShowProjectEdit] = React.useState<boolean>(false)
+    const [showTaskEdit, setShowTaskEdit] = React.useState<boolean>(false)
 
     React.useEffect(() => {
         database
@@ -49,19 +65,40 @@ const TodoListTableRow = ({ tableRow, isReadOnly }: TodoListTableRowProps) => {
     return (
         <>
             <Table.TableRow>
-                <Table.TableBodyCell>
-                    {projectTitle}
-                    <Icon
-                        name="edit"
-                        onClick={() => setSelectedProjectId(projectId)}
-                    />
+                <Table.TableBodyCell
+                    onMouseEnter={() => setShowProjectEdit(true)}
+                    onMouseLeave={() => setShowProjectEdit(false)}
+                    style={{ position: 'relative' }}
+                >
+                    {showProjectEdit ? (
+                        <HoverWrapper
+                            onClick={() => setSelectedProjectId(projectId)}
+                        >
+                            <span>
+                                <Icon
+                                    name="edit"
+                                    size={ICON_SIZE}
+                                />
+                            </span>
+                        </HoverWrapper>
+                    ) : projectTitle}
                 </Table.TableBodyCell>
-                <Table.TableBodyCell>
-                    {taskTitle}
-                    <Icon
-                        name="edit"
-                        onClick={() => setSelectedTaskId(taskId)}
-                    />
+                <Table.TableBodyCell
+                    onMouseEnter={() => setShowTaskEdit(true)}
+                    onMouseLeave={() => setShowTaskEdit(false)}
+                    style={{ position: 'relative' }}
+                >
+                    {showTaskEdit ? (
+                        <HoverWrapper
+                            onClick={() => setSelectedTaskId(taskId)}
+                        >
+                            <span>
+                                <Icon
+                                    name="edit"
+                                />
+                            </span>
+                        </HoverWrapper>
+                    ) : taskTitle}
                 </Table.TableBodyCell>
                 <Table.TableBodyCell>
                     <LabelAndInput
@@ -96,25 +133,27 @@ const TodoListTableRow = ({ tableRow, isReadOnly }: TodoListTableRowProps) => {
                     />
                 </Table.TableBodyCell>
             </Table.TableRow>
-            {selectedTaskId
-                ? (
-                    <EditTaskModal
-                        showModal={selectedTaskId !== null}
-                        setShowModal={() => setSelectedTaskId(null)}
-                        taskId={selectedTaskId}
-                    />
-                )
-                : (null)
+            {
+                selectedTaskId
+                    ? (
+                        <EditTaskModal
+                            showModal={selectedTaskId !== null}
+                            setShowModal={() => setSelectedTaskId(null)}
+                            taskId={selectedTaskId}
+                        />
+                    )
+                    : (null)
             }
-            {selectedProjectId
-                ? (
-                    <EditProjectModal
-                        showModal={selectedProjectId !== null}
-                        setShowModal={() => setSelectedProjectId(null)}
-                        projectId={selectedProjectId}
-                    />
-                )
-                : (null)
+            {
+                selectedProjectId
+                    ? (
+                        <EditProjectModal
+                            showModal={selectedProjectId !== null}
+                            setShowModal={() => setSelectedProjectId(null)}
+                            projectId={selectedProjectId}
+                        />
+                    )
+                    : (null)
             }
         </>
     )

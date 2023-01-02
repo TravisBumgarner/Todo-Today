@@ -44,13 +44,6 @@ type TTodoListItem = {
     details: string
 }
 
-enum EDateFormat {
-    A = 'A',
-    B = 'B',
-    C = 'C',
-    D = 'D',
-}
-
 enum EBackupInterval {
     MINUTELY = 'MINITELY',
     HOURLY = 'HOURLY',
@@ -99,7 +92,6 @@ type TColor = {
 }
 
 type TSettings = {
-    dateFormat: EDateFormat
     colorTheme: EColorTheme
     backupInterval: EBackupInterval
     reminders: TReminder[]
@@ -125,7 +117,6 @@ export {
     TTodoListItem,
     TEnumType,
     TSettings,
-    EDateFormat,
     EColorTheme,
     TColor,
     TDateISODate,
