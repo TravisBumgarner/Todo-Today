@@ -66,7 +66,7 @@ const App = () => {
     )
 }
 
-class ErrorBoundary extends React.Component<{}, { hasError: boolean, error: string }> {
+class ErrorBoundary extends React.Component<{ children: any }, { hasError: boolean, error: string }> {
     constructor(props: any) {
         super(props)
         this.state = {
