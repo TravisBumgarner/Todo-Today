@@ -9,7 +9,6 @@ const Table = styled.table`
     border-collapse: separate;
     border-spacing: 0;
     width: 100%;
-    border: 2px solid ${({ theme }) => theme.INTERACTION};
     table-layout: fixed;
     background-color: ${({ theme }) => transparentize(0.9, theme.INTERACTION)};
 `

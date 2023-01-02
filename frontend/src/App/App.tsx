@@ -29,7 +29,6 @@ const ModalBackground = styled.div`
     
     > div {
         padding: 2rem;
-        border: ${({ theme }) => theme.FOREGROUND} solid 2px;
         background-color: ${({ theme }) => theme.BACKGROUND};
         position: static;
         max-width: 80vw;

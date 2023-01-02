@@ -11,7 +11,6 @@ type BigBoxOfNothingProps = {
 }
 
 const BigBoxOfNothingWrapper = styled.div`
-    border: 2px solid ${({ theme }) => theme.FOREGROUND};
     display: flex;
     align-items: center;
     justify-content: center;

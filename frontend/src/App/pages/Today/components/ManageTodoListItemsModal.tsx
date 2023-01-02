@@ -55,7 +55,7 @@ const TasksByProjectTable = ({ project, tasks, taskIdsToTodoListIds, selectedDat
                                 <Table.TableRow>
                                     <Table.TableHeaderCell>Task</Table.TableHeaderCell>
                                     <Table.TableHeaderCell>Status</Table.TableHeaderCell>
-                                    <Table.TableHeaderCell width="110px">Actions</Table.TableHeaderCell>
+                                    <Table.TableHeaderCell width="110px"></Table.TableHeaderCell>
                                 </Table.TableRow>
                             </Table.TableHeader>
                             <Table.TableBody>
@@ -108,16 +108,10 @@ const TasksByProjectTable = ({ project, tasks, taskIdsToTodoListIds, selectedDat
 }
 
 const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: ManageTodoListItemsModalProps) => {
-    const [showCanceledCompletedTasks, setShowCanceledCompletedTasks] = React.useState<boolean>(false)
-
     const taskStatusFilter = [
         ETaskStatus.NEW,
         ETaskStatus.IN_PROGRESS,
         ETaskStatus.BLOCKED,
-        ...(showCanceledCompletedTasks ? [
-            ETaskStatus.CANCELED,
-            ETaskStatus.COMPLETED
-        ] : [])
     ]
 
     const tasksByProject = useLiveQuery(async () => {
@@ -162,7 +156,6 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
     } else {
         Content = (
             <>
-                <Button key="finished" variation="INTERACTION" onClick={() => setShowCanceledCompletedTasks(!showCanceledCompletedTasks)}>Toggle All Tasks</Button>
                 {
                     tasksByProject
                         .filter(({ tasks }) => tasks.length > 0)
