@@ -80,7 +80,8 @@ enum EColorTheme {
     SUNSET = 'SUNSET',
     UNDER_THE_SEA = 'UNDER_THE_SEA',
     MEXICO = 'MEXICO',
-    FRUITS = 'FRUITS'
+    FRUITS = 'FRUITS',
+    CONTRAST = 'CONTRAST'
 }
 
 type TColor = {

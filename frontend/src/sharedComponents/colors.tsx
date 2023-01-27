@@ -63,6 +63,13 @@ const THEMES: Record<EColorTheme, TColor> = {
         WARNING: '#DE8F6E',
         DISABLED: '#a8afb1',
         BACKGROUND: '#0a4b48',
+    },
+    CONTRAST: {
+        FOREGROUND: '#000000',
+        INTERACTION: '#000000',
+        WARNING: '#000000',
+        DISABLED: '#8e0000',
+        BACKGROUND: '#ffffff',
     }
 }
 

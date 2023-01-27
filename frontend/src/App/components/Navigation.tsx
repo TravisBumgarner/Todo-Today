@@ -23,7 +23,7 @@ const StyledNav = styled.ul`
 // ]
 
 const ALWAYS_VISIBLE_LINKS = [
-    { text: <Icon name="edit" />, to: '/manage' },
+    { text: <Icon name="edit" />, to: '/history' },
     { text: <Icon name="settings" />, to: '/settings' },
 ]
 

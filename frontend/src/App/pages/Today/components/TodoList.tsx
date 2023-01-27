@@ -73,11 +73,6 @@ const TodoList = ({ selectedDate }: TodoListProps) => {
         } else {
             setShowNothingToCopyModal(true)
         }
-
-
-
-
-
     }
 
     return (
@@ -122,14 +117,6 @@ const TodoList = ({ selectedDate }: TodoListProps) => {
                     >
                         Add New Task
                     </Button>
-                    // <Button
-                    //     key="toggle-read-only"
-                    //     onClick={() => toggleIsReadOnly(!isReadOnly)}
-                    //     variation="INTERACTION"
-                    //     title={isReadOnly ? 'Toggle Edit Mode' : 'Toggle Read Mode'}
-                    // >
-                    //     {isReadOnly ? 'Toggle Edit Mode' : 'Toggle Read Mode'}
-                    // </Button>
                 ]}
             />
             {tasks && tasks.length !== 0
@@ -144,7 +131,7 @@ const TodoList = ({ selectedDate }: TodoListProps) => {
                 setShowModal={setShowNothingToCopyModal}
             />
             {showAddNewTaskModal
-                ? <AddTaskModal addToTodayDefaultValue="yes" showModal={showAddNewTaskModal} setShowModal={setShowAddNewTaskModal} />
+                ? <AddTaskModal selectedDate={selectedDate} showModal={showAddNewTaskModal} setShowModal={setShowAddNewTaskModal} />
                 : null
             }
             {showAddNewProjectModal

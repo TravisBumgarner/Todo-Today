@@ -1,24 +1,22 @@
 import React from 'react'
 import { v4 as uuid4 } from 'uuid'
-import moment from 'moment'
 
 import { Button, Modal, ButtonWrapper, LabelAndInput, Form } from 'sharedComponents'
-import { TProject, ETaskStatus, EProjectStatus } from 'sharedTypes'
+import { TProject, ETaskStatus, EProjectStatus, TDateISODate } from 'sharedTypes'
 import database from 'database'
 import { useLiveQuery } from 'dexie-react-hooks'
-import { formatDateKeyLookup } from 'utilities'
 
 type AddTaskModalProps = {
     showModal: boolean
     project?: TProject
     setShowModal: (showModal: boolean) => void
-    addToTodayDefaultValue: 'yes' | 'no'
+    selectedDate: TDateISODate
 }
 
-const AddTaskModal = ({ showModal, setShowModal, project, addToTodayDefaultValue }: AddTaskModalProps) => {
+const AddTaskModal = ({ showModal, setShowModal, project, selectedDate }: AddTaskModalProps) => {
     const [title, setTitle] = React.useState<string>('')
     const [projectId, setProjectId] = React.useState<TProject['id'] | ''>(project ? project.id : '')
-    const [addToToday, setAddToToday] = React.useState<'yes' | 'no'>(addToTodayDefaultValue)
+    const [addToSelectedDate, setAddToSelectedDate] = React.useState<'yes' | 'no'>('yes')
 
     const projects = useLiveQuery(async () => {
         return await database
@@ -39,12 +37,12 @@ const AddTaskModal = ({ showModal, setShowModal, project, addToTodayDefaultValue
         }
         await database.tasks.add(newTask)
 
-        if (addToToday === 'yes') {
+        if (addToSelectedDate === 'yes') {
             await database.todoListItems.add({
                 projectId,
                 taskId,
                 id: taskId,
-                todoListDate: formatDateKeyLookup(moment()),
+                todoListDate: selectedDate,
                 details: ''
             })
         }
@@ -76,15 +74,15 @@ const AddTaskModal = ({ showModal, setShowModal, project, addToTodayDefaultValue
                     handleChange={(value) => setProjectId(value)}
                 />
                 <LabelAndInput
-                    name="addtotoday"
-                    value={addToToday}
+                    name="addtoSelectedDate"
+                    value={addToSelectedDate}
                     options={[
                         { value: 'no', label: 'No' },
                         { value: 'yes', label: 'Yes' },
                     ]}
                     inputType="select-array"
-                    label="Add to today's tasks?"
-                    handleChange={(value: 'yes' | 'no') => setAddToToday(value)}
+                    label="Add to selected date's tasks?"
+                    handleChange={(value: 'yes' | 'no') => setAddToSelectedDate(value)}
                 />
 
                 <ButtonWrapper right={

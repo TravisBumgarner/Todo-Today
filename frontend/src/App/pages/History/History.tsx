@@ -8,6 +8,7 @@ import { bucketTasksByProject, projectStatusLookup, taskStatusLookup } from 'uti
 import database from 'database'
 import { AddProjectModal, AddTaskModal } from 'sharedModals'
 import { TasksTable } from './components'
+import moment from 'moment'
 
 const FilterWrapper = styled.div`
     display: flex;
@@ -109,8 +110,6 @@ const Tasks = () => {
     const tasks = useLiveQuery(() => database.tasks.toArray())
     const [taskStatusFilter, setTaskStatusFilter] = React.useState<Record<ETaskStatus, boolean>>(DEFAULT_TASK_STATUS_FILTER)
     const [projectStatusFilter, setProjectStatusFilter] = React.useState<Record<EProjectStatus, boolean>>(DEFAULT_PROJECT_STATUS_FILTER)
-    const [showAddTaskModal, setShowAddTaskModal] = React.useState<boolean>(false)
-    const [showAddProjectModal, setShowAddProjectModal] = React.useState<boolean>(false)
     const [searchText, setSearchText] = React.useState<string>('')
 
     let Contents
@@ -153,14 +152,6 @@ const Tasks = () => {
                 <TaskFilters statusFilter={taskStatusFilter} setStatusFilter={setTaskStatusFilter} />
             </FilterWrapper>
             {Contents}
-            {showAddTaskModal
-                ? <AddTaskModal addToTodayDefaultValue="no" showModal={showAddTaskModal} setShowModal={setShowAddTaskModal} />
-                : null
-            }
-            {showAddProjectModal
-                ? <AddProjectModal showModal={showAddProjectModal} setShowModal={setShowAddProjectModal} />
-                : null
-            }
         </div>
     )
 }

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import database from 'database'
 import { useLiveQuery } from 'dexie-react-hooks'
 import styled from 'styled-components'
@@ -62,13 +62,17 @@ const TodoListTableRow = ({ tableRow, isReadOnly }: TodoListTableRowProps) => {
             .modify({ status: modifiedStatus })
     }, [modifiedStatus])
 
+    const conditionalStyles = useMemo(() => ([ETaskStatus.CANCELED, ETaskStatus.COMPLETED].includes(status)
+        ? { textDecoration: 'line-through' }
+        : {}), [status])
+
     return (
         <>
-            <Table.TableRow>
+            <Table.TableRow style={{ ...conditionalStyles }}>
                 <Table.TableBodyCell
                     onMouseEnter={() => setShowProjectEdit(true)}
                     onMouseLeave={() => setShowProjectEdit(false)}
-                    style={{ position: 'relative' }}
+                    style={{ position: 'relative'}}
                 >
                     {showProjectEdit ? (
                         <HoverWrapper

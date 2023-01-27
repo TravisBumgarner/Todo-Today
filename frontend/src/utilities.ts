@@ -46,6 +46,7 @@ const colorThemeOptionLabels: Record<EColorTheme, string> = {
     [EColorTheme.UNDER_THE_SEA]: 'Under the Sea',
     [EColorTheme.MEXICO]: 'Mexico',
     [EColorTheme.FRUITS]: 'Fruits',
+    [EColorTheme.CONTRAST]: 'High Contrast'
 }
 
 const formatDateDisplayString = (date: TDateISODate | null): string => {
