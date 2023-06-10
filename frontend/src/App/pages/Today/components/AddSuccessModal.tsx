@@ -27,7 +27,7 @@ const AddSuccessModal = ({ showModal, setShowModal, selectedDate }: AddSuccessMo
             description,
             id: uuid4(),
             projectId,
-            date: formatDateKeyLookup(moment())
+            date: selectedDate
         }
         database.successes.add(newSuccess)
         setShowModal(false)
