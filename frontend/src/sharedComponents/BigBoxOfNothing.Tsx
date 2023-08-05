@@ -1,8 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { transparentize } from 'polished'
-
-import Paragraph from './Paragraph'
+import { Typography } from '@mui/material'
 
 interface BigBoxOfNothingProps {
     message: string
@@ -25,9 +24,9 @@ const BigBoxOfNothingWrapper = styled.div`
 const BigBoxOfNothing = ({ message, callToActionButton }: BigBoxOfNothingProps) => {
     return (
         <BigBoxOfNothingWrapper>
-            <Paragraph>
+            <Typography variant="body1">
                 {message}
-            </Paragraph>
+            </Typography>
             {callToActionButton || ''}
         </BigBoxOfNothingWrapper>
     )
