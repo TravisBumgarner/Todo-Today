@@ -1,12 +1,13 @@
 import React from 'react'
+import { Button } from '@mui/material'
 
-import { Button, Modal, ButtonWrapper, LabelAndInput, Form } from 'sharedComponents'
-import { TTask, ETaskStatus } from 'sharedTypes'
+import { Modal, ButtonWrapper, LabelAndInput, Form } from 'sharedComponents'
+import { type TTask, ETaskStatus } from 'sharedTypes'
 import { taskStatusLookup } from 'utilities'
 import database from 'database'
 import { useLiveQuery } from 'dexie-react-hooks'
 
-type EditTaskModalProps = {
+interface EditTaskModalProps {
     showModal: boolean
     taskId: TTask['id']
     setShowModal: (showModal: boolean) => void
@@ -19,7 +20,7 @@ const EditTaskModal = ({ showModal, setShowModal, taskId }: EditTaskModalProps) 
     const [formEdited, setFormEdited] = React.useState<boolean>(false)
 
     const projects = useLiveQuery(async () => {
-        return database.projects.toArray()
+        return await database.projects.toArray()
     }, [])
 
     React.useEffect(() => {
@@ -50,14 +51,14 @@ const EditTaskModal = ({ showModal, setShowModal, taskId }: EditTaskModalProps) 
         <Modal
             contentLabel="Edit Task"
             showModal={showModal}
-            closeModal={() => setShowModal(false)}
+            closeModal={() => { setShowModal(false) }}
         >
-            <Form onChange={() => setFormEdited(true)}>
+            <Form onChange={() => { setFormEdited(true) }}>
                 <LabelAndInput
                     label="Task"
                     name="title"
                     value={title}
-                    handleChange={(value) => setTitle(value)}
+                    handleChange={(value) => { setTitle(value) }}
                 />
                 <LabelAndInput
                     label="Status"
@@ -66,7 +67,7 @@ const EditTaskModal = ({ showModal, setShowModal, taskId }: EditTaskModalProps) 
                     options={ETaskStatus}
                     optionLabels={taskStatusLookup}
                     inputType="select-enum"
-                    handleChange={(value: ETaskStatus) => setStatus(value)}
+                    handleChange={(value: ETaskStatus) => { setStatus(value) }}
                 />
                 <LabelAndInput
                     name="project"
@@ -74,16 +75,16 @@ const EditTaskModal = ({ showModal, setShowModal, taskId }: EditTaskModalProps) 
                     options={projectSelectOptions}
                     inputType="select-array"
                     label="Project"
-                    handleChange={(value) => setProjectId(value)}
+                    handleChange={(value) => { setProjectId(value) }}
                 />
                 <ButtonWrapper right={
                     [
-                        <Button key="cancel" variation="INTERACTION" onClick={() => setShowModal(false)}>Cancel</Button>,
+                        <Button key="cancel" onClick={() => { setShowModal(false) }}>Cancel</Button>,
                         <Button
                             type="button"
                             key="save"
                             disabled={!formEdited || projectId === ''}
-                            variation="WARNING"
+
                             onClick={handleSubmit}
                         >
                             Save

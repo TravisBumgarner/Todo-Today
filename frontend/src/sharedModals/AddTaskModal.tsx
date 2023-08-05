@@ -1,12 +1,13 @@
 import React from 'react'
 import { v4 as uuid4 } from 'uuid'
+import { Button } from '@mui/material'
 
-import { Button, Modal, ButtonWrapper, LabelAndInput, Form } from 'sharedComponents'
-import { TProject, ETaskStatus, EProjectStatus, TDateISODate } from 'sharedTypes'
+import { Modal, ButtonWrapper, LabelAndInput, Form } from 'sharedComponents'
+import { type TProject, ETaskStatus, EProjectStatus, type TDateISODate } from 'sharedTypes'
 import database from 'database'
 import { useLiveQuery } from 'dexie-react-hooks'
 
-type AddTaskModalProps = {
+interface AddTaskModalProps {
     showModal: boolean
     project?: TProject
     setShowModal: (showModal: boolean) => void
@@ -56,14 +57,14 @@ const AddTaskModal = ({ showModal, setShowModal, project, selectedDate }: AddTas
         <Modal
             contentLabel="Add New Task"
             showModal={showModal}
-            closeModal={() => setShowModal(false)}
+            closeModal={() => { setShowModal(false) }}
         >
             <Form>
                 <LabelAndInput
                     label="Task"
                     name="title"
                     value={title}
-                    handleChange={(data) => setTitle(data)}
+                    handleChange={(data) => { setTitle(data) }}
                 />
                 <LabelAndInput
                     name="project"
@@ -71,26 +72,26 @@ const AddTaskModal = ({ showModal, setShowModal, project, selectedDate }: AddTas
                     options={projectSelectOptions}
                     inputType="select-array"
                     label="Project"
-                    handleChange={(value) => setProjectId(value)}
+                    handleChange={(value) => { setProjectId(value) }}
                 />
                 <LabelAndInput
                     name="addtoSelectedDate"
                     value={addToSelectedDate}
                     options={[
                         { value: 'no', label: 'No' },
-                        { value: 'yes', label: 'Yes' },
+                        { value: 'yes', label: 'Yes' }
                     ]}
                     inputType="select-array"
                     label="Add to selected date's tasks?"
-                    handleChange={(value: 'yes' | 'no') => setAddToSelectedDate(value)}
+                    handleChange={(value: 'yes' | 'no') => { setAddToSelectedDate(value) }}
                 />
 
                 <ButtonWrapper right={
                     [
                         <Button
                             key="cancel"
-                            variation="WARNING"
-                            onClick={() => setShowModal(false)}
+
+                            onClick={() => { setShowModal(false) }}
                         >
                             Cancel
                         </Button>,
@@ -98,7 +99,7 @@ const AddTaskModal = ({ showModal, setShowModal, project, selectedDate }: AddTas
                             type="button"
                             disabled={title.length === 0 || projectId.length === 0}
                             key="save"
-                            variation="INTERACTION"
+
                             onClick={handleSubmit}
                         >
                             Save

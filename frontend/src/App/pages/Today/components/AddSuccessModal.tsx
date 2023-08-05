@@ -1,14 +1,13 @@
 import React from 'react'
 import { v4 as uuid4 } from 'uuid'
-import moment from 'moment'
+import { Button } from '@mui/material'
 
-import { Button, Modal, ButtonWrapper, LabelAndInput, Form } from 'sharedComponents'
-import { TDateISODate, TProject } from 'sharedTypes'
+import { Modal, ButtonWrapper, LabelAndInput, Form } from 'sharedComponents'
+import { type TDateISODate, type TProject } from 'sharedTypes'
 import database from 'database'
 import { useLiveQuery } from 'dexie-react-hooks'
-import { formatDateKeyLookup } from 'utilities'
 
-type AddSuccessModalProps = {
+interface AddSuccessModalProps {
     showModal: boolean
     setShowModal: (showModal: boolean) => void
     selectedDate: TDateISODate
@@ -19,17 +18,17 @@ const AddSuccessModal = ({ showModal, setShowModal, selectedDate }: AddSuccessMo
     const [projectId, setProjectId] = React.useState<TProject['id'] | ''>('')
 
     const projects = useLiveQuery(async () => {
-        return database.projects.toArray()
+        return await database.projects.toArray()
     }, [])
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         const newSuccess = {
             description,
             id: uuid4(),
             projectId,
             date: selectedDate
         }
-        database.successes.add(newSuccess)
+        await database.successes.add(newSuccess)
         setShowModal(false)
     }
 
@@ -40,14 +39,14 @@ const AddSuccessModal = ({ showModal, setShowModal, selectedDate }: AddSuccessMo
         <Modal
             contentLabel="Add Success"
             showModal={showModal}
-            closeModal={() => setShowModal(false)}
+            closeModal={() => { setShowModal(false) }}
         >
             <Form>
                 <LabelAndInput
                     label="Description"
                     name="description"
                     value={description}
-                    handleChange={(value) => setDescription(value)}
+                    handleChange={(value) => { setDescription(value) }}
                 />
                 <LabelAndInput
                     name="project"
@@ -55,12 +54,12 @@ const AddSuccessModal = ({ showModal, setShowModal, selectedDate }: AddSuccessMo
                     options={projectSelectOptions}
                     inputType="select-array"
                     label="Project (Optional)"
-                    handleChange={(value) => setProjectId(value)}
+                    handleChange={(value) => { setProjectId(value) }}
                 />
                 <ButtonWrapper right={
                     [
-                        <Button key="cancel" variation="WARNING" onClick={() => setShowModal(false)}>Cancel</Button>,
-                        <Button disabled={description.length === 0} key="save" variation="INTERACTION" onClick={handleSubmit}>Save</Button>
+                        <Button key="cancel" onClick={() => { setShowModal(false) }}>Cancel</Button>,
+                        <Button disabled={description.length === 0} key="save" onClick={handleSubmit}>Save</Button>
                     ]
                 }
                 />

@@ -4,7 +4,6 @@ import * as Table from './Table'
 import * as List from './List'
 import StyledNavLink from './StyledNavLink'
 import ExternalLink from './ExternalLink'
-import Button from './Button'
 import Paragraph from './Paragraph'
 import Modal from './Modal'
 import colors from './colors'
@@ -25,7 +24,6 @@ export {
     Heading,
     StyledNavLink,
     ExternalLink,
-    Button,
     Paragraph,
     Table,
     List,

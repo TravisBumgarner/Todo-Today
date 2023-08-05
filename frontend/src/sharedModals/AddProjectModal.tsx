@@ -1,13 +1,12 @@
 import React from 'react'
-import moment, { Moment } from 'moment'
 import { v4 as uuid4 } from 'uuid'
+import { Button } from '@mui/material'
 
 import database from 'database'
-import { Button, Modal, ButtonWrapper, LabelAndInput, Form } from 'sharedComponents'
-import { TProject, EProjectStatus } from 'sharedTypes'
-import { formatDateKeyLookup, projectStatusLookup } from 'utilities'
+import { Modal, ButtonWrapper, LabelAndInput, Form } from 'sharedComponents'
+import { type TProject, EProjectStatus } from 'sharedTypes'
 
-type AddProjectModalProps = {
+interface AddProjectModalProps {
     showModal: boolean
     setShowModal: (showModal: boolean) => void
 }
@@ -19,7 +18,7 @@ const AddProjectModal = ({ showModal, setShowModal }: AddProjectModalProps) => {
         const newProject: TProject = {
             id: uuid4(),
             title,
-            status: EProjectStatus.ACTIVE,
+            status: EProjectStatus.ACTIVE
         }
         await database.projects.add(newProject)
         setShowModal(false)
@@ -29,23 +28,23 @@ const AddProjectModal = ({ showModal, setShowModal }: AddProjectModalProps) => {
         <Modal
             contentLabel="Add New Project"
             showModal={showModal}
-            closeModal={() => setShowModal(false)}
+            closeModal={() => { setShowModal(false) }}
         >
             <Form>
                 <LabelAndInput
                     label="Title"
                     name="title"
                     value={title}
-                    handleChange={(data) => setTitle(data)}
+                    handleChange={(data) => { setTitle(data) }}
                 />
                 <ButtonWrapper right={
                     [
-                        <Button key="cancel" variation="WARNING" onClick={() => setShowModal(false)}>Cancel</Button>,
+                        <Button key="cancel" onClick={() => { setShowModal(false) }}>Cancel</Button>,
                         <Button
                             key="save"
                             type="button"
                             disabled={title.length === 0}
-                            variation="INTERACTION"
+
                             onClick={handleSubmit}
                         >
                             Save

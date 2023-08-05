@@ -1,42 +1,43 @@
 import React from 'react'
 import moment from 'moment'
+import { Button } from '@mui/material'
 
-import { Heading, Button, ButtonWrapper, PageHeader } from 'sharedComponents'
+import { Heading, ButtonWrapper, PageHeader } from 'sharedComponents'
 import { formatDateDisplayString, formatDateKeyLookup } from 'utilities'
-import { TDateISODate } from 'sharedTypes'
+import { type TDateISODate } from 'sharedTypes'
 import { TodoList, Successes } from './components'
 
 const Today = () => {
-    const [selectedDate, setSelectedDate] = React.useState<TDateISODate>(formatDateKeyLookup(moment()))
+  const [selectedDate, setSelectedDate] = React.useState<TDateISODate>(formatDateKeyLookup(moment()))
 
-    const setPreviousDate = () => {
-        setSelectedDate(formatDateKeyLookup(moment(selectedDate).subtract(1, 'day')))
-    }
+  const setPreviousDate = () => {
+    setSelectedDate(formatDateKeyLookup(moment(selectedDate).subtract(1, 'day')))
+  }
 
-    const getNextDate = () => {
-        setSelectedDate(formatDateKeyLookup(moment(selectedDate).add(1, 'day')))
-    }
+  const getNextDate = () => {
+    setSelectedDate(formatDateKeyLookup(moment(selectedDate).add(1, 'day')))
+  }
 
-    const getToday = () => {
-        setSelectedDate(formatDateKeyLookup(moment()))
-    }
+  const getToday = () => {
+    setSelectedDate(formatDateKeyLookup(moment()))
+  }
 
-    return (
-        <div>
-            <PageHeader>
-                <Heading.H2>{formatDateDisplayString(selectedDate)}</Heading.H2>
-                <ButtonWrapper
-                    left={[
-                        <Button key="today" onClick={getToday} variation="INTERACTION">Today</Button>,
-                        <Button key="previous" onClick={setPreviousDate} variation="INTERACTION">&lt;</Button>,
-                        <Button key="next" onClick={getNextDate} variation="INTERACTION">&gt;</Button>,
-                    ]}
-                />
-            </PageHeader>
-            <TodoList selectedDate={selectedDate} />
-            <Successes selectedDate={selectedDate} />
-        </div>
-    )
+  return (
+    <div>
+      <PageHeader>
+        <Heading.H2>{formatDateDisplayString(selectedDate)}</Heading.H2>
+        <ButtonWrapper
+          left={[
+            <Button key="today" onClick={getToday} >Today</Button>,
+            <Button key="previous" onClick={setPreviousDate} >&lt;</Button>,
+            <Button key="next" onClick={getNextDate} >&gt;</Button>
+          ]}
+        />
+      </PageHeader>
+      <TodoList selectedDate={selectedDate} />
+      <Successes selectedDate={selectedDate} />
+    </div>
+  )
 }
 
 export default Today

@@ -1,12 +1,12 @@
 import React from 'react'
-import moment, { Moment } from 'moment'
+import { Button } from '@mui/material'
 
-import { Button, Modal, ButtonWrapper, LabelAndInput, Form, Paragraph } from 'sharedComponents'
-import { TProject, EProjectStatus } from 'sharedTypes'
-import { formatDateKeyLookup, projectStatusLookup } from 'utilities'
+import { Modal, ButtonWrapper, LabelAndInput, Form, Paragraph } from 'sharedComponents'
+import { type TProject, EProjectStatus } from 'sharedTypes'
+import { projectStatusLookup } from 'utilities'
 import database from 'database'
 
-type EditProjectModalProps = {
+interface EditProjectModalProps {
     projectId: TProject['id']
     showModal: boolean
     setShowModal: (showModal: boolean) => void
@@ -42,18 +42,18 @@ const EditProjectModal = ({ showModal, setShowModal, projectId }: EditProjectMod
         <Modal
             contentLabel="Edit Project"
             showModal={showModal}
-            closeModal={() => setShowModal(false)}
+            closeModal={() => { setShowModal(false) }}
         >
             {
                 isLoading
                     ? <Paragraph>One sec</Paragraph>
                     : (
-                        <Form onChange={() => setSubmitDisabled(false)}>
+                        <Form onChange={() => { setSubmitDisabled(false) }}>
                             <LabelAndInput
                                 label="Title"
                                 name="title"
                                 value={title}
-                                handleChange={(data) => setTitle(data)}
+                                handleChange={(data) => { setTitle(data) }}
                             />
                             <LabelAndInput
                                 label="Status"
@@ -62,16 +62,16 @@ const EditProjectModal = ({ showModal, setShowModal, projectId }: EditProjectMod
                                 options={EProjectStatus}
                                 optionLabels={projectStatusLookup}
                                 inputType="select-enum"
-                                handleChange={(newStatus: EProjectStatus) => setStatus(newStatus)}
+                                handleChange={(newStatus: EProjectStatus) => { setStatus(newStatus) }}
                             />
                             <ButtonWrapper right={
                                 [
-                                    <Button key="cancel" variation="INTERACTION" onClick={() => setShowModal(false)}>Cancel</Button>,
+                                    <Button key="cancel" onClick={() => { setShowModal(false) }}>Cancel</Button>,
                                     <Button
                                         key="save"
                                         type="button"
                                         disabled={submitDisabled}
-                                        variation="WARNING"
+
                                         onClick={handleSubmit}
                                     >
                                         Save

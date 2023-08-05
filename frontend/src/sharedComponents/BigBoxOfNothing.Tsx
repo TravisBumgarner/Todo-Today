@@ -1,8 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
 import { transparentize } from 'polished'
+import { Button } from '@mui/material'
 
-import Button from './Button'
 import Paragraph from './Paragraph'
 
 type BigBoxOfNothingProps = {
@@ -18,7 +18,7 @@ const BigBoxOfNothingWrapper = styled.div`
     flex-direction: column;
     background-color: ${({ theme }) => transparentize(0.9, theme.FOREGROUND)};
 
-    ${Button}{
+    button {
         margin-bottom: 1rem;
     }
 `

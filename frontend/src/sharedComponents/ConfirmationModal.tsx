@@ -1,11 +1,11 @@
 import React from 'react'
+import { Button } from '@mui/material'
 
 import Modal from './Modal'
-import Button from './Button'
 import Paragraph from './Paragraph'
 import ButtonWrapper from './ButtonWrapper'
 
-type ConfirmationModalProps = {
+interface ConfirmationModalProps {
     title: string
     body: string
     confirmationCallback?: () => void
@@ -17,14 +17,14 @@ type ConfirmationModalProps = {
 const ConfirmationModal = ({ title, body, confirmationCallback, cancelCallback, showModal, setShowModal }: ConfirmationModalProps) => {
     const Buttons = []
 
-    if (cancelCallback) Buttons.push(<Button key="cancel" variation="WARNING" onClick={cancelCallback}>Cancel</Button>)
-    if (confirmationCallback) Buttons.push(<Button key="confirm" variation="INTERACTION" onClick={confirmationCallback}>Continue</Button>)
+    if (cancelCallback) Buttons.push(<Button key="cancel" onClick={cancelCallback}>Cancel</Button>)
+    if (confirmationCallback) Buttons.push(<Button key="confirm" onClick={confirmationCallback}>Continue</Button>)
 
     return (
         <Modal
             contentLabel={title}
             showModal={showModal}
-            closeModal={() => setShowModal(false)}
+            closeModal={() => { setShowModal(false) }}
         >
             <Paragraph>{body}</Paragraph>
             <ButtonWrapper right={Buttons} />

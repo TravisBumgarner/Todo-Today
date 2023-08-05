@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-
-import { Button } from 'sharedComponents'
+import { Button } from '@mui/material'
 
 const StyledNav = styled.ul<{ openDirection: 'left' | 'right', showMenu: boolean }>`
     z-index: 998;
@@ -29,12 +28,12 @@ const StyledNav = styled.ul<{ openDirection: 'left' | 'right', showMenu: boolean
     border: 1px solid ${({ theme }) => theme.FOREGROUND};
     margin: 0.5rem;
 
-    ${Button} {
+    button {
         margin: 0.5rem 0; // For whatever reason I cannot figure out how to get a button to fit in a dropdown. 
     }
 `
 
-type DropdownMenuProps = {
+interface DropdownMenuProps {
     title: string
     children: any[]
     openDirection: 'left' | 'right'
@@ -43,18 +42,18 @@ type DropdownMenuProps = {
 const DropdownMenu = ({ title, children, openDirection }: DropdownMenuProps) => {
     const [showMenu, setShowMenu] = React.useState<boolean>(false)
 
-    const handleClose = () => setShowMenu(false)
+    const handleClose = () => { setShowMenu(false) }
 
     React.useEffect(() => {
         if (showMenu) {
             window.addEventListener('click', handleClose)
         }
-        return () => window.removeEventListener('click', handleClose)
+        return () => { window.removeEventListener('click', handleClose) }
     }, [showMenu])
 
     return (
         <div style={{ position: 'relative' }}>
-            <Button variation="INTERACTION" onClick={() => setShowMenu(!showMenu)}>{title}</Button>
+            <Button onClick={() => { setShowMenu(!showMenu) }}>{title}</Button>
             <StyledNav openDirection={openDirection} showMenu={showMenu}>
                 {children.map((child, index) => <li key={index}>{child}</li>)} {/* eslint-disable-line */}
             </StyledNav>
