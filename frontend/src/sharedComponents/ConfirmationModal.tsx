@@ -15,7 +15,7 @@ interface ConfirmationModalProps {
 const ConfirmationModal = ({ title, body, confirmationCallback, cancelCallback, showModal, setShowModal }: ConfirmationModalProps) => {
     return (
         <Modal
-            contentLabel={title}
+            title={title}
             showModal={showModal}
             closeModal={() => { setShowModal(false) }}
         >

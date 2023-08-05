@@ -174,7 +174,7 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
 
     return (
         <Modal
-            contentLabel={`Select Tasks for ${formatDateDisplayString(selectedDate)}`}
+            title={`Select Tasks for ${formatDateDisplayString(selectedDate)}`}
             showModal={showModal}
             closeModal={() => { setShowModal(false) }}
         >

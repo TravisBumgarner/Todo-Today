@@ -1,65 +1,42 @@
-import React from 'react'
-import styled from 'styled-components'
-import ReactModal from 'styled-react-modal'
+import * as React from 'react'
+import Box from '@mui/material/Box'
+import MUIModal from '@mui/material/Modal'
 import { Typography } from '@mui/material'
-import CloseIcon from '@mui/icons-material/Close'
 
 interface ModalProps {
     children: any
     showModal: boolean
     closeModal: () => void
-    contentLabel: string
+    title: string
 }
 
-const HeaderWrapper = styled.div`
-    display: flex;
-    justify-content: space-between;
+const style = {
+    position: 'absolute' as 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4
+}
 
-    h1 {
-        margin-right: 2rem;
-    }
+const Modal: React.FC<ModalProps> = ({ closeModal, showModal, children, title }) => {
+    const handleClose = React.useCallback(() => {
+        closeModal()
+    }, [closeModal])
 
-    svg {
-        cursor: pointer;
-        fill: ${({ theme }) => theme.FOREGROUND};
-        position: relative;
-        right: -13px;
-        top: -14px;
-
-    &:hover {
-        fill: ${({ theme }) => theme.FOREGROUND};
-        }
-    }
-    h2 {
-        font-size: 2rem;
-    }
-
-    h3 {
-        font-size: 1.25rem;
-    }
-`
-
-const ModalWrapper = styled.div`
-    min-width: 400px;
-`
-
-const Modal = ({
-    children, showModal, closeModal, contentLabel
-}: ModalProps) => {
     return (
-        <ReactModal
-            isOpen={showModal}
-            onBackgroundClick={closeModal}
-            onEscapeKeydown={closeModal}
+        <MUIModal
+            open={showModal}
+            onClose={handleClose}
         >
-            <ModalWrapper>
-                <HeaderWrapper>
-                    <Typography variant='h2'>{contentLabel}</Typography>
-                    <CloseIcon onClick={closeModal} />
-                </HeaderWrapper>
+            <Box sx={style}>
+                <Typography variant="h1">{title}</Typography>
                 {children}
-            </ModalWrapper>
-        </ReactModal>
+            </Box>
+        </MUIModal>
     )
 }
 

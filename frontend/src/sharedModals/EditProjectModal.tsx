@@ -43,7 +43,7 @@ const EditProjectModal = ({ showModal, setShowModal, projectId }: EditProjectMod
 
     return (
         <Modal
-            contentLabel="Edit Project"
+            title="Edit Project"
             showModal={showModal}
             closeModal={() => { setShowModal(false) }}
         >

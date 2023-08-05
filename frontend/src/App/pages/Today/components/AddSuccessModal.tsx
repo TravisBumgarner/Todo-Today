@@ -37,7 +37,7 @@ const AddSuccessModal = ({ showModal, setShowModal, selectedDate }: AddSuccessMo
 
     return (
         <Modal
-            contentLabel="Add Success"
+            title="Add Success"
             showModal={showModal}
             closeModal={() => { setShowModal(false) }}
         >

@@ -48,7 +48,7 @@ const EditTaskModal = ({ showModal, setShowModal, taskId }: EditTaskModalProps) 
 
     return (
         <Modal
-            contentLabel="Edit Task"
+            title="Edit Task"
             showModal={showModal}
             closeModal={() => { setShowModal(false) }}
         >
