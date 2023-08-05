@@ -4,8 +4,9 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import styled from 'styled-components'
 import EditIcon from '@mui/icons-material/Edit'
 import CloseIcon from '@mui/icons-material/Close'
+import { InputLabel, MenuItem, Select, TextField } from '@mui/material'
 
-import { BigBoxOfNothing, LabelAndInput, Table } from 'sharedComponents'
+import { BigBoxOfNothing, Table } from 'sharedComponents'
 import { ETaskStatus, type TDateISODate, type TTask } from 'sharedTypes'
 import { taskStatusLookup } from 'utilities'
 
@@ -109,21 +110,21 @@ const TodoListTableRow = ({ todoListItemId, projectId, taskId }: TodoListTableRo
                         : task.title}
                 </Table.TableBodyCell>
                 <Table.TableBodyCell>
-                    <LabelAndInput
-                        name="status"
-                        value={task.status}
-                        options={ETaskStatus}
-                        optionLabels={taskStatusLookup}
-                        inputType="select-enum"
-                        handleChange={handleStatusChange}
-                    />
+                    <InputLabel id="status">Status</InputLabel>
+                    <Select
+                        labelId="status"
+                        value={projectId}
+                        label="Project Status"
+                        onChange={async (event) => { await handleStatusChange(event.target.value as ETaskStatus) }}
+                    >
+                        {Object.keys(ETaskStatus).map((key) => <MenuItem key={key} value={key}>{key}</MenuItem>)}
+                    </Select>
                 </Table.TableBodyCell>
                 <Table.TableBodyCell style={{ whiteSpace: 'pre-line' }}>
-                    <LabelAndInput
+                    <TextField
                         value={todoListItem.details}
-                        handleChange={handleDetailsChange}
+                        onChange={async event => { await handleDetailsChange(event.target.value) }}
                         name="details"
-                        inputType="textarea"
                         rows={2}
                     />
                 </Table.TableBodyCell>

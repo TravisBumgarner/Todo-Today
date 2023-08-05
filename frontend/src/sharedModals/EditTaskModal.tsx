@@ -1,9 +1,8 @@
-import React from 'react'
-import { Button } from '@mui/material'
+import React, { useEffect } from 'react'
+import { Button, InputLabel, MenuItem, Select, TextField } from '@mui/material'
 
-import { Modal, LabelAndInput } from 'sharedComponents'
+import { Modal } from 'sharedComponents'
 import { type TTask, ETaskStatus } from 'sharedTypes'
-import { taskStatusLookup } from 'utilities'
 import database from 'database'
 import { useLiveQuery } from 'dexie-react-hooks'
 
@@ -23,24 +22,24 @@ const EditTaskModal = ({ showModal, setShowModal, taskId }: EditTaskModalProps) 
         return await database.projects.toArray()
     }, [])
 
-    React.useEffect(() => {
-        database
+    useEffect(() => {
+        void database
             .tasks.where('id').equals(taskId).first()
             .then((t: TTask) => {
                 setTitle(t.title)
                 setProjectId(t.projectId)
                 setStatus(t.status)
             })
-    }, [])
+    }, [taskId])
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         const editedTask = {
             title,
             status,
             id: taskId,
             projectId
         }
-        database.tasks.put(editedTask, [taskId])
+        await database.tasks.put(editedTask, [taskId])
         setShowModal(false)
     }
 
@@ -54,29 +53,30 @@ const EditTaskModal = ({ showModal, setShowModal, taskId }: EditTaskModalProps) 
             closeModal={() => { setShowModal(false) }}
         >
             <form onChange={() => { setFormEdited(true) }}>
-                <LabelAndInput
+                <TextField
                     label="Task"
                     name="title"
                     value={title}
-                    handleChange={(value) => { setTitle(value) }}
+                    onChange={(event) => { setTitle(event.target.value) }}
                 />
-                <LabelAndInput
-                    label="Status"
-                    name="status"
+                <InputLabel id="task-status">Project</InputLabel>
+                <Select
+                    labelId="task-status"
                     value={status}
-                    options={ETaskStatus}
-                    optionLabels={taskStatusLookup}
-                    inputType="select-enum"
-                    handleChange={(value: ETaskStatus) => { setStatus(value) }}
-                />
-                <LabelAndInput
-                    name="project"
+                    label="Status"
+                    onChange={(event) => { setStatus(event.target.value as ETaskStatus) }}
+                >
+                    {Object.keys(ETaskStatus).map(key => <MenuItem key={key} value={key}>{key}</MenuItem>)}
+                </Select>
+                <Select
+                    labelId="project-select"
+                    id="demo-simple-select"
                     value={projectId}
-                    options={projectSelectOptions}
-                    inputType="select-array"
                     label="Project"
-                    handleChange={(value) => { setProjectId(value) }}
-                />
+                    onChange={(event) => { setProjectId(event.target.value) }}
+                >
+                    {projectSelectOptions.map(({ label, value }) => <MenuItem key={label} value={value}>{label}</MenuItem>)}
+                </Select>
                 <Button key="cancel" onClick={() => { setShowModal(false) }}>Cancel</Button>
                 <Button
                     type="button"

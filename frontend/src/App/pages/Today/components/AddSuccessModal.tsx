@@ -1,9 +1,9 @@
 import React from 'react'
 import { v4 as uuid4 } from 'uuid'
-import { Button } from '@mui/material'
+import { Button, InputLabel, MenuItem, Select, TextField } from '@mui/material'
 
-import { Modal, LabelAndInput } from 'sharedComponents'
-import { type TDateISODate, type TProject } from 'sharedTypes'
+import { Modal } from 'sharedComponents'
+import { EProjectStatus, type TDateISODate, type TProject } from 'sharedTypes'
 import database from 'database'
 import { useLiveQuery } from 'dexie-react-hooks'
 
@@ -42,20 +42,21 @@ const AddSuccessModal = ({ showModal, setShowModal, selectedDate }: AddSuccessMo
             closeModal={() => { setShowModal(false) }}
         >
             <form>
-                <LabelAndInput
+                <TextField
                     label="Description"
                     name="description"
                     value={description}
-                    handleChange={(value) => { setDescription(value) }}
+                    onChange={(event) => { setDescription(event.target.value) }}
                 />
-                <LabelAndInput
-                    name="project"
+                <InputLabel id="project-id">Project ID</InputLabel>
+                <Select
+                    labelId="project-id"
                     value={projectId}
-                    options={projectSelectOptions}
-                    inputType="select-array"
-                    label="Project (Optional)"
-                    handleChange={(value) => { setProjectId(value) }}
-                />
+                    label="Project Status"
+                    onChange={(event) => { setProjectId(event.target.value) }}
+                >
+                    {Object.keys(EProjectStatus).map((key) => <MenuItem key={key} value={key}>{key}</MenuItem>)}
+                </Select>
                 <Button key="cancel" onClick={() => { setShowModal(false) }}>Cancel</Button>
                 <Button disabled={description.length === 0} key="save" onClick={handleSubmit}>Save</Button>
             </form>

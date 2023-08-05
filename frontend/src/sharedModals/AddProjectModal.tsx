@@ -1,9 +1,9 @@
 import React from 'react'
 import { v4 as uuid4 } from 'uuid'
-import { Button } from '@mui/material'
+import { Button, TextField } from '@mui/material'
 
 import database from 'database'
-import { Modal, LabelAndInput } from 'sharedComponents'
+import { Modal } from 'sharedComponents'
 import { type TProject, EProjectStatus } from 'sharedTypes'
 
 interface AddProjectModalProps {
@@ -31,11 +31,11 @@ const AddProjectModal = ({ showModal, setShowModal }: AddProjectModalProps) => {
             closeModal={() => { setShowModal(false) }}
         >
             <form>
-                <LabelAndInput
+                <TextField
                     label="Title"
                     name="title"
                     value={title}
-                    handleChange={(data) => { setTitle(data) }}
+                    onChange={(event) => { setTitle(event.target.value) }}
                 />
                 <Button key="cancel" onClick={() => { setShowModal(false) }}>Cancel</Button>
                 <Button

@@ -22,6 +22,7 @@
         "react-router-dom": "^6.3.0",
         "styled-components": "^5.3.5",
         "styled-react-modal": "^3.0.0",
+        "use-async-effect": "^2.2.7",
         "uuid": "^8.3.2"
     },
     "devDependencies": {

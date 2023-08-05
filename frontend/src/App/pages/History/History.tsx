@@ -4,97 +4,100 @@ import styled from 'styled-components'
 import { Typography } from '@mui/material'
 
 import { EProjectStatus, ETaskStatus } from 'sharedTypes'
-import { BigBoxOfNothing, LabelAndInput, PageHeader } from 'sharedComponents'
+import { BigBoxOfNothing, PageHeader } from 'sharedComponents'
 import { bucketTasksByProject, projectStatusLookup, taskStatusLookup } from 'utilities'
 import database from 'database'
 import { TasksTable } from './components'
 
-const FilterWrapper = styled.div`
-    display: flex;
-    justify-content: space-between;
-    margin: 1.5rem 0;
+// const FilterWrapper = styled.div`
+//     display: flex;
+//     justify-content: space-between;
+//     margin: 1.5rem 0;
 
-    > div {
-        width: fit-content;
-    }
+//     > div {
+//         width: fit-content;
+//     }
 
-    @media (max-width: 1200px) {
-        flex-direction: column;
-         
-        > div {
-            margin: 0.5rem 0;
-            width: fit-content;
-            max-width: 100%;
-        }
-    }
-`
+//     @media (max-width: 1200px) {
+//         flex-direction: column;
 
-interface TaskFilterProps {
-    setStatusFilter: React.Dispatch<React.SetStateAction<Record<ETaskStatus, boolean>>>
-    statusFilter: Record<ETaskStatus, boolean>
-}
+//         > div {
+//             margin: 0.5rem 0;
+//             width: fit-content;
+//             max-width: 100%;
+//         }
+//     }
+// `
 
-const TaskFilters = ({ setStatusFilter, statusFilter }: TaskFilterProps) => {
-    return (
-        <div>
-            <LabelAndInput
-                inputType="checkbox"
-                name="projectfilter"
-                label="Filter Tasks By Status"
-                handleChange={({ checked, value }) => {
-                    setStatusFilter((prev) => {
-                        const previousFilters = { ...prev }
-                        previousFilters[value as ETaskStatus] = checked
-                        return previousFilters
-                    })
-                }}
-                options={
-                    Object.values(ETaskStatus).map((status) => ({
-                        label: taskStatusLookup[status],
-                        value: status,
-                        checked: statusFilter[status],
-                        name: status
-                    }))
-                }
+// interface TaskFilterProps {
+//     setStatusFilter: React.Dispatch<React.SetStateAction<Record<ETaskStatus, boolean>>>
+//     statusFilter: Record<ETaskStatus, boolean>
+// }
 
-            />
-        </div>
-    )
-}
+// const TaskFilters = ({ setStatusFilter, statusFilter }: TaskFilterProps) => {
+//     return (
+//         <div>
+//             <TextField
+//                 inputType="checkbox"
+//                 name="projectfilter"
+//                 label="Filter Tasks By Status"
+//                 onChange={({ checked, value }) => {
+//                     setStatusFilter((prev) => {
+//                         const previousFilters = { ...prev }
+//                         previousFilters[value as ETaskStatus] = checked
+//                         return previousFilters
+//                     })
+//                 }}
+//                 options={
+//                     Object.values(ETaskStatus).map((status) => ({
+//                         label: taskStatusLookup[status],
+//                         value: status,
+//                         checked: statusFilter[status],
+//                         name: status
+//                     }))
+//                 }
 
-interface ProjectFilterProps {
-    setStatusFilter: React.Dispatch<React.SetStateAction<Record<EProjectStatus, boolean>>>
-    statusFilter: Record<EProjectStatus, boolean>
-}
+//             />
+//         </div>
+//     )
+// }
 
-const ProjectFilters = ({ setStatusFilter, statusFilter }: ProjectFilterProps) => {
-    return (
-        <div>
-            <LabelAndInput
-                inputType="checkbox"
-                name="projectfilter"
-                label="Filter Projects By Status"
-                handleChange={({ checked, value }) => {
-                    setStatusFilter((prev) => {
-                        const previousFilters = { ...prev }
-                        previousFilters[value as EProjectStatus] = checked
-                        return previousFilters
-                    })
-                }}
-                options={
-                    Object.values(EProjectStatus).map((status) => ({
-                        label: projectStatusLookup[status],
-                        value: status,
-                        checked: statusFilter[status],
-                        name: status
-                    }))
-                }
+// interface ProjectFilterProps {
+//     setStatusFilter: React.Dispatch<React.SetStateAction<Record<EProjectStatus, boolean>>>
+//     statusFilter: Record<EProjectStatus, boolean>
+// }
 
-            />
-        </div>
-    )
-}
+// const ProjectFilters = () => {
+//     const [statusFilter, setStatusFilter] = React.useState({})
 
+//     const handleStatusChange = (event) => {
+//         const { value, checked } = event.target
+//         setStatusFilter((prev) => ({
+//             ...prev,
+//             [value]: checked
+//         }))
+//     }
+
+//     return (
+//         <FormGroup>
+//             <p>Filter Projects By Status</p>
+//             {Object.values(EProjectStatus).map((status) => (
+//                 <FormControlLabel
+//                     key={status}
+//                     control={
+//                         <Checkbox
+//                             checked={statusFilter[status] || false}
+//                             onChange={handleStatusChange}
+//                             value={status}
+//                             name="projectfilter"
+//                         />
+//                     }
+//                     label={projectStatusLookup[status]}
+//                 />
+//             ))}
+//         </FormGroup>
+//     )
+// }
 const DEFAULT_TASK_STATUS_FILTER = {
     [ETaskStatus.NEW]: true,
     [ETaskStatus.IN_PROGRESS]: true,
@@ -116,9 +119,9 @@ const Tasks = () => {
     const [searchText, setSearchText] = React.useState<string>('')
 
     let Contents
-    if (!projects || !projects.length) {
+    if (!projects?.length) {
         Contents = <BigBoxOfNothing message="Create a project and then come back!" />
-    } else if (tasks && tasks.length) {
+    } else if (tasks?.length) {
         const filteredTasks = tasks
             .filter(({ status }) => taskStatusFilter[status])
             .filter(task => task.title.toLowerCase().includes(searchText.toLowerCase()))
@@ -150,10 +153,10 @@ const Tasks = () => {
             <PageHeader>
                 <Typography variant="h2">Manage</Typography>
             </PageHeader>
-            <FilterWrapper>
-                <ProjectFilters statusFilter={projectStatusFilter} setStatusFilter={setProjectStatusFilter} />
-                <TaskFilters statusFilter={taskStatusFilter} setStatusFilter={setTaskStatusFilter} />
-            </FilterWrapper>
+            {/* <FilterWrapper> */}
+            {/* <ProjectFilters statusFilter={projectStatusFilter} setStatusFilter={setProjectStatusFilter} />
+                <TaskFilters statusFilter={taskStatusFilter} setStatusFilter={setTaskStatusFilter} /> */}
+            {/* </FilterWrapper> */}
             {Contents}
         </div>
     )

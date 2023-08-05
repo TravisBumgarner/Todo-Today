@@ -1,8 +1,8 @@
 import React from 'react'
 import moment from 'moment'
-import { Button, Typography } from '@mui/material'
+import { Button, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material'
 
-import { Modal, LabelAndInput } from 'sharedComponents'
+import { Modal } from 'sharedComponents'
 import { type TProject, type TSuccess } from 'sharedTypes'
 import database from 'database'
 import { useLiveQuery } from 'dexie-react-hooks'
@@ -60,26 +60,27 @@ const AddSuccessModal = ({ showModal, setShowModal, successId }: AddSuccessModal
                     ? <Typography variant="body1">One sec</Typography>
                     : (
                         <form>
-                            <LabelAndInput
+                            <TextField
                                 label="Description"
                                 name="description"
                                 value={description}
-                                handleChange={(value) => { setDescription(value) }}
+                                onChange={(event) => { setDescription(event.target.value) }}
                             />
-                            <LabelAndInput
-                                name="project"
+                            <InputLabel id="project-select">Project</InputLabel>
+                            <Select
+                                labelId="project-select"
                                 value={projectId}
-                                options={projectSelectOptions}
-                                inputType="select-array"
-                                label="Project (Optional)"
-                                handleChange={(value) => { setProjectId(value) }}
-                            />
-                            <LabelAndInput
+                                label="Project"
+                                onChange={(event) => { setProjectId(event.target.value) }}
+                            >
+                                {projectSelectOptions.map(({ label, value }) => <MenuItem key={label} value={value}>{label}</MenuItem>)}
+                            </Select>
+                            <TextField
                                 label="Date"
                                 name="date"
                                 value={moment(date).format('YYYY-MM-DD')}
-                                inputType="date"
-                                handleChange={(value) => { setDate(value) }}
+                                type="date"
+                                onChange={(event) => { setDate(event.target.value) }}
                             />
                             <Button
                                 key="cancel"

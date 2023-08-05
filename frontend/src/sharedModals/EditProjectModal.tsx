@@ -1,7 +1,7 @@
-import React from 'react'
-import { Button, Typography } from '@mui/material'
+import React, { useEffect, useState } from 'react'
+import { Button, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material'
 
-import { Modal, LabelAndInput } from 'sharedComponents'
+import { Modal } from 'sharedComponents'
 import { type TProject, EProjectStatus } from 'sharedTypes'
 import { projectStatusLookup } from 'utilities'
 import database from 'database'
@@ -13,28 +13,31 @@ interface EditProjectModalProps {
 }
 
 const EditProjectModal = ({ showModal, setShowModal, projectId }: EditProjectModalProps) => {
-    const [title, setTitle] = React.useState<string>('')
-    const [status, setStatus] = React.useState<EProjectStatus>(EProjectStatus.ACTIVE)
-    const [submitDisabled, setSubmitDisabled] = React.useState<boolean>(true)
-    const [isLoading, setIsLoading] = React.useState<boolean>(true)
+    const [title, setTitle] = useState<string>('')
+    const [status, setStatus] = useState<EProjectStatus>(EProjectStatus.ACTIVE)
+    const [submitDisabled, setSubmitDisabled] = useState<boolean>(true)
+    const [isLoading, setIsLoading] = useState<boolean>(true)
 
-    React.useEffect(() => {
-        database
-            .projects.where('id').equals(projectId).first()
-            .then((project: TProject) => {
-                setTitle(project.title)
-                setStatus(project.status)
-                setIsLoading(false)
-            })
-    }, [])
+    useEffect(() => {
+        const func = async () => {
+            await database
+                .projects.where('id').equals(projectId).first()
+                .then((project: TProject) => {
+                    setTitle(project.title)
+                    setStatus(project.status)
+                    setIsLoading(false)
+                })
+        }
+        void func()
+    }, [projectId])
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         const editedProject = {
             title,
             status,
             id: projectId
         }
-        database.projects.put(editedProject, [projectId])
+        await database.projects.put(editedProject, [projectId])
         setShowModal(false)
     }
 
@@ -49,21 +52,21 @@ const EditProjectModal = ({ showModal, setShowModal, projectId }: EditProjectMod
                     ? <Typography variant="body1">One sec</Typography>
                     : (
                         <form onChange={() => { setSubmitDisabled(false) }}>
-                            <LabelAndInput
+                            <TextField
                                 label="Title"
                                 name="title"
                                 value={title}
-                                handleChange={(data) => { setTitle(data) }}
+                                onChange={event => { setTitle(event.target.value) }}
                             />
-                            <LabelAndInput
-                                label="Status"
-                                name="status"
-                                value={status}
-                                options={EProjectStatus}
-                                optionLabels={projectStatusLookup}
-                                inputType="select-enum"
-                                handleChange={(newStatus: EProjectStatus) => { setStatus(newStatus) }}
-                            />
+                            <InputLabel id="project-status">Project Status</InputLabel>
+                            <Select
+                                labelId="project-status"
+                                value={projectId}
+                                label="Project Status"
+                                onChange={(event) => { setStatus(event.target.value as EProjectStatus) }}
+                            >
+                                {Object.keys(EProjectStatus).map((key) => <MenuItem key={key} value={key}>{key}</MenuItem>)}
+                            </Select>
                             <Button key="cancel" onClick={() => { setShowModal(false) }}>Cancel</Button>
                             <Button
                                 key="save"
