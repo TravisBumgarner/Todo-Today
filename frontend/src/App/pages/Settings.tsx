@@ -5,10 +5,9 @@ import database from 'database'
 import { EColorTheme, EDaysOfWeek, EBackupInterval, type TReminder } from 'sharedTypes'
 import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
-import { Button, Typography } from '@mui/material'
+import { Button, InputLabel, MenuItem, Select, Typography } from '@mui/material'
 import {
     ConfirmationModal,
-    LabelAndInput,
     Modal,
     BigBoxOfNothing,
     Table,
@@ -131,22 +130,24 @@ const AddEditReminderModal = ({ showModal, setShowModal, reminderToEdit }: AddEd
             closeModal={() => { setShowModal(false) }}
         >
             <form>
-                <LabelAndInput
-                    label="Day"
-                    name="dayOfWeek"
+                <InputLabel id="day-of-week">Day of Week</InputLabel>
+                <Select
+                    labelId="day-of-week"
                     value={dayOfWeek}
-                    inputType="select-enum"
-                    options={EDaysOfWeek}
-                    optionLabels={dayOfWeekLabels}
-                    handleChange={(value: EDaysOfWeek) => { setDayOfWeek(value) }}
-                />
-                <LabelAndInput
-                    label="Time"
-                    name="timeOfDay"
+                    label="Day of Week"
+                    onChange={(event) => { setDayOfWeek(event.target.value as EDaysOfWeek) }}
+                >
+                    {Object.keys(EDaysOfWeek).map(key => <MenuItem key={key} value={key}>{key}</MenuItem>)}
+                </Select>
+                <InputLabel id="time-of-day">Time of Day</InputLabel>
+                <Select
+                    labelId="time-of-day"
                     value={timeOfDay}
-                    inputType="time"
-                    handleChange={(value: unknown) => { setTimeOfDay(value) }}
-                />
+                    label="Time of Day"
+                    onChange={(event) => { setTimeOfDay(event.target.value) }}
+                >
+                    {Object.keys(EDaysOfWeek).map(key => <MenuItem key={key} value={key}>{key}</MenuItem>)}
+                </Select>
                 <Button key="cancel" onClick={() => { setShowModal(false) }}>Cancel</Button>,
                 <Button key="save" onClick={reminderToEdit ? handleEdit : handleAdd}>Save</Button>
             </form>
@@ -276,15 +277,16 @@ const Settings = () => {
             </PageHeader>
             <Typography variant="h3">User Preferences</Typography>
             <form>
-                <LabelAndInput
-                    inputType="select-enum"
-                    name="colorTheme"
-                    label="Theme"
+
+                <InputLabel id="color-theme">Color Theme</InputLabel>
+                <Select
+                    labelId="color-theme"
                     value={state.colorTheme}
-                    handleChange={(value: EColorTheme) => { handleSubmit({ key: 'colorTheme', value }) }}
-                    options={EColorTheme}
-                    optionLabels={colorThemeOptionLabels}
-                />
+                    label="Color Theme"
+                    onChange={(event) => { handleSubmit({ key: 'colorTheme', value: event.target.value }) }}
+                >
+                    {Object.keys(EDaysOfWeek).map(key => <MenuItem key={key} value={key}>{key}</MenuItem>)}
+                </Select>
             </form>
             <div style={{ marginTop: '2rem' }}>
                 <LabelInDisguise>Schedule Reminders</LabelInDisguise>
@@ -307,25 +309,26 @@ const Settings = () => {
             <div>
                 <Typography variant="h3">Backups</Typography>
                 <Button onClick={async () => { await handleBackup() }} fullWidth>Create Backup</Button>
-                <LabelAndInput
-                    inputType="select-enum"
-                    name="weekStart"
-                    label="Would you like to automate backups?"
+
+                <InputLabel id="week-start">Week Start</InputLabel>
+                <Select
+                    labelId="backup-interval"
                     value={state.backupInterval}
-                    handleChange={(value: EBackupInterval) => { dispatch({ type: 'EDIT_USER_SETTING', payload: { key: 'backupInterval', value } }) }}
-                    options={EBackupInterval}
-                    optionLabels={backupIntervalLookup}
-                />
+                    label="Color Theme"
+                    onChange={(event) => { dispatch({ type: 'EDIT_USER_SETTING', payload: { key: 'backupInterval', value: event.target.value } }) }}
+                >
+                    {Object.keys(EDaysOfWeek).map(key => <MenuItem key={key} value={key}>{key}</MenuItem>)}
+                </Select>
                 <Typography variant="body2">Last Backup: {getLocalStorage('lastBackup')}</Typography>
                 <Typography variant="body2">Backup Location: {state.backupDir}</Typography>
 
                 <Typography variant="h3">Restore</Typography>
                 <form>
-                    <LabelAndInput
-                        handleChange={(file) => { setRestore(file) }}
-                        label="Restore database with a backup copy."
+                    <label>Restore database with a backup copy.</label>
+                    <input
+                        onChange={(event) => { event.target.files && setRestore(event.target.files[0]) }}
                         name="file"
-                        inputType="file"
+                        type="file"
                     />
                     <Button
                         disabled={!restore}

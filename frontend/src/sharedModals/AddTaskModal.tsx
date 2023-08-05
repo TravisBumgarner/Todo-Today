@@ -1,8 +1,8 @@
 import React from 'react'
 import { v4 as uuid4 } from 'uuid'
-import { Button } from '@mui/material'
+import { Button, FormControlLabel, InputLabel, MenuItem, Select, Switch, TextField } from '@mui/material'
 
-import { Modal, LabelAndInput } from 'sharedComponents'
+import { Modal } from 'sharedComponents'
 import { type TProject, ETaskStatus, EProjectStatus, type TDateISODate } from 'sharedTypes'
 import database from 'database'
 import { useLiveQuery } from 'dexie-react-hooks'
@@ -60,31 +60,23 @@ const AddTaskModal = ({ showModal, setShowModal, project, selectedDate }: AddTas
             closeModal={() => { setShowModal(false) }}
         >
             <form>
-                <LabelAndInput
+                <TextField
                     label="Task"
                     name="title"
                     value={title}
-                    handleChange={(data) => { setTitle(data) }}
+                    onChange={(event) => { setTitle(event.target.value) }}
                 />
-                <LabelAndInput
-                    name="project"
+                <InputLabel id="project-select">Project</InputLabel>
+                <Select
+                    labelId="project-select"
                     value={projectId}
-                    options={projectSelectOptions}
-                    inputType="select-array"
                     label="Project"
-                    handleChange={(value) => { setProjectId(value) }}
-                />
-                <LabelAndInput
-                    name="addtoSelectedDate"
-                    value={addToSelectedDate}
-                    options={[
-                        { value: 'no', label: 'No' },
-                        { value: 'yes', label: 'Yes' }
-                    ]}
-                    inputType="select-array"
-                    label="Add to selected date's tasks?"
-                    handleChange={(value: 'yes' | 'no') => { setAddToSelectedDate(value) }}
-                />
+                    onChange={(event) => { setProjectId(event.target.value) }}
+                >
+                    {projectSelectOptions.map(({ label, value }) => <MenuItem key={label} value={value}>{label}</MenuItem>)}
+                </Select>
+                {/* TODO - needs data */}
+                <FormControlLabel control={<Switch defaultChecked />} label="Add to today?" />
 
                 <Button
                     key="cancel"

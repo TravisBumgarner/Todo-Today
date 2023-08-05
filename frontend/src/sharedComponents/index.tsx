@@ -4,7 +4,6 @@ import StyledNavLink from './StyledNavLink'
 import ExternalLink from './ExternalLink'
 import Modal from './Modal'
 import colors from './colors'
-import LabelAndInput from './LabelAndInput'
 import DropdownMenu from './DropdownMenu'
 import BigBoxOfNothing from './BigBoxOfNothing'
 import ConfirmationModal from './ConfirmationModal'
@@ -18,7 +17,6 @@ export {
     Table,
     Modal,
     colors,
-    LabelAndInput,
     DropdownMenu,
     BigBoxOfNothing,
     ConfirmationModal,
