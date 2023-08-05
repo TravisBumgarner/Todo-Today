@@ -13,8 +13,7 @@ import {
     BigBoxOfNothing,
     Table,
     LabelInDisguise,
-    PageHeader,
-    SmallParagraph
+    PageHeader
 } from 'sharedComponents'
 import {
     formatDurationDisplayString,
@@ -317,8 +316,8 @@ const Settings = () => {
                     options={EBackupInterval}
                     optionLabels={backupIntervalLookup}
                 />
-                <SmallParagraph>Last Backup: {getLocalStorage('lastBackup')}</SmallParagraph>
-                <SmallParagraph>Backup Location: {state.backupDir}</SmallParagraph>
+                <Typography variant="body2">Last Backup: {getLocalStorage('lastBackup')}</Typography>
+                <Typography variant="body2">Backup Location: {state.backupDir}</Typography>
 
                 <Typography variant="h3">Restore</Typography>
                 <form>
