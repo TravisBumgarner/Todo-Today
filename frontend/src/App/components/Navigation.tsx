@@ -1,10 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
-import { useLocation } from 'react-router-dom'
+import { NavLink, useLocation } from 'react-router-dom'
 import EditIcon from '@mui/icons-material/Edit'
 import SettingsIcon from '@mui/icons-material/Settings'
-
-import { StyledNavLink } from 'sharedComponents'
 
 const StyledNav = styled.ul`
     list-style: none;
@@ -17,12 +15,6 @@ const StyledNav = styled.ul`
         margin-left: 1rem;
     }
 `
-
-// const ALWAYS_VISIBLE_LINKS = [
-//     { text: 'Todo Today', to: '/' },
-//     { text: 'Manage', to: '/manage' },
-//     { text: 'Settings', to: '/settings' },
-// ]
 
 const ALWAYS_VISIBLE_LINKS = [
     { text: <EditIcon name="edit" />, to: '/history' },
@@ -41,7 +33,7 @@ const Navigation = () => {
         <StyledNav>
             {ALWAYS_VISIBLE_LINKS.map(({ text, to }) => (
                 <NavLi key={to} isActive={location.pathname === to}>
-                    <StyledNavLink to={to}>{text}</StyledNavLink>
+                    <NavLink to={to}>{text}</NavLink>
                 </NavLi>
             ))}
         </StyledNav>

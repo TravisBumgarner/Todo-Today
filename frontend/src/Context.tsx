@@ -1,32 +1,30 @@
 import React from 'react'
 
-import { EColorTheme, EBackupInterval, TSettings, TReminder } from 'sharedTypes'
+import { EColorTheme, EBackupInterval, type TSettings } from 'sharedTypes'
 import { getLocalStorage, setLocalStorage } from 'utilities'
-import { RefreshRemindersIPC, AppStartIPC } from '../../shared/types'
+import { type AppStartIPC } from '../../shared/types'
 
 const { ipcRenderer } = window.require('electron')
 
 const HAS_DONE_WARM_START = 'HAS_DONE_WARM_START'
 const TRUE = 'TRUE'
 
-type State = {
+interface State {
     colorTheme: EColorTheme
     backupInterval: EBackupInterval
-    reminders: TReminder[]
     backupDir: string
 }
 
 const EMPTY_STATE: State = {
     colorTheme: EColorTheme.BEACH,
     backupInterval: EBackupInterval.DAILY,
-    reminders: [],
     backupDir: ''
 }
 
 const initialSetup = () => {
     Object
         .keys(EMPTY_STATE)
-        .forEach((key: keyof typeof EMPTY_STATE) => setLocalStorage(key, EMPTY_STATE[key]))
+        .forEach((key: keyof typeof EMPTY_STATE) => { setLocalStorage(key, EMPTY_STATE[key]) })
 
     setLocalStorage(HAS_DONE_WARM_START, TRUE)
 }
@@ -43,42 +41,22 @@ const getKeysFromStorage = () => {
     return output as unknown as State
 }
 
-type HydrateUserSettings = {
-    type: 'HYDRATE_USER_SETTINGS',
+interface HydrateUserSettings {
+    type: 'HYDRATE_USER_SETTINGS'
     payload: Partial<TSettings>
 }
 
-type EditUserSettings = {
-    type: 'EDIT_USER_SETTING',
+interface EditUserSettings {
+    type: 'EDIT_USER_SETTING'
     payload: {
         key: string
         value: string
     }
 }
 
-type AddReminder = {
-    type: 'ADD_REMINDER',
-    payload: TReminder
-}
-
-type EditReminder = {
-    type: 'EDIT_REMINDER',
-    payload: TReminder
-}
-
-type DeleteReminder = {
-    type: 'DELETE_REMINDER',
-    payload: {
-        deletedReminderIndex: string
-    }
-}
-
 type Action =
     | EditUserSettings
     | HydrateUserSettings
-    | AddReminder
-    | EditReminder
-    | DeleteReminder
 
 const reducer = (state: State, action: Action): State => {
     switch (action.type) {
@@ -90,23 +68,6 @@ const reducer = (state: State, action: Action): State => {
             setLocalStorage(key, value)
             return { ...state, [key]: value }
         }
-        case 'ADD_REMINDER': {
-            const reminders = [...state.reminders]
-            reminders.push(action.payload)
-            setLocalStorage('reminders', reminders)
-            return { ...state, reminders }
-        }
-        case 'EDIT_REMINDER': {
-            const reminders = [...state.reminders.filter(({ reminderIndex }) => reminderIndex !== action.payload.reminderIndex)]
-            reminders.push(action.payload)
-            setLocalStorage('reminders', reminders)
-            return { ...state, reminders }
-        }
-        case 'DELETE_REMINDER': {
-            const reminders = [...state.reminders.filter(({ reminderIndex }) => reminderIndex !== action.payload.deletedReminderIndex)]
-            setLocalStorage('reminders', reminders)
-            return { ...state, reminders }
-        }
         default:
             throw new Error('Unexpected action')
     }
@@ -115,19 +76,12 @@ const reducer = (state: State, action: Action): State => {
 const context = React.createContext(
     {
         state: EMPTY_STATE,
-        dispatch: () => { },
+        dispatch: () => { }
     } as {
-        state: State,
+        state: State
         dispatch: React.Dispatch<Action>
-    },
+    }
 )
-
-const prepareRemindersPayload = (reminders: TReminder[]) => {
-    const payload: RefreshRemindersIPC = reminders.map(({ hours, minutes, dayOfWeek }) => {
-        return { hours: parseInt(hours, 10), minutes: parseInt(minutes, 10), dayOfWeek: parseInt(dayOfWeek, 10) }
-    })
-    return payload
-}
 
 const ResultsContext = ({ children }: { children: React.ReactChild }) => {
     const [state, dispatch] = React.useReducer(reducer, EMPTY_STATE)
@@ -142,17 +96,15 @@ const ResultsContext = ({ children }: { children: React.ReactChild }) => {
                 initialSetup()
             } else {
                 // On Restart, reminderIndexes are stale because they don't exist on the backend anymore.
-                const currentLocalStorage = await getKeysFromStorage()
-                const refreshedReminders = await ipcRenderer.invoke('refresh-reminder-ids', prepareRemindersPayload(currentLocalStorage.reminders))
+                const currentLocalStorage = getKeysFromStorage()
 
-                payload = { ...currentLocalStorage, ...payload, reminders: refreshedReminders }
+                payload = { ...currentLocalStorage, ...payload }
             }
             dispatch({ type: 'HYDRATE_USER_SETTINGS', payload })
         }
 
         setIsLoading(true)
-        fetchData()
-        setIsLoading(false)
+        void fetchData().then(() => { setIsLoading(false) })
     }, [])
 
     if (isLoading) {

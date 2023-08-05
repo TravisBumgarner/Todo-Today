@@ -1,12 +1,12 @@
 import moment from 'moment'
-import { TProject, EProjectStatus, TTask, TDateISODate, ETaskStatus, EDaysOfWeek, EColorTheme, EBackupInterval } from 'sharedTypes'
-import { NotificationIPC } from '../../shared/types'
+import { type TProject, EProjectStatus, type TTask, type TDateISODate, ETaskStatus, EColorTheme, EBackupInterval } from 'sharedTypes'
+import { type NotificationIPC } from '../../shared/types'
 
 const { ipcRenderer } = window.require('electron')
 
 const projectStatusLookup: Record<EProjectStatus, string> = {
     [EProjectStatus.INACTIVE]: 'Inactive',
-    [EProjectStatus.ACTIVE]: 'Active',
+    [EProjectStatus.ACTIVE]: 'Active'
 }
 
 const backupIntervalLookup: Record<EBackupInterval, string> = {
@@ -15,7 +15,7 @@ const backupIntervalLookup: Record<EBackupInterval, string> = {
     [EBackupInterval.DAILY]: 'Every Day',
     [EBackupInterval.WEEKLY]: 'Every Week',
     [EBackupInterval.MONTHLY]: 'Every Month',
-    [EBackupInterval.OFF]: 'Off',
+    [EBackupInterval.OFF]: 'Off'
 }
 
 const taskStatusLookup: Record<ETaskStatus, string> = {
@@ -24,16 +24,6 @@ const taskStatusLookup: Record<ETaskStatus, string> = {
     [ETaskStatus.IN_PROGRESS]: 'In Progress',
     [ETaskStatus.NEW]: 'New',
     [ETaskStatus.BLOCKED]: 'Blocked'
-}
-
-const dayOfWeekLabels: Record<EDaysOfWeek, string> = {
-    [EDaysOfWeek.SUNDAY]: 'Sunday',
-    [EDaysOfWeek.MONDAY]: 'Monday',
-    [EDaysOfWeek.TUESDAY]: 'Tuesday',
-    [EDaysOfWeek.WEDNESDAY]: 'Wednesday',
-    [EDaysOfWeek.THURSDAY]: 'Thursday',
-    [EDaysOfWeek.FRIDAY]: 'Friday',
-    [EDaysOfWeek.SATURDAY]: 'Saturday',
 }
 
 const colorThemeOptionLabels: Record<EColorTheme, string> = {
@@ -88,13 +78,13 @@ const bucketTasksByProject = (projects: TProject[], tasks: TTask[] | undefined) 
 
 const sumArray = (arr: number[]) => arr.reduce((partialSum, a) => partialSum + a, 0)
 
-const saveFile = async (fileName: string, jsonData: Object) => {
+const saveFile = async (fileName: string, jsonData: unknown) => {
     const blob = new Blob([JSON.stringify(jsonData, null, 2)], { type: 'application/json' })
     const a = document.createElement('a')
     a.download = fileName
     a.href = URL.createObjectURL(blob)
     a.addEventListener('click', () => {
-        setTimeout(() => URL.revokeObjectURL(a.href), 30 * 1000)
+        setTimeout(() => { URL.revokeObjectURL(a.href) }, 30 * 1000)
     })
     a.click()
 }
@@ -119,7 +109,6 @@ export {
     formatDateKeyLookup,
     formatDurationDisplayString,
     bucketTasksByProject,
-    dayOfWeekLabels,
     colorThemeOptionLabels,
     backupIntervalLookup,
     sumArray,
