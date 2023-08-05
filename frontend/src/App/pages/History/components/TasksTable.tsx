@@ -1,7 +1,8 @@
 import React from 'react'
 import { Typography } from '@mui/material'
+import EditIcon from '@mui/icons-material/Edit'
 
-import { Table, BigBoxOfNothing, Icon } from 'sharedComponents'
+import { Table, BigBoxOfNothing } from 'sharedComponents'
 import { type TProject, type TTask } from 'sharedTypes'
 import { taskStatusLookup } from 'utilities'
 import { EditTaskModal, EditProjectModal } from 'sharedModals'
@@ -30,7 +31,7 @@ const TasksTable = ({ tasks, project }: TasksTableProps) => {
                         <Table.TableBodyCell>{title}</Table.TableBodyCell>
                         <Table.TableBodyCell>{taskStatusLookup[status]}</Table.TableBodyCell>
                         <Table.TableBodyCell>
-                            <Icon
+                            <EditIcon
                                 key="edit"
                                 name="edit"
                                 onClick={() => { setSelectedTaskId(id) }}
@@ -45,7 +46,7 @@ const TasksTable = ({ tasks, project }: TasksTableProps) => {
     return (
         <>
             <div style={{ display: 'flex', alignItems: 'left' }}>
-                <Typography variant='h3'>{project.title}</Typography> <Icon name="edit" onClick={() => { setSelectedProjectId(project.id) }} />
+                <Typography variant='h3'>{project.title}</Typography> <EditIcon name="edit" onClick={() => { setSelectedProjectId(project.id) }} />
             </div>
             {
                 tasks.length === 0

@@ -3,6 +3,8 @@ import moment from 'moment'
 
 import database from 'database'
 import { EColorTheme, EDaysOfWeek, EBackupInterval, type TReminder } from 'sharedTypes'
+import EditIcon from '@mui/icons-material/Edit'
+import DeleteIcon from '@mui/icons-material/Delete'
 import { Button, Typography } from '@mui/material'
 import {
     ConfirmationModal,
@@ -14,8 +16,7 @@ import {
     Table,
     LabelInDisguise,
     PageHeader,
-    SmallParagraph,
-    Icon
+    SmallParagraph
 } from 'sharedComponents'
 import {
     formatDurationDisplayString,
@@ -195,12 +196,12 @@ const RemindersTable = () => {
                             <Table.TableBodyCell>{dayOfWeekLabels[dayOfWeek]}</Table.TableBodyCell>
                             <Table.TableBodyCell>{formatDurationDisplayString(parseInt(hours, 10) * 60 + parseInt(minutes, 10))}</Table.TableBodyCell>
                             <Table.TableBodyCell>
-                                <Icon
+                                <EditIcon
                                     key="edit"
                                     name="edit"
                                     onClick={() => { setSelectedReminderIndex(reminderIndex) }}
                                 />
-                                <Icon
+                                <DeleteIcon
                                     key="remove"
                                     name="delete"
                                     onClick={async () => { await handleDelete(reminderIndex) }}

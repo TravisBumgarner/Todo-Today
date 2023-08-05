@@ -2,8 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import ReactModal from 'styled-react-modal'
 import { Typography } from '@mui/material'
-
-import { Icon } from '.'
+import CloseIcon from '@mui/icons-material/Close'
 
 interface ModalProps {
     children: any
@@ -56,7 +55,7 @@ const Modal = ({
             <ModalWrapper>
                 <HeaderWrapper>
                     <Typography variant='h2'>{contentLabel}</Typography>
-                    <Icon name="close" onClick={closeModal} />
+                    <CloseIcon onClick={closeModal} />
                 </HeaderWrapper>
                 {children}
             </ModalWrapper>

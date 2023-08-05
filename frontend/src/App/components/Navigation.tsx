@@ -1,8 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
 import { useLocation } from 'react-router-dom'
+import EditIcon from '@mui/icons-material/Edit'
+import SettingsIcon from '@mui/icons-material/Settings'
 
-import { Icon, StyledNavLink } from 'sharedComponents'
+import { StyledNavLink } from 'sharedComponents'
 
 const StyledNav = styled.ul`
     list-style: none;
@@ -23,8 +25,8 @@ const StyledNav = styled.ul`
 // ]
 
 const ALWAYS_VISIBLE_LINKS = [
-    { text: <Icon name="edit" />, to: '/history' },
-    { text: <Icon name="settings" />, to: '/settings' },
+    { text: <EditIcon name="edit" />, to: '/history' },
+    { text: <SettingsIcon name="settings" />, to: '/settings' }
 ]
 
 const NavLi = styled.li`
