@@ -1,13 +1,13 @@
 import * as Table from './Table'
-import Modal from './Modal'
+import Modal from '../modals/Modal'
 import colors from './colors'
-import BigBoxOfNothing from './BigBoxOfNothing'
+import EmptyStateDisplay from './EmptyStateDisplay'
 import ConfirmationModal from './ConfirmationModal'
 
 export {
-    Table,
-    Modal,
-    colors,
-    BigBoxOfNothing,
-    ConfirmationModal
+  Table,
+  Modal,
+  colors,
+  EmptyStateDisplay,
+  ConfirmationModal
 }

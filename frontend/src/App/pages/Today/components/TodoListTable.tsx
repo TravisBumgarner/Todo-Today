@@ -3,10 +3,10 @@ import database from 'database'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { Box, Tooltip, Typography } from '@mui/material'
 
-import { BigBoxOfNothing } from 'sharedComponents'
-import { ETaskStatus, type TDateISODate, type TTask } from 'sharedTypes'
+import { EmptyStateDisplay } from 'sharedComponents'
+import { ETaskStatus, type TTask } from 'sharedTypes'
 
-import { EditTaskModal } from 'sharedModals'
+import { EditTaskModal } from 'modals'
 
 import PendingIcon from '@mui/icons-material/Pending'
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
@@ -15,6 +15,7 @@ import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import PauseCircleFilledIcon from '@mui/icons-material/PauseCircleFilled'
 import PsychologyIcon from '@mui/icons-material/Psychology'
+import { context } from 'Context'
 
 const StatusToggle: React.FC<{ taskId: string, status: ETaskStatus }> = ({ taskId, status }) => {
   const handleOnChange = async (
@@ -72,7 +73,7 @@ const TodoListTableRow = ({ todoListItemId, projectId, taskId }: TodoListTableRo
   const project = useLiveQuery(async () => await database.projects.where('id').equals(projectId).first())
 
   if (!todoListItem || !project || !task) {
-    return <BigBoxOfNothing message="Could not find that todo list item" />
+    return <EmptyStateDisplay message="Could not find that todo list item" />
   }
 
   return (
@@ -85,20 +86,17 @@ const TodoListTableRow = ({ todoListItemId, projectId, taskId }: TodoListTableRo
   )
 }
 
-interface TodoListItemProps {
-  selectedDate: TDateISODate
-}
-
-const TodoListItems = ({ selectedDate }: TodoListItemProps) => {
+const TodoListItems = () => {
+  const { state } = React.useContext(context)
   const [selectedTaskId, setSelectedTaskId] = React.useState<TTask['id'] | null>(null)
 
   const todoListItems = useLiveQuery(async () => {
-    return await database.todoListItems.where('todoListDate').equals(selectedDate).toArray()
-  }, [selectedDate])
+    return await database.todoListItems.where('todoListDate').equals(state.selectedDate).toArray()
+  }, [state.selectedDate])
 
   if (!todoListItems || todoListItems.length === 0) {
     return (
-      <BigBoxOfNothing
+      <EmptyStateDisplay
         message="Click Add Tasks to get started!"
       />
     )
@@ -106,27 +104,15 @@ const TodoListItems = ({ selectedDate }: TodoListItemProps) => {
 
   return (
     <div>
-      {
-        todoListItems
-          .map((todoListItem) => (
-            <TodoListTableRow
-              key={todoListItem.id}
-              todoListItemId={todoListItem.id}
-              projectId={todoListItem.projectId}
-              taskId={todoListItem.taskId}
-            />
-          ))
-      }
-      {
-        selectedTaskId
-          ? (
-            <EditTaskModal
-              showModal={selectedTaskId !== null}
-              setShowModal={() => { setSelectedTaskId(null) }}
-              taskId={selectedTaskId}
-            />
-          )
-          : (null)
+      {todoListItems
+        .map((todoListItem) => (
+          <TodoListTableRow
+            key={todoListItem.id}
+            todoListItemId={todoListItem.id}
+            projectId={todoListItem.projectId}
+            taskId={todoListItem.taskId}
+          />
+        ))
       }
     </div>
 
