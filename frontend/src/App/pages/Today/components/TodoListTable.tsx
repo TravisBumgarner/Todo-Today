@@ -61,13 +61,13 @@ const StatusToggle: FC<{ taskId: string, status: ETaskStatus }> = ({ taskId, sta
   )
 }
 
-interface TodoListTableRowProps {
+interface TodoListItemProps {
   todoListItemId: string
   taskId: string
   projectId: string
 }
 
-const TodoListTableRow = ({ todoListItemId, projectId, taskId }: TodoListTableRowProps) => {
+const TodoListItem = ({ todoListItemId, projectId, taskId }: TodoListItemProps) => {
   const { dispatch } = useContext(context)
   const todoListItem = useLiveQuery(async () => await database.todoListItems.where('id').equals(todoListItemId).first())
   const task = useLiveQuery(async () => await database.tasks.where('id').equals(taskId).first())
@@ -105,7 +105,7 @@ const TodoListItems = () => {
 
   const todoListItems = useLiveQuery(async () => {
     return await database.todoListItems.where('todoListDate').equals(state.selectedDate).toArray()
-  }, [state.selectedDate])
+  })
 
   if (!todoListItems || todoListItems.length === 0) {
     return (
@@ -119,7 +119,7 @@ const TodoListItems = () => {
     <div>
       {todoListItems
         .map((todoListItem) => (
-          <TodoListTableRow
+          <TodoListItem
             key={todoListItem.id}
             todoListItemId={todoListItem.id}
             projectId={todoListItem.projectId}
