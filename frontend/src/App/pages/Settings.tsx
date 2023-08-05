@@ -106,7 +106,7 @@ const Settings = () => {
         <Select
           fullWidth
           labelId="color-theme"
-          value={state.colorTheme}
+          value={state.settings.colorTheme}
           label="Color Theme"
           onChange={(event) => { handleSubmit({ key: 'colorTheme', value: event.target.value }) }}
         >
@@ -121,14 +121,14 @@ const Settings = () => {
         <Select
           fullWidth
           labelId="backup-interval"
-          value={state.backupInterval}
+          value={state.settings.backupInterval}
           label="Color Theme"
           onChange={(event) => { dispatch({ type: 'EDIT_USER_SETTING', payload: { key: 'backupInterval', value: event.target.value } }) }}
         >
           {Object.keys(EBackupInterval).map(key => <MenuItem key={key} value={key}>{backupIntervalLookup[key as EBackupInterval]}</MenuItem>)}
         </Select>
         <Typography variant="body2">Last Backup: {getLocalStorage('lastBackup')}</Typography>
-        <Typography variant="body2">Backup Location: {state.backupDir}</Typography>
+        <Typography variant="body2">Backup Location: {state.settings.backupDir}</Typography>
 
         <Typography variant="h3">Restore</Typography>
         <form>

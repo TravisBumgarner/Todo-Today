@@ -1,26 +1,12 @@
 import { useLiveQuery } from 'dexie-react-hooks'
-import React, { useState } from 'react'
+import React from 'react'
 import { Box, Typography } from '@mui/material'
 
-import { EProjectStatus, ETaskStatus } from 'sharedTypes'
 import { EmptyStateDisplay } from 'sharedComponents'
 import { bucketTasksByProject } from 'utilities'
 import database from 'database'
 import { TasksTable } from './components'
 import { pageHeaderCSS } from 'theme'
-
-const DEFAULT_TASK_STATUS_FILTER = {
-  [ETaskStatus.NEW]: true,
-  [ETaskStatus.IN_PROGRESS]: true,
-  [ETaskStatus.CANCELED]: true,
-  [ETaskStatus.COMPLETED]: true,
-  [ETaskStatus.BLOCKED]: true
-}
-
-const DEFAULT_PROJECT_STATUS_FILTER = {
-  [EProjectStatus.INACTIVE]: false,
-  [EProjectStatus.ACTIVE]: true
-}
 
 const Tasks = () => {
   const projects = useLiveQuery(async () => await database.projects.toArray())

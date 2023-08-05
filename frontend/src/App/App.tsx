@@ -19,7 +19,7 @@ const App = () => {
       }
     })
   }, [dispatch])
-  useEffect(() => { setupAutomatedBackup(triggerBackupFailureModal) }, [state.backupInterval, triggerBackupFailureModal])
+  useEffect(() => { setupAutomatedBackup(triggerBackupFailureModal) }, [state.settings.backupInterval, triggerBackupFailureModal])
 
   return (
     <>
