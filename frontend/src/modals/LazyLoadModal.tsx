@@ -4,13 +4,14 @@ import AddTaskModal from './AddTaskModal'
 import AddProjectModal from './AddProjectModal'
 import EditTaskModal from './EditTaskModal'
 import EditProjectModal from './EditProjectModal'
+import ManageTasksModal from './ManageTasksModal'
 
 export enum ModalID {
   ADD_TASK = 'ADD_TASK',
   EDIT_TASK = 'EDIT_TASK',
   ADD_PROJECT = 'ADD_PROJECT',
   EDIT_PROJECT = 'EDIT_PROJECT',
-  // MANAGE_TODO_LIST_ITEMS = 'MANAGE_TODO_LIST_ITEMS',
+  MANAGE_TASKS = 'MANAGE_TASKS',
   // CONFIRMATION = 'CONFIRMATION',
   // NOTHING_TO_COPY = 'NOTHING_TO_COPY',
   // NOTHING_TO_DELETE = 'NOTHING_TO_DELETE'
@@ -31,6 +32,8 @@ const LazyLoadModal: React.FC = () => {
       return <AddProjectModal />
     case ModalID.EDIT_PROJECT:
       return <EditProjectModal />
+    case ModalID.MANAGE_TASKS:
+      return <ManageTasksModal />
     default:
       return null
   }
