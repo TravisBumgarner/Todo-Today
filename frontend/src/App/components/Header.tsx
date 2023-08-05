@@ -26,34 +26,29 @@ const FunHeaderWrapper = styled.div`
         left: -2px;
         top: -2px;
         opacity: 0.8;
-        color: ${({ theme }) => theme.FOREGROUND};
     }
 
     h1:nth-child(2){
         left: 2px;
         top: 2px;
         opacity: 0.8;
-        color: ${({ theme }) => theme.INTERACTION};
     }
 
     h1:nth-child(3){
         left: -2px;
         top: 2px;
         opacity: 0.8;
-        color: ${({ theme }) => theme.DISABLED};
     }
 
     h1:nth-child(4){
         left: 2px;
         top: -2px;
         opacity: 0.8;
-        color: ${({ theme }) => theme.WARNING};
     }
 
     h1:nth-child(5){
         left: 0px;
         top: 0px;
-        color: ${({ theme }) => theme.BACKGROUND};
     }
 `
 

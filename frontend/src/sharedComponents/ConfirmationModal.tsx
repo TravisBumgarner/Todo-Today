@@ -1,25 +1,29 @@
-import React from 'react'
+import React, { useCallback, useContext } from 'react'
 import { Button, Typography } from '@mui/material'
 
 import Modal from '../modals/Modal'
+import { context } from 'Context'
 
 interface ConfirmationModalProps {
   title: string
   body: string
   confirmationCallback?: () => void
-  cancelCallback?: () => void
-  showModal: boolean
-  setShowModal: (showModal: boolean) => void
 }
 
-const ConfirmationModal = ({ title, body, confirmationCallback, cancelCallback, showModal, setShowModal }: ConfirmationModalProps) => {
+const ConfirmationModal = ({ title, body, confirmationCallback }: ConfirmationModalProps) => {
+  const { dispatch } = useContext(context)
+
+  const handleClick = useCallback(() => {
+    dispatch({ type: 'CLEAR_ACTIVE_MODAL' })
+  }, [dispatch])
+
   return (
     <Modal
       title={title}
-      showModal={showModal}
+      showModal={true}
     >
       <Typography variant="body1">{body}</Typography>
-      {cancelCallback && <Button key="cancel" onClick={cancelCallback}>Cancel</Button>}
+      <Button key="cancel" onClick={handleClick}>Cancel</Button>
       {confirmationCallback && <Button key="confirm" onClick={confirmationCallback}>Continue</Button>}
     </Modal>
   )

@@ -40,7 +40,7 @@ const backupIntervalToMilliseconds = {
   [EBackupInterval.MONTHLY]: MINUTE_IN_MS * 60 * 24 * 30
 } as const
 
-const runAutomatedBackup = (showAutomatedBackupFailedModal: React.Dispatch<React.SetStateAction<boolean>>) => {
+const runAutomatedBackup = (triggerBackupFailureModal: () => void) => {
   void createBackup().then(async (data) => {
     const response = await ipcRenderer.invoke(
       'backup',
@@ -49,22 +49,22 @@ const runAutomatedBackup = (showAutomatedBackupFailedModal: React.Dispatch<React
     if (response.isSuccess === true) {
       setLocalStorage('lastBackup', moment().toLocaleString())
     } else {
-      showAutomatedBackupFailedModal(true)
+      triggerBackupFailureModal()
     }
   })
 }
 
 const createNewBackupInterval = (
-  showAutomatedBackupFailedModal: React.Dispatch<React.SetStateAction<boolean>>,
+  triggerBackupFailureModal: () => void,
   backupIntervalInMilliseconds: number
 ) => {
   clearInterval(window.automatedBackupIntervalId)
   window.automatedBackupIntervalId = setInterval(() => {
-    runAutomatedBackup(showAutomatedBackupFailedModal)
+    runAutomatedBackup(triggerBackupFailureModal)
   }, backupIntervalInMilliseconds)
 }
 
-const setupAutomatedBackup = (showAutomatedBackupFailedModal: React.Dispatch<React.SetStateAction<boolean>>) => {
+const setupAutomatedBackup = (triggerBackupFailureModal: () => void) => {
   const backupInterval = getLocalStorage('backupInterval') as EBackupInterval
   if (backupInterval === EBackupInterval.OFF) {
     return
@@ -75,9 +75,9 @@ const setupAutomatedBackup = (showAutomatedBackupFailedModal: React.Dispatch<Rea
   lastBackupThreshold.subtract(backupIntervalToMilliseconds[backupInterval], 'milliseconds')
 
   if (!lastBackup || moment(lastBackup) < lastBackupThreshold) {
-    runAutomatedBackup(showAutomatedBackupFailedModal)
+    runAutomatedBackup(triggerBackupFailureModal)
   }
-  createNewBackupInterval(showAutomatedBackupFailedModal, backupIntervalToMilliseconds[backupInterval])
+  createNewBackupInterval(triggerBackupFailureModal, backupIntervalToMilliseconds[backupInterval])
 }
 
 const Settings = () => {
@@ -94,36 +94,6 @@ const Settings = () => {
     } else {
       void saveFile(`${moment().toISOString()}.json`, data)
     }
-  }
-
-  const handleRestore = () => {
-    if (restore) {
-      const reader = new FileReader()
-      reader.readAsText(restore, 'UTF-8')
-      reader.onload = async function (event) {
-        if (event?.target?.result) {
-          const newStore = JSON.parse(event.target.result as string)
-
-          await Promise.all([
-            database.projects.clear(),
-            database.tasks.clear(),
-            database.todoListItems.clear(),
-            database.successes.clear()
-          ])
-
-          await Promise.all([
-            database.projects.bulkAdd(newStore.projects),
-            database.tasks.bulkAdd(newStore.tasks),
-            database.todoListItems.bulkAdd(newStore.todoListItems),
-            database.successes.bulkAdd(newStore.successes)
-          ])
-          setRestore(null)
-        } else {
-          setShowInvalidBackupModal(true)
-        }
-      }
-    }
-    setShowRestoreConfirmModal(false)
   }
 
   const handleSubmit = ({ key, value }: { key: string, value: string }) => {
@@ -184,36 +154,6 @@ const Settings = () => {
             Restore from Backup
           </Button>
         </form>
-        {
-          showRestoreConfirmModal
-            ? (
-              <Modal
-                title="Restore?"
-                showModal={showRestoreConfirmModal}
-              >
-                <Typography variant="body1">If you have data you have not created a backup for, please do that first.</Typography>
-                <Typography variant="body1">Clicking restore will erase everything currently stored in the application.</Typography>
-                <Button
-                  key="cancel"
-                  onClick={() => { setShowRestoreConfirmModal(false) }}
-                  type="button"
-                  fullWidth
-                >
-                  Cancel
-                </Button>
-                <Button
-                  fullWidth
-                  key="restore"
-                  type="button"
-                  onClick={() => { handleRestore() }}
-                  variant='contained'
-                >
-                  Restore
-                </Button>
-              </Modal>
-            )
-            : (null)
-        }
         {/* <ConfirmationModal
                     body="There is no data to backup."
                     title="Heads Up!"
