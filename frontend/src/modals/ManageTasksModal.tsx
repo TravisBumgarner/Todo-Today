@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { v4 as uuid4 } from 'uuid'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { Button, Typography } from '@mui/material'
@@ -8,11 +8,6 @@ import { formatDateDisplayString, taskStatusLookup } from 'utilities'
 import { type TProject, type TTodoListItem, ETaskStatus, EProjectStatus, type TTask } from 'sharedTypes'
 import database from 'database'
 import { context } from 'Context'
-
-interface ManageTodoListItemsModalProps {
-  showModal: boolean
-  setShowModal: (showModal: boolean) => void
-}
 
 const getTaskIdsToTodoListIds = (todoListItems: TTodoListItem[]) => {
   return todoListItems.reduce<Record<string, string>>((accumulator, { taskId, id }) => {
@@ -108,8 +103,8 @@ const TasksByProjectTable = ({ project, tasks, taskIdsToTodoListIds }: TasksByPr
   )
 }
 
-const ManageTodoListItemsModal = ({ showModal, setShowModal }: ManageTodoListItemsModalProps) => {
-  const { state } = React.useContext(context)
+const ManageTodoListItemsModal = () => {
+  const { state, dispatch } = React.useContext(context)
   const tasksByProject = useLiveQuery(async () => {
     const projects = await database
       .projects
@@ -148,6 +143,10 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal }: ManageTodoListIte
 
   const taskIdsToTodoListIds = getTaskIdsToTodoListIds(todoListItems ?? [])
 
+  const handleCancel = useCallback(() => {
+    dispatch({ type: 'CLEAR_ACTIVE_MODAL' })
+  }, [dispatch])
+
   let Content
 
   if (!tasksWithProject?.length || !todoListItems || !tasksByProject || !tasksByProject.length) {
@@ -167,7 +166,7 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal }: ManageTodoListIte
               />
             ))
         }
-        <Button fullWidth variant='contained' key="finished" onClick={() => { setShowModal(false) }}>Done!</Button>
+        <Button fullWidth variant='contained' key="finished" onClick={handleCancel}>Done!</Button>
       </>
     )
   }
@@ -175,7 +174,7 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal }: ManageTodoListIte
   return (
     <Modal
       title={`Select Tasks for ${formatDateDisplayString(state.selectedDate)}`}
-      showModal={showModal}
+      showModal={true}
     >
       {Content}
     </Modal>

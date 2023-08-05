@@ -1,11 +1,12 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { Typography } from '@mui/material'
 import EditIcon from '@mui/icons-material/Edit'
 
 import { Table, EmptyStateDisplay } from 'sharedComponents'
 import { type TProject, type TTask } from 'sharedTypes'
 import { taskStatusLookup } from 'utilities'
-import { EditTaskModal, EditProjectModal } from 'modals'
+import { context } from 'Context'
+import { ModalID } from 'modals'
 
 interface TasksTableProps {
   tasks: TTask[]
@@ -13,8 +14,11 @@ interface TasksTableProps {
 }
 
 const TasksTable = ({ tasks, project }: TasksTableProps) => {
-  const [selectedTaskId, setSelectedTaskId] = React.useState<string | null>(null)
-  const [selectedProjectId, setSelectedProjectId] = React.useState<string | null>(null)
+  const { dispatch } = React.useContext(context)
+
+  const handleEditProject = useCallback(() => {
+    dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.EDIT_PROJECT, data: { projectId: project.id } } })
+  }, [dispatch, project.id])
 
   const TasksTableOnly = (
     <Table.Table>
@@ -26,27 +30,33 @@ const TasksTable = ({ tasks, project }: TasksTableProps) => {
         </Table.TableRow>
       </Table.TableHeader>
       <Table.TableBody>
-        {tasks.map(({ title, status, id }) => (
-          <Table.TableRow key={id}>
-            <Table.TableBodyCell>{title}</Table.TableBodyCell>
-            <Table.TableBodyCell>{taskStatusLookup[status]}</Table.TableBodyCell>
-            <Table.TableBodyCell>
-              <EditIcon
-                key="edit"
-                name="edit"
-                onClick={() => { setSelectedTaskId(id) }}
-              />
-            </Table.TableBodyCell>
-          </Table.TableRow>
-        ))}
+        {tasks.map(({ title, status, id }) => {
+          const handleEditTask = () => {
+            dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.EDIT_TASK, data: { taskId: id } } })
+          }
+          return (
+
+            < Table.TableRow key={id} >
+              <Table.TableBodyCell>{title}</Table.TableBodyCell>
+              <Table.TableBodyCell>{taskStatusLookup[status]}</Table.TableBodyCell>
+              <Table.TableBodyCell>
+                <EditIcon
+                  key="edit"
+                  name="edit"
+                  onClick={handleEditTask}
+                />
+              </Table.TableBodyCell>
+            </Table.TableRow>
+          )
+        })}
       </Table.TableBody>
-    </Table.Table>
+    </Table.Table >
   )
 
   return (
     <>
       <div style={{ display: 'flex', alignItems: 'left' }}>
-        <Typography variant='h3'>{project.title}</Typography> <EditIcon name="edit" onClick={() => { setSelectedProjectId(project.id) }} />
+        <Typography variant='h3'>{project.title}</Typography> <EditIcon name="edit" onClick={handleEditProject} />
       </div>
       {
         tasks.length === 0

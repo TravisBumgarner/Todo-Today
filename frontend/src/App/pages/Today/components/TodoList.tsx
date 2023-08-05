@@ -1,12 +1,12 @@
 import React, { useCallback } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { v4 as uuid4 } from 'uuid'
-import { Button, Typography } from '@mui/material'
+import { Box, Button, ButtonGroup, Typography } from '@mui/material'
 
 import { EmptyStateDisplay, ConfirmationModal } from 'sharedComponents'
 import database from 'database'
 import { ETaskStatus } from 'sharedTypes'
-import { AddTaskModal, AddProjectModal, ModalID } from 'modals'
+import { ModalID } from 'modals'
 import { TodoListTable, ManageTodoListItemsModal } from '.'
 import { context } from 'Context'
 
@@ -67,18 +67,26 @@ const TodoList = () => {
     dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.ADD_TASK } })
   }, [dispatch])
 
+  const handleManageTasks = useCallback(() => {
+    dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.MANAGE_TASKS } })
+  }, [dispatch])
+
   return (
     <>
       <Typography variant="h3">Todo List</Typography>
-      <Button disabled={todoListItems && todoListItems.length > 0} onClick={getPreviousDatesTasks}>
-        Copy Previous
-      </Button>
-      <Button disabled={tasks && tasks.length === 0} onClick={() => { setShowManagementModal(true) }}
-      >
-        Select Tasks
-      </Button>
-      <Button onClick={handleNewProject}>New Project</Button>
-      <Button disabled={projects?.length === 0} onClick={handleNewTask}>New Task</Button>
+      <Box>
+        <Button disabled={todoListItems && todoListItems.length > 0} onClick={getPreviousDatesTasks}>
+          Copy Previous
+        </Button>
+        <Button disabled={tasks && tasks.length === 0} onClick={handleManageTasks}
+        >
+          Manage Tasks
+        </Button>
+        <ButtonGroup>
+          <Button onClick={handleNewProject}>New Project</Button>
+          <Button disabled={projects?.length === 0} onClick={handleNewTask}>New Task</Button>
+        </ButtonGroup>
+      </Box>
       {tasks?.length !== 0
         ? (
           <TodoListTable />

@@ -1,12 +1,12 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import database from 'database'
 import { useLiveQuery } from 'dexie-react-hooks'
-import { Box, Tooltip, Typography } from '@mui/material'
+import { Box, Button, Tooltip, Typography } from '@mui/material'
 
 import { EmptyStateDisplay } from 'sharedComponents'
 import { ETaskStatus, type TTask } from 'sharedTypes'
 
-import { EditTaskModal } from 'modals'
+import { ModalID } from 'modals'
 
 import PendingIcon from '@mui/icons-material/Pending'
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
@@ -68,9 +68,22 @@ interface TodoListTableRowProps {
 }
 
 const TodoListTableRow = ({ todoListItemId, projectId, taskId }: TodoListTableRowProps) => {
+  const { dispatch } = React.useContext(context)
   const todoListItem = useLiveQuery(async () => await database.todoListItems.where('id').equals(todoListItemId).first())
   const task = useLiveQuery(async () => await database.tasks.where('id').equals(taskId).first())
   const project = useLiveQuery(async () => await database.projects.where('id').equals(projectId).first())
+
+  const handleEdit = useCallback(() => {
+    dispatch({
+      type: 'SET_ACTIVE_MODAL',
+      payload: {
+        id: ModalID.EDIT_TASK,
+        data: {
+          taskId
+        }
+      }
+    })
+  }, [dispatch, taskId])
 
   if (!todoListItem || !project || !task) {
     return <EmptyStateDisplay message="Could not find that todo list item" />
@@ -82,13 +95,13 @@ const TodoListTableRow = ({ todoListItemId, projectId, taskId }: TodoListTableRo
       <StatusToggle taskId={task.id} status={task.status} />
       <li>Details: {todoListItem.details}</li>
       <li>Todo List Date: {todoListItem.todoListDate}</li>
+      <Button onClick={handleEdit}>Edit</Button>
     </Box>
   )
 }
 
 const TodoListItems = () => {
   const { state } = React.useContext(context)
-  const [selectedTaskId, setSelectedTaskId] = React.useState<TTask['id'] | null>(null)
 
   const todoListItems = useLiveQuery(async () => {
     return await database.todoListItems.where('todoListDate').equals(state.selectedDate).toArray()
