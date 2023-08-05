@@ -27,7 +27,7 @@ const BigBoxOfNothing = ({ message, callToActionButton }: BigBoxOfNothingProps) 
             <Typography variant="body1">
                 {message}
             </Typography>
-            {callToActionButton || ''}
+            {callToActionButton ?? ''}
         </BigBoxOfNothingWrapper>
     )
 }
