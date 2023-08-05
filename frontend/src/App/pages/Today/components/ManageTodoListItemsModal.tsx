@@ -167,7 +167,7 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
                             />
                         ))
                 }
-                <Button key="finished" onClick={() => { setShowModal(false) }}>Done!</Button>
+                <Button fullWidth variant='contained' key="finished" onClick={() => { setShowModal(false) }}>Done!</Button>
             </>
         )
     }

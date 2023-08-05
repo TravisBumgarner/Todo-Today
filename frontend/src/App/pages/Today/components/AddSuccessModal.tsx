@@ -6,6 +6,7 @@ import { Modal } from 'sharedComponents'
 import { EProjectStatus, type TDateISODate, type TProject } from 'sharedTypes'
 import database from 'database'
 import { useLiveQuery } from 'dexie-react-hooks'
+import { projectStatusLookup } from 'utilities'
 
 interface AddSuccessModalProps {
     showModal: boolean
@@ -33,7 +34,6 @@ const AddSuccessModal = ({ showModal, setShowModal, selectedDate }: AddSuccessMo
     }
 
     const projectSelectOptions = projects ? projects.map((p) => ({ value: p.id, label: p.title })) : []
-    projectSelectOptions.unshift({ value: '', label: 'Select a Project' })
 
     return (
         <Modal
@@ -43,22 +43,24 @@ const AddSuccessModal = ({ showModal, setShowModal, selectedDate }: AddSuccessMo
         >
             <form>
                 <TextField
+                    fullWidth
                     label="Description"
                     name="description"
                     value={description}
                     onChange={(event) => { setDescription(event.target.value) }}
                 />
-                <InputLabel id="project-id">Project ID</InputLabel>
+                <InputLabel id="project-id">Project</InputLabel>
                 <Select
+                    fullWidth
                     labelId="project-id"
                     value={projectId}
-                    label="Project Status"
+                    label="Project"
                     onChange={(event) => { setProjectId(event.target.value) }}
                 >
-                    {Object.keys(EProjectStatus).map((key) => <MenuItem key={key} value={key}>{key}</MenuItem>)}
+                    {(projectSelectOptions.map(({ label, value }) => <MenuItem key={value} value={value}>{label}</MenuItem>))}
                 </Select>
-                <Button key="cancel" onClick={() => { setShowModal(false) }}>Cancel</Button>
-                <Button disabled={description.length === 0} key="save" onClick={handleSubmit}>Save</Button>
+                <Button fullWidth key="cancel" onClick={() => { setShowModal(false) }}>Cancel</Button>
+                <Button fullWidth variant='contained' disabled={description.length === 0} key="save" onClick={handleSubmit}>Save</Button>
             </form>
         </Modal>
     )

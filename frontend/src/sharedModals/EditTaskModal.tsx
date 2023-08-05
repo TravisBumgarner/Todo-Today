@@ -5,6 +5,7 @@ import { Modal } from 'sharedComponents'
 import { type TTask, ETaskStatus } from 'sharedTypes'
 import database from 'database'
 import { useLiveQuery } from 'dexie-react-hooks'
+import { taskStatusLookup } from 'utilities'
 
 interface EditTaskModalProps {
     showModal: boolean
@@ -44,7 +45,6 @@ const EditTaskModal = ({ showModal, setShowModal, taskId }: EditTaskModalProps) 
     }
 
     const projectSelectOptions = projects ? projects.map(p => ({ value: p.id, label: p.title })) : []
-    projectSelectOptions.unshift({ value: '', label: 'Select a Project' })
 
     return (
         <Modal
@@ -54,35 +54,39 @@ const EditTaskModal = ({ showModal, setShowModal, taskId }: EditTaskModalProps) 
         >
             <form onChange={() => { setFormEdited(true) }}>
                 <TextField
+                    fullWidth
                     label="Task"
                     name="title"
                     value={title}
                     onChange={(event) => { setTitle(event.target.value) }}
                 />
-                <InputLabel id="task-status">Project</InputLabel>
+                <InputLabel id="task-status">Status</InputLabel>
                 <Select
+                    fullWidth
                     labelId="task-status"
                     value={status}
                     label="Status"
                     onChange={(event) => { setStatus(event.target.value as ETaskStatus) }}
                 >
-                    {Object.keys(ETaskStatus).map(key => <MenuItem key={key} value={key}>{key}</MenuItem>)}
+                    {Object.keys(ETaskStatus).map(key => <MenuItem key={key} value={key}>{taskStatusLookup[key as ETaskStatus]}</MenuItem>)}
                 </Select>
+                <InputLabel id="project-select">Project</InputLabel>
                 <Select
+                    fullWidth
                     labelId="project-select"
-                    id="demo-simple-select"
                     value={projectId}
                     label="Project"
                     onChange={(event) => { setProjectId(event.target.value) }}
                 >
                     {projectSelectOptions.map(({ label, value }) => <MenuItem key={label} value={value}>{label}</MenuItem>)}
                 </Select>
-                <Button key="cancel" onClick={() => { setShowModal(false) }}>Cancel</Button>
+                <Button fullWidth key="cancel" onClick={() => { setShowModal(false) }}>Cancel</Button>
                 <Button
+                    fullWidth
                     type="button"
                     key="save"
                     disabled={!formEdited || projectId === ''}
-
+                    variant='contained'
                     onClick={handleSubmit}
                 >
                     Save
