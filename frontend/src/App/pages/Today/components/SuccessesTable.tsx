@@ -1,12 +1,13 @@
 import React from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
+import { Button } from '@mui/material'
 
 import database from 'database'
-import { BigBoxOfNothing, Button, DropdownMenu, Table } from 'sharedComponents'
-import { TProject, TDateISODate } from 'sharedTypes'
+import { BigBoxOfNothing, DropdownMenu, Table } from 'sharedComponents'
+import { type TProject, type TDateISODate } from 'sharedTypes'
 import EditSuccessModal from './EditSuccessModal'
 
-type SuccessesTableProps = {
+interface SuccessesTableProps {
     selectedDate: TDateISODate
 }
 
@@ -16,7 +17,7 @@ const SuccessesTable = ({ selectedDate }: SuccessesTableProps) => {
     const tableRows = useLiveQuery(async () => {
         const successes = await database.successes.where('date').equals(selectedDate).toArray()
 
-        return Promise.all(successes.map(async (success) => {
+        return await Promise.all(successes.map(async (success) => {
             const project = (await database.projects.where({ id: success.projectId }).first()) as TProject
             return {
                 projectTitle: project ? project.title : '-',
@@ -61,15 +62,15 @@ const SuccessesTable = ({ selectedDate }: SuccessesTableProps) => {
                                                 <Button
                                                     fullWidth
                                                     key="edit"
-                                                    variation="INTERACTION"
-                                                    onClick={() => setSelectedSuccessId(id)}
+
+                                                    onClick={() => { setSelectedSuccessId(id) }}
                                                 >
                                                     Edit
                                                 </Button>
                                                 <Button
                                                     fullWidth
                                                     key="remove"
-                                                    variation="INTERACTION"
+
                                                     onClick={async () => {
                                                         await database.successes
                                                             .where({ id })
@@ -90,7 +91,7 @@ const SuccessesTable = ({ selectedDate }: SuccessesTableProps) => {
                 ? (
                     <EditSuccessModal
                         showModal={selectedSuccessId !== null}
-                        setShowModal={() => setSelectedSuccessId(null)}
+                        setShowModal={() => { setSelectedSuccessId(null) }}
                         successId={selectedSuccessId}
                     />
                 )

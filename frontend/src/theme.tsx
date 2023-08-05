@@ -16,10 +16,6 @@ const GlobalStyle = createGlobalStyle<{theme: TColor}>`
     p { 
         font-family: 'Roboto', sans-serif;
     }
-
-    // table, button {
-    //     border-radius: 10px !important;
-    // }
 `
 
 export default { GlobalStyle }

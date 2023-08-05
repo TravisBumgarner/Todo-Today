@@ -1,26 +1,27 @@
 import React from 'react'
 import { v4 as uuid4 } from 'uuid'
 import { useLiveQuery } from 'dexie-react-hooks'
+import { Button } from '@mui/material'
 
-import { Modal, Button, Table, BigBoxOfNothing, ButtonWrapper, Heading } from 'sharedComponents'
+import { Modal, Table, BigBoxOfNothing, ButtonWrapper, Heading } from 'sharedComponents'
 import { formatDateDisplayString, taskStatusLookup } from 'utilities'
-import { TDateISODate, TProject, TTodoListItem, ETaskStatus, EProjectStatus, TTask } from 'sharedTypes'
+import { type TDateISODate, type TProject, type TTodoListItem, ETaskStatus, EProjectStatus, type TTask } from 'sharedTypes'
 import database from 'database'
 
-type ManageTodoListItemsModalProps = {
+interface ManageTodoListItemsModalProps {
     showModal: boolean
     setShowModal: (showModal: boolean) => void
     selectedDate: TDateISODate
 }
 
 const getTaskIdsToTodoListIds = (todoListItems: TTodoListItem[]) => {
-    return todoListItems.reduce((accumulator, { taskId, id }) => {
+    return todoListItems.reduce<Record<string, string>>((accumulator, { taskId, id }) => {
         accumulator[taskId] = id
         return accumulator
-    }, {} as Record<string, string>)
+    }, {})
 }
 
-type TasksByProjectTableProps = {
+interface TasksByProjectTableProps {
     project: TProject
     tasks: TTask[]
     taskIdsToTodoListIds: Record<string, string>
@@ -28,8 +29,8 @@ type TasksByProjectTableProps = {
 }
 
 const TasksByProjectTable = ({ project, tasks, taskIdsToTodoListIds, selectedDate }: TasksByProjectTableProps) => {
-    const handleSelect = ({ projectId, taskId }: { projectId: string, taskId: string }) => {
-        database.todoListItems.add({
+    const handleSelect = async ({ projectId, taskId }: { projectId: string, taskId: string }) => {
+        await database.todoListItems.add({
             projectId,
             taskId,
             id: uuid4(),
@@ -77,17 +78,18 @@ const TasksByProjectTable = ({ project, tasks, taskIdsToTodoListIds, selectedDat
                                                                     <Button
                                                                         style={{ width: '100px' }}
                                                                         key="deselect"
-                                                                        variation="WARNING"
-                                                                        onClick={() => handleDeselect(taskIdsToTodoListIds[taskId])}
+
+                                                                        onClick={async () => { await handleDeselect(taskIdsToTodoListIds[taskId]) }}
                                                                     >
                                                                         Deselect
                                                                     </Button>
-                                                                ) : (
+                                                                )
+                                                                : (
                                                                     <Button
                                                                         style={{ width: '100px' }}
                                                                         key="select"
-                                                                        variation="INTERACTION"
-                                                                        onClick={() => handleSelect({ projectId: project.id, taskId })}
+
+                                                                        onClick={async () => { await handleSelect({ projectId: project.id, taskId }) }}
                                                                     >
                                                                         Select
                                                                     </Button>
@@ -107,12 +109,6 @@ const TasksByProjectTable = ({ project, tasks, taskIdsToTodoListIds, selectedDat
 }
 
 const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: ManageTodoListItemsModalProps) => {
-    const taskStatusFilter = [
-        ETaskStatus.NEW,
-        ETaskStatus.IN_PROGRESS,
-        ETaskStatus.BLOCKED,
-    ]
-
     const tasksByProject = useLiveQuery(async () => {
         const projects = await database
             .projects
@@ -120,13 +116,13 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
             .anyOf(EProjectStatus.ACTIVE)
             .toArray()
 
-        return Promise.all(projects.map(async (project) => {
+        return await Promise.all(projects.map(async (project) => {
             const tasks = await database.tasks
                 .where({ projectId: project.id })
                 .and((item) => [
                     ETaskStatus.NEW,
                     ETaskStatus.IN_PROGRESS,
-                    ETaskStatus.BLOCKED,
+                    ETaskStatus.BLOCKED
                 ].includes(item.status))
                 .toArray()
 
@@ -139,7 +135,7 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
 
     const tasksWithProject = useLiveQuery(async () => {
         const tasks = await database.tasks.where('status').anyOf(ETaskStatus.NEW, ETaskStatus.IN_PROGRESS).toArray()
-        return Promise.all(tasks.map(async (task) => {
+        return await Promise.all(tasks.map(async (task) => {
             const project = (await database.projects.where({ id: task.projectId }).first()) as TProject
             return {
                 projectTitle: project.title,
@@ -147,13 +143,13 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
             }
         }))
     })
-    const todoListItems = useLiveQuery(() => database.todoListItems.where({ todoListDate: selectedDate }).toArray(), [selectedDate])
+    const todoListItems = useLiveQuery(async () => await database.todoListItems.where({ todoListDate: selectedDate }).toArray(), [selectedDate])
 
     const taskIdsToTodoListIds = getTaskIdsToTodoListIds(todoListItems || [])
 
     let Content
 
-    if (!tasksWithProject || !tasksWithProject.length || !todoListItems || !tasksByProject || !tasksByProject.length) {
+    if (!tasksWithProject?.length || !todoListItems || !tasksByProject || !tasksByProject.length) {
         Content = <BigBoxOfNothing message="Looks like you've got nothing to do!" />
     } else {
         Content = (
@@ -173,7 +169,7 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
                 }
                 <ButtonWrapper
                     right={[
-                        <Button key="finished" variation="INTERACTION" onClick={() => setShowModal(false)}>Done!</Button>
+                        <Button key="finished" onClick={() => { setShowModal(false) }}>Done!</Button>
                     ]}
                 />
             </>
@@ -184,7 +180,7 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
         <Modal
             contentLabel={`Select Tasks for ${formatDateDisplayString(selectedDate)}`}
             showModal={showModal}
-            closeModal={() => setShowModal(false)}
+            closeModal={() => { setShowModal(false) }}
         >
             {Content}
         </Modal>

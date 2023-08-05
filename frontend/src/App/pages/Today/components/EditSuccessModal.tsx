@@ -1,13 +1,14 @@
 import React from 'react'
 import moment from 'moment'
+import { Button } from '@mui/material'
 
-import { Button, Modal, ButtonWrapper, LabelAndInput, Form, Paragraph } from 'sharedComponents'
-import { TProject, TSuccess } from 'sharedTypes'
+import { Modal, ButtonWrapper, LabelAndInput, Form, Paragraph } from 'sharedComponents'
+import { type TProject, type TSuccess } from 'sharedTypes'
 import database from 'database'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { formatDateKeyLookup } from 'utilities'
 
-type AddSuccessModalProps = {
+interface AddSuccessModalProps {
     showModal: boolean
     setShowModal: (showModal: boolean) => void
     successId: TSuccess['id']
@@ -20,11 +21,11 @@ const AddSuccessModal = ({ showModal, setShowModal, successId }: AddSuccessModal
     const [isLoading, setIsLoading] = React.useState<boolean>(true)
 
     const projects = useLiveQuery(async () => {
-        return database.projects.toArray()
+        return await database.projects.toArray()
     }, [])
 
     React.useEffect(() => {
-        database
+        void database
             .successes.where('id').equals(successId).first()
             .then((s: TSuccess) => {
                 setDate(s.date)
@@ -32,16 +33,16 @@ const AddSuccessModal = ({ showModal, setShowModal, successId }: AddSuccessModal
                 setProjectId(s.projectId)
                 setIsLoading(false)
             })
-    }, [])
+    }, [successId])
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         const editetSuccess = {
             description,
             id: successId,
             projectId,
             date: formatDateKeyLookup(moment(date))
         }
-        database.successes.put(editetSuccess, [successId])
+        await database.successes.put(editetSuccess, [successId])
         setShowModal(false)
     }
 
@@ -52,7 +53,7 @@ const AddSuccessModal = ({ showModal, setShowModal, successId }: AddSuccessModal
         <Modal
             contentLabel="Add Success"
             showModal={showModal}
-            closeModal={() => setShowModal(false)}
+            closeModal={() => { setShowModal(false) }}
         >
             {
                 isLoading
@@ -63,7 +64,7 @@ const AddSuccessModal = ({ showModal, setShowModal, successId }: AddSuccessModal
                                 label="Description"
                                 name="description"
                                 value={description}
-                                handleChange={(value) => setDescription(value)}
+                                handleChange={(value) => { setDescription(value) }}
                             />
                             <LabelAndInput
                                 name="project"
@@ -71,28 +72,28 @@ const AddSuccessModal = ({ showModal, setShowModal, successId }: AddSuccessModal
                                 options={projectSelectOptions}
                                 inputType="select-array"
                                 label="Project (Optional)"
-                                handleChange={(value) => setProjectId(value)}
+                                handleChange={(value) => { setProjectId(value) }}
                             />
                             <LabelAndInput
                                 label="Date"
                                 name="date"
                                 value={moment(date).format('YYYY-MM-DD')}
                                 inputType="date"
-                                handleChange={(value) => setDate(value)}
+                                handleChange={(value) => { setDate(value) }}
                             />
                             <ButtonWrapper right={
                                 [
                                     <Button
                                         key="cancel"
-                                        variation="WARNING"
-                                        onClick={() => setShowModal(false)}
+
+                                        onClick={() => { setShowModal(false) }}
                                     >
                                         Cancel
                                     </Button>,
                                     <Button
                                         disabled={description.length === 0}
                                         key="save"
-                                        variation="INTERACTION"
+
                                         onClick={handleSubmit}
                                     >
                                         Save

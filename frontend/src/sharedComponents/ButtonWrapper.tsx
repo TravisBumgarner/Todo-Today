@@ -1,8 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
-import Button from './Button'
+import { Button } from '@mui/material'
 
-type ButtonWrapperProps = {
+interface ButtonWrapperProps {
     fullWidth?: JSX.Element
     left?: JSX.Element[]
     right?: JSX.Element[]
@@ -16,20 +16,20 @@ const LeftRightWrapper = styled.div`
 
    div:nth-child(1) {
         text-align: left;
-        ${Button}{
+        button{
             margin-right: 0.5rem;
         }
-        ${Button}:last-child{
+        button:last-child{
             margin-right: 0rem;
         }
     }
 
     div:nth-child(2){
         text-align: right;
-        ${Button}{
+        button{
             margin-left: 0.5rem;
         }
-        ${Button}:first-child{
+        button:first-child{
             margin-left: 0rem;
         }
     }
@@ -37,7 +37,7 @@ const LeftRightWrapper = styled.div`
 `
 
 const VerticalWrapper = styled.div`
-    ${Button}{
+    button{
         margin-bottom: 0.5rem;
     }
 `

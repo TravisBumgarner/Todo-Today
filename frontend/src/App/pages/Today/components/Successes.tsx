@@ -1,11 +1,12 @@
 import React from 'react'
-import { Button, ButtonWrapper, Heading } from 'sharedComponents'
-import { TDateISODate } from 'sharedTypes'
+import { Button } from '@mui/material'
 
+import { ButtonWrapper, Heading } from 'sharedComponents'
+import { type TDateISODate } from 'sharedTypes'
 import AddSuccessModal from './AddSuccessModal'
 import SuccessesTable from './SuccessesTable'
 
-type SuccessesProps = {
+interface SuccessesProps {
     selectedDate: TDateISODate
 }
 
@@ -17,7 +18,7 @@ const Successes = ({ selectedDate }: SuccessesProps) => {
             <Heading.H3>Successes</Heading.H3>
             <ButtonWrapper
                 left={[
-                    <Button key="add" onClick={() => setShowSuccessModal(true)} variation="INTERACTION">Add New Success</Button>
+                    <Button key="add" onClick={() => { setShowSuccessModal(true) }} >Add New Success</Button>
                 ]}
             />
             <SuccessesTable selectedDate={selectedDate} />
