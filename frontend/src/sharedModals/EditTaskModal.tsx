@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button } from '@mui/material'
 
-import { Modal, LabelAndInput, Form } from 'sharedComponents'
+import { Modal, LabelAndInput } from 'sharedComponents'
 import { type TTask, ETaskStatus } from 'sharedTypes'
 import { taskStatusLookup } from 'utilities'
 import database from 'database'
@@ -53,7 +53,7 @@ const EditTaskModal = ({ showModal, setShowModal, taskId }: EditTaskModalProps) 
             showModal={showModal}
             closeModal={() => { setShowModal(false) }}
         >
-            <Form onChange={() => { setFormEdited(true) }}>
+            <form onChange={() => { setFormEdited(true) }}>
                 <LabelAndInput
                     label="Task"
                     name="title"
@@ -87,7 +87,7 @@ const EditTaskModal = ({ showModal, setShowModal, taskId }: EditTaskModalProps) 
                 >
                     Save
                 </Button>
-            </Form>
+            </form>
         </Modal>
     )
 }

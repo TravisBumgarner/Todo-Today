@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button, Typography } from '@mui/material'
 
-import { Modal, LabelAndInput, Form } from 'sharedComponents'
+import { Modal, LabelAndInput } from 'sharedComponents'
 import { type TProject, EProjectStatus } from 'sharedTypes'
 import { projectStatusLookup } from 'utilities'
 import database from 'database'
@@ -48,7 +48,7 @@ const EditProjectModal = ({ showModal, setShowModal, projectId }: EditProjectMod
                 isLoading
                     ? <Typography variant="body1">One sec</Typography>
                     : (
-                        <Form onChange={() => { setSubmitDisabled(false) }}>
+                        <form onChange={() => { setSubmitDisabled(false) }}>
                             <LabelAndInput
                                 label="Title"
                                 name="title"
@@ -74,7 +74,7 @@ const EditProjectModal = ({ showModal, setShowModal, projectId }: EditProjectMod
                             >
                                 Save
                             </Button>
-                        </Form>
+                        </form>
                     )
             }
 

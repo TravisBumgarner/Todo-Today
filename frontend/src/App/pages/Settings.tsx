@@ -9,7 +9,6 @@ import { Button, Typography } from '@mui/material'
 import {
     ConfirmationModal,
     LabelAndInput,
-    Form,
     Modal,
     BigBoxOfNothing,
     Table,
@@ -132,7 +131,7 @@ const AddEditReminderModal = ({ showModal, setShowModal, reminderToEdit }: AddEd
             showModal={showModal}
             closeModal={() => { setShowModal(false) }}
         >
-            <Form>
+            <form>
                 <LabelAndInput
                     label="Day"
                     name="dayOfWeek"
@@ -151,7 +150,7 @@ const AddEditReminderModal = ({ showModal, setShowModal, reminderToEdit }: AddEd
                 />
                 <Button key="cancel" onClick={() => { setShowModal(false) }}>Cancel</Button>,
                 <Button key="save" onClick={reminderToEdit ? handleEdit : handleAdd}>Save</Button>
-            </Form>
+            </form>
         </Modal>
     )
 }
@@ -277,7 +276,7 @@ const Settings = () => {
                 </Typography>
             </PageHeader>
             <Typography variant="h3">User Preferences</Typography>
-            <Form>
+            <form>
                 <LabelAndInput
                     inputType="select-enum"
                     name="colorTheme"
@@ -287,7 +286,7 @@ const Settings = () => {
                     options={EColorTheme}
                     optionLabels={colorThemeOptionLabels}
                 />
-            </Form>
+            </form>
             <div style={{ marginTop: '2rem' }}>
                 <LabelInDisguise>Schedule Reminders</LabelInDisguise>
                 {state.reminders.length === 0
@@ -322,7 +321,7 @@ const Settings = () => {
                 <SmallParagraph>Backup Location: {state.backupDir}</SmallParagraph>
 
                 <Typography variant="h3">Restore</Typography>
-                <Form>
+                <form>
                     <LabelAndInput
                         handleChange={(file) => { setRestore(file) }}
                         label="Restore database with a backup copy."
@@ -336,7 +335,7 @@ const Settings = () => {
                     >
                         Restore from Backup
                     </Button>
-                </Form>
+                </form>
                 {
                     showRestoreConfirmModal
                         ? (

@@ -2,7 +2,7 @@ import React from 'react'
 import { v4 as uuid4 } from 'uuid'
 import { Button } from '@mui/material'
 
-import { Modal, LabelAndInput, Form } from 'sharedComponents'
+import { Modal, LabelAndInput } from 'sharedComponents'
 import { type TDateISODate, type TProject } from 'sharedTypes'
 import database from 'database'
 import { useLiveQuery } from 'dexie-react-hooks'
@@ -41,7 +41,7 @@ const AddSuccessModal = ({ showModal, setShowModal, selectedDate }: AddSuccessMo
             showModal={showModal}
             closeModal={() => { setShowModal(false) }}
         >
-            <Form>
+            <form>
                 <LabelAndInput
                     label="Description"
                     name="description"
@@ -58,7 +58,7 @@ const AddSuccessModal = ({ showModal, setShowModal, selectedDate }: AddSuccessMo
                 />
                 <Button key="cancel" onClick={() => { setShowModal(false) }}>Cancel</Button>
                 <Button disabled={description.length === 0} key="save" onClick={handleSubmit}>Save</Button>
-            </Form>
+            </form>
         </Modal>
     )
 }

@@ -3,7 +3,7 @@ import { v4 as uuid4 } from 'uuid'
 import { Button } from '@mui/material'
 
 import database from 'database'
-import { Modal, LabelAndInput, Form } from 'sharedComponents'
+import { Modal, LabelAndInput } from 'sharedComponents'
 import { type TProject, EProjectStatus } from 'sharedTypes'
 
 interface AddProjectModalProps {
@@ -30,7 +30,7 @@ const AddProjectModal = ({ showModal, setShowModal }: AddProjectModalProps) => {
             showModal={showModal}
             closeModal={() => { setShowModal(false) }}
         >
-            <Form>
+            <form>
                 <LabelAndInput
                     label="Title"
                     name="title"
@@ -47,7 +47,7 @@ const AddProjectModal = ({ showModal, setShowModal }: AddProjectModalProps) => {
                 >
                     Save
                 </Button>
-            </Form>
+            </form>
         </Modal>
     )
 }
