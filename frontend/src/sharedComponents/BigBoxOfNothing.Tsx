@@ -1,11 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
 import { transparentize } from 'polished'
-import { Button } from '@mui/material'
 
 import Paragraph from './Paragraph'
 
-type BigBoxOfNothingProps = {
+interface BigBoxOfNothingProps {
     message: string
     callToActionButton?: JSX.Element
 }

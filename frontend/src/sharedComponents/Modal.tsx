@@ -1,10 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
 import ReactModal from 'styled-react-modal'
+import { Typography } from '@mui/material'
 
-import { Heading, Icon } from '.'
+import { Icon } from '.'
 
-type ModalProps = {
+interface ModalProps {
     children: any
     showModal: boolean
     closeModal: () => void
@@ -15,7 +16,7 @@ const HeaderWrapper = styled.div`
     display: flex;
     justify-content: space-between;
 
-    ${Heading.H1}{
+    h1 {
         margin-right: 2rem;
     }
 
@@ -30,11 +31,11 @@ const HeaderWrapper = styled.div`
         fill: ${({ theme }) => theme.FOREGROUND};
         }
     }
-    ${Heading.H2}{
+    h2 {
         font-size: 2rem;
     }
 
-    ${Heading.H3}{
+    h3 {
         font-size: 1.25rem;
     }
 `
@@ -54,7 +55,7 @@ const Modal = ({
         >
             <ModalWrapper>
                 <HeaderWrapper>
-                    <Heading.H2>{contentLabel}</Heading.H2>
+                    <Typography variant='h2'>{contentLabel}</Typography>
                     <Icon name="close" onClick={closeModal} />
                 </HeaderWrapper>
                 {children}

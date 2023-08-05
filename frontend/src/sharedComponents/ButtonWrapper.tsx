@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Button } from '@mui/material'
 
 interface ButtonWrapperProps {
     fullWidth?: JSX.Element

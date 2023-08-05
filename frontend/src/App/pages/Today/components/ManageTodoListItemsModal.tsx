@@ -1,9 +1,9 @@
 import React from 'react'
 import { v4 as uuid4 } from 'uuid'
 import { useLiveQuery } from 'dexie-react-hooks'
-import { Button } from '@mui/material'
+import { Button, Typography } from '@mui/material'
 
-import { Modal, Table, BigBoxOfNothing, ButtonWrapper, Heading } from 'sharedComponents'
+import { Modal, Table, BigBoxOfNothing, ButtonWrapper } from 'sharedComponents'
 import { formatDateDisplayString, taskStatusLookup } from 'utilities'
 import { type TDateISODate, type TProject, type TTodoListItem, ETaskStatus, EProjectStatus, type TTask } from 'sharedTypes'
 import database from 'database'
@@ -45,7 +45,7 @@ const TasksByProjectTable = ({ project, tasks, taskIdsToTodoListIds, selectedDat
 
     return (
         <>
-            <Heading.H4>{project.title}</Heading.H4>
+            <Typography variant="h4">{project.title}</Typography>
             {
                 tasks.length === 0
                     ? (<BigBoxOfNothing message="No tasks for this project!" />)
