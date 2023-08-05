@@ -113,11 +113,11 @@ const TodoListTableRow = ({ todoListItemId, projectId, taskId }: TodoListTableRo
                     <InputLabel id="status">Status</InputLabel>
                     <Select
                         labelId="status"
-                        value={projectId}
+                        value={task.status}
                         label="Project Status"
                         onChange={async (event) => { await handleStatusChange(event.target.value as ETaskStatus) }}
                     >
-                        {Object.keys(ETaskStatus).map((key) => <MenuItem key={key} value={key}>{key}</MenuItem>)}
+                        {Object.keys(ETaskStatus).map((key) => <MenuItem key={key} value={key}>{taskStatusLookup[key as ETaskStatus]}</MenuItem>)}
                     </Select>
                 </Table.TableBodyCell>
                 <Table.TableBodyCell style={{ whiteSpace: 'pre-line' }}>

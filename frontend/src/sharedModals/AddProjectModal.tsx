@@ -36,9 +36,12 @@ const AddProjectModal = ({ showModal, setShowModal }: AddProjectModalProps) => {
                     name="title"
                     value={title}
                     onChange={(event) => { setTitle(event.target.value) }}
+                    fullWidth
                 />
-                <Button key="cancel" onClick={() => { setShowModal(false) }}>Cancel</Button>
+                <Button fullWidth key="cancel" onClick={() => { setShowModal(false) }}>Cancel</Button>
                 <Button
+                    fullWidth
+                    variant='contained'
                     key="save"
                     type="button"
                     disabled={title.length === 0}

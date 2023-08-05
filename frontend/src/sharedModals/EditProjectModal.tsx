@@ -56,24 +56,27 @@ const EditProjectModal = ({ showModal, setShowModal, projectId }: EditProjectMod
                                 label="Title"
                                 name="title"
                                 value={title}
+                                fullWidth
                                 onChange={event => { setTitle(event.target.value) }}
                             />
                             <InputLabel id="project-status">Project Status</InputLabel>
                             <Select
                                 labelId="project-status"
+                                fullWidth
                                 value={projectId}
                                 label="Project Status"
                                 onChange={(event) => { setStatus(event.target.value as EProjectStatus) }}
                             >
-                                {Object.keys(EProjectStatus).map((key) => <MenuItem key={key} value={key}>{key}</MenuItem>)}
+                                {Object.keys(EProjectStatus).map((key) => <MenuItem key={key} value={key}>{projectStatusLookup[key as EProjectStatus]}</MenuItem>)}
                             </Select>
-                            <Button key="cancel" onClick={() => { setShowModal(false) }}>Cancel</Button>
+                            <Button fullWidth key="cancel" onClick={() => { setShowModal(false) }}>Cancel</Button>
                             <Button
                                 key="save"
                                 type="button"
                                 disabled={submitDisabled}
-
+                                fullWidth
                                 onClick={handleSubmit}
+                                variant='contained'
                             >
                                 Save
                             </Button>
