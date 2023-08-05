@@ -3,7 +3,6 @@ import * as Table from './Table'
 import * as List from './List'
 import StyledNavLink from './StyledNavLink'
 import ExternalLink from './ExternalLink'
-import Paragraph from './Paragraph'
 import Modal from './Modal'
 import colors from './colors'
 import LabelAndInput from './LabelAndInput'
@@ -22,7 +21,6 @@ export {
     Loading,
     StyledNavLink,
     ExternalLink,
-    Paragraph,
     Table,
     List,
     Modal,

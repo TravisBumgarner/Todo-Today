@@ -5,7 +5,6 @@ import database from 'database'
 import { EColorTheme, EDaysOfWeek, EBackupInterval, type TReminder } from 'sharedTypes'
 import { Button, Typography } from '@mui/material'
 import {
-    Paragraph,
     ConfirmationModal,
     LabelAndInput,
     Form,
@@ -359,8 +358,8 @@ const Settings = () => {
                                 showModal={showRestoreConfirmModal}
                                 closeModal={() => { setShowRestoreConfirmModal(false) }}
                             >
-                                <Paragraph>If you have data you have not created a backup for, please do that first.</Paragraph>
-                                <Paragraph>Clicking restore will erase everything currently stored in the application.</Paragraph>
+                                <Typography variant="body1">If you have data you have not created a backup for, please do that first.</Typography>
+                                <Typography variant="body1">Clicking restore will erase everything currently stored in the application.</Typography>
                                 <ButtonWrapper
                                     right={[
                                         <Button

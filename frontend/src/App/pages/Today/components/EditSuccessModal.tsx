@@ -1,8 +1,8 @@
 import React from 'react'
 import moment from 'moment'
-import { Button } from '@mui/material'
+import { Button, Typography } from '@mui/material'
 
-import { Modal, ButtonWrapper, LabelAndInput, Form, Paragraph } from 'sharedComponents'
+import { Modal, ButtonWrapper, LabelAndInput, Form } from 'sharedComponents'
 import { type TProject, type TSuccess } from 'sharedTypes'
 import database from 'database'
 import { useLiveQuery } from 'dexie-react-hooks'
@@ -57,7 +57,7 @@ const AddSuccessModal = ({ showModal, setShowModal, successId }: AddSuccessModal
         >
             {
                 isLoading
-                    ? <Paragraph>One sec</Paragraph>
+                    ? <Typography variant="body1">One sec</Typography>
                     : (
                         <Form>
                             <LabelAndInput

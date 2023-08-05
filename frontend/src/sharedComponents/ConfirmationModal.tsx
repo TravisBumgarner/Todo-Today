@@ -1,8 +1,7 @@
 import React from 'react'
-import { Button } from '@mui/material'
+import { Button, Typography } from '@mui/material'
 
 import Modal from './Modal'
-import Paragraph from './Paragraph'
 import ButtonWrapper from './ButtonWrapper'
 
 interface ConfirmationModalProps {
@@ -26,7 +25,7 @@ const ConfirmationModal = ({ title, body, confirmationCallback, cancelCallback, 
             showModal={showModal}
             closeModal={() => { setShowModal(false) }}
         >
-            <Paragraph>{body}</Paragraph>
+            <Typography variant="body1">{body}</Typography>
             <ButtonWrapper right={Buttons} />
         </Modal>
     )

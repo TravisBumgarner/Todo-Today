@@ -1,7 +1,7 @@
 import React from 'react'
-import { Button } from '@mui/material'
+import { Button, Typography } from '@mui/material'
 
-import { Modal, ButtonWrapper, LabelAndInput, Form, Paragraph } from 'sharedComponents'
+import { Modal, ButtonWrapper, LabelAndInput, Form } from 'sharedComponents'
 import { type TProject, EProjectStatus } from 'sharedTypes'
 import { projectStatusLookup } from 'utilities'
 import database from 'database'
@@ -46,7 +46,7 @@ const EditProjectModal = ({ showModal, setShowModal, projectId }: EditProjectMod
         >
             {
                 isLoading
-                    ? <Paragraph>One sec</Paragraph>
+                    ? <Typography variant="body1">One sec</Typography>
                     : (
                         <Form onChange={() => { setSubmitDisabled(false) }}>
                             <LabelAndInput
