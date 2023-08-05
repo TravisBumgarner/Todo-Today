@@ -1,12 +1,14 @@
-import React, { Component, useCallback, useContext, useEffect } from 'react'
+import React, { Component, useCallback, useContext, useEffect, useMemo } from 'react'
 import { BrowserRouter } from 'react-router-dom'
-import { GlobalStyles } from '@mui/material'
+import { ThemeProvider, CssBaseline } from '@mui/material'
+import { Experimental_CssVarsProvider as CssVarsProvider } from '@mui/material/styles'
 
 import Context, { context } from 'Context'
-import { Navigation, Router, Header } from './components'
+import { Navigation, Router, Title } from './components'
 import { setupAutomatedBackup } from './pages/Settings'
 import LazyLoadModal, { ModalID } from 'modals'
-import { globalCSS } from 'theme'
+import { beachTheme, theme2 } from 'theme'
+import { EColorTheme } from 'sharedTypes'
 
 const App = () => {
   const { state, dispatch } = useContext(context)
@@ -21,18 +23,31 @@ const App = () => {
   }, [dispatch])
   useEffect(() => { setupAutomatedBackup(triggerBackupFailureModal) }, [state.settings.backupInterval, triggerBackupFailureModal])
 
+  const theme = useMemo(() => {
+    switch (state.settings.colorTheme) {
+      case EColorTheme.BEACH: {
+        return beachTheme
+      }
+      default: {
+        return theme2
+      }
+    }
+  }, [state.settings.colorTheme])
+
   return (
-    <>
-      <GlobalStyles styles={globalCSS} />
-      <div>
-        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Header />
-          <Navigation />
+    <ThemeProvider theme={theme}>
+      <CssVarsProvider>
+        <CssBaseline />
+        <div>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Title />
+            <Navigation />
+          </div>
+          <Router />
+          <LazyLoadModal />
         </div>
-        <Router />
-        <LazyLoadModal />
-      </div>
-    </>
+      </CssVarsProvider>
+    </ThemeProvider>
   )
 }
 

@@ -1,27 +1,35 @@
-import React from 'react'
-import styled from 'styled-components'
-import { NavLink } from 'react-router-dom'
+import React, { useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
 import EditIcon from '@mui/icons-material/Edit'
 import SettingsIcon from '@mui/icons-material/Settings'
-
-const StyledNav = styled.ul`
-    list-style: none;
-    margin: 2rem 0;
-    padding: 0rem;
-    display: flex;
-    flex-direction: row;
-
-    li {
-        margin-left: 1rem;
-    }
-`
+import { Box, IconButton, css } from '@mui/material'
 
 const Navigation = () => {
+  const navigate = useNavigate()
+  const handleHistory = useCallback(() => {
+    navigate('/history')
+  }, [navigate])
+
+  const handleSettings = useCallback(() => {
+    navigate('/settings')
+  }, [navigate])
+
   return (
-    <StyledNav>
-      <NavLink to="/history"><EditIcon /></NavLink>
-      <NavLink to="/settings"><SettingsIcon /></NavLink>
-    </StyledNav>
+    <Box css={navigationCSS}>
+      <IconButton color="primary" onClick={handleHistory}>
+        <EditIcon />
+      </IconButton>
+      <IconButton color="primary" onClick={handleSettings}>
+        <SettingsIcon />
+      </IconButton>
+    </Box>
   )
 }
+
+const navigationCSS = css`
+  display: flex;
+  flex-direction: row;
+  flex-grow: 0;
+`
+
 export default Navigation

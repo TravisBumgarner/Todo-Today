@@ -1,19 +1,69 @@
-import { css } from '@mui/material'
+import React, { forwardRef } from 'react'
+import { type LinkProps, createTheme } from '@mui/material'
+import { Link as RouterLink, type LinkProps as RouterLinkProps } from 'react-router-dom'
 
-export const globalCSS = css`
-  html {
-      font-size: 16px;
-      font-weight: 400;
-      font-family: 'Roboto', sans-serif;
-      padding: 1em;
-      max-width: 1200px;
-      margin: 0px auto;
+import { type ThemeOptions } from '@mui/material/styles'
+
+const LinkBehavior = forwardRef<HTMLAnchorElement, Omit<RouterLinkProps, 'to'> & { href: RouterLinkProps['to'] }
+>((props, ref) => {
+  const { href, ...other } = props
+  return <RouterLink ref={ref} to={href} {...other} />
+})
+LinkBehavior.displayName = 'LinkBehavior'
+
+const baseTheme = {
+  components: {
+    MuiLink: {
+      defaultProps: {
+        component: LinkBehavior
+      } as LinkProps
+    },
+    MuiButtonBase: {
+      defaultProps: {
+        LinkComponent: LinkBehavior
+      }
+    }
+  }
+}
+
+const beachThemeOptions: ThemeOptions = {
+  ...baseTheme,
+  palette: {
+    primary: {
+      main: '#7bc3ff'
+    },
+    secondary: {
+      main: '#7bff7f'
+    },
+    background: {
+      default: '#456990',
+      paper: '#456990'
+    },
+    warning: {
+      main: '#7f3a3a'
+    },
+    error: {
+      main: '#ff3f85'
+    }
+  }
+}
+
+export const themeOptions2: ThemeOptions = {
+  ...baseTheme,
+  palette: {
+    mode: 'dark'
+  },
+  typography: {
+    h2: {
+      fontSize: '2rem',
+      fontWeight: 700
+    }
   }
 
-  h1, h2, h3, h4, h5, h6, p { 
-      font-family: 'Roboto', sans-serif;
-  }
-`
+}
+
+export const beachTheme = createTheme(beachThemeOptions)
+export const theme2 = createTheme(themeOptions2)
 
 export const pageHeaderCSS = {
   display: 'flex',
