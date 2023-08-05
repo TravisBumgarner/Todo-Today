@@ -1,33 +1,29 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { v4 as uuid4 } from 'uuid'
 import { Button, Typography } from '@mui/material'
 
-import { BigBoxOfNothing, ConfirmationModal } from 'sharedComponents'
+import { EmptyStateDisplay, ConfirmationModal } from 'sharedComponents'
 import database from 'database'
-import { ETaskStatus, type TDateISODate } from 'sharedTypes'
-import { AddTaskModal, AddProjectModal } from 'sharedModals'
+import { ETaskStatus } from 'sharedTypes'
+import { AddTaskModal, AddProjectModal, ModalID } from 'modals'
 import { TodoListTable, ManageTodoListItemsModal } from '.'
+import { context } from 'Context'
 
-interface TodoListProps {
-  selectedDate: TDateISODate
-}
-
-const TodoList = ({ selectedDate }: TodoListProps) => {
+const TodoList = () => {
+  const { state, dispatch } = React.useContext(context)
   const [showManagementModal, setShowManagementModal] = React.useState<boolean>(false)
   const [showNothingToCopyModal, setShowNothingToCopyModal] = React.useState<boolean>(false)
-  const [showAddNewTaskModal, setShowAddNewTaskModal] = React.useState<boolean>(false)
-  const [showAddNewProjectModal, setShowAddNewProjectModal] = React.useState<boolean>(false)
 
   const projects = useLiveQuery(async () => await database.projects.toArray())
   const tasks = useLiveQuery(async () => await database.tasks.toArray())
 
   const todoListItems = useLiveQuery(
-    async () => await database.todoListItems.where('todoListDate').equals(selectedDate).toArray())
+    async () => await database.todoListItems.where('todoListDate').equals(state.selectedDate).toArray())
 
   const getPreviousDatesTasks = async () => {
     const lastDate = (
-      await database.todoListItems.where('todoListDate').below(selectedDate).sortBy('todoListDate')
+      await database.todoListItems.where('todoListDate').below(state.selectedDate).sortBy('todoListDate')
     ).reverse()[0]
 
     if (lastDate) {
@@ -52,7 +48,7 @@ const TodoList = ({ selectedDate }: TodoListProps) => {
               projectId,
               taskId,
               id: uuid4(),
-              todoListDate: selectedDate,
+              todoListDate: state.selectedDate,
               details
             })
           }
@@ -62,6 +58,14 @@ const TodoList = ({ selectedDate }: TodoListProps) => {
       setShowNothingToCopyModal(true)
     }
   }
+
+  const handleNewProject = useCallback(() => {
+    dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.ADD_PROJECT } })
+  }, [dispatch])
+
+  const handleNewTask = useCallback(() => {
+    dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.ADD_TASK } })
+  }, [dispatch])
 
   return (
     <>
@@ -73,45 +77,22 @@ const TodoList = ({ selectedDate }: TodoListProps) => {
       >
         Select Tasks
       </Button>
-      <Button onClick={() => { setShowAddNewProjectModal(true) }} title="Add new Project">
-        Add New Project
-      </Button>
-      <Button disabled={projects && projects.length === 0} onClick={() => { setShowAddNewTaskModal(true) }}>
-        Add New Task
-      </Button>
+      <Button onClick={handleNewProject}>New Project</Button>
+      <Button disabled={projects?.length === 0} onClick={handleNewTask}>New Task</Button>
       {tasks?.length !== 0
         ? (
-          <TodoListTable selectedDate={selectedDate} />
+          <TodoListTable />
         )
         : (
-          <BigBoxOfNothing message="Go create some projects and tasks and come back!" />
+          <EmptyStateDisplay message="Go create some projects and tasks and come back!" />
         )}
-      <ManageTodoListItemsModal
-        selectedDate={selectedDate}
-        showModal={showManagementModal}
-        setShowModal={setShowManagementModal}
-      />
-      <ConfirmationModal
+      {/* <ConfirmationModal
         body="It looks like there's nothing to copy from yesterday."
         title="Heads Up!"
         confirmationCallback={() => { setShowNothingToCopyModal(false) }}
         showModal={showNothingToCopyModal}
         setShowModal={setShowNothingToCopyModal}
-      />
-      {showAddNewTaskModal
-        ? (
-          <AddTaskModal
-            selectedDate={selectedDate}
-            showModal={showAddNewTaskModal}
-            setShowModal={setShowAddNewTaskModal}
-          />
-        )
-        : null}
-      {showAddNewProjectModal
-        ? (
-          <AddProjectModal showModal={showAddNewProjectModal} setShowModal={setShowAddNewProjectModal} />
-        )
-        : null}
+      /> */}
     </>
   )
 }

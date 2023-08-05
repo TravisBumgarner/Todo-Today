@@ -53,7 +53,6 @@ const AddSuccessModal = ({ showModal, setShowModal, successId }: AddSuccessModal
         <Modal
             title="Add Success"
             showModal={showModal}
-            closeModal={() => { setShowModal(false) }}
         >
             {
                 isLoading
