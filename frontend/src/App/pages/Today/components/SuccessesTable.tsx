@@ -3,7 +3,7 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import { Button } from '@mui/material'
 
 import database from 'database'
-import { BigBoxOfNothing, DropdownMenu, Table } from 'sharedComponents'
+import { BigBoxOfNothing, Table } from 'sharedComponents'
 import { type TProject, type TDateISODate } from 'sharedTypes'
 import EditSuccessModal from './EditSuccessModal'
 
@@ -58,28 +58,26 @@ const SuccessesTable = ({ selectedDate }: SuccessesTableProps) => {
                                         <Table.TableBodyCell>{projectTitle}</Table.TableBodyCell>
                                         <Table.TableBodyCell>{description}</Table.TableBodyCell>
                                         <Table.TableBodyCell>
-                                            <DropdownMenu openDirection="left" title="Actions">
-                                                <Button
-                                                    fullWidth
-                                                    key="edit"
+                                            <Button
+                                                fullWidth
+                                                key="edit"
 
-                                                    onClick={() => { setSelectedSuccessId(id) }}
-                                                >
-                                                    Edit
-                                                </Button>
-                                                <Button
-                                                    fullWidth
-                                                    key="remove"
+                                                onClick={() => { setSelectedSuccessId(id) }}
+                                            >
+                                                Edit
+                                            </Button>
+                                            <Button
+                                                fullWidth
+                                                key="remove"
 
-                                                    onClick={async () => {
-                                                        await database.successes
-                                                            .where({ id })
-                                                            .delete()
-                                                    }}
-                                                >
-                                                    Delete
-                                                </Button>
-                                            </DropdownMenu>
+                                                onClick={async () => {
+                                                    await database.successes
+                                                        .where({ id })
+                                                        .delete()
+                                                }}
+                                            >
+                                                Delete
+                                            </Button>
                                         </Table.TableBodyCell>
                                     </Table.TableRow>
                                 )
