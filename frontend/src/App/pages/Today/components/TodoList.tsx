@@ -3,7 +3,7 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import { v4 as uuid4 } from 'uuid'
 import { Button, Typography } from '@mui/material'
 
-import { BigBoxOfNothing, ButtonWrapper, ConfirmationModal } from 'sharedComponents'
+import { BigBoxOfNothing, ConfirmationModal } from 'sharedComponents'
 import database from 'database'
 import { ETaskStatus, type TDateISODate } from 'sharedTypes'
 import { AddTaskModal, AddProjectModal } from 'sharedModals'
@@ -67,46 +67,40 @@ const TodoList = ({ selectedDate }: TodoListProps) => {
     return (
         <>
             <Typography variant="h3">Todo List</Typography>
-            <ButtonWrapper
-                left={[
-                    <Button
-                        key="today"
-                        disabled={todoListItems && todoListItems.length > 0}
-                        onClick={getPreviousDatesTasks}
+            <Button
+                key="today"
+                disabled={todoListItems && todoListItems.length > 0}
+                onClick={getPreviousDatesTasks}
 
-                    >
-                        Copy Previous
-                    </Button>,
-                    <Button
-                        key="manage"
-                        disabled={tasks && tasks.length === 0}
-                        title={tasks && tasks.length === 0 ? 'You need to create a task first!' : 'Manage'}
-                        onClick={() => { setShowManagementModal(true) }}
+            >
+                Copy Previous
+            </Button>
+            <Button
+                key="manage"
+                disabled={tasks && tasks.length === 0}
+                title={tasks && tasks.length === 0 ? 'You need to create a task first!' : 'Manage'}
+                onClick={() => { setShowManagementModal(true) }}
 
-                    >
-                        Select Tasks
-                    </Button>
-                ]}
-                right={[
-                    <Button
-                        key="add-project"
-                        onClick={() => { setShowAddNewProjectModal(true) }}
+            >
+                Select Tasks
+            </Button>
+            <Button
+                key="add-project"
+                onClick={() => { setShowAddNewProjectModal(true) }}
 
-                        title="Add new Project"
-                    >
-                        Add New Project
-                    </Button>,
-                    <Button
-                        key="add-task"
-                        disabled={projects && projects.length === 0}
-                        onClick={() => { setShowAddNewTaskModal(true) }}
+                title="Add new Project"
+            >
+                Add New Project
+            </Button>
+            <Button
+                key="add-task"
+                disabled={projects && projects.length === 0}
+                onClick={() => { setShowAddNewTaskModal(true) }}
 
-                        title={projects && projects.length === 0 ? 'You need to create a project first!' : 'Add New Task'}
-                    >
-                        Add New Task
-                    </Button>
-                ]}
-            />
+                title={projects && projects.length === 0 ? 'You need to create a project first!' : 'Add New Task'}
+            >
+                Add New Task
+            </Button>
             {tasks && tasks.length !== 0
                 ? (
                     <TodoListTable selectedDate={selectedDate} />

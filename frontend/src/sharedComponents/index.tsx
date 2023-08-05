@@ -7,7 +7,6 @@ import Modal from './Modal'
 import colors from './colors'
 import LabelAndInput from './LabelAndInput'
 import DropdownMenu from './DropdownMenu'
-import ButtonWrapper from './ButtonWrapper'
 import BigBoxOfNothing from './BigBoxOfNothing'
 import Form from './Form'
 import ConfirmationModal from './ConfirmationModal'
@@ -25,7 +24,6 @@ export {
     colors,
     LabelAndInput,
     DropdownMenu,
-    ButtonWrapper,
     BigBoxOfNothing,
     Form,
     ConfirmationModal,

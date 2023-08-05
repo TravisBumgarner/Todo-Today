@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button } from '@mui/material'
 
-import { Modal, ButtonWrapper, LabelAndInput, Form } from 'sharedComponents'
+import { Modal, LabelAndInput, Form } from 'sharedComponents'
 import { type TTask, ETaskStatus } from 'sharedTypes'
 import { taskStatusLookup } from 'utilities'
 import database from 'database'
@@ -77,21 +77,16 @@ const EditTaskModal = ({ showModal, setShowModal, taskId }: EditTaskModalProps) 
                     label="Project"
                     handleChange={(value) => { setProjectId(value) }}
                 />
-                <ButtonWrapper right={
-                    [
-                        <Button key="cancel" onClick={() => { setShowModal(false) }}>Cancel</Button>,
-                        <Button
-                            type="button"
-                            key="save"
-                            disabled={!formEdited || projectId === ''}
+                <Button key="cancel" onClick={() => { setShowModal(false) }}>Cancel</Button>
+                <Button
+                    type="button"
+                    key="save"
+                    disabled={!formEdited || projectId === ''}
 
-                            onClick={handleSubmit}
-                        >
-                            Save
-                        </Button>
-                    ]
-                }
-                />
+                    onClick={handleSubmit}
+                >
+                    Save
+                </Button>
             </Form>
         </Modal>
     )

@@ -2,7 +2,7 @@ import React from 'react'
 import moment from 'moment'
 import { Button, Typography } from '@mui/material'
 
-import { ButtonWrapper, PageHeader } from 'sharedComponents'
+import { PageHeader } from 'sharedComponents'
 import { formatDateDisplayString, formatDateKeyLookup } from 'utilities'
 import { type TDateISODate } from 'sharedTypes'
 import { TodoList, Successes } from './components'
@@ -26,13 +26,9 @@ const Today = () => {
         <div>
             <PageHeader>
                 <Typography variant="h2">{formatDateDisplayString(selectedDate)}</Typography>
-                <ButtonWrapper
-                    left={[
-                        <Button key="today" onClick={getToday} >Today</Button>,
-                        <Button key="previous" onClick={setPreviousDate} >&lt;</Button>,
-                        <Button key="next" onClick={getNextDate} >&gt;</Button>
-                    ]}
-                />
+                <Button key="today" onClick={getToday} >Today</Button>
+                <Button key="previous" onClick={setPreviousDate} >&lt;</Button>
+                <Button key="next" onClick={getNextDate} >&gt;</Button>
             </PageHeader>
             <TodoList selectedDate={selectedDate} />
             <Successes selectedDate={selectedDate} />

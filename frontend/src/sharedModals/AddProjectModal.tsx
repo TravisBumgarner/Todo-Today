@@ -3,7 +3,7 @@ import { v4 as uuid4 } from 'uuid'
 import { Button } from '@mui/material'
 
 import database from 'database'
-import { Modal, ButtonWrapper, LabelAndInput, Form } from 'sharedComponents'
+import { Modal, LabelAndInput, Form } from 'sharedComponents'
 import { type TProject, EProjectStatus } from 'sharedTypes'
 
 interface AddProjectModalProps {
@@ -37,21 +37,16 @@ const AddProjectModal = ({ showModal, setShowModal }: AddProjectModalProps) => {
                     value={title}
                     handleChange={(data) => { setTitle(data) }}
                 />
-                <ButtonWrapper right={
-                    [
-                        <Button key="cancel" onClick={() => { setShowModal(false) }}>Cancel</Button>,
-                        <Button
-                            key="save"
-                            type="button"
-                            disabled={title.length === 0}
+                <Button key="cancel" onClick={() => { setShowModal(false) }}>Cancel</Button>
+                <Button
+                    key="save"
+                    type="button"
+                    disabled={title.length === 0}
 
-                            onClick={handleSubmit}
-                        >
-                            Save
-                        </Button>
-                    ]
-                }
-                />
+                    onClick={handleSubmit}
+                >
+                    Save
+                </Button>
             </Form>
         </Modal>
     )
