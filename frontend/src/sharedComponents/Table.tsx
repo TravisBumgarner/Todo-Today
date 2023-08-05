@@ -1,5 +1,4 @@
 import styled from 'styled-components'
-import { transparentize } from 'polished'
 
 import { type TColor } from 'sharedTypes'
 
@@ -10,7 +9,6 @@ const Table = styled.table`
     border-spacing: 0;
     width: 100%;
     table-layout: fixed;
-    background-color: ${({ theme }) => transparentize(0.9, theme.INTERACTION)};
 `
 
 const TableHeader = styled.thead`
@@ -26,8 +24,6 @@ const TableRow = styled.tr`
 `
 
 const TableHeaderCell = styled.th<{ theme: TColor, width?: string, minWidth?: string }>`
-    color: ${({ theme }) => theme.INTERACTION}; 
-    border-bottom: 2px solid ${({ theme }) => theme.INTERACTION};
     padding: 10px;
     text-align: left;
     width: ${({ width }) => width};
@@ -35,17 +31,15 @@ const TableHeaderCell = styled.th<{ theme: TColor, width?: string, minWidth?: st
     
 `
 const TableBodyCell = styled.td`
-    border-bottom: 2px solid ${({ theme }) => theme.INTERACTION};
     padding: 10px;
-    color: ${({ theme }) => theme.INTERACTION};
     vertical-align: center;
 `
 
 export {
-    Table,
-    TableHeader,
-    TableBody,
-    TableRow,
-    TableHeaderCell,
-    TableBodyCell
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHeaderCell,
+  TableBodyCell
 }
