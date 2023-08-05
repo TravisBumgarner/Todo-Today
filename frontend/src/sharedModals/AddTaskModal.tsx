@@ -2,7 +2,7 @@ import React from 'react'
 import { v4 as uuid4 } from 'uuid'
 import { Button } from '@mui/material'
 
-import { Modal, LabelAndInput, Form } from 'sharedComponents'
+import { Modal, LabelAndInput } from 'sharedComponents'
 import { type TProject, ETaskStatus, EProjectStatus, type TDateISODate } from 'sharedTypes'
 import database from 'database'
 import { useLiveQuery } from 'dexie-react-hooks'
@@ -59,7 +59,7 @@ const AddTaskModal = ({ showModal, setShowModal, project, selectedDate }: AddTas
             showModal={showModal}
             closeModal={() => { setShowModal(false) }}
         >
-            <Form>
+            <form>
                 <LabelAndInput
                     label="Task"
                     name="title"
@@ -102,7 +102,7 @@ const AddTaskModal = ({ showModal, setShowModal, project, selectedDate }: AddTas
                 >
                     Save
                 </Button>
-            </Form>
+            </form>
         </Modal>
     )
 }

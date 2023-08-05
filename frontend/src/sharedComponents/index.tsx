@@ -8,7 +8,6 @@ import colors from './colors'
 import LabelAndInput from './LabelAndInput'
 import DropdownMenu from './DropdownMenu'
 import BigBoxOfNothing from './BigBoxOfNothing'
-import Form from './Form'
 import ConfirmationModal from './ConfirmationModal'
 import LabelInDisguise from './LabelInDisguise'
 import PageHeader from './PageHeader'
@@ -25,7 +24,6 @@ export {
     LabelAndInput,
     DropdownMenu,
     BigBoxOfNothing,
-    Form,
     ConfirmationModal,
     LabelInDisguise,
     PageHeader,

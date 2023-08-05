@@ -2,7 +2,7 @@ import React from 'react'
 import moment from 'moment'
 import { Button, Typography } from '@mui/material'
 
-import { Modal, LabelAndInput, Form } from 'sharedComponents'
+import { Modal, LabelAndInput } from 'sharedComponents'
 import { type TProject, type TSuccess } from 'sharedTypes'
 import database from 'database'
 import { useLiveQuery } from 'dexie-react-hooks'
@@ -59,7 +59,7 @@ const AddSuccessModal = ({ showModal, setShowModal, successId }: AddSuccessModal
                 isLoading
                     ? <Typography variant="body1">One sec</Typography>
                     : (
-                        <Form>
+                        <form>
                             <LabelAndInput
                                 label="Description"
                                 name="description"
@@ -96,7 +96,7 @@ const AddSuccessModal = ({ showModal, setShowModal, successId }: AddSuccessModal
                             >
                                 Save
                             </Button>
-                        </Form>
+                        </form>
                     )
             }
         </Modal>
