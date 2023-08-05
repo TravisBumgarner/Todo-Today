@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { createContext, useReducer, useState, type Dispatch, useEffect } from 'react'
 
 import { EColorTheme, EBackupInterval, type TSettings, type TDateISODate } from 'sharedTypes'
 import { formatDateKeyLookup, getLocalStorage, setLocalStorage } from 'utilities'
@@ -26,7 +26,7 @@ const EMPTY_STATE: State = {
   activeModal: null,
   selectedDate: formatDateKeyLookup(moment())
 }
-
+console.log(EMPTY_STATE)
 const initialSetup = () => {
   Object
     .keys(EMPTY_STATE)
@@ -112,21 +112,21 @@ const reducer = (state: State, action: Action): State => {
   }
 }
 
-const context = React.createContext(
+const context = createContext(
   {
     state: EMPTY_STATE,
     dispatch: () => { }
   } as {
     state: State
-    dispatch: React.Dispatch<Action>
+    dispatch: Dispatch<Action>
   }
 )
 
-const ResultsContext = ({ children }: { children: React.ReactChild }) => {
-  const [state, dispatch] = React.useReducer(reducer, EMPTY_STATE)
-  const [isLoading, setIsLoading] = React.useState<boolean>(true)
+const ResultsContext = ({ children }: { children: any }) => {
+  const [state, dispatch] = useReducer(reducer, EMPTY_STATE)
+  const [isLoading, setIsLoading] = useState<boolean>(true)
 
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchData = async () => {
       let payload: Partial<TSettings> = {}
       const { backupDir }: AppStartIPC = await ipcRenderer.invoke('app-start')

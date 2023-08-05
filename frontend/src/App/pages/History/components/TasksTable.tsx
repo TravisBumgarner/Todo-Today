@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useContext } from 'react'
 import { Typography } from '@mui/material'
 import EditIcon from '@mui/icons-material/Edit'
 
@@ -14,7 +14,7 @@ interface TasksTableProps {
 }
 
 const TasksTable = ({ tasks, project }: TasksTableProps) => {
-  const { dispatch } = React.useContext(context)
+  const { dispatch } = useContext(context)
 
   const handleEditProject = useCallback(() => {
     dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.EDIT_PROJECT, data: { projectId: project.id } } })

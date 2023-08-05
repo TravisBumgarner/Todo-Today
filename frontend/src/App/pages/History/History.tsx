@@ -1,5 +1,5 @@
 import { useLiveQuery } from 'dexie-react-hooks'
-import React from 'react'
+import React, { useState } from 'react'
 import { Box, Typography } from '@mui/material'
 
 import { EProjectStatus, ETaskStatus } from 'sharedTypes'
@@ -25,24 +25,16 @@ const DEFAULT_PROJECT_STATUS_FILTER = {
 const Tasks = () => {
   const projects = useLiveQuery(async () => await database.projects.toArray())
   const tasks = useLiveQuery(async () => await database.tasks.toArray())
-  const [taskStatusFilter, setTaskStatusFilter] = React.useState<Record<ETaskStatus, boolean>>(DEFAULT_TASK_STATUS_FILTER)
-  const [projectStatusFilter, setProjectStatusFilter] = React.useState<Record<EProjectStatus, boolean>>(DEFAULT_PROJECT_STATUS_FILTER)
-  const [searchText, setSearchText] = React.useState<string>('')
 
   let Contents
   if (!projects?.length) {
     Contents = <EmptyStateDisplay message="Create a project and then come back!" />
   } else if (tasks?.length) {
-    const filteredTasks = tasks
-      .filter(({ status }) => taskStatusFilter[status])
-      .filter(task => task.title.toLowerCase().includes(searchText.toLowerCase()))
-    const filteredProjects = projects.filter(({ status }) => projectStatusFilter[status])
-
-    if (filteredTasks.length === 0 || filteredProjects.length === 0) {
+    if (tasks.length === 0 || projects.length === 0) {
       Contents = <EmptyStateDisplay message="Too many filters applied!" />
     } else {
-      const bucketedTasksByProject = bucketTasksByProject(filteredProjects, filteredTasks)
-      const TasksByProject = filteredProjects
+      const bucketedTasksByProject = bucketTasksByProject(projects, tasks)
+      const TasksByProject = projects
         .sort((a, b) => {
           if (a.title.toLowerCase() < b.title.toLowerCase()) return -1
           if (a.title.toLowerCase() > b.title.toLowerCase()) return 1
@@ -64,10 +56,6 @@ const Tasks = () => {
       <Box sx={pageHeaderCSS}>
         <Typography variant="h2">Manage</Typography>
       </Box>
-      {/* <FilterWrapper> */}
-      {/* <ProjectFilters statusFilter={projectStatusFilter} setStatusFilter={setProjectStatusFilter} />
-                <TaskFilters statusFilter={taskStatusFilter} setStatusFilter={setTaskStatusFilter} /> */}
-      {/* </FilterWrapper> */}
       {Contents}
     </div>
   )

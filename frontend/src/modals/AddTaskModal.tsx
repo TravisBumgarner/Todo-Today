@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useState, useContext } from 'react'
 import { v4 as uuid4 } from 'uuid'
 import { Button, FormControlLabel, MenuItem, OutlinedInput, Select, Switch, TextField } from '@mui/material'
 
@@ -13,10 +13,10 @@ interface AddTaskModalProps {
 }
 
 const AddTaskModal = ({ project }: AddTaskModalProps) => {
-  const { state, dispatch } = React.useContext(context)
-  const [title, setTitle] = React.useState<string>('')
-  const [projectId, setProjectId] = React.useState<TProject['id'] | ''>(project ? project.id : '')
-  const [addToSelectedDate, setAddToSelectedDate] = React.useState<boolean>(true)
+  const { state, dispatch } = useContext(context)
+  const [title, setTitle] = useState<string>('')
+  const [projectId, setProjectId] = useState<TProject['id'] | ''>(project ? project.id : '')
+  const [addToSelectedDate, setAddToSelectedDate] = useState<boolean>(true)
 
   const projects = useLiveQuery(async () => {
     return await database
@@ -81,7 +81,7 @@ const AddTaskModal = ({ project }: AddTaskModalProps) => {
           {projectSelectOptions.map(({ label, value }) => <MenuItem key={label} value={value}>{label}</MenuItem>)}
         </Select>
         {/* TODO - needs data */}
-        <FormControlLabel control={<Switch checked={addToSelectedDate} onChange={() => { setAddToSelectedDate(prev => !prev) }} />} label="Add to today?" />
+        <FormControlLabel control={<Switch checked={addToSelectedDate} onChange={() => { setAddToSelectedDate((prev: any) => !prev) }} />} label="Add to today?" />
 
         <Button
           key="cancel"

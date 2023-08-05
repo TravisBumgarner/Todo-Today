@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { Component, useCallback, useContext, useEffect } from 'react'
 import { BrowserRouter } from 'react-router-dom'
 import { GlobalStyles } from '@mui/material'
 
@@ -9,7 +9,7 @@ import LazyLoadModal, { ModalID } from 'modals'
 import { globalCSS } from 'theme'
 
 const App = () => {
-  const { state, dispatch } = React.useContext(context)
+  const { state, dispatch } = useContext(context)
 
   const triggerBackupFailureModal = useCallback(() => {
     dispatch({
@@ -19,7 +19,7 @@ const App = () => {
       }
     })
   }, [dispatch])
-  React.useEffect(() => { setupAutomatedBackup(triggerBackupFailureModal) }, [state.backupInterval, triggerBackupFailureModal])
+  useEffect(() => { setupAutomatedBackup(triggerBackupFailureModal) }, [state.backupInterval, triggerBackupFailureModal])
 
   return (
     <>
@@ -36,7 +36,7 @@ const App = () => {
   )
 }
 
-class ErrorBoundary extends React.Component<{ children: any }, { hasError: boolean, error: string }> {
+class ErrorBoundary extends Component<{ children: any }, { hasError: boolean, error: string }> {
   constructor(props: any) {
     super(props)
     this.state = {

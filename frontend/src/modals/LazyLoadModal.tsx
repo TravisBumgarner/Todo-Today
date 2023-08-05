@@ -1,11 +1,12 @@
-import * as React from 'react'
+import React, { type FC, useContext } from 'react'
 import { context } from 'Context'
 import AddTaskModal from './AddTaskModal'
 import AddProjectModal from './AddProjectModal'
 import EditTaskModal from './EditTaskModal'
 import EditProjectModal from './EditProjectModal'
 import ManageTasksModal from './ManageTasksModal'
-import BackupFailureModal from './BackupFailureModal'
+import AddSuccessModal from './AddSuccessModal'
+import EditSuccessModal from './EditSuccessModal'
 
 export enum ModalID {
   ADD_TASK = 'ADD_TASK',
@@ -14,14 +15,12 @@ export enum ModalID {
   EDIT_PROJECT = 'EDIT_PROJECT',
   MANAGE_TASKS = 'MANAGE_TASKS',
   BACKUP_FAILURE_MODAL = 'BACKUP_FAILURE_MODAL',
-  // CONFIRMATION = 'CONFIRMATION',
-  // NOTHING_TO_COPY = 'NOTHING_TO_COPY',
-  // NOTHING_TO_DELETE = 'NOTHING_TO_DELETE'
-
+  ADD_SUCCESS_MODAL = 'ADD_SUCCESS_MODAL',
+  EDIT_SUCCESS_MODAL = 'EDIT_SUCCESS_MODAL',
 }
 
-const LazyLoadModal: React.FC = () => {
-  const { state } = React.useContext(context)
+const LazyLoadModal: FC = () => {
+  const { state } = useContext(context)
 
   if (!state.activeModal?.id) return null
   console.log('new modal', state.activeModal)
@@ -36,8 +35,10 @@ const LazyLoadModal: React.FC = () => {
       return <EditProjectModal />
     case ModalID.MANAGE_TASKS:
       return <ManageTasksModal />
-    case ModalID.BACKUP_FAILURE_MODAL:
-      return <BackupFailureModal />
+    case ModalID.ADD_SUCCESS_MODAL:
+      return <AddSuccessModal />
+    case ModalID.EDIT_SUCCESS_MODAL:
+      return <EditSuccessModal />
     default:
       return null
   }

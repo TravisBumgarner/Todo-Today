@@ -1,10 +1,10 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useContext, type MouseEvent, type FC } from 'react'
 import database from 'database'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { Box, Button, Tooltip, Typography } from '@mui/material'
 
 import { EmptyStateDisplay } from 'sharedComponents'
-import { ETaskStatus, type TTask } from 'sharedTypes'
+import { ETaskStatus } from 'sharedTypes'
 
 import { ModalID } from 'modals'
 
@@ -17,9 +17,9 @@ import PauseCircleFilledIcon from '@mui/icons-material/PauseCircleFilled'
 import PsychologyIcon from '@mui/icons-material/Psychology'
 import { context } from 'Context'
 
-const StatusToggle: React.FC<{ taskId: string, status: ETaskStatus }> = ({ taskId, status }) => {
+const StatusToggle: FC<{ taskId: string, status: ETaskStatus }> = ({ taskId, status }) => {
   const handleOnChange = async (
-    event: React.MouseEvent<HTMLElement>,
+    event: MouseEvent<HTMLElement>,
     value: ETaskStatus | null
   ) => {
     await database.tasks.where('id').equals(taskId).modify({ status: value })
@@ -68,7 +68,7 @@ interface TodoListTableRowProps {
 }
 
 const TodoListTableRow = ({ todoListItemId, projectId, taskId }: TodoListTableRowProps) => {
-  const { dispatch } = React.useContext(context)
+  const { dispatch } = useContext(context)
   const todoListItem = useLiveQuery(async () => await database.todoListItems.where('id').equals(todoListItemId).first())
   const task = useLiveQuery(async () => await database.tasks.where('id').equals(taskId).first())
   const project = useLiveQuery(async () => await database.projects.where('id').equals(projectId).first())
@@ -101,7 +101,7 @@ const TodoListTableRow = ({ todoListItemId, projectId, taskId }: TodoListTableRo
 }
 
 const TodoListItems = () => {
-  const { state } = React.useContext(context)
+  const { state } = useContext(context)
 
   const todoListItems = useLiveQuery(async () => {
     return await database.todoListItems.where('todoListDate').equals(state.selectedDate).toArray()

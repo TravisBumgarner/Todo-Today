@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect, useState, useContext } from 'react'
 import { Button, InputLabel, MenuItem, Select, TextField } from '@mui/material'
 
 import { Modal } from 'sharedComponents'
@@ -9,11 +9,11 @@ import { taskStatusLookup } from 'utilities'
 import { context } from 'Context'
 
 const EditTaskModal = () => {
-  const { state, dispatch } = React.useContext(context)
-  const [title, setTitle] = React.useState<string>('')
-  const [status, setStatus] = React.useState<ETaskStatus>(ETaskStatus.NEW)
-  const [projectId, setProjectId] = React.useState<string>('')
-  const [formEdited, setFormEdited] = React.useState<boolean>(false)
+  const { state, dispatch } = useContext(context)
+  const [title, setTitle] = useState<string>('')
+  const [status, setStatus] = useState<ETaskStatus>(ETaskStatus.NEW)
+  const [projectId, setProjectId] = useState<string>('')
+  const [formEdited, setFormEdited] = useState<boolean>(false)
 
   const projects = useLiveQuery(async () => {
     return await database.projects.toArray()

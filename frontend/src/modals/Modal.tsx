@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React, { useContext, type FC, useCallback } from 'react'
 import Box from '@mui/material/Box'
 import MUIModal from '@mui/material/Modal'
 import { Typography } from '@mui/material'
@@ -22,10 +22,10 @@ const style = {
   p: 4
 }
 
-const Modal: React.FC<ModalProps> = ({ children, title }) => {
-  const { dispatch } = React.useContext(context)
+const Modal: FC<ModalProps> = ({ children, title }) => {
+  const { dispatch } = useContext(context)
 
-  const handleClose = React.useCallback(() => {
+  const handleClose = useCallback(() => {
     dispatch({ type: 'CLEAR_ACTIVE_MODAL' })
   }, [dispatch])
 

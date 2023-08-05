@@ -1,20 +1,17 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useContext } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { v4 as uuid4 } from 'uuid'
 import { Box, Button, ButtonGroup, Typography } from '@mui/material'
 
-import { EmptyStateDisplay, ConfirmationModal } from 'sharedComponents'
+import { EmptyStateDisplay } from 'sharedComponents'
 import database from 'database'
 import { ETaskStatus } from 'sharedTypes'
 import { ModalID } from 'modals'
-import { TodoListTable, ManageTodoListItemsModal } from '.'
+import { TodoListTable } from '.'
 import { context } from 'Context'
 
 const TodoList = () => {
-  const { state, dispatch } = React.useContext(context)
-  const [showManagementModal, setShowManagementModal] = React.useState<boolean>(false)
-  const [showNothingToCopyModal, setShowNothingToCopyModal] = React.useState<boolean>(false)
-
+  const { state, dispatch } = useContext(context)
   const projects = useLiveQuery(async () => await database.projects.toArray())
   const tasks = useLiveQuery(async () => await database.tasks.toArray())
 
@@ -34,7 +31,7 @@ const TodoList = () => {
         .toArray()
 
       if (previousDay.length === 0) {
-        setShowNothingToCopyModal(true)
+        alert('nothing to show')
       } else {
         previousDay.map(async ({ projectId, taskId, details }) => {
           const task = await database.tasks.where('id').equals(taskId).first()
@@ -55,7 +52,7 @@ const TodoList = () => {
         })
       }
     } else {
-      setShowNothingToCopyModal(true)
+      alert('nothing to show')
     }
   }
 
@@ -94,13 +91,6 @@ const TodoList = () => {
         : (
           <EmptyStateDisplay message="Go create some projects and tasks and come back!" />
         )}
-      {/* <ConfirmationModal
-        body="It looks like there's nothing to copy from yesterday."
-        title="Heads Up!"
-        confirmationCallback={() => { setShowNothingToCopyModal(false) }}
-        showModal={showNothingToCopyModal}
-        setShowModal={setShowNothingToCopyModal}
-      /> */}
     </>
   )
 }
