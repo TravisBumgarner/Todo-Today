@@ -3,11 +3,10 @@ import moment from 'moment'
 
 import database from 'database'
 import { EColorTheme, EBackupInterval } from 'sharedTypes'
-import { Button, InputLabel, MenuItem, Select, Typography } from '@mui/material'
+import { Box, Button, InputLabel, MenuItem, Select, Typography } from '@mui/material'
 import {
     ConfirmationModal,
-    Modal,
-    PageHeader
+    Modal
 } from 'sharedComponents'
 import {
     colorThemeOptionLabels,
@@ -18,6 +17,7 @@ import {
 } from 'utilities'
 import { context } from 'Context'
 import { type BackupIPC } from '../../../../shared/types'
+import { pageHeaderCSS } from 'theme'
 
 const { ipcRenderer } = window.require('electron')
 
@@ -131,11 +131,11 @@ const Settings = () => {
     }
     return (
         <div>
-            <PageHeader>
+            <Box sx={pageHeaderCSS}>
                 <Typography variant="h2">
                     Settings
                 </Typography>
-            </PageHeader>
+            </Box>
             <Typography variant="h3">User Preferences</Typography>
             <form>
 

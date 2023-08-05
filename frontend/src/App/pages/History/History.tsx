@@ -1,103 +1,14 @@
 import { useLiveQuery } from 'dexie-react-hooks'
 import React from 'react'
-import styled from 'styled-components'
-import { Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 
 import { EProjectStatus, ETaskStatus } from 'sharedTypes'
-import { BigBoxOfNothing, PageHeader } from 'sharedComponents'
-import { bucketTasksByProject, projectStatusLookup, taskStatusLookup } from 'utilities'
+import { BigBoxOfNothing } from 'sharedComponents'
+import { bucketTasksByProject } from 'utilities'
 import database from 'database'
 import { TasksTable } from './components'
+import { pageHeaderCSS } from 'theme'
 
-// const FilterWrapper = styled.div`
-//     display: flex;
-//     justify-content: space-between;
-//     margin: 1.5rem 0;
-
-//     > div {
-//         width: fit-content;
-//     }
-
-//     @media (max-width: 1200px) {
-//         flex-direction: column;
-
-//         > div {
-//             margin: 0.5rem 0;
-//             width: fit-content;
-//             max-width: 100%;
-//         }
-//     }
-// `
-
-// interface TaskFilterProps {
-//     setStatusFilter: React.Dispatch<React.SetStateAction<Record<ETaskStatus, boolean>>>
-//     statusFilter: Record<ETaskStatus, boolean>
-// }
-
-// const TaskFilters = ({ setStatusFilter, statusFilter }: TaskFilterProps) => {
-//     return (
-//         <div>
-//             <TextField
-//                 inputType="checkbox"
-//                 name="projectfilter"
-//                 label="Filter Tasks By Status"
-//                 onChange={({ checked, value }) => {
-//                     setStatusFilter((prev) => {
-//                         const previousFilters = { ...prev }
-//                         previousFilters[value as ETaskStatus] = checked
-//                         return previousFilters
-//                     })
-//                 }}
-//                 options={
-//                     Object.values(ETaskStatus).map((status) => ({
-//                         label: taskStatusLookup[status],
-//                         value: status,
-//                         checked: statusFilter[status],
-//                         name: status
-//                     }))
-//                 }
-
-//             />
-//         </div>
-//     )
-// }
-
-// interface ProjectFilterProps {
-//     setStatusFilter: React.Dispatch<React.SetStateAction<Record<EProjectStatus, boolean>>>
-//     statusFilter: Record<EProjectStatus, boolean>
-// }
-
-// const ProjectFilters = () => {
-//     const [statusFilter, setStatusFilter] = React.useState({})
-
-//     const handleStatusChange = (event) => {
-//         const { value, checked } = event.target
-//         setStatusFilter((prev) => ({
-//             ...prev,
-//             [value]: checked
-//         }))
-//     }
-
-//     return (
-//         <FormGroup>
-//             <p>Filter Projects By Status</p>
-//             {Object.values(EProjectStatus).map((status) => (
-//                 <FormControlLabel
-//                     key={status}
-//                     control={
-//                         <Checkbox
-//                             checked={statusFilter[status] || false}
-//                             onChange={handleStatusChange}
-//                             value={status}
-//                             name="projectfilter"
-//                         />
-//                     }
-//                     label={projectStatusLookup[status]}
-//                 />
-//             ))}
-//         </FormGroup>
-//     )
-// }
 const DEFAULT_TASK_STATUS_FILTER = {
     [ETaskStatus.NEW]: true,
     [ETaskStatus.IN_PROGRESS]: true,
@@ -150,9 +61,9 @@ const Tasks = () => {
 
     return (
         <div>
-            <PageHeader>
+            <Box sx={pageHeaderCSS}>
                 <Typography variant="h2">Manage</Typography>
-            </PageHeader>
+            </Box>
             {/* <FilterWrapper> */}
             {/* <ProjectFilters statusFilter={projectStatusFilter} setStatusFilter={setProjectStatusFilter} />
                 <TaskFilters statusFilter={taskStatusFilter} setStatusFilter={setTaskStatusFilter} /> */}

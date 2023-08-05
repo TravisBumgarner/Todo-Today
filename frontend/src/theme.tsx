@@ -1,8 +1,10 @@
 import { createGlobalStyle } from 'styled-components'
 
-import { TColor } from 'sharedTypes'
+import { type TColor } from 'sharedTypes'
 
-const GlobalStyle = createGlobalStyle<{theme: TColor}>`
+import { css } from '@mui/material'
+
+const GlobalStyle = createGlobalStyle<{ theme: TColor }>`
     html {
         font-size: 16px;
         font-weight: 400;
@@ -17,5 +19,13 @@ const GlobalStyle = createGlobalStyle<{theme: TColor}>`
         font-family: 'Roboto', sans-serif;
     }
 `
+
+export const pageHeaderCSS = {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    margin: '0 0 1rem 0',
+    height: '60px'
+}
 
 export default { GlobalStyle }
