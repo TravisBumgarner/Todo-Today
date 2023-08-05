@@ -2,7 +2,7 @@ import React from 'react'
 import { v4 as uuid4 } from 'uuid'
 import { Button } from '@mui/material'
 
-import { Modal, ButtonWrapper, LabelAndInput, Form } from 'sharedComponents'
+import { Modal, LabelAndInput, Form } from 'sharedComponents'
 import { type TProject, ETaskStatus, EProjectStatus, type TDateISODate } from 'sharedTypes'
 import database from 'database'
 import { useLiveQuery } from 'dexie-react-hooks'
@@ -86,27 +86,22 @@ const AddTaskModal = ({ showModal, setShowModal, project, selectedDate }: AddTas
                     handleChange={(value: 'yes' | 'no') => { setAddToSelectedDate(value) }}
                 />
 
-                <ButtonWrapper right={
-                    [
-                        <Button
-                            key="cancel"
+                <Button
+                    key="cancel"
 
-                            onClick={() => { setShowModal(false) }}
-                        >
-                            Cancel
-                        </Button>,
-                        <Button
-                            type="button"
-                            disabled={title.length === 0 || projectId.length === 0}
-                            key="save"
+                    onClick={() => { setShowModal(false) }}
+                >
+                    Cancel
+                </Button>
+                <Button
+                    type="button"
+                    disabled={title.length === 0 || projectId.length === 0}
+                    key="save"
 
-                            onClick={handleSubmit}
-                        >
-                            Save
-                        </Button>
-                    ]
-                }
-                />
+                    onClick={handleSubmit}
+                >
+                    Save
+                </Button>
             </Form>
         </Modal>
     )

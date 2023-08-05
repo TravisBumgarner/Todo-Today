@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button, Typography } from '@mui/material'
 
-import { Modal, ButtonWrapper, LabelAndInput, Form } from 'sharedComponents'
+import { Modal, LabelAndInput, Form } from 'sharedComponents'
 import { type TProject, EProjectStatus } from 'sharedTypes'
 import { projectStatusLookup } from 'utilities'
 import database from 'database'
@@ -64,21 +64,16 @@ const EditProjectModal = ({ showModal, setShowModal, projectId }: EditProjectMod
                                 inputType="select-enum"
                                 handleChange={(newStatus: EProjectStatus) => { setStatus(newStatus) }}
                             />
-                            <ButtonWrapper right={
-                                [
-                                    <Button key="cancel" onClick={() => { setShowModal(false) }}>Cancel</Button>,
-                                    <Button
-                                        key="save"
-                                        type="button"
-                                        disabled={submitDisabled}
+                            <Button key="cancel" onClick={() => { setShowModal(false) }}>Cancel</Button>
+                            <Button
+                                key="save"
+                                type="button"
+                                disabled={submitDisabled}
 
-                                        onClick={handleSubmit}
-                                    >
-                                        Save
-                                    </Button>
-                                ]
-                            }
-                            />
+                                onClick={handleSubmit}
+                            >
+                                Save
+                            </Button>
                         </Form>
                     )
             }

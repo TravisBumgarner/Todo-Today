@@ -3,7 +3,7 @@ import { v4 as uuid4 } from 'uuid'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { Button, Typography } from '@mui/material'
 
-import { Modal, Table, BigBoxOfNothing, ButtonWrapper } from 'sharedComponents'
+import { Modal, Table, BigBoxOfNothing } from 'sharedComponents'
 import { formatDateDisplayString, taskStatusLookup } from 'utilities'
 import { type TDateISODate, type TProject, type TTodoListItem, ETaskStatus, EProjectStatus, type TTask } from 'sharedTypes'
 import database from 'database'
@@ -167,11 +167,7 @@ const ManageTodoListItemsModal = ({ showModal, setShowModal, selectedDate }: Man
                             />
                         ))
                 }
-                <ButtonWrapper
-                    right={[
-                        <Button key="finished" onClick={() => { setShowModal(false) }}>Done!</Button>
-                    ]}
-                />
+                <Button key="finished" onClick={() => { setShowModal(false) }}>Done!</Button>
             </>
         )
     }

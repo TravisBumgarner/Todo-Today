@@ -12,7 +12,6 @@ import {
     Form,
     Modal,
     BigBoxOfNothing,
-    ButtonWrapper,
     Table,
     LabelInDisguise,
     PageHeader,
@@ -150,13 +149,8 @@ const AddEditReminderModal = ({ showModal, setShowModal, reminderToEdit }: AddEd
                     inputType="time"
                     handleChange={(value: unknown) => { setTimeOfDay(value) }}
                 />
-                <ButtonWrapper right={
-                    [
-                        <Button key="cancel" onClick={() => { setShowModal(false) }}>Cancel</Button>,
-                        <Button key="save" onClick={reminderToEdit ? handleEdit : handleAdd}>Save</Button>
-                    ]
-                }
-                />
+                <Button key="cancel" onClick={() => { setShowModal(false) }}>Cancel</Button>,
+                <Button key="save" onClick={reminderToEdit ? handleEdit : handleAdd}>Save</Button>
             </Form>
         </Modal>
     )
@@ -314,11 +308,7 @@ const Settings = () => {
             }
             <div>
                 <Typography variant="h3">Backups</Typography>
-                <ButtonWrapper
-                    fullWidth={
-                        <Button onClick={async () => { await handleBackup() }} fullWidth>Create Backup</Button>
-                    }
-                />
+                <Button onClick={async () => { await handleBackup() }} fullWidth>Create Backup</Button>
                 <LabelAndInput
                     inputType="select-enum"
                     name="weekStart"
@@ -339,17 +329,13 @@ const Settings = () => {
                         name="file"
                         inputType="file"
                     />
-                    <ButtonWrapper
-                        fullWidth={(
-                            <Button
-                                disabled={!restore}
-                                onClick={() => { setShowRestoreConfirmModal(true) }}
-                                fullWidth
-                            >
-                                Restore from Backup
-                            </Button>
-                        )}
-                    />
+                    <Button
+                        disabled={!restore}
+                        onClick={() => { setShowRestoreConfirmModal(true) }}
+                        fullWidth
+                    >
+                        Restore from Backup
+                    </Button>
                 </Form>
                 {
                     showRestoreConfirmModal
@@ -361,23 +347,20 @@ const Settings = () => {
                             >
                                 <Typography variant="body1">If you have data you have not created a backup for, please do that first.</Typography>
                                 <Typography variant="body1">Clicking restore will erase everything currently stored in the application.</Typography>
-                                <ButtonWrapper
-                                    right={[
-                                        <Button
-                                            key="cancel"
-                                            onClick={() => { setShowRestoreConfirmModal(false) }}
-                                            type="button"
-                                        >Cancel
-                                        </Button>,
-                                        <Button
-                                            key="restore"
-                                            type="button"
-                                            onClick={() => { handleRestore() }}
-                                        >
-                                            Restore
-                                        </Button>
-                                    ]}
-                                />
+                                <Button
+                                    key="cancel"
+                                    onClick={() => { setShowRestoreConfirmModal(false) }}
+                                    type="button"
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    key="restore"
+                                    type="button"
+                                    onClick={() => { handleRestore() }}
+                                >
+                                    Restore
+                                </Button>
                             </Modal>
                         )
                         : (null)

@@ -2,7 +2,7 @@ import React from 'react'
 import moment from 'moment'
 import { Button, Typography } from '@mui/material'
 
-import { Modal, ButtonWrapper, LabelAndInput, Form } from 'sharedComponents'
+import { Modal, LabelAndInput, Form } from 'sharedComponents'
 import { type TProject, type TSuccess } from 'sharedTypes'
 import database from 'database'
 import { useLiveQuery } from 'dexie-react-hooks'
@@ -81,26 +81,21 @@ const AddSuccessModal = ({ showModal, setShowModal, successId }: AddSuccessModal
                                 inputType="date"
                                 handleChange={(value) => { setDate(value) }}
                             />
-                            <ButtonWrapper right={
-                                [
-                                    <Button
-                                        key="cancel"
+                            <Button
+                                key="cancel"
 
-                                        onClick={() => { setShowModal(false) }}
-                                    >
-                                        Cancel
-                                    </Button>,
-                                    <Button
-                                        disabled={description.length === 0}
-                                        key="save"
+                                onClick={() => { setShowModal(false) }}
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                disabled={description.length === 0}
+                                key="save"
 
-                                        onClick={handleSubmit}
-                                    >
-                                        Save
-                                    </Button>
-                                ]
-                            }
-                            />
+                                onClick={handleSubmit}
+                            >
+                                Save
+                            </Button>
                         </Form>
                     )
             }

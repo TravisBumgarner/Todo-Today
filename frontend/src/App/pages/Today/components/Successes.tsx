@@ -1,7 +1,6 @@
 import React from 'react'
 import { Button, Typography } from '@mui/material'
 
-import { ButtonWrapper } from 'sharedComponents'
 import { type TDateISODate } from 'sharedTypes'
 import AddSuccessModal from './AddSuccessModal'
 import SuccessesTable from './SuccessesTable'
@@ -16,11 +15,7 @@ const Successes = ({ selectedDate }: SuccessesProps) => {
     return (
         <div>
             <Typography variant="h3">Successes</Typography>
-            <ButtonWrapper
-                left={[
-                    <Button key="add" onClick={() => { setShowSuccessModal(true) }} >Add New Success</Button>
-                ]}
-            />
+            <Button key="add" onClick={() => { setShowSuccessModal(true) }} >Add New Success</Button>
             <SuccessesTable selectedDate={selectedDate} />
             {
                 showSuccessModal
