@@ -1,14 +1,13 @@
 import { useLiveQuery } from 'dexie-react-hooks'
 import React from 'react'
 import styled from 'styled-components'
+import { Typography } from '@mui/material'
 
 import { EProjectStatus, ETaskStatus } from 'sharedTypes'
-import { BigBoxOfNothing, Heading, LabelAndInput, PageHeader } from 'sharedComponents'
+import { BigBoxOfNothing, LabelAndInput, PageHeader } from 'sharedComponents'
 import { bucketTasksByProject, projectStatusLookup, taskStatusLookup } from 'utilities'
 import database from 'database'
-import { AddProjectModal, AddTaskModal } from 'sharedModals'
 import { TasksTable } from './components'
-import moment from 'moment'
 
 const FilterWrapper = styled.div`
     display: flex;
@@ -30,7 +29,7 @@ const FilterWrapper = styled.div`
     }
 `
 
-type TaskFilterProps = {
+interface TaskFilterProps {
     setStatusFilter: React.Dispatch<React.SetStateAction<Record<ETaskStatus, boolean>>>
     statusFilter: Record<ETaskStatus, boolean>
 }
@@ -42,11 +41,13 @@ const TaskFilters = ({ setStatusFilter, statusFilter }: TaskFilterProps) => {
                 inputType="checkbox"
                 name="projectfilter"
                 label="Filter Tasks By Status"
-                handleChange={({ checked, value }) => setStatusFilter((prev) => {
-                    const previousFilters = { ...prev }
-                    previousFilters[value as ETaskStatus] = checked
-                    return previousFilters
-                })}
+                handleChange={({ checked, value }) => {
+                    setStatusFilter((prev) => {
+                        const previousFilters = { ...prev }
+                        previousFilters[value as ETaskStatus] = checked
+                        return previousFilters
+                    })
+                }}
                 options={
                     Object.values(ETaskStatus).map((status) => ({
                         label: taskStatusLookup[status],
@@ -61,7 +62,7 @@ const TaskFilters = ({ setStatusFilter, statusFilter }: TaskFilterProps) => {
     )
 }
 
-type ProjectFilterProps = {
+interface ProjectFilterProps {
     setStatusFilter: React.Dispatch<React.SetStateAction<Record<EProjectStatus, boolean>>>
     statusFilter: Record<EProjectStatus, boolean>
 }
@@ -73,11 +74,13 @@ const ProjectFilters = ({ setStatusFilter, statusFilter }: ProjectFilterProps) =
                 inputType="checkbox"
                 name="projectfilter"
                 label="Filter Projects By Status"
-                handleChange={({ checked, value }) => setStatusFilter((prev) => {
-                    const previousFilters = { ...prev }
-                    previousFilters[value as EProjectStatus] = checked
-                    return previousFilters
-                })}
+                handleChange={({ checked, value }) => {
+                    setStatusFilter((prev) => {
+                        const previousFilters = { ...prev }
+                        previousFilters[value as EProjectStatus] = checked
+                        return previousFilters
+                    })
+                }}
                 options={
                     Object.values(EProjectStatus).map((status) => ({
                         label: projectStatusLookup[status],
@@ -102,12 +105,12 @@ const DEFAULT_TASK_STATUS_FILTER = {
 
 const DEFAULT_PROJECT_STATUS_FILTER = {
     [EProjectStatus.INACTIVE]: false,
-    [EProjectStatus.ACTIVE]: true,
+    [EProjectStatus.ACTIVE]: true
 }
 
 const Tasks = () => {
-    const projects = useLiveQuery(() => database.projects.toArray())
-    const tasks = useLiveQuery(() => database.tasks.toArray())
+    const projects = useLiveQuery(async () => await database.projects.toArray())
+    const tasks = useLiveQuery(async () => await database.tasks.toArray())
     const [taskStatusFilter, setTaskStatusFilter] = React.useState<Record<ETaskStatus, boolean>>(DEFAULT_TASK_STATUS_FILTER)
     const [projectStatusFilter, setProjectStatusFilter] = React.useState<Record<EProjectStatus, boolean>>(DEFAULT_PROJECT_STATUS_FILTER)
     const [searchText, setSearchText] = React.useState<string>('')
@@ -145,7 +148,7 @@ const Tasks = () => {
     return (
         <div>
             <PageHeader>
-                <Heading.H2>Manage</Heading.H2>
+                <Typography variant="h2">Manage</Typography>
             </PageHeader>
             <FilterWrapper>
                 <ProjectFilters statusFilter={projectStatusFilter} setStatusFilter={setProjectStatusFilter} />

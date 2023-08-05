@@ -1,9 +1,9 @@
 import React from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { v4 as uuid4 } from 'uuid'
-import { Button } from '@mui/material'
+import { Button, Typography } from '@mui/material'
 
-import { BigBoxOfNothing, ButtonWrapper, ConfirmationModal, Heading } from 'sharedComponents'
+import { BigBoxOfNothing, ButtonWrapper, ConfirmationModal } from 'sharedComponents'
 import database from 'database'
 import { ETaskStatus, type TDateISODate } from 'sharedTypes'
 import { AddTaskModal, AddProjectModal } from 'sharedModals'
@@ -66,7 +66,7 @@ const TodoList = ({ selectedDate }: TodoListProps) => {
 
     return (
         <>
-            <Heading.H3>Todo List</Heading.H3>
+            <Typography variant="h3">Todo List</Typography>
             <ButtonWrapper
                 left={[
                     <Button

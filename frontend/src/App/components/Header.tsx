@@ -1,8 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
-
-import { Heading } from 'sharedComponents'
+import { Typography } from '@mui/material'
 
 const HeaderWrapper = styled.div`
     display:flex;
@@ -15,7 +14,7 @@ const FunHeaderWrapper = styled.div`
     height: 5rem;
     position: relative;
    
-    ${Heading.H1}{
+    h1{
         position: absolute;
         white-space: nowrap;
         opacity: 0.9;
@@ -23,35 +22,35 @@ const FunHeaderWrapper = styled.div`
         letter-spacing: 6px;
     }
 
-    ${Heading.H1}:nth-child(1){
+    h1:nth-child(1){
         left: -2px;
         top: -2px;
         opacity: 0.8;
         color: ${({ theme }) => theme.FOREGROUND};
     }
 
-    ${Heading.H1}:nth-child(2){
+    h1:nth-child(2){
         left: 2px;
         top: 2px;
         opacity: 0.8;
         color: ${({ theme }) => theme.INTERACTION};
     }
 
-    ${Heading.H1}:nth-child(3){
+    h1:nth-child(3){
         left: -2px;
         top: 2px;
         opacity: 0.8;
         color: ${({ theme }) => theme.DISABLED};
     }
 
-    ${Heading.H1}:nth-child(4){
+    h1:nth-child(4){
         left: 2px;
         top: -2px;
         opacity: 0.8;
         color: ${({ theme }) => theme.WARNING};
     }
 
-    ${Heading.H1}:nth-child(5){
+    h1:nth-child(5){
         left: 0px;
         top: 0px;
         color: ${({ theme }) => theme.BACKGROUND};
@@ -61,21 +60,21 @@ const FunHeaderWrapper = styled.div`
 const FunHeader = () => {
     return (
         <FunHeaderWrapper>
-            <Heading.H1>
+            <Typography variant="h1">
                 Todo Today
-            </Heading.H1>
-            <Heading.H1>
+            </Typography>
+            <Typography variant="h1">
                 Todo Today
-            </Heading.H1>
-            <Heading.H1>
+            </Typography>
+            <Typography variant="h1">
                 Todo Today
-            </Heading.H1>
-            <Heading.H1>
+            </Typography>
+            <Typography variant="h1">
                 Todo Today
-            </Heading.H1>
-            <Heading.H1>
+            </Typography>
+            <Typography variant="h1">
                 Todo Today
-            </Heading.H1>
+            </Typography>
         </FunHeaderWrapper>
     )
 }

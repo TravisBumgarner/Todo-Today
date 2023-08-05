@@ -1,5 +1,4 @@
 import Loading from './Loading'
-import * as Heading from './Heading'
 import * as Table from './Table'
 import * as List from './List'
 import StyledNavLink from './StyledNavLink'
@@ -21,7 +20,6 @@ import SmallParagraph from './SmallParagraph'
 
 export {
     Loading,
-    Heading,
     StyledNavLink,
     ExternalLink,
     Paragraph,

@@ -1,13 +1,13 @@
 import styled from 'styled-components'
 import React from 'react'
+import { Typography } from '@mui/material'
 
-import { Heading } from '.'
 import Paragraph from './Paragraph'
 
 const ROTATION_TIME_INCREMENT = 15
 const TIME_TO_NOT_ROTATE = 50
 
-type LoadingProps = {
+interface LoadingProps {
     fullscreen?: boolean
 }
 
@@ -17,14 +17,16 @@ const LoadingWrapper = styled.div`
     justify-content: center;
     flex-direction: column;
 
-    ${({ fullscreen }: { fullscreen?: boolean }) => (fullscreen ? `
+    ${({ fullscreen }: { fullscreen?: boolean }) => (fullscreen
+        ? `
         width: 100vw;
         position:fixed;
         top: 0;
         left: 0;
         height: 100vh;
         position: fixed;
-    ` : `
+    `
+        : `
         margin: 7rem;
     `)}
 
@@ -53,13 +55,13 @@ const Loading = ({ fullscreen }: LoadingProps) => {
             }
         }, ROTATION_TIME_INCREMENT)
 
-        return () => clearInterval(rotationIntervalId)
+        return () => { clearInterval(rotationIntervalId) }
     }, [rotation, stopRotationCounter])
 
     return (
         <LoadingWrapper fullscreen={fullscreen}>
             <Paragraph style={{ transform: `rotate(${rotation}deg)` }}>Loading</Paragraph>
-            <Heading.H2>One moment please!</Heading.H2>
+            <Typography variant="h2">One moment please!</Typography>
         </LoadingWrapper>
     )
 }
