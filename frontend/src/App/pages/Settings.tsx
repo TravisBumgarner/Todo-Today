@@ -188,7 +188,7 @@ const Settings = () => {
                     showRestoreConfirmModal
                         ? (
                             <Modal
-                                contentLabel="Restore?"
+                                title="Restore?"
                                 showModal={showRestoreConfirmModal}
                                 closeModal={() => { setShowRestoreConfirmModal(false) }}
                             >

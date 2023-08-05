@@ -55,7 +55,7 @@ const AddTaskModal = ({ showModal, setShowModal, project, selectedDate }: AddTas
 
     return (
         <Modal
-            contentLabel="Add New Task"
+            title="Add New Task"
             showModal={showModal}
             closeModal={() => { setShowModal(false) }}
         >

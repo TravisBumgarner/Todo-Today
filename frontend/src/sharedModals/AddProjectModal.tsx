@@ -26,7 +26,7 @@ const AddProjectModal = ({ showModal, setShowModal }: AddProjectModalProps) => {
 
     return (
         <Modal
-            contentLabel="Add New Project"
+            title="Add New Project"
             showModal={showModal}
             closeModal={() => { setShowModal(false) }}
         >

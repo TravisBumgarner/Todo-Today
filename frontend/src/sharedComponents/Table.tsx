@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { transparentize } from 'polished'
 
-import { TColor } from 'sharedTypes'
+import { type TColor } from 'sharedTypes'
 
 const Table = styled.table`
     margin: 1.5rem 0;
