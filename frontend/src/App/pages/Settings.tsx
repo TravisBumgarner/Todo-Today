@@ -1,13 +1,9 @@
-import React from 'react'
+import React, { useState, useContext } from 'react'
 import moment from 'moment'
 
 import database from 'database'
 import { EColorTheme, EBackupInterval } from 'sharedTypes'
 import { Box, Button, InputLabel, MenuItem, Select, Typography } from '@mui/material'
-import {
-  ConfirmationModal,
-  Modal
-} from 'sharedComponents'
 import {
   colorThemeOptionLabels,
   saveFile,
@@ -81,16 +77,13 @@ const setupAutomatedBackup = (triggerBackupFailureModal: () => void) => {
 }
 
 const Settings = () => {
-  const { state, dispatch } = React.useContext(context)
-  const [restore, setRestore] = React.useState<File | null>(null)
-  const [showRestoreConfirmModal, setShowRestoreConfirmModal] = React.useState<boolean>(false)
-  const [showNoDataModal, setShowNoDataModal] = React.useState<boolean>(false)
-  const [showInvalidBackupModal, setShowInvalidBackupModal] = React.useState<boolean>(false)
+  const { state, dispatch } = useContext(context)
+  const [restore, setRestore] = useState<File | null>(null)
 
   const handleBackup = async () => {
     const data = await createBackup()
     if (!data) {
-      setShowNoDataModal(true)
+      alert('no data')
     } else {
       void saveFile(`${moment().toISOString()}.json`, data)
     }
@@ -147,7 +140,7 @@ const Settings = () => {
           />
           <Button
             disabled={!restore}
-            onClick={() => { setShowRestoreConfirmModal(true) }}
+            onClick={() => { alert('not gonna restore confirm.') }}
             fullWidth
             variant='contained'
           >

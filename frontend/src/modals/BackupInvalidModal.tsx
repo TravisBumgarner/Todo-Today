@@ -1,13 +1,13 @@
-import React from 'Context'
-import { ConfirmationModal } from 'sharedComponents'
+// import React from 'Context'
+// import { ConfirmationModal } from 'sharedComponents'
 
-const BackupFailureModal = () => {
-  return (
-    <ConfirmationModal
-    body="That backup is invalid."
-    title="Heads Up!"
-    />
-  )
-}
+// const BackupFailureModal = () => {
+//   return (
+//     <ConfirmationModal
+//     body="That backup is invalid."
+//     title="Heads Up!"
+//     />
+//   )
+// }
 
-export default BackupFailureModal
+// export default BackupFailureModal

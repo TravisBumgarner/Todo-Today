@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useContext, useState } from 'react'
 import { v4 as uuid4 } from 'uuid'
 import { Button, TextField } from '@mui/material'
 
@@ -8,8 +8,8 @@ import { type TProject, EProjectStatus } from 'sharedTypes'
 import { context } from 'Context'
 
 const AddProjectModal = () => {
-  const [title, setTitle] = React.useState<string>('')
-  const { dispatch } = React.useContext(context)
+  const [title, setTitle] = useState<string>('')
+  const { dispatch } = useContext(context)
 
   const handleSubmit = useCallback(async () => {
     const newProject: TProject = {

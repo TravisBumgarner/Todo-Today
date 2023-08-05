@@ -29,6 +29,8 @@ module.exports = {
     '@typescript-eslint/consistent-type-assertions': 'off',
     '@typescript-eslint/no-non-null-assertion': 'off',
     '@typescript-eslint/indent': 'off',
-    '@typescript-eslint/key-spacing': 'off'
+    '@typescript-eslint/key-spacing': 'off',
+    '@typescript-eslint/space-before-function-paren': 'off'
+
   }
 }

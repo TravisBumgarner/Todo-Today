@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState, useContext } from 'react'
 import { Button, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material'
 
 import { Modal } from 'sharedComponents'
@@ -8,7 +8,7 @@ import database from 'database'
 import { context } from 'Context'
 
 const EditProjectModal = () => {
-  const { state, dispatch } = React.useContext(context)
+  const { state, dispatch } = useContext(context)
   const [title, setTitle] = useState<string>('')
   const [status, setStatus] = useState<EProjectStatus>(EProjectStatus.ACTIVE)
   const [submitDisabled, setSubmitDisabled] = useState<boolean>(true)

@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useContext } from 'react'
 import { v4 as uuid4 } from 'uuid'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { Button, Typography } from '@mui/material'
@@ -23,7 +23,7 @@ interface TasksByProjectTableProps {
 }
 
 const TasksByProjectTable = ({ project, tasks, taskIdsToTodoListIds }: TasksByProjectTableProps) => {
-  const { state } = React.useContext(context)
+  const { state } = useContext(context)
   const handleSelect = async ({ projectId, taskId }: { projectId: string, taskId: string }) => {
     await database.todoListItems.add({
       projectId,
@@ -104,7 +104,7 @@ const TasksByProjectTable = ({ project, tasks, taskIdsToTodoListIds }: TasksByPr
 }
 
 const ManageTodoListItemsModal = () => {
-  const { state, dispatch } = React.useContext(context)
+  const { state, dispatch } = useContext(context)
   const tasksByProject = useLiveQuery(async () => {
     const projects = await database
       .projects
