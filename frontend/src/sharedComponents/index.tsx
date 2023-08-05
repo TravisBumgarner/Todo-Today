@@ -1,7 +1,5 @@
 import Loading from './Loading'
 import * as Table from './Table'
-import StyledNavLink from './StyledNavLink'
-import ExternalLink from './ExternalLink'
 import Modal from './Modal'
 import colors from './colors'
 import DropdownMenu from './DropdownMenu'
@@ -12,8 +10,6 @@ import PageHeader from './PageHeader'
 
 export {
     Loading,
-    StyledNavLink,
-    ExternalLink,
     Table,
     Modal,
     colors,

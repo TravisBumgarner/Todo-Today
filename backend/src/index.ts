@@ -7,7 +7,7 @@ import { app, BrowserWindow, ipcMain, Menu, Notification } from 'electron'
 
 import { isDev, isDebugProduction } from './config'
 import menu from './menu'
-import { NotificationIPC, BackupIPC, AppStartIPC, AddReminderIPC, EditReminderIPC, RefreshRemindersIPC } from '../../shared/types'
+import { NotificationIPC, BackupIPC, AppStartIPC, RefreshRemindersIPC } from '../../shared/types'
 import { deleteReminder, addReminder, refreshReminders, editReminder } from './reminders'
 
 if (isDev) require('electron-reloader')(module)
@@ -16,7 +16,7 @@ let mainWindow
 
 const BACKUPS_DIR = path.resolve(app.getPath('documents'), app.name, 'backups')
 if (!fs.existsSync(BACKUPS_DIR)) {
-    fs.mkdirSync(BACKUPS_DIR, {recursive: true});
+    fs.mkdirSync(BACKUPS_DIR, { recursive: true });
 }
 
 contextMenu({ showInspectElement: isDev });
@@ -58,24 +58,6 @@ app.whenReady().then(() => {
 
 app.on('window-all-closed', function () {
     if (process.platform !== 'darwin') app.quit()
-})
-
-ipcMain.on('notification', async (event, arg: NotificationIPC) => {
-    new Notification({ body: arg.body, title: arg.title }).show()
-})
-
-ipcMain.handle('add-reminder', async (event, reminder: AddReminderIPC) => {
-    const reminderIndex = addReminder(reminder)
-    return reminderIndex
-})
-
-ipcMain.handle('edit-reminder', async (event, reminder: EditReminderIPC) => {
-    const editedReminder = editReminder(reminder)
-})
-
-ipcMain.handle('remove-reminder', async (event, reminderIndex: string) => {
-    const deletedReminderIndex = deleteReminder(reminderIndex)
-    return deletedReminderIndex
 })
 
 ipcMain.handle('app-start', async () => {

@@ -1,20 +1,20 @@
-type TYear = `${number}${number}${number}${number}`;
-type TMonth = `${number}${number}`;
-type TDay = `${number}${number}`;
-type TDateISODate = `${TYear}-${TMonth}-${TDay}`;
+type TYear = `${number}${number}${number}${number}`
+type TMonth = `${number}${number}`
+type TDay = `${number}${number}`
+type TDateISODate = `${TYear}-${TMonth}-${TDay}`
 
 enum EProjectStatus {
     ACTIVE = 'ACTIVE',
     INACTIVE = 'INACTIVE',
 }
 
-type TProject = {
+interface TProject {
     id: string
     title: string
     status: EProjectStatus
 }
 
-type TSuccess = {
+interface TSuccess {
     id: string
     description: string
     date: TDateISODate
@@ -29,14 +29,14 @@ enum ETaskStatus {
     BLOCKED = 'BLOCKED'
 }
 
-type TTask = {
+interface TTask {
     id: string
     projectId: string
     title: string
     status: ETaskStatus
 }
 
-type TTodoListItem = {
+interface TTodoListItem {
     projectId: string
     taskId: string
     todoListDate: string
@@ -53,24 +53,6 @@ enum EBackupInterval {
     OFF = 'OFF'
 }
 
-enum EDaysOfWeek {
-    SUNDAY = '0',
-    MONDAY = '1',
-    TUESDAY = '2',
-    WEDNESDAY = '3',
-    THURSDAY = '4',
-    FRIDAY = '5',
-    SATURDAY = '6',
-
-}
-
-type TReminder = {
-    hours: string,
-    minutes: string,
-    dayOfWeek: EDaysOfWeek,
-    reminderIndex: string
-}
-
 enum EColorTheme {
     BEACH = 'BEACH',
     NEWSPAPER = 'NEWSPAPER',
@@ -84,18 +66,17 @@ enum EColorTheme {
     CONTRAST = 'CONTRAST'
 }
 
-type TColor = {
-    FOREGROUND: string,
-    INTERACTION: string,
+interface TColor {
+    FOREGROUND: string
+    INTERACTION: string
     WARNING: string
     DISABLED: string
     BACKGROUND: string
 }
 
-type TSettings = {
+interface TSettings {
     colorTheme: EColorTheme
     backupInterval: EBackupInterval
-    reminders: TReminder[]
     backupDir: string
 }
 
@@ -111,18 +92,16 @@ type TEnumType<TEnum extends string | number> =
     | (TEnum extends number ? TEnumTypeNumber<TEnum> : never)
 
 export {
-    TProject,
+    type TProject,
     EProjectStatus,
-    TTask,
+    type TTask,
     ETaskStatus,
-    TTodoListItem,
-    TEnumType,
-    TSettings,
+    type TTodoListItem,
+    type TEnumType,
+    type TSettings,
     EColorTheme,
-    TColor,
-    TDateISODate,
+    type TColor,
+    type TDateISODate,
     EBackupInterval,
-    EDaysOfWeek,
-    TReminder,
-    TSuccess
+    type TSuccess
 }
