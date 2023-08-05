@@ -58,37 +58,37 @@ const FunHeaderWrapper = styled.div`
 `
 
 const FunHeader = () => {
-    return (
-        <FunHeaderWrapper>
-            <Typography variant="h1">
-                Todo Today
-            </Typography>
-            <Typography variant="h1">
-                Todo Today
-            </Typography>
-            <Typography variant="h1">
-                Todo Today
-            </Typography>
-            <Typography variant="h1">
-                Todo Today
-            </Typography>
-            <Typography variant="h1">
-                Todo Today
-            </Typography>
-        </FunHeaderWrapper>
-    )
+  return (
+    <FunHeaderWrapper>
+      <Typography variant="h1">
+        Todo Today
+      </Typography>
+      <Typography variant="h1">
+        Todo Today
+      </Typography>
+      <Typography variant="h1">
+        Todo Today
+      </Typography>
+      <Typography variant="h1">
+        Todo Today
+      </Typography>
+      <Typography variant="h1">
+        Todo Today
+      </Typography>
+    </FunHeaderWrapper>
+  )
 }
 
 const Header = () => {
-    return (
-        <HeaderWrapper>
-            <div>
-                <Link style={{ textDecoration: 'none' }} to="/">
-                    <FunHeader />
-                </Link>
-            </div>
-        </HeaderWrapper>
-    )
+  return (
+    <HeaderWrapper>
+      <div>
+        <Link style={{ textDecoration: 'none' }} to="/">
+          <FunHeader />
+        </Link>
+      </div>
+    </HeaderWrapper>
+  )
 }
 
 export default Header
