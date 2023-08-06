@@ -36,8 +36,8 @@ const App = () => {
 
   return (
     <CssVarsProvider theme={theme}>
+      <CssBaseline />
       <Box css={appWrapperCSS}>
-        <CssBaseline />
         <Header />
         <Router />
         <LazyLoadModal />
@@ -47,12 +47,13 @@ const App = () => {
 }
 
 const appWrapperCSS = css`
-  margin: 1rem;
+  margin: 1rem auto;
   max-width: 1200px;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  box-sizing: border-box;
 `
 
 class ErrorBoundary extends Component<{ children: any }, { hasError: boolean, error: string }> {

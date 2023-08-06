@@ -1,7 +1,7 @@
-import React, { useCallback, useContext, type MouseEvent, type FC } from 'react'
+import React, { useCallback, useContext, type MouseEvent, type FC, useState } from 'react'
 import database from 'database'
 import { useLiveQuery } from 'dexie-react-hooks'
-import { Box, Button, Tooltip, Typography } from '@mui/material'
+import { Box, Button, TextField, Tooltip, Typography, css } from '@mui/material'
 
 import { EmptyStateDisplay } from 'sharedComponents'
 import { ETaskStatus } from 'sharedTypes'
@@ -18,7 +18,7 @@ import PsychologyIcon from '@mui/icons-material/Psychology'
 import { context } from 'Context'
 
 const StatusToggle: FC<{ taskId: string, status: ETaskStatus }> = ({ taskId, status }) => {
-  const handleOnChange = async (
+  const handleStatusChange = async (
     event: MouseEvent<HTMLElement>,
     value: ETaskStatus | null
   ) => {
@@ -29,7 +29,7 @@ const StatusToggle: FC<{ taskId: string, status: ETaskStatus }> = ({ taskId, sta
     <ToggleButtonGroup
       value={status}
       exclusive
-      onChange={handleOnChange}
+      onChange={handleStatusChange}
       aria-label="text alignment"
     >
       <ToggleButton value={ETaskStatus.NEW}>
@@ -62,16 +62,17 @@ const StatusToggle: FC<{ taskId: string, status: ETaskStatus }> = ({ taskId, sta
 }
 
 interface TodoListItemProps {
-  todoListItemId: string
+  taskTitle: string
+  projectTitle: string
+  taskStatus: ETaskStatus
+  details: string
   taskId: string
   projectId: string
+  id: string
 }
 
-const TodoListItem = ({ todoListItemId, projectId, taskId }: TodoListItemProps) => {
+const TodoListItem = ({ taskId, taskStatus, details, taskTitle, id, projectTitle }: TodoListItemProps) => {
   const { dispatch } = useContext(context)
-  const todoListItem = useLiveQuery(async () => await database.todoListItems.where('id').equals(todoListItemId).first())
-  const task = useLiveQuery(async () => await database.tasks.where('id').equals(taskId).first())
-  const project = useLiveQuery(async () => await database.projects.where('id').equals(projectId).first())
 
   const handleEdit = useCallback(() => {
     dispatch({
@@ -85,51 +86,25 @@ const TodoListItem = ({ todoListItemId, projectId, taskId }: TodoListItemProps) 
     })
   }, [dispatch, taskId])
 
-  if (!todoListItem || !project || !task) {
-    return <EmptyStateDisplay message="Could not find that todo list item" />
-  }
+  const handleDetailsChange: React.ChangeEventHandler<HTMLInputElement> = useCallback(
+    async (event) => {
+      await database.todoListItems.where('id').equals(id).modify({ details: event.target.value })
+    },
+    [id]
+  )
+
+  // if (!todoListItem || !project || !task) {
+  //   return <EmptyStateDisplay message="Could not find that todo list item" />
+  // }
 
   return (
     <Box>
-      <Typography variant="h4">{task.title} - {project.title}</Typography>
-      <StatusToggle taskId={task.id} status={task.status} />
-      <li>Details: {todoListItem.details}</li>
-      <li>Todo List Date: {todoListItem.todoListDate}</li>
+      <Typography variant="h4">{taskTitle} - {projectTitle}</Typography>
+      <StatusToggle taskId={taskId} status={taskStatus} />
+      <TextField onChange={handleDetailsChange} value={details} />
       <Button onClick={handleEdit}>Edit</Button>
     </Box>
   )
 }
 
-const TodoListItems = () => {
-  const { state } = useContext(context)
-
-  const todoListItems = useLiveQuery(async () => {
-    return await database.todoListItems.where('todoListDate').equals(state.selectedDate).toArray()
-  })
-
-  if (!todoListItems || todoListItems.length === 0) {
-    return (
-      <EmptyStateDisplay
-        message="Click Add Tasks to get started!"
-      />
-    )
-  }
-
-  return (
-    <div>
-      {todoListItems
-        .map((todoListItem) => (
-          <TodoListItem
-            key={todoListItem.id}
-            todoListItemId={todoListItem.id}
-            projectId={todoListItem.projectId}
-            taskId={todoListItem.taskId}
-          />
-        ))
-      }
-    </div>
-
-  )
-}
-
-export default TodoListItems
+export default TodoListItem
