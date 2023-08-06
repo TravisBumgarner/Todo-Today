@@ -33,8 +33,8 @@ const baseThemeOptions: ThemeOptions = {
       lineHeight: 1.35
     },
     h2: {
-      fontSize: '1.5rem',
-      fontWeight: 400,
+      fontSize: '2.5rem',
+      fontWeight: 700,
       lineHeight: 1.35,
       color: 'var(--mui-palette-warning-main)'
     },
