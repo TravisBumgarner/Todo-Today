@@ -1,9 +1,7 @@
-import React, { useCallback, useContext, type MouseEvent, type FC, useState } from 'react'
+import React, { useCallback, useContext, type MouseEvent, type FC } from 'react'
 import database from 'database'
-import { useLiveQuery } from 'dexie-react-hooks'
-import { Box, Button, TextField, Tooltip, Typography, css } from '@mui/material'
+import { Box, Button, TextField, Tooltip, Typography } from '@mui/material'
 
-import { EmptyStateDisplay } from 'sharedComponents'
 import { ETaskStatus } from 'sharedTypes'
 
 import { ModalID } from 'modals'
