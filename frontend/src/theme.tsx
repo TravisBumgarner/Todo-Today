@@ -1,6 +1,7 @@
 import React, { forwardRef } from 'react'
-import { type LinkProps, createTheme } from '@mui/material'
+import { type LinkProps } from '@mui/material'
 import { Link as RouterLink, type LinkProps as RouterLinkProps } from 'react-router-dom'
+import { experimental_extendTheme as extendTheme } from '@mui/material/styles'
 
 import { type ThemeOptions } from '@mui/material/styles'
 
@@ -23,6 +24,32 @@ const baseThemeOptions: ThemeOptions = {
         LinkComponent: LinkBehavior
       }
     }
+  },
+  typography: {
+    fontFamily: 'Comfortaa',
+    h1: {
+      fontSize: '2rem',
+      fontWeight: 400,
+      lineHeight: 1.35
+    },
+    h2: {
+      fontSize: '1.5rem',
+      fontWeight: 400,
+      lineHeight: 1.35,
+      color: 'var(--mui-palette-warning-main)'
+    },
+    h3: {
+      fontSize: '1.5rem',
+      fontWeight: 400,
+      lineHeight: 1.35,
+      color: 'var(--mui-palette-warning-main)'
+    },
+    h4: {
+      fontSize: '1.3rem',
+      fontWeight: 400,
+      lineHeight: 1.35,
+      color: 'var(--mui-palette-warning-main)'
+    }
   }
 }
 
@@ -40,7 +67,7 @@ const beachThemeOptions: ThemeOptions = {
       paper: '#456990'
     },
     warning: {
-      main: '#7f3a3a'
+      main: '#ef7a76'
     },
     error: {
       main: '#ff3f85'
@@ -62,13 +89,12 @@ const beachThemeOptions: ThemeOptions = {
 
 // }
 
-export const beachTheme = createTheme(beachThemeOptions)
-export const baseTheme = createTheme(baseThemeOptions)
+export const beachTheme = extendTheme(beachThemeOptions)
+export const baseTheme = extendTheme(baseThemeOptions)
 
 export const pageHeaderCSS = {
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'center',
-  margin: '0 0 1rem 0',
-  height: '60px'
+  margin: '0 0 0.5rem 0'
 }

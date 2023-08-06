@@ -1,9 +1,7 @@
-import Navigation from './Navigation'
 import Router from './Router'
-import Title from './Title'
+import Header from './Header'
 
 export {
-    Navigation,
-    Router,
-    Title
+  Router,
+  Header
 }

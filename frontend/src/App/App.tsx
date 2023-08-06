@@ -1,10 +1,10 @@
 import React, { Component, useCallback, useContext, useEffect, useMemo } from 'react'
 import { BrowserRouter } from 'react-router-dom'
-import { ThemeProvider, CssBaseline } from '@mui/material'
-import { Experimental_CssVarsProvider as CssVarsProvider } from '@mui/material/styles'
+import { Box, CssBaseline } from '@mui/material'
+import { Experimental_CssVarsProvider as CssVarsProvider, css } from '@mui/material/styles'
 
 import Context, { context } from 'Context'
-import { Navigation, Router, Title } from './components'
+import { Header, Router } from './components'
 import { setupAutomatedBackup } from './pages/Settings'
 import LazyLoadModal, { ModalID } from 'modals'
 import { baseTheme, beachTheme } from 'theme'
@@ -35,21 +35,25 @@ const App = () => {
   }, [state.settings.colorTheme])
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssVarsProvider>
+    <CssVarsProvider theme={theme}>
+      <Box css={appWrapperCSS}>
         <CssBaseline />
-        <div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Title />
-            <Navigation />
-          </div>
-          <Router />
-          <LazyLoadModal />
-        </div>
-      </CssVarsProvider>
-    </ThemeProvider>
+        <Header />
+        <Router />
+        <LazyLoadModal />
+      </Box>
+    </CssVarsProvider>
   )
 }
+
+const appWrapperCSS = css`
+  margin: 1rem;
+  max-width: 1200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+`
 
 class ErrorBoundary extends Component<{ children: any }, { hasError: boolean, error: string }> {
   constructor(props: any) {
