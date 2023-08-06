@@ -11,7 +11,7 @@ const LinkBehavior = forwardRef<HTMLAnchorElement, Omit<RouterLinkProps, 'to'> &
 })
 LinkBehavior.displayName = 'LinkBehavior'
 
-const baseTheme = {
+const baseThemeOptions: ThemeOptions = {
   components: {
     MuiLink: {
       defaultProps: {
@@ -27,7 +27,7 @@ const baseTheme = {
 }
 
 const beachThemeOptions: ThemeOptions = {
-  ...baseTheme,
+  ...baseThemeOptions,
   palette: {
     primary: {
       main: '#7bc3ff'
@@ -48,22 +48,22 @@ const beachThemeOptions: ThemeOptions = {
   }
 }
 
-export const themeOptions2: ThemeOptions = {
-  ...baseTheme,
-  palette: {
-    mode: 'dark'
-  },
-  typography: {
-    h2: {
-      fontSize: '2rem',
-      fontWeight: 700
-    }
-  }
+// export const themeOptions2: ThemeOptions = {
+//   ...baseTheme,
+//   palette: {
+//     mode: 'dark'
+//   },
+//   typography: {
+//     h2: {
+//       fontSize: '2rem',
+//       fontWeight: 700
+//     }
+//   }
 
-}
+// }
 
 export const beachTheme = createTheme(beachThemeOptions)
-export const theme2 = createTheme(themeOptions2)
+export const baseTheme = createTheme(baseThemeOptions)
 
 export const pageHeaderCSS = {
   display: 'flex',
