@@ -2,7 +2,7 @@ import React, { useCallback, useState, useContext } from 'react'
 import { v4 as uuid4 } from 'uuid'
 import { Button, FormControlLabel, MenuItem, OutlinedInput, Select, Switch, TextField } from '@mui/material'
 
-import { Modal } from 'sharedComponents'
+import Modal from './Modal'
 import { type TProject, ETaskStatus, EProjectStatus } from 'sharedTypes'
 import database from 'database'
 import { useLiveQuery } from 'dexie-react-hooks'

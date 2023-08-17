@@ -3,7 +3,7 @@ import { v4 as uuid4 } from 'uuid'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { Button, Typography } from '@mui/material'
 
-import { Modal, Table, EmptyStateDisplay } from 'sharedComponents'
+import { Modal, EmptyStateDisplay } from 'sharedComponents'
 import { formatDateDisplayString, taskStatusLookup } from 'utilities'
 import { type TProject, type TTodoListItem, ETaskStatus, EProjectStatus, type TTask } from 'sharedTypes'
 import database from 'database'
@@ -45,15 +45,15 @@ const TasksByProjectTable = ({ project, tasks, taskIdsToTodoListIds }: TasksByPr
         tasks.length === 0
           ? (<EmptyStateDisplay message="No tasks for this project!" />)
           : (
-            <Table.Table>
-              <Table.TableHeader>
-                <Table.TableRow>
-                  <Table.TableHeaderCell>Task</Table.TableHeaderCell>
-                  <Table.TableHeaderCell>Status</Table.TableHeaderCell>
-                  <Table.TableHeaderCell width="110px"></Table.TableHeaderCell>
-                </Table.TableRow>
-              </Table.TableHeader>
-              <Table.TableBody>
+            <table>
+              <thead>
+                <tr>
+                  <th>Task</th>
+                  <th>Status</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
                 {
                   tasks
                     .sort((a, b) => {
@@ -63,10 +63,10 @@ const TasksByProjectTable = ({ project, tasks, taskIdsToTodoListIds }: TasksByPr
                     })
                     .map(({ title, id: taskId, status }) => {
                       return (
-                        <Table.TableRow key={taskId}>
-                          <Table.TableBodyCell>{title}</Table.TableBodyCell>
-                          <Table.TableBodyCell>{taskStatusLookup[status]}</Table.TableBodyCell>
-                          <Table.TableBodyCell>
+                        <tr key={taskId}>
+                          <td>{title}</td>
+                          <td>{taskStatusLookup[status]}</td>
+                          <td>
                             {
                               Object.keys(taskIdsToTodoListIds).includes(taskId)
                                 ? (
@@ -90,13 +90,13 @@ const TasksByProjectTable = ({ project, tasks, taskIdsToTodoListIds }: TasksByPr
                                   </Button>
                                 )
                             }
-                          </Table.TableBodyCell>
-                        </Table.TableRow>
+                          </td>
+                        </tr>
                       )
                     })
                 }
-              </Table.TableBody>
-            </Table.Table>
+              </tbody>
+            </table>
           )
       }
     </>

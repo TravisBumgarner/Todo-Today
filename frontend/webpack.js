@@ -22,6 +22,7 @@ module.exports = {
             modals: path.resolve(__dirname, 'src/modals/'),
             sharedTypes: path.resolve(__dirname, 'src/sharedTypes.ts'),
             theme: path.resolve(__dirname, 'src/theme.tsx'),
+            colors: path.resolve(__dirname, 'src/colors.tsx'),
             utilities: path.resolve(__dirname, 'src/utilities.ts'),
             Context: path.resolve(__dirname, 'src/Context.tsx'),
             database: path.resolve(__dirname, 'src/database.ts')
@@ -37,7 +38,6 @@ module.exports = {
     plugins: [
         new HtmlWebpackPlugin({
             template: './src/static/index.template.ejs',
-            favicon: './src/static/favicon.png',
             inject: 'body'
         })
     ]

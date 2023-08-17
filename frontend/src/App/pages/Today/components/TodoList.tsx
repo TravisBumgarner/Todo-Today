@@ -1,21 +1,21 @@
-import React, { useCallback, useContext } from 'react'
+import { useCallback, useContext } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { v4 as uuid4 } from 'uuid'
-import { Box, Button, ButtonGroup, Typography } from '@mui/material'
 
 import database from 'database'
 import { ETaskStatus, type TProject, type TTask } from 'sharedTypes'
-import { ModalID } from 'modals'
 import { context } from 'Context'
 import TodoListItem from './TodoListItem'
+import { Button, Typography } from '@mui/material'
+import { ModalID } from 'modals'
 import { EmptyStateDisplay } from 'sharedComponents'
 
 const TodoList = () => {
-  const { state, dispatch } = useContext(context)
+  const { state: { selectedDate }, dispatch } = useContext(context)
 
   const selectedDateTodoListItems = useLiveQuery(
     async () => {
-      const items = await database.todoListItems.where('todoListDate').equals(state.selectedDate).toArray()
+      const items = await database.todoListItems.where('todoListDate').equals(selectedDate).toArray()
 
       return await Promise.all(items.map(async ({ id, projectId, taskId, details }) => {
         const task = await database.tasks.where('id').equals(taskId).first() as TTask
@@ -31,13 +31,12 @@ const TodoList = () => {
           id
         }
       }))
-    }, [state.selectedDate]
+    }, [selectedDate]
   )
-  console.log(selectedDateTodoListItems)
 
-  const getPreviousDatesTasks = async () => {
+  const getPreviousDatesTasks = useCallback(async () => {
     const lastDate = (
-      await database.todoListItems.where('todoListDate').below(state.selectedDate).sortBy('todoListDate')
+      await database.todoListItems.where('todoListDate').below(selectedDate).sortBy('todoListDate')
     ).reverse()[0]
 
     if (lastDate) {
@@ -48,7 +47,7 @@ const TodoList = () => {
         .toArray()
 
       if (previousDay.length === 0) {
-        alert('nothing to show')
+        alert('nothing to show modal')
       } else {
         previousDay.map(async ({ projectId, taskId, details }) => {
           const task = await database.tasks.where('id').equals(taskId).first()
@@ -62,58 +61,66 @@ const TodoList = () => {
               projectId,
               taskId,
               id: uuid4(),
-              todoListDate: state.selectedDate,
+              todoListDate: selectedDate,
               details
             })
           }
         })
       }
     } else {
-      alert('nothing to show')
+      alert('Nothing to copy modal')
     }
-  }
+  }, [selectedDate])
 
-  const handleNewProject = useCallback(() => {
+  const showManagementModal = useCallback(() => {
+    dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.MANAGE_TASKS } })
+  }, [dispatch])
+
+  const showAddNewProjectModal = useCallback(() => {
     dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.ADD_PROJECT } })
   }, [dispatch])
 
-  const handleNewTask = useCallback(() => {
+  const showAddNewTaskModal = useCallback(() => {
     dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.ADD_TASK } })
   }, [dispatch])
 
-  const handleManageTasks = useCallback(() => {
-    dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.MANAGE_TASKS } })
-  }, [dispatch])
-  console.log(selectedDateTodoListItems)
-  if ((!selectedDateTodoListItems || selectedDateTodoListItems.length === 0)) {
-    return <EmptyStateDisplay message="Nothing planned for today" />
-  }
-
   return (
-    <>
+    <div>
       <Typography variant="h3">Todo List</Typography>
-      <Box>
-        <Button disabled={selectedDateTodoListItems?.length > 0} onClick={getPreviousDatesTasks}>
-          Copy Previous
-        </Button>
-        <Button onClick={handleManageTasks}
-        >
-          Manage Tasks
-        </Button>
-        <ButtonGroup>
-          <Button onClick={handleNewProject}>New Project</Button>
-          <Button onClick={handleNewTask}>New Task</Button>
-        </ButtonGroup>
-      </Box>
-      {selectedDateTodoListItems
-        .map((details) => (
-          <TodoListItem
-            key={details.id}
-            {...details}
-          />
-        ))
-      }
-    </>
+      <Button
+        disabled={selectedDateTodoListItems && selectedDateTodoListItems.length > 0}
+        onClick={getPreviousDatesTasks}
+      >
+        Copy Previous
+      </Button>
+      <Button
+        onClick={showManagementModal}
+      >
+        Select Tasks
+      </Button>
+      <Button
+        onClick={showAddNewProjectModal}
+      >
+        Add New Project
+      </Button>
+      <Button
+        onClick={showAddNewTaskModal}
+      >
+        Add New Task
+      </Button>
+      {selectedDateTodoListItems && selectedDateTodoListItems.length > 0
+        ? (
+          selectedDateTodoListItems.map((details) => (
+            <TodoListItem
+              key={details.taskId}
+              {...details}
+            />
+          ))
+        )
+        : (
+          <EmptyStateDisplay message="Go create some projects and tasks and come back!" />
+        )}
+    </div>
   )
 }
 

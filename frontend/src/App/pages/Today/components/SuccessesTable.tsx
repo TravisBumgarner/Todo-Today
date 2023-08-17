@@ -3,7 +3,7 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import { Button } from '@mui/material'
 
 import database from 'database'
-import { EmptyStateDisplay, Table } from 'sharedComponents'
+import { EmptyStateDisplay } from 'sharedComponents'
 import { type TProject } from 'sharedTypes'
 import { context } from 'Context'
 import { ModalID } from 'modals'
@@ -32,15 +32,15 @@ const SuccessesTable = () => {
   }
 
   return (
-    <Table.Table>
-      <Table.TableHeader>
-        <Table.TableRow>
-          <Table.TableHeaderCell width="20%">Project</Table.TableHeaderCell>
-          <Table.TableHeaderCell>Description</Table.TableHeaderCell>
-          <Table.TableHeaderCell width="100px">Actions</Table.TableHeaderCell>
-        </Table.TableRow>
-      </Table.TableHeader>
-      <Table.TableBody>
+    <table>
+      <thead>
+        <tr>
+          <th>Project</th>
+          <th>Description</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
         {
           tableRows
             .sort((a, b) => {
@@ -53,10 +53,10 @@ const SuccessesTable = () => {
                 dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.EDIT_SUCCESS_MODAL, data: { successId: id } } })
               }
               return (
-                <Table.TableRow key={id}>
-                  <Table.TableBodyCell>{projectTitle}</Table.TableBodyCell>
-                  <Table.TableBodyCell>{description}</Table.TableBodyCell>
-                  <Table.TableBodyCell>
+                <tr key={id}>
+                  <td>{projectTitle}</td>
+                  <td>{description}</td>
+                  <td>
                     <Button
                       fullWidth
                       key="edit"
@@ -77,13 +77,13 @@ const SuccessesTable = () => {
                     >
                       Delete
                     </Button>
-                  </Table.TableBodyCell>
-                </Table.TableRow>
+                  </td>
+                </tr>
               )
             })
         }
-      </Table.TableBody>
-    </Table.Table>
+      </tbody>
+    </table>
   )
 }
 

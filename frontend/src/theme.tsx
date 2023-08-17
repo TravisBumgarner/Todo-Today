@@ -1,7 +1,7 @@
 import React, { forwardRef } from 'react'
 import { type LinkProps } from '@mui/material'
 import { Link as RouterLink, type LinkProps as RouterLinkProps } from 'react-router-dom'
-import { experimental_extendTheme as extendTheme } from '@mui/material/styles'
+import { css, experimental_extendTheme as extendTheme } from '@mui/material/styles'
 
 import { type ThemeOptions } from '@mui/material/styles'
 
@@ -92,9 +92,14 @@ const beachThemeOptions: ThemeOptions = {
 export const beachTheme = extendTheme(beachThemeOptions)
 export const baseTheme = extendTheme(baseThemeOptions)
 
-export const pageHeaderCSS = {
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  margin: '0 0 0.5rem 0'
-}
+export const pageHeaderCSS = css`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 0 0.5rem 0;
+  width: 100%;
+`
+
+export const pageCSS = css`
+  width: 100%;
+`
