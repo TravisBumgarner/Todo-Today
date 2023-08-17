@@ -3,7 +3,7 @@ import { v4 as uuid4 } from 'uuid'
 import { Button, TextField } from '@mui/material'
 
 import database from 'database'
-import { Modal } from 'sharedComponents'
+import Modal from './Modal'
 import { type TProject, EProjectStatus } from 'sharedTypes'
 import { context } from 'Context'
 

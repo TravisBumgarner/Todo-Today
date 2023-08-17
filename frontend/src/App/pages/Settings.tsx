@@ -13,7 +13,7 @@ import {
 } from 'utilities'
 import { context } from 'Context'
 import { type BackupIPC } from '../../../../shared/types'
-import { pageHeaderCSS } from 'theme'
+import { pageCSS, pageHeaderCSS } from 'theme'
 
 const { ipcRenderer } = window.require('electron')
 
@@ -93,8 +93,8 @@ const Settings = () => {
     dispatch({ type: 'EDIT_USER_SETTING', payload: { key, value } })
   }
   return (
-    <div>
-      <Box sx={pageHeaderCSS}>
+    <Box css={pageCSS}>
+      <Box css={pageHeaderCSS}>
         <Typography variant="h2">
           Settings
         </Typography>
@@ -162,7 +162,7 @@ const Settings = () => {
                     setShowModal={setShowInvalidBackupModal}
                 /> */}
       </div>
-    </div>
+    </Box>
   )
 }
 

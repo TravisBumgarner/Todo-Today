@@ -1,13 +1,22 @@
-import React from 'react'
-import styled from 'styled-components'
-import { Typography } from '@mui/material'
+import { Box, Typography, css } from '@mui/material'
 
 interface EmptyStateDisplayProps {
   message: string
   callToActionButton?: JSX.Element
 }
 
-const EmptyStateDisplayWrapper = styled.div`
+const EmptyStateDisplay = ({ message, callToActionButton }: EmptyStateDisplayProps) => {
+  return (
+    <Box css={wrapperCSS}>
+      <Typography variant="body1">
+        {message}
+      </Typography>
+      {callToActionButton ?? ''}
+    </Box>
+  )
+}
+
+const wrapperCSS = css`
     display: flex;
     align-items: center;
     justify-content: center;
@@ -17,17 +26,7 @@ const EmptyStateDisplayWrapper = styled.div`
     button {
         margin-bottom: 1rem;
     }
-`
 
-const EmptyStateDisplay = ({ message, callToActionButton }: EmptyStateDisplayProps) => {
-  return (
-    <EmptyStateDisplayWrapper>
-      <Typography variant="body1">
-        {message}
-      </Typography>
-      {callToActionButton ?? ''}
-    </EmptyStateDisplayWrapper>
-  )
-}
+`
 
 export default EmptyStateDisplay

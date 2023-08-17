@@ -1,108 +1,104 @@
-import React, { useCallback, useContext, type MouseEvent, type FC } from 'react'
+import { type ChangeEvent, useState, type MouseEvent } from 'react'
 import database from 'database'
-import { Box, Button, TextField, Tooltip, Typography } from '@mui/material'
+import { Box, Container, TextField, Tooltip, Typography, css } from '@mui/material'
+import PendingIcon from '@mui/icons-material/Pending'
+import ToggleButton from '@mui/material/ToggleButton'
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
+import PsychologyIcon from '@mui/icons-material/Psychology'
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
+import CancelIcon from '@mui/icons-material/Cancel'
+import PauseCircleFilledIcon from '@mui/icons-material/PauseCircleFilled'
 
 import { ETaskStatus } from 'sharedTypes'
 
-import { ModalID } from 'modals'
-
-import PendingIcon from '@mui/icons-material/Pending'
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
-import CancelIcon from '@mui/icons-material/Cancel'
-import ToggleButton from '@mui/material/ToggleButton'
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
-import PauseCircleFilledIcon from '@mui/icons-material/PauseCircleFilled'
-import PsychologyIcon from '@mui/icons-material/Psychology'
-import { context } from 'Context'
-
-const StatusToggle: FC<{ taskId: string, status: ETaskStatus }> = ({ taskId, status }) => {
-  const handleStatusChange = async (
-    event: MouseEvent<HTMLElement>,
-    value: ETaskStatus | null
-  ) => {
-    await database.tasks.where('id').equals(taskId).modify({ status: value })
-  }
-
-  return (
-    <ToggleButtonGroup
-      value={status}
-      exclusive
-      onChange={handleStatusChange}
-      aria-label="text alignment"
-    >
-      <ToggleButton value={ETaskStatus.NEW}>
-        <Tooltip title="Pending">
-          <PendingIcon />
-        </Tooltip>
-      </ToggleButton>
-      <ToggleButton value={ETaskStatus.IN_PROGRESS}>
-        <Tooltip title="In Progress">
-          <PsychologyIcon />
-        </Tooltip>
-      </ToggleButton>
-      <ToggleButton value={ETaskStatus.BLOCKED}>
-        <Tooltip title="Blocked">
-          <PauseCircleFilledIcon />
-        </Tooltip>
-      </ToggleButton>
-      <ToggleButton value={ETaskStatus.COMPLETED}>
-        <Tooltip title="Completed">
-          <CheckCircleOutlineIcon />
-        </Tooltip>
-      </ToggleButton>
-      <ToggleButton value={ETaskStatus.CANCELED}>
-        <Tooltip title="Canceled">
-          <CancelIcon />
-        </Tooltip>
-      </ToggleButton>
-    </ToggleButtonGroup>
-  )
-}
-
 interface TodoListItemProps {
+  taskStatus: ETaskStatus
+  taskId: string
   taskTitle: string
   projectTitle: string
-  taskStatus: ETaskStatus
   details: string
-  taskId: string
   projectId: string
   id: string
 }
 
-const TodoListItem = ({ taskId, taskStatus, details, taskTitle, id, projectTitle }: TodoListItemProps) => {
-  const { dispatch } = useContext(context)
+const TodoListItem = ({ id, taskId, taskStatus: defaultTaskStatus, details: defaultDetails, taskTitle, projectTitle }: TodoListItemProps) => {
+  const [taskStatus, setTaskStatus] = useState(defaultTaskStatus)
+  const [details, setDetails] = useState(defaultDetails)
 
-  const handleEdit = useCallback(() => {
-    dispatch({
-      type: 'SET_ACTIVE_MODAL',
-      payload: {
-        id: ModalID.EDIT_TASK,
-        data: {
-          taskId
-        }
-      }
-    })
-  }, [dispatch, taskId])
+  const handleStatusChange = async (
+    event: MouseEvent<HTMLElement>,
+    status: ETaskStatus
+  ) => {
+    // For whatever reason, Dexie does not seem to want to liveSync updates. Therefore, we'll keep track
+    // of the value locally, and also sync it to Dexie.
+    void database.tasks.where('id').equals(taskId).modify({ status })
+    setTaskStatus(status)
+  }
 
-  const handleDetailsChange: React.ChangeEventHandler<HTMLInputElement> = useCallback(
-    async (event) => {
-      await database.todoListItems.where('id').equals(id).modify({ details: event.target.value })
-    },
-    [id]
-  )
-
-  // if (!todoListItem || !project || !task) {
-  //   return <EmptyStateDisplay message="Could not find that todo list item" />
-  // }
+  const handleDetailsChange = async (
+    event: ChangeEvent<HTMLInputElement>
+  ) => {
+    // For whatever reason, Dexie does not seem to want to liveSync updates. Therefore, we'll keep track
+    // of the value locally, and also sync it to Dexie.
+    void database.todoListItems.where('id').equals(id).modify({ details: event.target.value })
+    console.log('event.target.value', event.target.value)
+    setDetails(event.target.value)
+  }
 
   return (
-    <Box>
-      <Typography variant="h4">{taskTitle} - {projectTitle}</Typography>
-      <StatusToggle taskId={taskId} status={taskStatus} />
-      <TextField onChange={handleDetailsChange} value={details} />
-      <Button onClick={handleEdit}>Edit</Button>
-    </Box>
+    <Container css={wrapperCSS}>
+      <Box css={headerCSS}>
+        <Typography variant="h3">{taskTitle} - {projectTitle}</Typography>
+        <ToggleButtonGroup
+          value={taskStatus}
+          exclusive
+          onChange={handleStatusChange}
+          aria-label="text alignment"
+        >
+          <ToggleButton value={ETaskStatus.NEW}>
+            <Tooltip title="Pending">
+              <PendingIcon />
+            </Tooltip>
+          </ToggleButton>
+          <ToggleButton value={ETaskStatus.IN_PROGRESS}>
+            <Tooltip title="In Progress">
+              <PsychologyIcon />
+            </Tooltip>
+          </ToggleButton>
+          <ToggleButton value={ETaskStatus.BLOCKED}>
+            <Tooltip title="Blocked">
+              <PauseCircleFilledIcon />
+            </Tooltip>
+          </ToggleButton>
+          <ToggleButton value={ETaskStatus.COMPLETED}>
+            <Tooltip title="Completed">
+              <CheckCircleOutlineIcon />
+            </Tooltip>
+          </ToggleButton>
+          <ToggleButton value={ETaskStatus.CANCELED}>
+            <Tooltip title="Canceled">
+              <CancelIcon />
+            </Tooltip>
+          </ToggleButton>
+        </ToggleButtonGroup>
+      </Box>
+      <TextField fullWidth multiline value={details} onChange={handleDetailsChange} />
+    </Container>
   )
 }
+
+const headerCSS = css`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+`
+
+const wrapperCSS = css`
+  border: 2px solid black;
+  border-radius: 5px;
+  padding: 1rem;
+  margin: 1rem 0;
+`
 
 export default TodoListItem

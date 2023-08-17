@@ -4,7 +4,7 @@ import { Box, Button, ButtonGroup, Typography } from '@mui/material'
 
 import { formatDateDisplayString, formatDateKeyLookup } from 'utilities'
 import { TodoList, Successes } from './components'
-import { pageHeaderCSS } from 'theme'
+import { pageCSS, pageHeaderCSS } from 'theme'
 import { context } from 'Context'
 
 const Today = () => {
@@ -23,8 +23,8 @@ const Today = () => {
   }
 
   return (
-    <div>
-      <Box sx={pageHeaderCSS}>
+    <Box css={pageCSS}>
+      <Box css={pageHeaderCSS}>
         <Typography variant="h2">{formatDateDisplayString(state.selectedDate)}</Typography>
         <ButtonGroup>
           <Button onClick={setPreviousDate} >&lt;</Button>
@@ -34,7 +34,7 @@ const Today = () => {
       </Box>
       <TodoList />
       <Successes />
-    </div>
+    </Box>
   )
 }
 

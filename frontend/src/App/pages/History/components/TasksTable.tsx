@@ -2,7 +2,7 @@ import React, { useCallback, useContext } from 'react'
 import { Typography } from '@mui/material'
 import EditIcon from '@mui/icons-material/Edit'
 
-import { Table, EmptyStateDisplay } from 'sharedComponents'
+import { EmptyStateDisplay } from 'sharedComponents'
 import { type TProject, type TTask } from 'sharedTypes'
 import { taskStatusLookup } from 'utilities'
 import { context } from 'Context'
@@ -21,36 +21,36 @@ const TasksTable = ({ tasks, project }: TasksTableProps) => {
   }, [dispatch, project.id])
 
   const TasksTableOnly = (
-    <Table.Table>
-      <Table.TableHeader>
-        <Table.TableRow>
-          <Table.TableHeaderCell>Task</Table.TableHeaderCell>
-          <Table.TableHeaderCell width="200px">Status</Table.TableHeaderCell>
-          <Table.TableHeaderCell width="30px"></Table.TableHeaderCell>
-        </Table.TableRow>
-      </Table.TableHeader>
-      <Table.TableBody>
+    <table>
+      <thead>
+        <tr>
+          <th>Task</th>
+          <th>Status</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
         {tasks.map(({ title, status, id }) => {
           const handleEditTask = () => {
             dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.EDIT_TASK, data: { taskId: id } } })
           }
           return (
 
-            < Table.TableRow key={id} >
-              <Table.TableBodyCell>{title}</Table.TableBodyCell>
-              <Table.TableBodyCell>{taskStatusLookup[status]}</Table.TableBodyCell>
-              <Table.TableBodyCell>
+            < tr key={id} >
+              <td>{title}</td>
+              <td>{taskStatusLookup[status]}</td>
+              <td>
                 <EditIcon
                   key="edit"
                   name="edit"
                   onClick={handleEditTask}
                 />
-              </Table.TableBodyCell>
-            </Table.TableRow>
+              </td>
+            </tr>
           )
         })}
-      </Table.TableBody>
-    </Table.Table >
+      </tbody>
+    </table >
   )
 
   return (

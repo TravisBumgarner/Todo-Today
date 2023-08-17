@@ -6,7 +6,7 @@ import { EmptyStateDisplay } from 'sharedComponents'
 import { bucketTasksByProject } from 'utilities'
 import database from 'database'
 import { TasksTable } from './components'
-import { pageHeaderCSS } from 'theme'
+import { pageCSS, pageHeaderCSS } from 'theme'
 
 const Tasks = () => {
   const projects = useLiveQuery(async () => await database.projects.toArray())
@@ -38,12 +38,12 @@ const Tasks = () => {
   }
 
   return (
-    <div>
-      <Box sx={pageHeaderCSS}>
+    <Box css={pageCSS}>
+      <Box css={pageHeaderCSS}>
         <Typography variant="h2">Manage</Typography>
       </Box>
       {Contents}
-    </div>
+    </Box>
   )
 }
 

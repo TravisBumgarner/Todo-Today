@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useContext, useState } from 'react'
 import moment from 'moment'
 import { Button, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material'
 
-import { Modal } from 'sharedComponents'
+import Modal from './Modal'
 import { type TProject, type TSuccess } from 'sharedTypes'
 import database from 'database'
 import { useLiveQuery } from 'dexie-react-hooks'

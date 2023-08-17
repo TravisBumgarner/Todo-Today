@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState, useContext } from 'react'
 import { Button, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material'
 
-import { Modal } from 'sharedComponents'
+import Modal from './Modal'
 import { type TProject, EProjectStatus } from 'sharedTypes'
 import { projectStatusLookup } from 'utilities'
 import database from 'database'
