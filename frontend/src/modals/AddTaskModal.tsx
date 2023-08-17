@@ -18,6 +18,8 @@ const AddTaskModal = ({ project }: AddTaskModalProps) => {
   const [projectId, setProjectId] = useState<TProject['id'] | ''>(project ? project.id : '')
   const [addToSelectedDate, setAddToSelectedDate] = useState<boolean>(true)
 
+  const toggleAddToDate = useCallback(() => { setAddToSelectedDate(prev => !prev) }, [])
+
   const projects = useLiveQuery(async () => {
     return await database
       .projects
@@ -81,7 +83,7 @@ const AddTaskModal = ({ project }: AddTaskModalProps) => {
           {projectSelectOptions.map(({ label, value }) => <MenuItem key={label} value={value}>{label}</MenuItem>)}
         </Select>
         {/* TODO - needs data */}
-        <FormControlLabel control={<Switch checked={addToSelectedDate} onChange={() => { setAddToSelectedDate((prev: any) => !prev) }} />} label="Add to today?" />
+        <FormControlLabel control={<Switch checked={addToSelectedDate} onChange={toggleAddToDate} />} label="Add to today?" />
 
         <Button
           key="cancel"
