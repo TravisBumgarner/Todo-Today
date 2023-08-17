@@ -92,6 +92,36 @@ const Settings = () => {
   const handleSubmit = ({ key, value }: { key: string, value: string }) => {
     dispatch({ type: 'EDIT_USER_SETTING', payload: { key, value } })
   }
+
+  const handleRestore = () => {
+    if (restore) {
+      const reader = new FileReader()
+      reader.readAsText(restore, 'UTF-8')
+      reader.onload = async function (event) {
+        if (event.target?.result) {
+          const newStore = JSON.parse(event.target.result as string)
+
+          await Promise.all([
+            database.projects.clear(),
+            database.tasks.clear(),
+            database.todoListItems.clear(),
+            database.successes.clear()
+          ])
+
+          await Promise.all([
+            database.projects.bulkAdd(newStore.projects),
+            database.tasks.bulkAdd(newStore.tasks),
+            database.todoListItems.bulkAdd(newStore.todoListItems),
+            database.successes.bulkAdd(newStore.successes)
+          ])
+          setRestore(null)
+        } else {
+          alert('bad data')
+        }
+      }
+    }
+  }
+
   return (
     <Box css={pageCSS}>
       <Box css={pageHeaderCSS}>
@@ -140,7 +170,7 @@ const Settings = () => {
           />
           <Button
             disabled={!restore}
-            onClick={() => { alert('not gonna restore confirm.') }}
+            onClick={handleRestore}
             fullWidth
             variant='contained'
           >
