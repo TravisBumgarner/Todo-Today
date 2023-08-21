@@ -36,19 +36,19 @@ const baseThemeOptions: ThemeOptions = {
       fontSize: '2.5rem',
       fontWeight: 700,
       lineHeight: 1.35,
-      color: 'var(--mui-palette-warning-main)'
+      color: 'var(--mui-palette-error-main)'
     },
     h3: {
       fontSize: '1.5rem',
       fontWeight: 400,
       lineHeight: 1.35,
-      color: 'var(--mui-palette-warning-main)'
+      color: 'var(--mui-palette-error-main)'
     },
     h4: {
-      fontSize: '1.3rem',
+      fontSize: '1.4rem',
       fontWeight: 400,
       lineHeight: 1.35,
-      color: 'var(--mui-palette-warning-main)'
+      color: 'var(--mui-palette-secondary-main)'
     }
   }
 }
@@ -60,17 +60,17 @@ const beachThemeOptions: ThemeOptions = {
       main: '#7bc3ff'
     },
     secondary: {
-      main: '#7bff7f'
+      main: '#49beaa'
     },
     background: {
       default: '#456990',
-      paper: '#456990'
+      paper: '#517dab'
     },
     warning: {
-      main: '#ef7a76'
+      main: '#eeb868'
     },
     error: {
-      main: '#ff3f85'
+      main: '#ef767a'
     }
   }
 }
@@ -91,7 +91,6 @@ const beachThemeOptions: ThemeOptions = {
 
 export const beachTheme = extendTheme(beachThemeOptions)
 export const baseTheme = extendTheme(baseThemeOptions)
-
 export const pageHeaderCSS = css`
   display: flex;
   justify-content: space-between;

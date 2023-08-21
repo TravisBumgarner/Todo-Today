@@ -1,9 +1,10 @@
 import React, { useCallback } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Typography, Box, IconButton, css } from '@mui/material'
+import { Typography, Box, IconButton, css, Tooltip } from '@mui/material'
 
 import EditIcon from '@mui/icons-material/Edit'
 import SettingsIcon from '@mui/icons-material/Settings'
+import CelebrationIcon from '@mui/icons-material/Celebration'
 
 const Navigation = () => {
   const navigate = useNavigate()
@@ -15,15 +16,29 @@ const Navigation = () => {
     navigate('/settings')
   }, [navigate])
 
+  const handleSuccess = useCallback(() => {
+    navigate('/successess')
+  }, [navigate])
+
   return (
     <Box css={navigationCSS}>
+      <IconButton color="primary" onClick={handleSuccess}>
+        <Tooltip title="Successes">
+          <CelebrationIcon />
+        </Tooltip>
+      </IconButton>
+
       <IconButton color="primary" onClick={handleHistory}>
-        <EditIcon />
+        <Tooltip title="Project and Task History">
+          <EditIcon />
+        </Tooltip>
       </IconButton>
       <IconButton color="primary" onClick={handleSettings}>
-        <SettingsIcon />
+        <Tooltip title="Settings">
+          <SettingsIcon />
+        </Tooltip>
       </IconButton>
-    </Box>
+    </Box >
   )
 }
 

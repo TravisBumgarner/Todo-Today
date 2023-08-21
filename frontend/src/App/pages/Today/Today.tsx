@@ -1,39 +1,12 @@
-import React, { useContext } from 'react'
-import moment from 'moment'
-import { Box, Button, ButtonGroup, Typography } from '@mui/material'
+import { Box } from '@mui/material'
 
-import { formatDateDisplayString, formatDateKeyLookup } from 'utilities'
-import { TodoList, Successes } from './components'
-import { pageCSS, pageHeaderCSS } from 'theme'
-import { context } from 'Context'
+import { TodoList } from './components'
+import { pageCSS } from 'theme'
 
 const Today = () => {
-  const { state, dispatch } = useContext(context)
-
-  const setPreviousDate = () => {
-    dispatch({ type: 'SET_SELECTED_DATE', payload: { date: formatDateKeyLookup(moment(state.selectedDate).subtract(1, 'day')) } })
-  }
-
-  const getNextDate = () => {
-    dispatch({ type: 'SET_SELECTED_DATE', payload: { date: formatDateKeyLookup(moment(state.selectedDate).add(1, 'day')) } })
-  }
-
-  const getToday = () => {
-    dispatch({ type: 'SET_SELECTED_DATE', payload: { date: formatDateKeyLookup(moment()) } })
-  }
-
   return (
     <Box css={pageCSS}>
-      <Box css={pageHeaderCSS}>
-        <Typography variant="h2">{formatDateDisplayString(state.selectedDate)}</Typography>
-        <ButtonGroup>
-          <Button onClick={setPreviousDate} >&lt;</Button>
-          <Button onClick={getToday} >Today</Button>
-          <Button onClick={getNextDate} >&gt;</Button>
-        </ButtonGroup>
-      </Box>
       <TodoList />
-      <Successes />
     </Box>
   )
 }
