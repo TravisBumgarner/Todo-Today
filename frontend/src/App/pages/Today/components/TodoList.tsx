@@ -6,9 +6,11 @@ import database from 'database'
 import { ETaskStatus, type TProject, type TTask } from 'sharedTypes'
 import { context } from 'Context'
 import TodoListItem from './TodoListItem'
-import { Button, Typography } from '@mui/material'
+import { Box, Button, ButtonGroup, css } from '@mui/material'
 import { ModalID } from 'modals'
 import { EmptyStateDisplay } from 'sharedComponents'
+import { formatDateDisplayString, formatDateKeyLookup } from 'utilities'
+import moment from 'moment'
 
 const TodoList = () => {
   const { state: { selectedDate }, dispatch } = useContext(context)
@@ -33,6 +35,7 @@ const TodoList = () => {
       }))
     }, [selectedDate]
   )
+  console.log('todo list items are now', selectedDateTodoListItems)
 
   const getPreviousDatesTasks = useCallback(async () => {
     const lastDate = (
@@ -76,52 +79,78 @@ const TodoList = () => {
     dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.MANAGE_TASKS } })
   }, [dispatch])
 
-  const showAddNewProjectModal = useCallback(() => {
-    dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.ADD_PROJECT } })
-  }, [dispatch])
-
   const showAddNewTaskModal = useCallback(() => {
     dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.ADD_TASK } })
   }, [dispatch])
 
+  const setPreviousDate = () => {
+    dispatch({ type: 'SET_SELECTED_DATE', payload: { date: formatDateKeyLookup(moment(selectedDate).subtract(1, 'day')) } })
+  }
+
+  const getNextDate = () => {
+    dispatch({ type: 'SET_SELECTED_DATE', payload: { date: formatDateKeyLookup(moment(selectedDate).add(1, 'day')) } })
+  }
+
+  const getToday = () => {
+    dispatch({ type: 'SET_SELECTED_DATE', payload: { date: formatDateKeyLookup(moment()) } })
+  }
+
   return (
     <div>
-      <Typography variant="h3">Todo List</Typography>
-      <Button
-        disabled={selectedDateTodoListItems && selectedDateTodoListItems.length > 0}
-        onClick={getPreviousDatesTasks}
-      >
-        Copy Previous
-      </Button>
-      <Button
-        onClick={showManagementModal}
-      >
-        Select Tasks
-      </Button>
-      <Button
-        onClick={showAddNewProjectModal}
-      >
-        Add New Project
-      </Button>
-      <Button
-        onClick={showAddNewTaskModal}
-      >
-        Add New Task
-      </Button>
-      {selectedDateTodoListItems && selectedDateTodoListItems.length > 0
-        ? (
-          selectedDateTodoListItems.map((details) => (
-            <TodoListItem
-              key={details.taskId}
-              {...details}
-            />
-          ))
-        )
-        : (
-          <EmptyStateDisplay message="Go create some projects and tasks and come back!" />
-        )}
-    </div>
+      <Box css={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Box>
+          <Button
+            disabled={selectedDateTodoListItems && selectedDateTodoListItems.length > 0}
+            onClick={getPreviousDatesTasks}
+          >
+            Copy Previous
+          </Button>
+          <ButtonGroup>
+            <Button
+              onClick={showManagementModal}
+            >
+              Select Tasks
+            </Button>
+            <Button
+              onClick={showAddNewTaskModal}
+            >
+              Add New Task
+            </Button>
+          </ButtonGroup>
+        </Box>
+        <ButtonGroup>
+          <Button onClick={setPreviousDate}>&lt;</Button>
+          <Button css={todayButtonCSS} onClick={getToday}><span>{formatDateDisplayString(selectedDate)}</span></Button>
+          <Button onClick={getNextDate}>&gt;</Button>
+        </ButtonGroup>
+      </Box>
+      {
+        selectedDateTodoListItems && selectedDateTodoListItems.length > 0
+          ? (
+            selectedDateTodoListItems.map((details) => (
+              <TodoListItem
+                key={details.taskId}
+                {...details}
+              />
+            ))
+          )
+          : (
+            <EmptyStateDisplay message="Go create some projects and tasks and come back!" />
+          )
+      }
+    </div >
   )
 }
+
+const todayButtonCSS = css`
+  width: 250px;
+  &:hover span {
+      display: none;
+  }
+
+  :hover:before {
+    content:"Go to Today";
+  }
+`
 
 export default TodoList

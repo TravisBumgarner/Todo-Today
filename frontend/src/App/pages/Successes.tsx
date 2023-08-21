@@ -1,12 +1,13 @@
-import React, { useContext } from 'react'
+import { useCallback, useContext } from 'react'
+import { Typography, Button, Box } from '@mui/material'
 import { useLiveQuery } from 'dexie-react-hooks'
-import { Button } from '@mui/material'
 
+import { ModalID } from 'modals'
+import { context } from 'Context'
 import database from 'database'
 import { EmptyStateDisplay } from 'sharedComponents'
 import { type TProject } from 'sharedTypes'
-import { context } from 'Context'
-import { ModalID } from 'modals'
+import { pageCSS } from 'theme'
 
 const SuccessesTable = () => {
   const { state, dispatch } = useContext(context)
@@ -87,4 +88,28 @@ const SuccessesTable = () => {
   )
 }
 
-export default SuccessesTable
+const Successes = () => {
+  const { dispatch } = useContext(context)
+
+  const handleSuccess = useCallback(() => {
+    dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.ADD_SUCCESS_MODAL } })
+  }, [dispatch])
+
+  return (
+    <div>
+      <Typography variant="h3">Successes</Typography>
+      <Button key="add" onClick={handleSuccess} >Add Success</Button>
+      <SuccessesTable />
+    </div>
+  )
+}
+
+const SuccessesPage = () => {
+  return (
+    <Box css={pageCSS}>
+      <Successes />
+    </Box>
+  )
+}
+
+export default SuccessesPage
