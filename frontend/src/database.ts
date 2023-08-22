@@ -1,26 +1,24 @@
-// db.ts
-import Dexie, { Table } from 'dexie'
-
-import { TProject, TSuccess, TTask, TTodoListItem } from 'sharedTypes'
+import Dexie, { type Table } from 'dexie'
+import { type TProject, type TSuccess, type TTask, type TTodoListItem } from 'sharedTypes'
 
 class MySubClassedDexie extends Dexie {
-    projects!: Table<TProject>
+  projects!: Table<TProject>
 
-    tasks!: Table<TTask>
+  tasks!: Table<TTask>
 
-    todoListItems: Table<TTodoListItem>
+  todoListItems: Table<TTodoListItem>
 
-    successes: Table<TSuccess>
+  successes: Table<TSuccess>
 
-    constructor() {
-        super('todo-today')
-        this.version(2).stores({
-            projects: '[id], id, title, status',
-            tasks: '[id], id, projectId, title, status',
-            todoListItems: '[id], id, projectId, taskId, todoListDate',
-            successes: '[id], id, description, date, projectId'
-        })
-    }
+  constructor() {
+    super('todo-today')
+    this.version(3).stores({
+      projects: '[id], id, title, status',
+      tasks: '[id], id, projectId, title, status',
+      todoListItems: '[id], id, projectId, taskId, todoListDate, [sortOrder]',
+      successes: '[id], id, description, date, projectId'
+    })
+  }
 }
 
 const db = new MySubClassedDexie()

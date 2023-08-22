@@ -26,12 +26,19 @@ interface TasksByProjectTableProps {
 const TasksByProjectTable = ({ project, tasks, taskIdsToTodoListIds }: TasksByProjectTableProps) => {
   const { state } = useContext(context)
   const handleSelect = async ({ projectId, taskId }: { projectId: string, taskId: string }) => {
+    const lastTodoListItem = await database
+      .todoListItems
+      .orderBy('sortOrder')
+      .reverse()
+      .first()
+
     await database.todoListItems.add({
       projectId,
       taskId,
       id: uuid4(),
       todoListDate: state.selectedDate,
-      details: ''
+      details: '',
+      sortOrder: lastTodoListItem ? lastTodoListItem.sortOrder + 1 : 0
     })
   }
 
