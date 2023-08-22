@@ -1,9 +1,10 @@
-import { useCallback, useContext } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { v4 as uuid4 } from 'uuid'
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 
 import database from 'database'
-import { ETaskStatus, type TProject, type TTask } from 'sharedTypes'
+import { ETaskStatus, type TProject, type TTask, type TTodoListItem } from 'sharedTypes'
 import { context } from 'Context'
 import TodoListItem from './TodoListItem'
 import { Box, Button, ButtonGroup, css } from '@mui/material'
@@ -14,12 +15,13 @@ import moment from 'moment'
 
 const TodoList = () => {
   const { state: { selectedDate }, dispatch } = useContext(context)
+  const [toggleSortOrder, setToggleSortOrder] = useState(false)
 
   const selectedDateTodoListItems = useLiveQuery(
     async () => {
-      const items = await database.todoListItems.where('todoListDate').equals(selectedDate).toArray()
+      const items = await database.todoListItems.where('todoListDate').equals(selectedDate).sortBy('sortOrder')
 
-      return await Promise.all(items.map(async ({ id, projectId, taskId, details }) => {
+      return await Promise.all(items.map(async ({ id, projectId, taskId, details, sortOrder }) => {
         const task = await database.tasks.where('id').equals(taskId).first() as TTask
         const project = await database.projects.where('id').equals(projectId).first() as TProject
 
@@ -30,10 +32,11 @@ const TodoList = () => {
           details,
           taskId,
           projectId,
-          id
+          id,
+          sortOrder
         }
       }))
-    }, [selectedDate]
+    }, [selectedDate, toggleSortOrder]
   )
   console.log('todo list items are now', selectedDateTodoListItems)
 
@@ -52,7 +55,7 @@ const TodoList = () => {
       if (previousDay.length === 0) {
         alert('nothing to show modal')
       } else {
-        previousDay.map(async ({ projectId, taskId, details }) => {
+        previousDay.map(async ({ projectId, taskId, details }, index) => {
           const task = await database.tasks.where('id').equals(taskId).first()
 
           if (
@@ -65,7 +68,8 @@ const TodoList = () => {
               taskId,
               id: uuid4(),
               todoListDate: selectedDate,
-              details
+              details,
+              sortOrder: index
             })
           }
         })
@@ -93,6 +97,34 @@ const TodoList = () => {
 
   const getToday = () => {
     dispatch({ type: 'SET_SELECTED_DATE', payload: { date: formatDateKeyLookup(moment()) } })
+  }
+
+  // Laziness for types lol
+  const onDragEnd = async (result: any) => {
+    const source = await database.todoListItems.where('sortOrder').equals(result.source.index).first()
+    const destination = await database.todoListItems.where('sortOrder').equals(result.destination.index).first()
+
+    if (!source || !destination) {
+      console.log('not found')
+      return
+    }
+
+    console.log('dragged', result.draggableId, 'from', result.source.index, 'to', result.destination.index)
+    console.log('updating', source.id)
+    await database.todoListItems.where('id').equals(source.id).modify((i: TTodoListItem) => {
+      i.sortOrder = result.destination.index
+    })
+    await database.todoListItems.where('id').equals(destination.id).modify((i: TTodoListItem) => {
+      i.sortOrder = result.source.index
+    })
+
+    setToggleSortOrder(prev => !prev)
+  }
+
+  if (!selectedDateTodoListItems) {
+    return (
+      <EmptyStateDisplay message="Go create some projects and tasks and come back!" />
+    )
   }
 
   return (
@@ -124,33 +156,51 @@ const TodoList = () => {
           <Button onClick={getNextDate}>&gt;</Button>
         </ButtonGroup>
       </Box>
-      {
-        selectedDateTodoListItems && selectedDateTodoListItems.length > 0
-          ? (
-            selectedDateTodoListItems.map((details) => (
-              <TodoListItem
-                key={details.taskId}
-                {...details}
-              />
-            ))
-          )
-          : (
-            <EmptyStateDisplay message="Go create some projects and tasks and come back!" />
-          )
-      }
+
+      <DragDropContext onDragEnd={onDragEnd}>
+        <Droppable droppableId="tasks">
+          {(provided) => (
+            <div
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+            >
+              {selectedDateTodoListItems.map((it, i) => (
+                <Draggable
+                  key={it.id}
+                  draggableId={it.id}
+                  index={i}
+                >
+                  {(provided) => (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}
+                    >
+                      <TodoListItem
+                        {...it}
+                      />
+                    </div>
+                  )}
+                </Draggable>
+              ))}
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
     </div >
   )
 }
 
 const todayButtonCSS = css`
-  width: 250px;
-  &:hover span {
-      display: none;
+        width: 250px;
+        &:hover span {
+          display: none;
   }
 
-  :hover:before {
-    content:"Go to Today";
+        :hover:before {
+          content:"Go to Today";
   }
-`
+        `
 
 export default TodoList

@@ -62,12 +62,19 @@ const AddTaskModal = ({ project }: AddTaskModalProps) => {
     await database.tasks.add(newTask)
 
     if (addToSelectedDate === 'yes') {
+      const lastTodoListItem = await database
+        .todoListItems
+        .orderBy('sortOrder')
+        .reverse()
+        .first()
+
       await database.todoListItems.add({
         projectId: projectIdForTask,
         taskId,
         id: taskId,
         todoListDate: state.selectedDate,
-        details: ''
+        details: '',
+        sortOrder: lastTodoListItem ? lastTodoListItem.sortOrder + 1 : 0
       })
     }
     dispatch({ type: 'CLEAR_ACTIVE_MODAL' })

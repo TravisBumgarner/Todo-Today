@@ -4,104 +4,105 @@ type TDay = `${number}${number}`
 type TDateISODate = `${TYear}-${TMonth}-${TDay}`
 
 enum EProjectStatus {
-    ACTIVE = 'ACTIVE',
-    INACTIVE = 'INACTIVE',
+  ACTIVE = 'ACTIVE',
+  INACTIVE = 'INACTIVE',
 }
 
 interface TProject {
-    id: string
-    title: string
-    status: EProjectStatus
+  id: string
+  title: string
+  status: EProjectStatus
 }
 
 interface TSuccess {
-    id: string
-    description: string
-    date: TDateISODate
-    projectId: TProject['id']
+  id: string
+  description: string
+  date: TDateISODate
+  projectId: TProject['id']
 }
 
 enum ETaskStatus {
-    NEW = 'NEW',
-    IN_PROGRESS = 'IN_PROGRESS',
-    COMPLETED = 'COMPLETED',
-    CANCELED = 'CANCELED',
-    BLOCKED = 'BLOCKED'
+  NEW = 'NEW',
+  IN_PROGRESS = 'IN_PROGRESS',
+  COMPLETED = 'COMPLETED',
+  CANCELED = 'CANCELED',
+  BLOCKED = 'BLOCKED'
 }
 
 interface TTask {
-    id: string
-    projectId: string
-    title: string
-    status: ETaskStatus
+  id: string
+  projectId: string
+  title: string
+  status: ETaskStatus
 }
 
 interface TTodoListItem {
-    projectId: string
-    taskId: string
-    todoListDate: string
-    id: string
-    details: string
+  projectId: string
+  taskId: string
+  todoListDate: string
+  id: string
+  details: string
+  sortOrder: number
 }
 
 enum EBackupInterval {
-    MINUTELY = 'MINITELY',
-    HOURLY = 'HOURLY',
-    DAILY = 'DAILY',
-    WEEKLY = 'WEEKLY',
-    MONTHLY = 'MONTHLY',
-    OFF = 'OFF'
+  MINUTELY = 'MINITELY',
+  HOURLY = 'HOURLY',
+  DAILY = 'DAILY',
+  WEEKLY = 'WEEKLY',
+  MONTHLY = 'MONTHLY',
+  OFF = 'OFF'
 }
 
 enum EColorTheme {
-    BEACH = 'BEACH',
-    NEWSPAPER = 'NEWSPAPER',
-    OUTERSPACE = 'OUTERSPACE',
-    RETRO_FUTURE = 'RETRO_FUTURE',
-    SLATE = 'SLATE',
-    SUNSET = 'SUNSET',
-    UNDER_THE_SEA = 'UNDER_THE_SEA',
-    MEXICO = 'MEXICO',
-    FRUITS = 'FRUITS',
-    CONTRAST = 'CONTRAST'
+  BEACH = 'BEACH',
+  NEWSPAPER = 'NEWSPAPER',
+  OUTERSPACE = 'OUTERSPACE',
+  RETRO_FUTURE = 'RETRO_FUTURE',
+  SLATE = 'SLATE',
+  SUNSET = 'SUNSET',
+  UNDER_THE_SEA = 'UNDER_THE_SEA',
+  MEXICO = 'MEXICO',
+  FRUITS = 'FRUITS',
+  CONTRAST = 'CONTRAST'
 }
 
 interface TColor {
-    FOREGROUND: string
-    INTERACTION: string
-    WARNING: string
-    DISABLED: string
-    BACKGROUND: string
+  FOREGROUND: string
+  INTERACTION: string
+  WARNING: string
+  DISABLED: string
+  BACKGROUND: string
 }
 
 interface TSettings {
-    colorTheme: EColorTheme
-    backupInterval: EBackupInterval
-    backupDir: string
+  colorTheme: EColorTheme
+  backupInterval: EBackupInterval
+  backupDir: string
 }
 
 type TEnumTypeString<TEnum extends string> =
-    { [key in string]: TEnum | string; }
+  { [key in string]: TEnum | string; }
 
 type TEnumTypeNumber<TEnum extends number> =
-    { [key in string]: TEnum | number; }
-    | { [key in number]: string; }
+  { [key in string]: TEnum | number; }
+  | { [key in number]: string; }
 
 type TEnumType<TEnum extends string | number> =
-    (TEnum extends string ? TEnumTypeString<TEnum> : never)
-    | (TEnum extends number ? TEnumTypeNumber<TEnum> : never)
+  (TEnum extends string ? TEnumTypeString<TEnum> : never)
+  | (TEnum extends number ? TEnumTypeNumber<TEnum> : never)
 
 export {
-    type TProject,
-    EProjectStatus,
-    type TTask,
-    ETaskStatus,
-    type TTodoListItem,
-    type TEnumType,
-    type TSettings,
-    EColorTheme,
-    type TColor,
-    type TDateISODate,
-    EBackupInterval,
-    type TSuccess
+  type TProject,
+  EProjectStatus,
+  type TTask,
+  ETaskStatus,
+  type TTodoListItem,
+  type TEnumType,
+  type TSettings,
+  EColorTheme,
+  type TColor,
+  type TDateISODate,
+  EBackupInterval,
+  type TSuccess
 }

@@ -19,9 +19,10 @@ interface TodoListItemProps {
   details: string
   projectId: string
   id: string
+  sortOrder: number
 }
 
-const TodoListItem = ({ id, taskId, taskStatus: defaultTaskStatus, details: defaultDetails, taskTitle, projectTitle }: TodoListItemProps) => {
+const TodoListItem = ({ id, taskId, taskStatus: defaultTaskStatus, details: defaultDetails, taskTitle, projectTitle, sortOrder }: TodoListItemProps) => {
   const [taskStatus, setTaskStatus] = useState(defaultTaskStatus)
   const [details, setDetails] = useState(defaultDetails)
   const [showDetails, setShowDetails] = useState(defaultDetails.length > 0)
@@ -51,7 +52,7 @@ const TodoListItem = ({ id, taskId, taskStatus: defaultTaskStatus, details: defa
   return (
     <Card css={wrapperCSS}>
       <Box css={headerCSS(showDetails)}>
-        <Typography variant="h4">{taskTitle} - {projectTitle}</Typography>
+        <Typography variant="h4">{taskTitle} - {projectTitle} (sort Order, {sortOrder})</Typography>
         <Box css={rightHeaderCSS}>
           <FormControlLabel control={<Switch color="secondary" checked={showDetails} onChange={toggleShowDetails} />} label="Details" />
           <ToggleButtonGroup
