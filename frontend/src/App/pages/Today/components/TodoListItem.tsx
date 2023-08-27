@@ -34,6 +34,8 @@ const TodoListItem = ({ id, taskId, taskStatus: defaultTaskStatus, details: defa
     event: MouseEvent<HTMLElement>,
     status: ETaskStatus
   ) => {
+    if (status === null) return
+
     // For whatever reason, Dexie does not seem to want to liveSync updates. Therefore, we'll keep track
     // of the value locally, and also sync it to Dexie.
     await database.tasks.where('id').equals(taskId).modify({ status })
@@ -73,29 +75,29 @@ const TodoListItem = ({ id, taskId, taskStatus: defaultTaskStatus, details: defa
             onChange={handleStatusChange}
             size="small"
           >
-            <ToggleButton size='small' value={ETaskStatus.CANCELED}>
+            <ToggleButton color="error" size='small' value={ETaskStatus.CANCELED}>
               <Tooltip title="Canceled">
-                <DeleteIcon fontSize="small" color='error' />
+                <DeleteIcon fontSize="small" />
               </Tooltip>
             </ToggleButton>
-            <ToggleButton size='small' value={ETaskStatus.BLOCKED}>
+            <ToggleButton color="warning" size='small' value={ETaskStatus.BLOCKED}>
               <Tooltip title="Blocked">
-                <RemoveDoneIcon fontSize="small" color='warning' />
+                <RemoveDoneIcon fontSize="small" />
               </Tooltip>
             </ToggleButton>
-            <ToggleButton size='small' value={ETaskStatus.NEW}>
+            <ToggleButton color="secondary" size='small' value={ETaskStatus.NEW}>
               <Tooltip title="Todo">
-                <CheckBoxOutlineBlankIcon fontSize="small" style={{ color: 'var(--mui-palette-secondary-light)' }} />
+                <CheckBoxOutlineBlankIcon fontSize="small" />
               </Tooltip>
             </ToggleButton>
-            <ToggleButton size='small' value={ETaskStatus.IN_PROGRESS}>
+            <ToggleButton color="secondary" size='small' value={ETaskStatus.IN_PROGRESS}>
               <Tooltip title="Doing">
-                <LightbulbIcon fontSize="small" style={{ color: 'var(--mui-palette-secondary-main)' }} />
+                <LightbulbIcon fontSize="small" />
               </Tooltip>
             </ToggleButton>
-            <ToggleButton size='small' value={ETaskStatus.COMPLETED}>
+            <ToggleButton color="secondary" size='small' value={ETaskStatus.COMPLETED}>
               <Tooltip title="Done">
-                <DoneIcon fontSize="small" style={{ color: 'var(--mui-palette-secondary-dark)' }} />
+                <DoneIcon fontSize="small" />
               </Tooltip>
             </ToggleButton>
           </ToggleButtonGroup>
@@ -117,11 +119,11 @@ const getTitleColor = (taskStatus: ETaskStatus) => {
     case ETaskStatus.BLOCKED:
       return 'var(--mui-palette-warning-main)'
     case ETaskStatus.COMPLETED:
-      return 'var(--mui-palette-success-main)'
+      return 'var(--mui-palette-secondary-main)'
     case ETaskStatus.IN_PROGRESS:
       return 'var(--mui-palette-secondary-main)'
     default:
-      return 'var(--mui-palette-secondary-light)'
+      return 'var(--mui-palette-secondary-main)'
   }
 }
 
