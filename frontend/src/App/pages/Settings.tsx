@@ -131,10 +131,8 @@ const Settings = () => {
       </Box>
       <Typography variant="h3">User Preferences</Typography>
       <form>
-
         <InputLabel id="color-theme">Color Theme</InputLabel>
         <Select
-          color="secondary"
           fullWidth
           labelId="color-theme"
           value={state.settings.colorTheme}
