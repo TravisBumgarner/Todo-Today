@@ -82,26 +82,6 @@ const beachThemeOptions: ThemeOptions = {
     error: {
       main: '#ef767a'
     }
-  },
-  typography: {
-    fontFamily: 'Comfortaa',
-    h1: {
-    },
-    h2: {
-      color: 'var(--mui-palette-warning-main)'
-    },
-    h3: {
-      color: 'var(--mui-palette-warning-main)'
-    },
-    h4: {
-      color: 'var(--mui-palette-warning-main)'
-    },
-    body1: {
-      color: 'var(--mui-palette-secondary-main)'
-    },
-    body2: {
-      color: 'var(--mui-palette-secondary-main)'
-    }
   }
 }
 
@@ -128,26 +108,6 @@ const retroFutureThemeOptions = {
     },
     error: {
       main: '#ff3f85'
-    }
-  },
-  typography: {
-    fontFamily: 'Comfortaa',
-    h1: {
-    },
-    h2: {
-      color: 'var(--mui-palette-warning-main)'
-    },
-    h3: {
-      color: 'var(--mui-palette-warning-main)'
-    },
-    h4: {
-      color: 'var(--mui-palette-warning-main)'
-    },
-    body1: {
-      color: 'var(--mui-palette-secondary-main)'
-    },
-    body2: {
-      color: 'var(--mui-palette-secondary-main)'
     }
   }
 }
