@@ -1,5 +1,5 @@
 import { type ChangeEvent, useState, type MouseEvent, useCallback } from 'react'
-import { Box, Card, FormControlLabel, Switch, TextField, Tooltip, Typography, css } from '@mui/material'
+import { Box, Card, FormControlLabel, IconButton, Switch, TextField, Tooltip, Typography, css } from '@mui/material'
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import LightbulbIcon from '@mui/icons-material/Lightbulb'
@@ -7,6 +7,7 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import DoneIcon from '@mui/icons-material/Done'
 import RemoveDoneIcon from '@mui/icons-material/RemoveDone'
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
+import CloseIcon from '@mui/icons-material/CloseOutlined'
 
 import database from 'database'
 import { ETaskStatus } from 'sharedTypes'
@@ -35,9 +36,16 @@ const TodoListItem = ({ id, taskId, taskStatus: defaultTaskStatus, details: defa
   ) => {
     // For whatever reason, Dexie does not seem to want to liveSync updates. Therefore, we'll keep track
     // of the value locally, and also sync it to Dexie.
-    void database.tasks.where('id').equals(taskId).modify({ status })
+    await database.tasks.where('id').equals(taskId).modify({ status })
+
+    if (status === ETaskStatus.COMPLETED || status === ETaskStatus.CANCELED) {
+      const lastTodoListItem = await database.todoListItems.orderBy('sortOrder').reverse().first()
+      const sortOrder = lastTodoListItem?.sortOrder ? lastTodoListItem?.sortOrder + 1 : 0
+      await database.todoListItems.where('id').equals(id).modify({ sortOrder })
+    }
+
     setTaskStatus(status)
-  }, [taskId])
+  }, [taskId, id])
 
   const handleDetailsChange = useCallback(async (
     event: ChangeEvent<HTMLInputElement>
@@ -49,10 +57,14 @@ const TodoListItem = ({ id, taskId, taskStatus: defaultTaskStatus, details: defa
     setDetails(event.target.value)
   }, [id])
 
+  const handleRemoveFromToday = useCallback(async () => {
+    await database.todoListItems.where({ id }).delete()
+  }, [id])
+
   return (
     <Card css={wrapperCSS}>
       <Box css={headerCSS(showDetails)}>
-        <Typography variant="h4">{taskTitle} - {projectTitle} (sort Order, {sortOrder})</Typography>
+        <Typography variant="h4" css={titleCSS(taskStatus)}>{taskTitle} - {projectTitle} (sort Order, {sortOrder})</Typography>
         <Box css={rightHeaderCSS}>
           <FormControlLabel control={<Switch color="secondary" checked={showDetails} onChange={toggleShowDetails} />} label="Details" />
           <ToggleButtonGroup
@@ -87,12 +99,35 @@ const TodoListItem = ({ id, taskId, taskStatus: defaultTaskStatus, details: defa
               </Tooltip>
             </ToggleButton>
           </ToggleButtonGroup>
+          <IconButton onClick={handleRemoveFromToday} css={{ marginLeft: '1rem' }}>
+            <CloseIcon fontSize="small" style={{ color: 'var(--mui-palette-primary-main)' }} />
+          </IconButton>
+
         </Box>
       </Box>
       {showDetails && <TextField color='secondary' fullWidth multiline value={details} onChange={handleDetailsChange} />}
     </Card>
   )
 }
+
+const getTitleColor = (taskStatus: ETaskStatus) => {
+  switch (taskStatus) {
+    case ETaskStatus.CANCELED:
+      return 'var(--mui-palette-error-main)'
+    case ETaskStatus.BLOCKED:
+      return 'var(--mui-palette-warning-main)'
+    case ETaskStatus.COMPLETED:
+      return 'var(--mui-palette-success-main)'
+    case ETaskStatus.IN_PROGRESS:
+      return 'var(--mui-palette-secondary-main)'
+    default:
+      return 'var(--mui-palette-secondary-light)'
+  }
+}
+
+const titleCSS = (taskStatus: ETaskStatus) => css`
+  color: ${getTitleColor(taskStatus)};
+`
 
 const rightHeaderCSS = css`
   min-width: 295px;

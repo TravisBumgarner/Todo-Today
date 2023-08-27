@@ -37,7 +37,7 @@ const TodoList = () => {
         }
       }))
     }, [selectedDate, toggleSortOrder]
-  )
+)
   console.log('todo list items are now', selectedDateTodoListItems)
 
   const getPreviousDatesTasks = useCallback(async () => {
@@ -109,8 +109,6 @@ const TodoList = () => {
       return
     }
 
-    console.log('dragged', result.draggableId, 'from', result.source.index, 'to', result.destination.index)
-    console.log('updating', source.id)
     await database.todoListItems.where('id').equals(source.id).modify((i: TTodoListItem) => {
       i.sortOrder = result.destination.index
     })
@@ -120,7 +118,7 @@ const TodoList = () => {
 
     setToggleSortOrder(prev => !prev)
   }
-
+  console.log(selectedDateTodoListItems)
   if (!selectedDateTodoListItems) {
     return (
       <EmptyStateDisplay message="Go create some projects and tasks and come back!" />
@@ -128,7 +126,7 @@ const TodoList = () => {
   }
 
   return (
-    <div>
+    <Box>
       <Box css={{ display: 'flex', justifyContent: 'space-between' }}>
         <Box>
           <Button
@@ -156,19 +154,19 @@ const TodoList = () => {
           <Button onClick={getNextDate}>&gt;</Button>
         </ButtonGroup>
       </Box>
-
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="tasks">
-          {(provided) => (
+          {(provided, snapshot) => (
             <div
               ref={provided.innerRef}
               {...provided.droppableProps}
+              style={dragAndDropCSS}
             >
-              {selectedDateTodoListItems.map((it, i) => (
+              {selectedDateTodoListItems.map((it, index) => (
                 <Draggable
                   key={it.id}
                   draggableId={it.id}
-                  index={i}
+                  index={index}
                 >
                   {(provided) => (
                     <div
@@ -176,8 +174,7 @@ const TodoList = () => {
                       {...provided.draggableProps}
                       {...provided.dragHandleProps}
                     >
-                      <TodoListItem
-                        {...it}
+                      <TodoListItem {...it}
                       />
                     </div>
                   )}
@@ -188,8 +185,14 @@ const TodoList = () => {
           )}
         </Droppable>
       </DragDropContext>
-    </div >
+    </Box>
   )
+}
+
+const dragAndDropCSS = {
+  border: '2px solid black',
+  borderRadius: '1rem',
+  marginTop: '1rem'
 }
 
 const todayButtonCSS = css`
