@@ -141,26 +141,26 @@ const underTheSeaThemeOptions = {
 const highContrastThemeOptions = {
   palette: {
     primary: {
-      main: '#858585'
+      main: '#404040'
     },
     secondary: {
-      main: '#ffffff'
+      main: '#353535'
     },
     text: {
       primary: '#000000'
     },
     action: {
-      disabled: '#8e0000'
+      disabled: '#7e7e7e'
     },
     background: {
       default: '#ffffff',
       paper: '#ffffff'
     },
     warning: {
-      main: '#000000'
+      main: '#a89704'
     },
     error: {
-      main: '#8e0000'
+      main: '#871717'
     }
   }
 }
