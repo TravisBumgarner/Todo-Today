@@ -7,7 +7,7 @@ import Context, { context } from 'Context'
 import { Header, Router } from './components'
 import { setupAutomatedBackup } from './pages/Settings'
 import LazyLoadModal, { ModalID } from 'modals'
-import { baseTheme, beachTheme } from 'theme'
+import { baseTheme, beachTheme, highContrastTheme, retroFutureTheme, underTheSeaTheme } from 'theme'
 import { EColorTheme } from 'sharedTypes'
 
 const App = () => {
@@ -27,6 +27,15 @@ const App = () => {
     switch (state.settings.colorTheme) {
       case EColorTheme.BEACH: {
         return beachTheme
+      }
+      case EColorTheme.RETRO_FUTURE: {
+        return retroFutureTheme
+      }
+      case EColorTheme.UNDER_THE_SEA: {
+        return underTheSeaTheme
+      }
+      case EColorTheme.CONTRAST: {
+        return highContrastTheme
       }
       default: {
         return baseTheme

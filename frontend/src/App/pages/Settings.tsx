@@ -134,6 +134,7 @@ const Settings = () => {
 
         <InputLabel id="color-theme">Color Theme</InputLabel>
         <Select
+          color="secondary"
           fullWidth
           labelId="color-theme"
           value={state.settings.colorTheme}

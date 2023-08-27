@@ -28,14 +28,8 @@ const taskStatusLookup: Record<ETaskStatus, string> = {
 
 const colorThemeOptionLabels: Record<EColorTheme, string> = {
   [EColorTheme.BEACH]: 'Beach',
-  [EColorTheme.NEWSPAPER]: 'Newspaper',
-  [EColorTheme.OUTERSPACE]: 'Outerspace',
   [EColorTheme.RETRO_FUTURE]: 'Retro Future',
-  [EColorTheme.SLATE]: 'Slate',
-  [EColorTheme.SUNSET]: 'Sunset',
   [EColorTheme.UNDER_THE_SEA]: 'Under the Sea',
-  [EColorTheme.MEXICO]: 'Mexico',
-  [EColorTheme.FRUITS]: 'Fruits',
   [EColorTheme.CONTRAST]: 'High Contrast'
 }
 
