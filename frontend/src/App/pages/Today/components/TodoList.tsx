@@ -1,4 +1,4 @@
-import { useCallback, useContext, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { v4 as uuid4 } from 'uuid'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
@@ -12,6 +12,26 @@ import { ModalID } from 'modals'
 import { EmptyStateDisplay } from 'sharedComponents'
 import { formatDateDisplayString, formatDateKeyLookup } from 'utilities'
 import moment from 'moment'
+
+interface SelectedTodoListItem {
+  taskTitle: string
+  projectTitle: string
+  taskStatus: ETaskStatus
+  details: string
+  taskId: string
+  projectId: string
+  id: string
+  sortOrder: number
+}
+
+// a little function to help us with reordering the result
+const reorder = (list: any[], startIndex: number, endIndex: number) => {
+  const result = Array.from(list)
+  const [removed] = result.splice(startIndex, 1)
+  result.splice(endIndex, 0, removed)
+
+  return result
+}
 
 const TodoList = () => {
   const { state: { selectedDate }, dispatch } = useContext(context)
@@ -109,14 +129,13 @@ const TodoList = () => {
     if (!source || !destination) {
       return
     }
-
-    await database.todoListItems.where('id').equals(source.id).modify((i: TTodoListItem) => {
-      i.sortOrder = result.destination.index
-    })
-    await database.todoListItems.where('id').equals(destination.id).modify((i: TTodoListItem) => {
-      i.sortOrder = result.source.index
-    })
-
+    const reordered = reorder(selectedDateTodoListItems, result.source.index, result.destination.index)
+    await Promise.all(reordered.map(({ id }, index) => {
+      void database.todoListItems.where('id').equals(id).modify((i: TTodoListItem) => {
+        i.sortOrder = index
+      })
+      return null
+    }))
     setToggleSortOrder(prev => !prev)
   }
 
