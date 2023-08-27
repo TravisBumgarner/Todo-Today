@@ -37,7 +37,7 @@ const TodoList = () => {
         }
       }))
     }, [selectedDate, toggleSortOrder]
-)
+  )
   console.log('todo list items are now', selectedDateTodoListItems)
 
   const getPreviousDatesTasks = useCallback(async () => {
@@ -101,11 +101,12 @@ const TodoList = () => {
 
   // Laziness for types lol
   const onDragEnd = async (result: any) => {
-    const source = await database.todoListItems.where('sortOrder').equals(result.source.index).first()
-    const destination = await database.todoListItems.where('sortOrder').equals(result.destination.index).first()
+    if (!selectedDateTodoListItems) return
+
+    const source = selectedDateTodoListItems[result.source.index]
+    const destination = selectedDateTodoListItems[result.destination.index]
 
     if (!source || !destination) {
-      console.log('not found')
       return
     }
 
@@ -162,11 +163,11 @@ const TodoList = () => {
               {...provided.droppableProps}
               style={dragAndDropCSS}
             >
-              {selectedDateTodoListItems.map((it, index) => (
+              {selectedDateTodoListItems.map((it) => (
                 <Draggable
                   key={it.id}
                   draggableId={it.id}
-                  index={index}
+                  index={it.sortOrder}
                 >
                   {(provided) => (
                     <div
