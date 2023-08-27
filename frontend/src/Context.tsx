@@ -5,7 +5,6 @@ import { formatDateKeyLookup, getLocalStorage, setLocalStorage } from 'utilities
 import { type AppStartIPC } from '../../shared/types'
 import moment from 'moment'
 import { type ModalID } from './modals/LazyLoadModal'
-import { Settings } from './App/pages'
 
 const { ipcRenderer } = window.require('electron')
 

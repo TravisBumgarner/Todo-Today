@@ -1,20 +1,23 @@
-import React, { useCallback } from 'react'
+import React, { useCallback, useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Typography, Box, IconButton, css, Tooltip } from '@mui/material'
 
 import EditIcon from '@mui/icons-material/Edit'
 import SettingsIcon from '@mui/icons-material/Settings'
 import CelebrationIcon from '@mui/icons-material/Celebration'
+import { context } from 'Context'
+import { ModalID } from 'modals'
 
 const Navigation = () => {
+  const { dispatch } = useContext(context)
   const navigate = useNavigate()
   const handleHistory = useCallback(() => {
     navigate('/history')
   }, [navigate])
 
   const handleSettings = useCallback(() => {
-    navigate('/settings')
-  }, [navigate])
+    dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.SETTINGS_MODAL } })
+  }, [dispatch])
 
   const handleSuccess = useCallback(() => {
     navigate('/successess')

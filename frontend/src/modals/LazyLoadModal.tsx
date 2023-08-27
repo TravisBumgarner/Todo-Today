@@ -7,6 +7,7 @@ import EditProjectModal from './EditProjectModal'
 import ManageTasksModal from './ManageTasksModal'
 import AddSuccessModal from './AddSuccessModal'
 import EditSuccessModal from './EditSuccessModal'
+import SettingsModal from './SettingsModal'
 
 export enum ModalID {
   ADD_TASK = 'ADD_TASK',
@@ -17,6 +18,7 @@ export enum ModalID {
   BACKUP_FAILURE_MODAL = 'BACKUP_FAILURE_MODAL',
   ADD_SUCCESS_MODAL = 'ADD_SUCCESS_MODAL',
   EDIT_SUCCESS_MODAL = 'EDIT_SUCCESS_MODAL',
+  SETTINGS_MODAL = 'SETTINGS_MODAL'
 }
 
 const LazyLoadModal: FC = () => {
@@ -39,6 +41,8 @@ const LazyLoadModal: FC = () => {
       return <AddSuccessModal />
     case ModalID.EDIT_SUCCESS_MODAL:
       return <EditSuccessModal />
+    case ModalID.SETTINGS_MODAL:
+      return <SettingsModal />
     default:
       return null
   }

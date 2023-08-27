@@ -93,7 +93,7 @@ const retroFutureThemeOptions = {
       main: '#7bff7f'
     },
     text: {
-      primary: '#767676'
+      primary: '#dadada'
     },
     action: {
       disabled: '#767676'

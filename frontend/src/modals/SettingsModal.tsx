@@ -1,9 +1,9 @@
-import React, { useState, useContext } from 'react'
+import { useState, useContext } from 'react'
 import moment from 'moment'
+import { Box, Button, InputLabel, MenuItem, Select, Typography, css } from '@mui/material'
 
 import database from 'database'
 import { EColorTheme, EBackupInterval } from 'sharedTypes'
-import { Box, Button, InputLabel, MenuItem, Select, Typography } from '@mui/material'
 import {
   colorThemeOptionLabels,
   saveFile,
@@ -11,9 +11,9 @@ import {
   setLocalStorage,
   backupIntervalLookup
 } from 'utilities'
+import Modal from './Modal'
 import { context } from 'Context'
-import { type BackupIPC } from '../../../../shared/types'
-import { pageCSS, pageHeaderCSS } from 'theme'
+import { type BackupIPC } from '../../../shared/types'
 
 const { ipcRenderer } = window.require('electron')
 
@@ -123,15 +123,12 @@ const Settings = () => {
   }
 
   return (
-    <Box css={pageCSS}>
-      <Box css={pageHeaderCSS}>
-        <Typography variant="h2">
-          Settings
-        </Typography>
-      </Box>
-      <Typography variant="h3">User Preferences</Typography>
-      <form>
-        <InputLabel id="color-theme">Color Theme</InputLabel>
+    <Modal
+      title="Settings"
+      showModal={true}
+    >
+      <Box css={sectionWrapperCSS}>
+        <Typography variant="h4">Theme</Typography>
         <Select
           fullWidth
           labelId="color-theme"
@@ -141,12 +138,14 @@ const Settings = () => {
         >
           {Object.keys(EColorTheme).map(key => <MenuItem key={key} value={key}>{colorThemeOptionLabels[key as EColorTheme]}</MenuItem>)}
         </Select>
-      </form>
-      <div>
-        <Typography variant="h3">Backups</Typography>
-        <Button fullWidth variant='contained' onClick={async () => { await handleBackup() }}>Create Backup</Button>
+      </Box>
 
-        <InputLabel id="week-start">Week Start</InputLabel>
+      <Box css={sectionWrapperCSS}>
+        <Typography variant="h4">Backup</Typography>
+        <Button fullWidth variant='contained' onClick={async () => { await handleBackup() }}>Create Backup</Button>
+      </Box>
+
+      <Box css={sectionWrapperCSS}>
         <Select
           fullWidth
           labelId="backup-interval"
@@ -158,42 +157,34 @@ const Settings = () => {
         </Select>
         <Typography variant="body2">Last Backup: {getLocalStorage('lastBackup')}</Typography>
         <Typography variant="body2">Backup Location: {state.settings.backupDir}</Typography>
+      </Box>
 
-        <Typography variant="h3">Restore</Typography>
-        <form>
-          <label>Restore database with a backup copy.</label>
-          <input
-            onChange={(event) => { event.target.files && setRestore(event.target.files[0]) }}
-            name="file"
-            type="file"
-          />
-          <Button
-            disabled={!restore}
-            onClick={handleRestore}
-            fullWidth
-            variant='contained'
-          >
-            Restore from Backup
-          </Button>
-        </form>
-        {/* <ConfirmationModal
-                    body="There is no data to backup."
-                    title="Heads Up!"
-                    confirmationCallback={() => { setShowNoDataModal(false) }}
-                    showModal={showNoDataModal}
-                    setShowModal={setShowNoDataModal}
-                />
-                <ConfirmationModal
-                    body="That backup is invalid."
-                    title="Heads Up!"
-                    confirmationCallback={() => { setShowInvalidBackupModal(false) }}
-                    showModal={showInvalidBackupModal}
-                    setShowModal={setShowInvalidBackupModal}
-                /> */}
-      </div>
-    </Box>
+      <Box css={sectionWrapperCSS}>
+
+        <Typography variant="h4">Restore</Typography>
+        <input
+          onChange={(event) => { event.target.files && setRestore(event.target.files[0]) }}
+          name="file"
+          type="file"
+        />
+        <Button
+          disabled={!restore}
+          onClick={handleRestore}
+          fullWidth
+          variant='contained'
+        >
+          Restore from Backup
+        </Button>
+      </Box>
+    </Modal >
   )
 }
+
+const sectionWrapperCSS = css`
+  border-radius: 1rem;
+  padding: 0.5rem 0;
+  margin: 1rem 0;
+`
 
 export default Settings
 export { setupAutomatedBackup }

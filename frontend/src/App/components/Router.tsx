@@ -1,6 +1,6 @@
 import { Routes, Route } from 'react-router'
 
-import { TodoList, History, Settings, Error, Successes } from '../pages'
+import { TodoList, History, Error, Successes } from '../pages'
 
 const Router = () => {
   return (
@@ -12,10 +12,6 @@ const Router = () => {
       <Route
         path="/history"
         element={<History />}
-      />
-      <Route
-        path="/settings"
-        element={<Settings />}
       />
       <Route
         path="/error"
