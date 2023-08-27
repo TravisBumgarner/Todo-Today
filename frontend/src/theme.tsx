@@ -44,10 +44,9 @@ const baseThemeOptions: ThemeOptions = {
       color: 'var(--mui-palette-warning-main)'
     },
     h4: {
-      fontSize: '1.4rem',
-      fontWeight: 400,
-      lineHeight: 1.35,
-      color: 'var(--mui-palette-warning-main)'
+      fontSize: '1.2rem',
+      fontWeight: 700,
+      color: 'var(--mui-palette-background-default)'
     },
     body1: {
       color: 'var(--mui-palette-secondary-main)'
@@ -67,13 +66,13 @@ const beachThemeOptions: ThemeOptions = {
       main: '#49beaa'
     },
     text: {
-      primary: '#7bc3ff'
+      primary: '#294460'
     },
     action: {
       disabled: '#d6d6d6'
     },
     background: {
-      default: '#456990',
+      default: '#294460',
       paper: '#517dab'
     },
     warning: {
@@ -94,7 +93,7 @@ const retroFutureThemeOptions = {
       main: '#7bff7f'
     },
     text: {
-      primary: '#7bc3ff'
+      primary: '#767676'
     },
     action: {
       disabled: '#767676'
@@ -121,7 +120,7 @@ const underTheSeaThemeOptions = {
       main: '#85FFC7'
     },
     text: {
-      primary: '#7bc3ff'
+      primary: '#39393A'
     },
     action: {
       disabled: '#EAE2B7'
