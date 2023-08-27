@@ -1,5 +1,5 @@
 import { type ChangeEvent, useState, type MouseEvent, useCallback } from 'react'
-import { Box, Card, FormControlLabel, IconButton, Switch, TextField, Tooltip, Typography, css } from '@mui/material'
+import { Box, Card, IconButton, TextField, Tooltip, Typography, css } from '@mui/material'
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import LightbulbIcon from '@mui/icons-material/Lightbulb'
@@ -8,6 +8,8 @@ import DoneIcon from '@mui/icons-material/Done'
 import RemoveDoneIcon from '@mui/icons-material/RemoveDone'
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
 import CloseIcon from '@mui/icons-material/CloseOutlined'
+import NotesIcon from '@mui/icons-material/Notes'
+import ShortTextIcon from '@mui/icons-material/ShortText'
 
 import database from 'database'
 import { ETaskStatus } from 'sharedTypes'
@@ -66,9 +68,23 @@ const TodoListItem = ({ id, taskId, taskStatus: defaultTaskStatus, details: defa
   return (
     <Card css={wrapperCSS}>
       <Box css={headerCSS(showDetails)}>
-        <Typography variant="h4" css={titleCSS(taskStatus)}>{taskTitle} - {projectTitle} (sort Order, {sortOrder})</Typography>
+        <Box>
+          <Typography variant="h4">{taskTitle} ({sortOrder})</Typography>
+          <Typography variant="caption" css={{ color: 'var(--mui-palette-background-default)' }}>{projectTitle}</Typography>
+        </Box>
         <Box css={rightHeaderCSS}>
-          <FormControlLabel control={<Switch color="secondary" checked={showDetails} onChange={toggleShowDetails} />} label="Details" />
+          <ToggleButton
+            size='small'
+            value="text"
+            selected={showDetails}
+            onChange={toggleShowDetails}
+            css={{ marginRight: '1rem' }}
+          >
+            <Tooltip title="Toggle Details">
+              {details.length === 0 ? <ShortTextIcon fontSize="small" /> : <NotesIcon fontSize="small" />}
+            </Tooltip>
+          </ToggleButton>
+
           <ToggleButtonGroup
             value={taskStatus}
             exclusive
@@ -102,40 +118,21 @@ const TodoListItem = ({ id, taskId, taskStatus: defaultTaskStatus, details: defa
             </ToggleButton>
           </ToggleButtonGroup>
           <IconButton onClick={handleRemoveFromToday} css={{ marginLeft: '1rem' }}>
-            <CloseIcon fontSize="small" style={{ color: 'var(--mui-palette-primary-main)' }} />
+            <CloseIcon fontSize="small" />
           </IconButton>
 
         </Box>
       </Box>
-      {showDetails && <TextField color='secondary' fullWidth multiline value={details} onChange={handleDetailsChange} />}
+      {showDetails && <TextField fullWidth multiline value={details} onChange={handleDetailsChange} />}
     </Card>
   )
 }
 
-const getTitleColor = (taskStatus: ETaskStatus) => {
-  switch (taskStatus) {
-    case ETaskStatus.CANCELED:
-      return 'var(--mui-palette-error-main)'
-    case ETaskStatus.BLOCKED:
-      return 'var(--mui-palette-warning-main)'
-    case ETaskStatus.COMPLETED:
-      return 'var(--mui-palette-secondary-main)'
-    case ETaskStatus.IN_PROGRESS:
-      return 'var(--mui-palette-secondary-main)'
-    default:
-      return 'var(--mui-palette-secondary-main)'
-  }
-}
-
-const titleCSS = (taskStatus: ETaskStatus) => css`
-  color: ${getTitleColor(taskStatus)};
-`
-
 const rightHeaderCSS = css`
-  min-width: 295px;
   margin-left: 1rem;
   display: flex;
   align-items: center;
+  flex-shrink: 0;
 `
 
 const headerCSS = (showDetails: boolean) => css`
