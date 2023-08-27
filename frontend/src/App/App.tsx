@@ -5,7 +5,7 @@ import { Experimental_CssVarsProvider as CssVarsProvider, css } from '@mui/mater
 
 import Context, { context } from 'Context'
 import { Header, Router } from './components'
-import { setupAutomatedBackup } from './pages/Settings'
+import { setupAutomatedBackup } from '../modals/SettingsModal'
 import LazyLoadModal, { ModalID } from 'modals'
 import { baseTheme, beachTheme, highContrastTheme, retroFutureTheme, underTheSeaTheme } from 'theme'
 import { EColorTheme } from 'sharedTypes'

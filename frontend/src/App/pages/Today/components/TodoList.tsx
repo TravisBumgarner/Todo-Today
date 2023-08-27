@@ -38,7 +38,6 @@ const TodoList = () => {
       }))
     }, [selectedDate, toggleSortOrder]
   )
-  console.log('todo list items are now', selectedDateTodoListItems)
 
   const getPreviousDatesTasks = useCallback(async () => {
     const lastDate = (
@@ -101,11 +100,12 @@ const TodoList = () => {
 
   // Laziness for types lol
   const onDragEnd = async (result: any) => {
+    console.log(result)
     if (!selectedDateTodoListItems) return
 
     const source = selectedDateTodoListItems[result.source.index]
     const destination = selectedDateTodoListItems[result.destination.index]
-
+    console.log(source, destination)
     if (!source || !destination) {
       return
     }
@@ -119,7 +119,7 @@ const TodoList = () => {
 
     setToggleSortOrder(prev => !prev)
   }
-  console.log(selectedDateTodoListItems)
+
   if (!selectedDateTodoListItems) {
     return (
       <EmptyStateDisplay message="Go create some projects and tasks and come back!" />

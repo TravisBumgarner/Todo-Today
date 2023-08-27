@@ -62,11 +62,12 @@ const AddTaskModal = ({ project }: AddTaskModalProps) => {
     await database.tasks.add(newTask)
 
     if (addToSelectedDate === 'yes') {
-      const lastTodoListItem = await database
+      const lastTodoListItem = (await database
         .todoListItems
-        .orderBy('sortOrder')
+        .where('todoListDate')
+        .equals(state.selectedDate)
         .reverse()
-        .first()
+        .sortBy('sortOrder'))[0]
 
       await database.todoListItems.add({
         projectId: projectIdForTask,
@@ -84,7 +85,8 @@ const AddTaskModal = ({ project }: AddTaskModalProps) => {
   projectSelectOptions.unshift({ value: CREATE_NEW_PROJECT_DROPDOWN_ITEM, label: 'Create new Project' })
 
   const handleAddToTodayChange = useCallback((event: React.MouseEvent<HTMLElement>, newValue: 'yes' | 'no') => {
-    console.log('newValue', newValue)
+    if (newValue === null) return
+
     setAddToSelectedDate(newValue)
   }, [])
 
@@ -126,13 +128,13 @@ const AddTaskModal = ({ project }: AddTaskModalProps) => {
       <Box css={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <InputLabel>Add to Today?</InputLabel>
 
-        <ToggleButtonGroup exclusive onChange={handleAddToTodayChange}>
-          <ToggleButton value='no' >
+        <ToggleButtonGroup value={addToSelectedDate} exclusive onChange={handleAddToTodayChange}>
+          <ToggleButton color="primary" value='no' >
             <Tooltip title="Do not add to today">
               <CancelIcon />
             </Tooltip>
           </ToggleButton>
-          <ToggleButton value='yes'>
+          <ToggleButton color="primary" value='yes'>
             <Tooltip title="Add to today">
               <CheckCircleOutlineIcon />
             </Tooltip>
