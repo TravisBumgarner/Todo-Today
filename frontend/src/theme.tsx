@@ -60,20 +60,20 @@ const baseThemeOptions: ThemeOptions = {
 const beachThemeOptions: ThemeOptions = {
   palette: {
     primary: {
-      main: '#7bc3ff'
+      main: '#4c7da5'
     },
     secondary: {
       main: '#49beaa'
     },
     text: {
-      primary: '#294460'
+      primary: '#1d2a38'
     },
     action: {
-      disabled: '#d6d6d6'
+      disabled: '#616060'
     },
     background: {
-      default: '#294460',
-      paper: '#517dab'
+      default: '#aadbee',
+      paper: '#a8ffc8'
     },
     warning: {
       main: '#eeb868'
@@ -120,7 +120,7 @@ const underTheSeaThemeOptions = {
       main: '#85FFC7'
     },
     text: {
-      primary: '#39393A'
+      primary: '#dedede'
     },
     action: {
       disabled: '#EAE2B7'
@@ -144,7 +144,7 @@ const highContrastThemeOptions = {
       main: '#404040'
     },
     secondary: {
-      main: '#353535'
+      main: '#898989'
     },
     text: {
       primary: '#000000'
