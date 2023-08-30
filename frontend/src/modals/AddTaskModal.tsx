@@ -46,10 +46,8 @@ const AddTaskModal = ({ project }: AddTaskModalProps) => {
         title: addProjectInput,
         status: EProjectStatus.ACTIVE
       }
-      console.log('Creating new project with details', newProject)
       projectIdForTask = newProject.id
       await database.projects.add(newProject)
-      console.log('new project', newProject)
     }
     const newTask = {
       title,
@@ -57,7 +55,6 @@ const AddTaskModal = ({ project }: AddTaskModalProps) => {
       id: taskId,
       projectId: projectIdForTask
     }
-    console.log('Creating new task with details', newTask)
 
     await database.tasks.add(newTask)
 
@@ -110,7 +107,6 @@ const AddTaskModal = ({ project }: AddTaskModalProps) => {
           labelId="add-task-modal-project-select"
           fullWidth
           value={projectId}
-          onFocus={() => { console.log('ficused') }}
           onChange={(event) => { setProjectId(event.target.value) }}
         >
           {projectSelectOptions.map(({ label, value }) => <MenuItem key={label} value={value}>{label}</MenuItem>)}

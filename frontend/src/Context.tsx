@@ -30,7 +30,6 @@ const EMPTY_STATE: State = {
   activeModal: null,
   selectedDate: formatDateKeyLookup(moment())
 }
-console.log(EMPTY_STATE)
 const initialSetup = () => {
   Object
     .keys(EMPTY_STATE.settings)

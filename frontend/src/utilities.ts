@@ -1,5 +1,5 @@
 import moment from 'moment'
-import { type TProject, EProjectStatus, type TTask, type TDateISODate, ETaskStatus, EColorTheme, EBackupInterval } from 'sharedTypes'
+import { EProjectStatus, type TDateISODate, ETaskStatus, EColorTheme, EBackupInterval } from 'sharedTypes'
 import { type NotificationIPC } from '../../shared/types'
 
 const { ipcRenderer } = window.require('electron')

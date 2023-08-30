@@ -113,7 +113,7 @@ const titleCSS = css`
         color: var(--mui-palette-primary-secondary);
     }
 
-    h1:nth-child(1){
+    h1:nth-of-type(1){
         position: absolute;
         left: -2px;
         top: -2px;
@@ -122,7 +122,7 @@ const titleCSS = css`
 
     }
 
-    h1:nth-child(2){
+    h1:nth-of-type(2){
         position: absolute;
         left: 2px;
         top: 2px;
@@ -131,7 +131,7 @@ const titleCSS = css`
 
     }
 
-    h1:nth-child(3){
+    h1:nth-of-type(3){
         position: absolute;
         left: -2px;
         top: 2px;
@@ -139,7 +139,7 @@ const titleCSS = css`
         color: var(--mui-palette-primary-main);
     }
 
-    h1:nth-child(4){
+    h1:nth-of-type(4){
        position: absolute;
         left: 2px;
         top: -2px;
@@ -147,7 +147,7 @@ const titleCSS = css`
         color: var(--mui-palette-error-main);
     }
 
-    h1:nth-child(5){
+    h1:nth-of-type(5){
         left: 0px;
         top: 0px;
         color: var(--mui-palette-background-default);

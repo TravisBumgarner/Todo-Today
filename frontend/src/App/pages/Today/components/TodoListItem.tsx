@@ -38,7 +38,6 @@ const TodoListItem = ({ id, taskId, details: defaultDetails, sortOrder }: TodoLi
     event: MouseEvent<HTMLElement>,
     status: ETaskStatus
   ) => {
-    console.log(status)
     if (status === null) return
 
     await database.tasks.where('id').equals(taskId).modify({ status })

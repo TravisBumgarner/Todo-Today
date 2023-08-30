@@ -57,6 +57,7 @@ const App = () => {
 
 const appWrapperCSS = css`
   margin: 1rem auto;
+  padding: 0 1rem;
   max-width: 1200px;
   display: flex;
   justify-content: center;
