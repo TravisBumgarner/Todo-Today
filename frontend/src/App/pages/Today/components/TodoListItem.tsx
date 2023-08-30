@@ -25,21 +25,19 @@ interface TodoListItemProps {
   sortOrder: number
 }
 
-const TodoListItem = ({ id, taskId, taskStatus: defaultTaskStatus, details: defaultDetails, taskTitle, projectTitle, sortOrder }: TodoListItemProps) => {
-  const [taskStatus, setTaskStatus] = useState(defaultTaskStatus)
+const TodoListItem = ({ id, taskId, taskStatus, details: defaultDetails, taskTitle, projectTitle, sortOrder }: TodoListItemProps) => {
   const [details, setDetails] = useState(defaultDetails)
   const [showDetails, setShowDetails] = useState(defaultDetails.length > 0)
 
   const toggleShowDetails = useCallback(() => { setShowDetails(prev => !prev) }, [])
-
+  console.log('taskstat', taskStatus)
   const handleStatusChange = useCallback(async (
     event: MouseEvent<HTMLElement>,
     status: ETaskStatus
   ) => {
+    console.log(status)
     if (status === null) return
 
-    // For whatever reason, Dexie does not seem to want to liveSync updates. Therefore, we'll keep track
-    // of the value locally, and also sync it to Dexie.
     await database.tasks.where('id').equals(taskId).modify({ status })
 
     if (status === ETaskStatus.COMPLETED || status === ETaskStatus.CANCELED) {
@@ -47,17 +45,13 @@ const TodoListItem = ({ id, taskId, taskStatus: defaultTaskStatus, details: defa
       const sortOrder = lastTodoListItem?.sortOrder ? lastTodoListItem?.sortOrder + 1 : 0
       await database.todoListItems.where('id').equals(id).modify({ sortOrder })
     }
-
-    setTaskStatus(status)
   }, [taskId, id])
 
   const handleDetailsChange = useCallback(async (
     event: ChangeEvent<HTMLInputElement>
   ) => {
-    // For whatever reason, Dexie does not seem to want to liveSync updates. Therefore, we'll keep track
-    // of the value locally, and also sync it to Dexie.
+    // Undo doesn't work if synced directly to DB. Might be a more elegant solution, but for now, this works.
     void database.todoListItems.where('id').equals(id).modify({ details: event.target.value })
-    console.log('event.target.value', event.target.value)
     setDetails(event.target.value)
   }, [id])
 

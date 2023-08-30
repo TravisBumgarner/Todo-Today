@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useState } from 'react'
+import { useCallback, useContext } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { v4 as uuid4 } from 'uuid'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
@@ -35,9 +35,8 @@ const reorder = (list: any[], startIndex: number, endIndex: number) => {
 
 const TodoList = () => {
   const { state: { selectedDate }, dispatch } = useContext(context)
-  const [toggleSortOrder, setToggleSortOrder] = useState(false)
 
-  const selectedDateTodoListItems = useLiveQuery(
+  const selectedDateTodoListItems = useLiveQuery<SelectedTodoListItem[]>(
     async () => {
       const items = await database.todoListItems.where('todoListDate').equals(selectedDate).sortBy('sortOrder')
 
@@ -56,7 +55,7 @@ const TodoList = () => {
           sortOrder
         }
       }))
-    }, [selectedDate, toggleSortOrder]
+    }, [selectedDate]
   )
 
   const getPreviousDatesTasks = useCallback(async () => {
@@ -136,7 +135,7 @@ const TodoList = () => {
       })
       return null
     }))
-    setToggleSortOrder(prev => !prev)
+    // setToggleSortOrder(prev => !prev)
   }
 
   if (!selectedDateTodoListItems) {
@@ -182,11 +181,14 @@ const TodoList = () => {
               {...provided.droppableProps}
               style={dragAndDropCSS}
             >
-              {selectedDateTodoListItems.map((it) => (
+              {selectedDateTodoListItems.map((it, index) => (
                 <Draggable
                   key={it.id}
                   draggableId={it.id}
-                  index={it.sortOrder}
+                  // It's quite a pain, and probably bug prone, to keep sort order sequential.
+                  // Therefore, see if using index is sufficient since `selectedDateTodoListItems` is already
+                  // sorted by `sortOrder` and `index` is sequential.
+                  index={index}
                 >
                   {(provided) => (
                     <div
