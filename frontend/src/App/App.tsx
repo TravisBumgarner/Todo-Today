@@ -56,7 +56,7 @@ const App = () => {
 }
 
 const appWrapperCSS = css`
-  margin: 1rem auto;
+  margin: 0 auto;
   padding: 0 1rem;
   max-width: 1200px;
   display: flex;
@@ -64,6 +64,7 @@ const appWrapperCSS = css`
   align-items: center;
   flex-direction: column;
   box-sizing: border-box;
+  height: 100%;
 `
 
 class ErrorBoundary extends Component<{ children: any }, { hasError: boolean, error: string }> {

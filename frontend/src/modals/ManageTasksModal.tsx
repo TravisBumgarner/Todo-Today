@@ -6,9 +6,9 @@ import NotesIcon from '@mui/icons-material/Notes'
 import ShortTextIcon from '@mui/icons-material/ShortText'
 import CheckIcon from '@mui/icons-material/Check'
 
-import Modal from './Modal'
+import Modal, { MODAL_MAX_HEIGHT } from './Modal'
 import { EmptyStateDisplay } from 'sharedComponents'
-import { type TProject, EProjectStatus, type TTask } from 'sharedTypes'
+import { type TProject, EProjectStatus, type TTask, ETaskStatus } from 'sharedTypes'
 import database from 'database'
 import { context } from 'Context'
 
@@ -65,7 +65,14 @@ interface ProjectProps {
 const Project = ({ project, selectedTaskIds }: ProjectProps) => {
   const [showTasks, setShowTasks] = useState(true)
   const toggleShowTasks = useCallback(() => { setShowTasks(prev => !prev) }, [])
-  const tasks = useLiveQuery(async () => await database.tasks.where({ projectId: project.id }).toArray())
+  const tasks = useLiveQuery(async () => await database.tasks
+    .where({ projectId: project.id })
+    .and((item) => [
+      ETaskStatus.NEW,
+      ETaskStatus.IN_PROGRESS,
+      ETaskStatus.BLOCKED
+    ].includes(item.status))
+    .toArray())
 
   const content = useMemo(() => {
     if (!showTasks) {
@@ -74,6 +81,10 @@ const Project = ({ project, selectedTaskIds }: ProjectProps) => {
 
     return (tasks ?? []).map(task => <Task isSelected={selectedTaskIds.includes(task.id)} key={task.id} task={task} />)
   }, [tasks, showTasks, selectedTaskIds])
+
+  if (!tasks || tasks.length === 0) {
+    return null
+  }
 
   return (
     <Card css={wrapperCSS}>
@@ -141,19 +152,21 @@ const ManageTodoListItemsModal = () => {
     }
 
     return (
-      <>
-        {
-          projects
-            .map(project => (
-              <Project
-                key={project.id}
-                project={project}
-                selectedTaskIds={selectedTaskIds ?? []}
-              />
-            ))
-        }
+      <Box css={projectsWrapperCSS}>
+        <Box css={scrollWrapperCSS}>
+          {
+            projects
+              .map(project => (
+                <Project
+                  key={project.id}
+                  project={project}
+                  selectedTaskIds={selectedTaskIds ?? []}
+                />
+              ))
+          }
+        </Box>
         <Button fullWidth variant='contained' key="finished" onClick={handleCancel}>Done!</Button>
-      </>
+      </Box>
     )
   }, [handleCancel, projects, selectedTaskIds])
 
@@ -166,5 +179,14 @@ const ManageTodoListItemsModal = () => {
     </Modal>
   )
 }
+
+const scrollWrapperCSS = css`
+  overflow: auto;
+  height: ${MODAL_MAX_HEIGHT - 200}px;
+`
+
+const projectsWrapperCSS = css`
+  height: 100%;
+`
 
 export default ManageTodoListItemsModal

@@ -10,6 +10,8 @@ interface ModalProps {
   title: string
 }
 
+export const MODAL_MAX_HEIGHT = 600
+
 const style = {
   position: 'absolute' as 'absolute',
   top: '50%',
@@ -19,6 +21,7 @@ const style = {
   bgcolor: 'background.paper',
   borderRadius: '1rem',
   boxShadow: 24,
+  maxHeight: `${MODAL_MAX_HEIGHT}px`,
   p: 4
 }
 

@@ -58,12 +58,6 @@ const Navigation = () => {
   )
 }
 
-const navigationCSS = css`
-  display: flex;
-  flex-direction: row;
-  flex-grow: 0;
-`
-
 const Title = () => {
   const { pathname } = useLocation()
 
@@ -102,6 +96,21 @@ const Title = () => {
     </Box >
   )
 }
+
+const Header = () => {
+  return (
+    <Box css={headerCSS}>
+      <Title />
+      <Navigation />
+    </Box>
+  )
+}
+
+const navigationCSS = css`
+  display: flex;
+  flex-direction: row;
+  flex-grow: 0;
+`
 
 const titleCSS = css`
     position: relative;
@@ -154,18 +163,15 @@ const titleCSS = css`
     }
 `
 
-const Header = () => {
-  return (
-    <Box css={headerCSS}><Title /><Navigation /></Box>
-  )
-}
+export const HEADER_HEIGHT = 55
 
 const headerCSS = css`
+  height: ${HEADER_HEIGHT}px;
   width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 0.5rem 0;
+  padding: 0.5rem 0;
 `
 
 export default Header

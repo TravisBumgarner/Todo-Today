@@ -7,19 +7,26 @@ import database from 'database'
 import { ETaskStatus, type TTodoListItem } from 'sharedTypes'
 import { context } from 'Context'
 import TodoListItem from './TodoListItem'
-import { Box, Button, ButtonGroup, css } from '@mui/material'
+import { Box, Button, ButtonGroup, Typography, css } from '@mui/material'
 import { ModalID } from 'modals'
-import { EmptyStateDisplay } from 'sharedComponents'
 import { formatDateDisplayString, formatDateKeyLookup } from 'utilities'
 import moment from 'moment'
+import { HEADER_HEIGHT } from '../../../components/Header'
 
-// a little function to help us with reordering the result
 const reorder = (list: any[], startIndex: number, endIndex: number) => {
   const result = Array.from(list)
   const [removed] = result.splice(startIndex, 1)
   result.splice(endIndex, 0, removed)
 
   return result
+}
+
+const EmptyTodoList = () => {
+  return (
+    <Box css={emptyTodoListCSS}>
+      <Typography>Poco a Poco.</Typography>
+    </Box>
+  )
 }
 
 const TodoList = () => {
@@ -104,17 +111,9 @@ const TodoList = () => {
       })
       return null
     }))
-    // setToggleSortOrder(prev => !prev)
   }
-
-  if (!selectedDateTodoListItems) {
-    return (
-      <EmptyStateDisplay message="Go create some projects and tasks and come back!" />
-    )
-  }
-
   return (
-    <Box>
+    <Box css={todoListWrapperCSS}>
       <Box css={{ display: 'flex', justifyContent: 'space-between' }}>
         <Box>
           <Button
@@ -142,43 +141,54 @@ const TodoList = () => {
           <Button onClick={getNextDate}>&gt;</Button>
         </ButtonGroup>
       </Box>
-      <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable droppableId="tasks">
-          {(provided, snapshot) => (
-            <div
-              ref={provided.innerRef}
-              {...provided.droppableProps}
-              style={dragAndDropCSS(snapshot.isDraggingOver)}
-            >
-              {selectedDateTodoListItems.map((it, index) => (
-                <Draggable
-                  key={it.id}
-                  draggableId={it.id}
-                  // It's quite a pain, and probably bug prone, to keep sort order sequential.
-                  // Therefore, see if using index is sufficient since `selectedDateTodoListItems` is already
-                  // sorted by `sortOrder` and `index` is sequential.
-                  index={index}
+      {!selectedDateTodoListItems || selectedDateTodoListItems.length === 0
+        ? <EmptyTodoList />
+        : (
+          <DragDropContext onDragEnd={onDragEnd}>
+            <Droppable droppableId="tasks">
+              {(provided, snapshot) => (
+                <div
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+                  style={dragAndDropCSS(snapshot.isDraggingOver)}
                 >
-                  {(provided) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
+                  {selectedDateTodoListItems.map((it, index) => (
+                    <Draggable
+                      key={it.id}
+                      draggableId={it.id}
+                      // It's quite a pain, and probably bug prone, to keep sort order sequential.
+                      // Therefore, see if using index is sufficient since `selectedDateTodoListItems` is already
+                      // sorted by `sortOrder` and `index` is sequential.
+                      index={index}
                     >
-                      <TodoListItem {...it}
-                      />
-                    </div>
-                  )}
-                </Draggable>
-              ))}
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext>
+                      {(provided) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                        >
+                          <TodoListItem {...it}
+                          />
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
+        )
+      }
     </Box>
   )
 }
+
+const todoListWrapperCSS = css`
+  height: calc(100vh - ${HEADER_HEIGHT}px);
+  display: flex;
+  flex-direction: column;
+`
 
 const dragAndDropCSS = (isDraggingOver: boolean) => {
   return ({
@@ -196,6 +206,13 @@ const todayButtonCSS = css`
   :hover:before {
     content:"Go to Today";
   }
-        `
+`
+
+const emptyTodoListCSS = css`
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
 
 export default TodoList
