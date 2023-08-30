@@ -23,7 +23,6 @@ const LazyLoadModal: FC = () => {
   const { state } = useContext(context)
 
   if (!state.activeModal?.id) return null
-  console.log('new modal', state.activeModal)
   switch (state.activeModal.id) {
     case ModalID.ADD_TASK:
       return <AddTaskModal />

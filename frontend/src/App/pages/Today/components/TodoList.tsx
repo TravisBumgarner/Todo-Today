@@ -90,12 +90,10 @@ const TodoList = () => {
 
   // Laziness for types lol
   const onDragEnd = async (result: any) => {
-    console.log(result)
     if (!selectedDateTodoListItems) return
 
     const source = selectedDateTodoListItems[result.source.index]
     const destination = selectedDateTodoListItems[result.destination.index]
-    console.log(source, destination)
     if (!source || !destination) {
       return
     }
@@ -150,7 +148,7 @@ const TodoList = () => {
             <div
               ref={provided.innerRef}
               {...provided.droppableProps}
-              style={dragAndDropCSS}
+              style={dragAndDropCSS(snapshot.isDraggingOver)}
             >
               {selectedDateTodoListItems.map((it, index) => (
                 <Draggable
@@ -182,20 +180,21 @@ const TodoList = () => {
   )
 }
 
-const dragAndDropCSS = {
-  border: '2px solid black',
-  borderRadius: '1rem',
-  marginTop: '1rem'
+const dragAndDropCSS = (isDraggingOver: boolean) => {
+  return ({
+    border: isDraggingOver ? '1px solid var(--mui-palette-primary-main)' : '1px transparent',
+    borderRadius: '0.5rem'
+  })
 }
 
 const todayButtonCSS = css`
-        width: 250px;
-        &:hover span {
-          display: none;
+  width: 250px;
+  &:hover span {
+    display: none;
   }
 
-        :hover:before {
-          content:"Go to Today";
+  :hover:before {
+    content:"Go to Today";
   }
         `
 
