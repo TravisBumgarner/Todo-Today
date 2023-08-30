@@ -171,14 +171,6 @@ export const highContrastTheme = extendTheme(_.merge(baseThemeOptions, highContr
 export const retroFutureTheme = extendTheme(_.merge(baseThemeOptions, retroFutureThemeOptions))
 export const underTheSeaTheme = extendTheme(_.merge(baseThemeOptions, underTheSeaThemeOptions))
 
-export const pageHeaderCSS = css`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 0 0 0.5rem 0;
-  width: 100%;
-`
-
 export const pageCSS = css`
   width:100%;
 `

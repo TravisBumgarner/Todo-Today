@@ -1,4 +1,4 @@
-import { useCallback, useContext } from 'react'
+import { useCallback, useContext, useMemo } from 'react'
 import { Button, Box, Card, Typography, css, Tooltip, IconButton } from '@mui/material'
 import { useLiveQuery } from 'dexie-react-hooks'
 import EditIcon from '@mui/icons-material/Edit'
@@ -24,11 +24,15 @@ const Success = ({ description, projectTitle, id, date }: SuccessProps) => {
     dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.EDIT_SUCCESS_MODAL, data: { successId: id } } })
   }, [dispatch, id])
 
+  const metadata = useMemo(() => {
+    return [projectTitle, date].filter(a => a).join(' - ')
+  }, [projectTitle, date])
+
   return (
     <Card css={wrapperCSS}>
       <Box>
         <Typography variant="h4">{description}</Typography>
-        <Typography variant="caption" css={{ color: 'var(--mui-palette-background-default)' }}>{projectTitle} - {date}</Typography>
+        <Typography variant="caption" css={{ color: 'var(--mui-palette-background-default)' }}>{metadata}</Typography>
       </Box>
       <Box css={rightHeaderCSS}>
         <IconButton color="primary" onClick={handleEditClick}>
@@ -65,31 +69,34 @@ const SuccessesPage = () => {
     dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.ADD_SUCCESS_MODAL } })
   }, [dispatch])
 
-  const tableRows = useLiveQuery(async () => {
+  const successItems = useLiveQuery(async () => {
     const successes = (await database.successes.toCollection().sortBy('date')).reverse()
 
     return await Promise.all(successes.map(async (success) => {
       const project = (await database.projects.where({ id: success.projectId }).first()) as TProject
       return {
-        projectTitle: project ? project.title : '-',
+        projectTitle: project ? project.title : '',
         ...success
       }
     }))
   }, [])
 
-  if (!tableRows || tableRows.length === 0) {
-    return (
-      <EmptyStateDisplay
-        message="What was something that went well today?"
-      />
-    )
-  }
+  const content = useMemo(() => {
+    if (!successItems || successItems.length === 0) {
+      return (
+        <EmptyStateDisplay
+          message="What was something that went well today?"
+        />
+      )
+    }
+
+    return successItems.map(({ id, projectTitle, description, date }) => <Success date={date} key={id} id={id} projectTitle={projectTitle} description={description} />)
+  }, [successItems])
 
   return (
     <Box css={pageCSS}>
-      <Typography variant="h3">Successes</Typography>
       <Button key="add" onClick={handleSuccess} >Add Success</Button>
-      {tableRows.map(({ id, projectTitle, description, date }) => <Success date={date} key={id} id={id} projectTitle={projectTitle} description={description} />)}
+      {content}
     </Box>
   )
 }

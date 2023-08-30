@@ -1,7 +1,8 @@
-import React, { useCallback, useContext } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import React, { useCallback, useContext, useMemo } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Typography, Box, IconButton, css, Tooltip } from '@mui/material'
 
+import MenuBookIcon from '@mui/icons-material/MenuBook'
 import ChecklistIcon from '@mui/icons-material/Checklist'
 import SettingsIcon from '@mui/icons-material/Settings'
 import CelebrationIcon from '@mui/icons-material/Celebration'
@@ -11,6 +12,11 @@ import { ModalID } from 'modals'
 const Navigation = () => {
   const { dispatch } = useContext(context)
   const navigate = useNavigate()
+
+  const handleHome = useCallback(() => {
+    navigate('/')
+  }, [navigate])
+
   const handleHistory = useCallback(() => {
     navigate('/history')
   }, [navigate])
@@ -25,6 +31,12 @@ const Navigation = () => {
 
   return (
     <Box css={navigationCSS}>
+      <IconButton color="primary" onClick={handleHome}>
+        <Tooltip title="Todo Today">
+          <ChecklistIcon />
+        </Tooltip>
+      </IconButton>
+
       <IconButton color="primary" onClick={handleSuccess}>
         <Tooltip title="Successes">
           <CelebrationIcon />
@@ -33,9 +45,10 @@ const Navigation = () => {
 
       <IconButton color="primary" onClick={handleHistory}>
         <Tooltip title="Project and Task History">
-          <ChecklistIcon />
+          <MenuBookIcon />
         </Tooltip>
       </IconButton>
+
       <IconButton color="primary" onClick={handleSettings}>
         <Tooltip title="Settings">
           <SettingsIcon />
@@ -52,23 +65,38 @@ const navigationCSS = css`
 `
 
 const Title = () => {
+  const { pathname } = useLocation()
+
+  const header = useMemo(() => {
+    switch (pathname) {
+      case '/':
+        return 'Todo Today'
+      case '/history':
+        return 'History'
+      case '/successess':
+        return 'Successes'
+      default:
+        return 'Today'
+    }
+  }, [pathname])
+
   return (
     <Box css={titleCSS}>
       <Link style={{ textDecoration: 'none' }} to="/">
         <Typography variant="h1">
-          Todo Today
+          {header}
         </Typography>
         <Typography variant="h1">
-          Todo Today
+          {header}
         </Typography>
         <Typography variant="h1">
-          Todo Today
+          {header}
         </Typography>
         <Typography variant="h1">
-          Todo Today
+          {header}
         </Typography>
         <Typography variant="h1">
-          Todo Today
+          {header}
         </Typography>
       </Link >
     </Box >
