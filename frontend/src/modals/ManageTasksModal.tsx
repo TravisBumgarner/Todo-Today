@@ -34,7 +34,6 @@ const TasksByProjectTable = ({ project, tasks, taskIdsToTodoListIds }: TasksByPr
       .sortBy('sortOrder'))[0]
 
     await database.todoListItems.add({
-      projectId,
       taskId,
       id: uuid4(),
       todoListDate: state.selectedDate,

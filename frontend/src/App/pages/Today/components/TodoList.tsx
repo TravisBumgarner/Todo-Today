@@ -4,7 +4,7 @@ import { v4 as uuid4 } from 'uuid'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 
 import database from 'database'
-import { ETaskStatus, type TProject, type TTask, type TTodoListItem } from 'sharedTypes'
+import { ETaskStatus, type TTodoListItem } from 'sharedTypes'
 import { context } from 'Context'
 import TodoListItem from './TodoListItem'
 import { Box, Button, ButtonGroup, css } from '@mui/material'
@@ -12,17 +12,6 @@ import { ModalID } from 'modals'
 import { EmptyStateDisplay } from 'sharedComponents'
 import { formatDateDisplayString, formatDateKeyLookup } from 'utilities'
 import moment from 'moment'
-
-interface SelectedTodoListItem {
-  taskTitle: string
-  projectTitle: string
-  taskStatus: ETaskStatus
-  details: string
-  taskId: string
-  projectId: string
-  id: string
-  sortOrder: number
-}
 
 // a little function to help us with reordering the result
 const reorder = (list: any[], startIndex: number, endIndex: number) => {
@@ -36,26 +25,9 @@ const reorder = (list: any[], startIndex: number, endIndex: number) => {
 const TodoList = () => {
   const { state: { selectedDate }, dispatch } = useContext(context)
 
-  const selectedDateTodoListItems = useLiveQuery<SelectedTodoListItem[]>(
-    async () => {
-      const items = await database.todoListItems.where('todoListDate').equals(selectedDate).sortBy('sortOrder')
-
-      return await Promise.all(items.map(async ({ id, projectId, taskId, details, sortOrder }) => {
-        const task = await database.tasks.where('id').equals(taskId).first() as TTask
-        const project = await database.projects.where('id').equals(projectId).first() as TProject
-
-        return {
-          taskTitle: task?.title,
-          projectTitle: project?.title,
-          taskStatus: task?.status,
-          details,
-          taskId,
-          projectId,
-          id,
-          sortOrder
-        }
-      }))
-    }, [selectedDate]
+  const selectedDateTodoListItems = useLiveQuery<TTodoListItem[]>(
+    async () => await database.todoListItems.where('todoListDate').equals(selectedDate).sortBy('sortOrder'),
+    [selectedDate]
   )
 
   const getPreviousDatesTasks = useCallback(async () => {
@@ -73,7 +45,7 @@ const TodoList = () => {
       if (previousDay.length === 0) {
         alert('nothing to show modal')
       } else {
-        previousDay.map(async ({ projectId, taskId, details }, index) => {
+        previousDay.map(async ({ taskId, details }, index) => {
           const task = await database.tasks.where('id').equals(taskId).first()
 
           if (
@@ -82,7 +54,6 @@ const TodoList = () => {
             task?.status === ETaskStatus.BLOCKED
           ) {
             await database.todoListItems.add({
-              projectId,
               taskId,
               id: uuid4(),
               todoListDate: selectedDate,

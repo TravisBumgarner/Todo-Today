@@ -37,7 +37,6 @@ interface TTask {
 }
 
 interface TTodoListItem {
-  projectId: string
   taskId: string
   todoListDate: string
   id: string

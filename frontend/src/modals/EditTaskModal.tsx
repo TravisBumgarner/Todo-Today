@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState, useContext } from 'react'
-import { Button, InputLabel, MenuItem, Select, TextField } from '@mui/material'
+import { Button, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material'
 
 import Modal from './Modal'
 import { type TTask, ETaskStatus } from 'sharedTypes'
@@ -13,11 +13,7 @@ const EditTaskModal = () => {
   const [title, setTitle] = useState<string>('')
   const [status, setStatus] = useState<ETaskStatus>(ETaskStatus.NEW)
   const [projectId, setProjectId] = useState<string>('')
-  const [formEdited, setFormEdited] = useState<boolean>(false)
-
-  const projects = useLiveQuery(async () => {
-    return await database.projects.toArray()
-  }, [])
+  const projects = useLiveQuery(async () => await database.projects.toArray(), [])
 
   useEffect(() => {
     void database
@@ -33,58 +29,57 @@ const EditTaskModal = () => {
     dispatch({ type: 'CLEAR_ACTIVE_MODAL' })
   }, [dispatch])
 
-  const handleSubmit = async () => {
-    const editedTask = {
-      title,
-      status,
-      id: state.activeModal?.data.taskId,
-      projectId
-    }
-    await database.tasks.put(editedTask, [state.activeModal?.data.taskId])
-    dispatch({ type: 'CLEAR_ACTIVE_MODAL' })
-  }
+  const handleSubmit = useCallback(async () => {
+    await database.tasks.where('id').equals(state.activeModal?.data.taskId).modify({ title, status, projectId })
 
-  const projectSelectOptions = projects ? projects.map(p => ({ value: p.id, label: p.title })) : []
+    dispatch({ type: 'CLEAR_ACTIVE_MODAL' })
+  }, [dispatch, state.activeModal?.data.taskId, projectId, status, title])
+
+  const projectSelectOptions = projects ? projects.map(({ id, title }) => ({ value: id, label: title })) : []
 
   return (
     <Modal
       title="Edit Task"
       showModal={true}
     >
-      <form onChange={() => { setFormEdited(true) }}>
+      <form>
         <TextField
           fullWidth
           label="Task"
           name="title"
+          margin='normal'
           value={title}
           onChange={(event) => { setTitle(event.target.value) }}
         />
-        <InputLabel id="task-status">Status</InputLabel>
-        <Select
-          fullWidth
-          labelId="task-status"
-          value={status}
-          label="Status"
-          onChange={(event) => { setStatus(event.target.value as ETaskStatus) }}
-        >
-          {Object.keys(ETaskStatus).map(key => <MenuItem key={key} value={key}>{taskStatusLookup[key as ETaskStatus]}</MenuItem>)}
-        </Select>
-        <InputLabel id="project-select">Project</InputLabel>
-        <Select
-          fullWidth
-          labelId="project-select"
-          value={projectId}
-          label="Project"
-          onChange={(event) => { setProjectId(event.target.value) }}
-        >
-          {projectSelectOptions.map(({ label, value }) => <MenuItem key={label} value={value}>{label}</MenuItem>)}
-        </Select>
+        <FormControl fullWidth margin='normal'>
+          <InputLabel id="edit-task-modal-status">Status</InputLabel>
+          <Select
+            label="Status"
+            labelId="edit-task-modal-status"
+            fullWidth
+            value={status}
+            onChange={(event) => { setStatus(event.target.value as ETaskStatus) }}
+          >
+            {Object.keys(ETaskStatus).map(key => <MenuItem key={key} value={key}>{taskStatusLookup[key as ETaskStatus]}</MenuItem>)}
+          </Select>
+        </FormControl>
+        <FormControl fullWidth margin='normal'>
+          <InputLabel id="edit-task-modal-project-select">Project</InputLabel>
+          <Select
+            label="Project"
+            labelId="edit-task-modal-project-select"
+            fullWidth
+            value={projectId}
+            onChange={(event) => { setProjectId(event.target.value) }}
+          >
+            {projectSelectOptions.map(({ label, value }) => <MenuItem key={label} value={value}>{label}</MenuItem>)}
+          </Select>
+        </FormControl>
         <Button fullWidth key="cancel" onClick={handleCancel}>Cancel</Button>
         <Button
           fullWidth
           type="button"
           key="save"
-          disabled={!formEdited || projectId === ''}
           variant='contained'
           onClick={handleSubmit}
         >

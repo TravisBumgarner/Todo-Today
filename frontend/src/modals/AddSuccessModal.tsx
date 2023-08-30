@@ -49,7 +49,7 @@ const AddSuccessModal = () => {
           value={description}
           onChange={(event) => { setDescription(event.target.value) }}
         />
-        <FormControl fullWidth>
+        <FormControl fullWidth margin='normal'>
           <InputLabel id="add-success-modal-project-select">Project</InputLabel>
           <Select
             label="Project"

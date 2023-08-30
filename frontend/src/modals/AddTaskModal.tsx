@@ -70,7 +70,6 @@ const AddTaskModal = ({ project }: AddTaskModalProps) => {
         .sortBy('sortOrder'))[0]
 
       await database.todoListItems.add({
-        projectId: projectIdForTask,
         taskId,
         id: taskId,
         todoListDate: state.selectedDate,
@@ -104,7 +103,7 @@ const AddTaskModal = ({ project }: AddTaskModalProps) => {
         margin='normal'
         onChange={(event) => { setTitle(event.target.value) }}
       />
-      <FormControl fullWidth>
+      <FormControl fullWidth margin='normal'>
         <InputLabel id="add-task-modal-project-select">Project</InputLabel>
         <Select
           label="Project"
