@@ -96,6 +96,7 @@ const AddTaskModal = ({ project }: AddTaskModalProps) => {
       showModal={true}
     >
       <TextField
+        multiline
         fullWidth
         label="Task"
         name="title"

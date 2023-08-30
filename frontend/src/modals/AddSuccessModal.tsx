@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useContext } from 'react'
 import { v4 as uuid4 } from 'uuid'
-import { Button, InputLabel, MenuItem, Select, TextField } from '@mui/material'
+import { Button, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material'
 
 import Modal from './Modal'
 import { type TProject } from 'sharedTypes'
@@ -41,22 +41,26 @@ const AddSuccessModal = () => {
     >
       <form>
         <TextField
+          multiline
+          margin='normal'
           fullWidth
           label="Description"
           name="description"
           value={description}
           onChange={(event) => { setDescription(event.target.value) }}
         />
-        <InputLabel id="project-id">Project</InputLabel>
-        <Select
-          fullWidth
-          labelId="project-id"
-          value={projectId}
-          label="Project"
-          onChange={(event) => { setProjectId(event.target.value) }}
-        >
-          {(projectSelectOptions.map(({ label, value }) => <MenuItem key={value} value={value}>{label}</MenuItem>))}
-        </Select>
+        <FormControl fullWidth>
+          <InputLabel id="add-success-modal-project-select">Project</InputLabel>
+          <Select
+            label="Project"
+            labelId="add-success-modal-project-select"
+            fullWidth
+            value={projectId}
+            onChange={(event) => { setProjectId(event.target.value) }}
+          >
+            {projectSelectOptions.map(({ label, value }) => <MenuItem key={label} value={value}>{label}</MenuItem>)}
+          </Select>
+        </FormControl>
         <Button fullWidth key="cancel" onClick={handleCancel}>Cancel</Button>
         <Button fullWidth variant='contained' disabled={description.length === 0} key="save" onClick={handleSubmit}>Save</Button>
       </form>

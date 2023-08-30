@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useContext, useState } from 'react'
 import moment from 'moment'
-import { Button, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material'
+import { Button, FormControl, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material'
 
 import Modal from './Modal'
 import { type TProject, type TSuccess } from 'sharedTypes'
@@ -9,7 +9,7 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import { formatDateKeyLookup } from 'utilities'
 import { context } from 'Context'
 
-const AddSuccessModal = () => {
+const EditSuccessModal = () => {
   const { state, dispatch } = useContext(context)
   const [description, setDescription] = useState<string>('')
   const [projectId, setProjectId] = useState<TProject['id'] | ''>('')
@@ -32,13 +32,13 @@ const AddSuccessModal = () => {
   }, [state.activeModal?.data.successId])
 
   const handleSubmit = useCallback(async () => {
-    const editetSuccess = {
+    const editedSuccess = {
       description,
       id: state.activeModal?.data.successId,
       projectId,
       date: formatDateKeyLookup(moment(date))
     }
-    await database.successes.put(editetSuccess, [state.activeModal?.data.successId])
+    await database.successes.put(editedSuccess, [state.activeModal?.data.successId])
     dispatch({ type: 'CLEAR_ACTIVE_MODAL' })
   }, [dispatch, description, projectId, state.activeModal?.data.successId, date])
 
@@ -60,34 +60,45 @@ const AddSuccessModal = () => {
           : (
             <form>
               <TextField
+                multiline
+                fullWidth
+                margin='normal'
                 label="Description"
                 name="description"
                 value={description}
                 onChange={(event) => { setDescription(event.target.value) }}
               />
-              <InputLabel id="project-select">Project</InputLabel>
-              <Select
-                labelId="project-select"
-                value={projectId}
-                label="Project"
-                onChange={(event) => { setProjectId(event.target.value) }}
-              >
-                {projectSelectOptions.map(({ label, value }) => <MenuItem key={label} value={value}>{label}</MenuItem>)}
-              </Select>
+              <FormControl fullWidth>
+                <InputLabel id="edit-success-modal-project-select">Project</InputLabel>
+                <Select
+                  label="Project"
+                  labelId="edit-success-modal-project-select"
+                  fullWidth
+                  value={projectId}
+                  onChange={(event) => { setProjectId(event.target.value) }}
+                >
+                  {projectSelectOptions.map(({ label, value }) => <MenuItem key={label} value={value}>{label}</MenuItem>)}
+                </Select>
+              </FormControl>
               <TextField
                 label="Date"
+                fullWidth
+                margin='normal'
                 name="date"
                 value={moment(date).format('YYYY-MM-DD')}
                 type="date"
                 onChange={(event) => { setDate(event.target.value) }}
               />
               <Button
+                fullWidth
                 key="cancel"
                 onClick={handleCancel}
               >
                 Cancel
               </Button>
               <Button
+                variant='contained'
+                fullWidth
                 disabled={description.length === 0}
                 key="save"
                 onClick={handleSubmit}
@@ -101,4 +112,4 @@ const AddSuccessModal = () => {
   )
 }
 
-export default AddSuccessModal
+export default EditSuccessModal
