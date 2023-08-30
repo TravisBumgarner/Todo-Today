@@ -1,10 +1,11 @@
-import { type ChangeEvent, useState, type MouseEvent, useCallback } from 'react'
+import { type ChangeEvent, useState, type MouseEvent, useCallback, useContext } from 'react'
 import { Box, Card, IconButton, TextField, Tooltip, Typography, css } from '@mui/material'
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import LightbulbIcon from '@mui/icons-material/Lightbulb'
 import DeleteIcon from '@mui/icons-material/Delete'
 import DoneIcon from '@mui/icons-material/Done'
+import EditIcon from '@mui/icons-material/Edit'
 import RemoveDoneIcon from '@mui/icons-material/RemoveDone'
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
 import CloseIcon from '@mui/icons-material/CloseOutlined'
@@ -12,25 +13,27 @@ import NotesIcon from '@mui/icons-material/Notes'
 import ShortTextIcon from '@mui/icons-material/ShortText'
 
 import database from 'database'
-import { ETaskStatus } from 'sharedTypes'
+import { ETaskStatus, type TProject, type TTask, type TTodoListItem } from 'sharedTypes'
+import { ModalID } from 'modals'
+import { context } from 'Context'
+import { useLiveQuery } from 'dexie-react-hooks'
+import { EmptyStateDisplay } from 'sharedComponents'
 
-interface TodoListItemProps {
-  taskStatus: ETaskStatus
-  taskId: string
-  taskTitle: string
-  projectTitle: string
-  details: string
-  projectId: string
-  id: string
-  sortOrder: number
-}
+type TodoListItemProps = TTodoListItem
 
-const TodoListItem = ({ id, taskId, taskStatus, details: defaultDetails, taskTitle, projectTitle, sortOrder }: TodoListItemProps) => {
+const TodoListItem = ({ id, taskId, details: defaultDetails, sortOrder }: TodoListItemProps) => {
+  const { dispatch } = useContext(context)
   const [details, setDetails] = useState(defaultDetails)
   const [showDetails, setShowDetails] = useState(defaultDetails.length > 0)
 
+  const metadata = useLiveQuery<{ project: TProject, task: TTask }>(
+    async () => {
+      const task = await database.tasks.where('id').equals(taskId).first() as TTask
+      const project = await database.projects.where('id').equals(task.projectId).first() as TProject
+      return { task, project }
+    })
+
   const toggleShowDetails = useCallback(() => { setShowDetails(prev => !prev) }, [])
-  console.log('taskstat', taskStatus)
   const handleStatusChange = useCallback(async (
     event: MouseEvent<HTMLElement>,
     status: ETaskStatus
@@ -59,18 +62,27 @@ const TodoListItem = ({ id, taskId, taskStatus, details: defaultDetails, taskTit
     await database.todoListItems.where({ id }).delete()
   }, [id])
 
+  const handleEdit = useCallback(() => {
+    dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.EDIT_TASK, data: { taskId } } })
+  }, [dispatch, taskId])
+
+  if (!metadata) {
+    return <EmptyStateDisplay message='Unable to find project or task details' />
+  }
+
+  const { project, task } = metadata
+
   return (
     <Card css={wrapperCSS}>
       <Box css={headerCSS(showDetails)}>
         <Box>
-          <Typography variant="h4">{taskTitle} ({sortOrder})</Typography>
-          <Typography variant="caption" css={{ color: 'var(--mui-palette-background-default)' }}>{projectTitle}</Typography>
+          <Typography variant="h4">{task.title} ({sortOrder})</Typography>
+          <Typography variant="caption" css={{ color: 'var(--mui-palette-background-default)' }}>{project.title}</Typography>
         </Box>
         <Box css={rightHeaderCSS}>
           <ToggleButton
             size='small'
             value="text"
-            selected={showDetails}
             onChange={toggleShowDetails}
             css={{ marginRight: '1rem' }}
           >
@@ -80,7 +92,7 @@ const TodoListItem = ({ id, taskId, taskStatus, details: defaultDetails, taskTit
           </ToggleButton>
 
           <ToggleButtonGroup
-            value={taskStatus}
+            value={task.status}
             exclusive
             onChange={handleStatusChange}
             size="small"
@@ -111,7 +123,12 @@ const TodoListItem = ({ id, taskId, taskStatus, details: defaultDetails, taskTit
               </Tooltip>
             </ToggleButton>
           </ToggleButtonGroup>
-          <IconButton onClick={handleRemoveFromToday} css={{ marginLeft: '1rem' }}>
+
+          <IconButton onClick={handleEdit}>
+            <EditIcon fontSize="small" />
+          </IconButton>
+
+          <IconButton onClick={handleRemoveFromToday}>
             <CloseIcon fontSize="small" />
           </IconButton>
 

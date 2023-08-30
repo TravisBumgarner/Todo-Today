@@ -2,7 +2,7 @@ import React, { useCallback, useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Typography, Box, IconButton, css, Tooltip } from '@mui/material'
 
-import EditIcon from '@mui/icons-material/Edit'
+import ChecklistIcon from '@mui/icons-material/Checklist'
 import SettingsIcon from '@mui/icons-material/Settings'
 import CelebrationIcon from '@mui/icons-material/Celebration'
 import { context } from 'Context'
@@ -33,7 +33,7 @@ const Navigation = () => {
 
       <IconButton color="primary" onClick={handleHistory}>
         <Tooltip title="Project and Task History">
-          <EditIcon />
+          <ChecklistIcon />
         </Tooltip>
       </IconButton>
       <IconButton color="primary" onClick={handleSettings}>

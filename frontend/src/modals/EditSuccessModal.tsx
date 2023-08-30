@@ -68,7 +68,7 @@ const EditSuccessModal = () => {
                 value={description}
                 onChange={(event) => { setDescription(event.target.value) }}
               />
-              <FormControl fullWidth>
+              <FormControl fullWidth margin='normal'>
                 <InputLabel id="edit-success-modal-project-select">Project</InputLabel>
                 <Select
                   label="Project"
