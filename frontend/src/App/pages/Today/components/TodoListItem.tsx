@@ -76,7 +76,7 @@ const TodoListItem = ({ id, taskId, details: defaultDetails, sortOrder }: TodoLi
     <Card css={wrapperCSS}>
       <Box css={headerCSS(showDetails)}>
         <Box>
-          <Typography variant="h4">{task.title} ({sortOrder})</Typography>
+          <Typography variant="h4">{task.title}</Typography>
           <Typography variant="caption" css={{ color: 'var(--mui-palette-background-default)' }}>{project.title}</Typography>
         </Box>
         <Box css={rightHeaderCSS}>

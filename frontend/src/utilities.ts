@@ -52,24 +52,6 @@ const formatDurationDisplayString = (rawMinutes: number) => {
   return `${hours}:${paddedMinutes}`
 }
 
-const bucketTasksByProject = (projects: TProject[], tasks: TTask[] | undefined) => {
-  const accumulator: Record<string, TTask[]> = {}
-
-  projects.forEach((project) => {
-    accumulator[project.id] = []
-  })
-
-  if (tasks) {
-    Object.values(tasks).forEach((curr) => {
-      if (curr.projectId in accumulator) {
-        accumulator[curr.projectId].push(curr)
-      }
-    })
-  }
-
-  return accumulator
-}
-
 const sumArray = (arr: number[]) => arr.reduce((partialSum, a) => partialSum + a, 0)
 
 const saveFile = async (fileName: string, jsonData: unknown) => {
@@ -102,7 +84,6 @@ export {
   formatDateDisplayString,
   formatDateKeyLookup,
   formatDurationDisplayString,
-  bucketTasksByProject,
   colorThemeOptionLabels,
   backupIntervalLookup,
   sumArray,

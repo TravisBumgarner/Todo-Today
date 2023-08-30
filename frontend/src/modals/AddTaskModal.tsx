@@ -110,6 +110,7 @@ const AddTaskModal = ({ project }: AddTaskModalProps) => {
           labelId="add-task-modal-project-select"
           fullWidth
           value={projectId}
+          onFocus={() => { console.log('ficused') }}
           onChange={(event) => { setProjectId(event.target.value) }}
         >
           {projectSelectOptions.map(({ label, value }) => <MenuItem key={label} value={value}>{label}</MenuItem>)}

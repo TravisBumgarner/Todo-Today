@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState, useContext } from 'react'
-import { Button, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material'
+import { Button, FormControl, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material'
 
 import Modal from './Modal'
 import { type TProject, EProjectStatus } from 'sharedTypes'
@@ -11,7 +11,6 @@ const EditProjectModal = () => {
   const { state, dispatch } = useContext(context)
   const [title, setTitle] = useState<string>('')
   const [status, setStatus] = useState<EProjectStatus>(EProjectStatus.ACTIVE)
-  const [submitDisabled, setSubmitDisabled] = useState<boolean>(true)
   const [isLoading, setIsLoading] = useState<boolean>(true)
 
   useEffect(() => {
@@ -50,29 +49,31 @@ const EditProjectModal = () => {
         isLoading
           ? <Typography variant="body1">One sec</Typography>
           : (
-            <form onChange={() => { setSubmitDisabled(false) }}>
+            <form>
               <TextField
                 label="Title"
                 name="title"
                 value={title}
+                margin="normal"
                 fullWidth
                 onChange={event => { setTitle(event.target.value) }}
               />
-              <InputLabel id="project-status">Project Status</InputLabel>
-              <Select
-                labelId="project-status"
-                fullWidth
-                value={state.activeModal?.data.projectId}
-                label="Project Status"
-                onChange={(event) => { setStatus(event.target.value as EProjectStatus) }}
-              >
-                {Object.keys(EProjectStatus).map((key) => <MenuItem key={key} value={key}>{projectStatusLookup[key as EProjectStatus]}</MenuItem>)}
-              </Select>
+              <FormControl fullWidth margin='normal'>
+                <InputLabel id="project-status">Project Status</InputLabel>
+                <Select
+                  labelId="project-status"
+                  fullWidth
+                  value={status}
+                  label="Project Status"
+                  onChange={(event) => { setStatus(event.target.value as EProjectStatus) }}
+                >
+                  {Object.keys(EProjectStatus).map((key) => <MenuItem key={key} value={key}>{projectStatusLookup[key as EProjectStatus]}</MenuItem>)}
+                </Select>
+              </FormControl>
               <Button fullWidth key="cancel" onClick={handleCancel}>Cancel</Button>
               <Button
                 key="save"
                 type="button"
-                disabled={submitDisabled}
                 fullWidth
                 onClick={handleSubmit}
                 variant='contained'

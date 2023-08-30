@@ -1,7 +1,6 @@
 import React, { type FC, useContext } from 'react'
 import { context } from 'Context'
 import AddTaskModal from './AddTaskModal'
-import AddProjectModal from './AddProjectModal'
 import EditTaskModal from './EditTaskModal'
 import EditProjectModal from './EditProjectModal'
 import ManageTasksModal from './ManageTasksModal'
@@ -12,7 +11,6 @@ import SettingsModal from './SettingsModal'
 export enum ModalID {
   ADD_TASK = 'ADD_TASK',
   EDIT_TASK = 'EDIT_TASK',
-  ADD_PROJECT = 'ADD_PROJECT',
   EDIT_PROJECT = 'EDIT_PROJECT',
   MANAGE_TASKS = 'MANAGE_TASKS',
   BACKUP_FAILURE_MODAL = 'BACKUP_FAILURE_MODAL',
@@ -31,8 +29,6 @@ const LazyLoadModal: FC = () => {
       return <AddTaskModal />
     case ModalID.EDIT_TASK:
       return <EditTaskModal />
-    case ModalID.ADD_PROJECT:
-      return <AddProjectModal />
     case ModalID.EDIT_PROJECT:
       return <EditProjectModal />
     case ModalID.MANAGE_TASKS:
