@@ -89,7 +89,7 @@ const Project = ({ project, selectedTaskIds }: ProjectProps) => {
   return (
     <Card css={wrapperCSS}>
       <Box css={projectHeaderCSS(showTasks)}>
-        <Typography variant="h4">{project.title}</Typography>
+        <Typography variant="h2">{project.title}</Typography>
         <Box css={rightHeaderCSS}>
           <ToggleButton
             size='small'

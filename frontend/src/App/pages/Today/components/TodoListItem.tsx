@@ -159,8 +159,8 @@ const headerCSS = (showDetails: boolean) => css`
 const wrapperCSS = css`
   background-color: var(--mui-palette-background-paper);
   border-radius: 0.5rem;
-  padding: 0.5rem 1rem;
-  margin: 0.5rem 0;
+  padding: 1rem;
+  margin: 1rem 0;
 `
 
 export default TodoListItem

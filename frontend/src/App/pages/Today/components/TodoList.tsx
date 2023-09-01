@@ -75,16 +75,19 @@ const EmptyTodoList = () => {
       <Typography variant='h2'>What will you do today?</Typography>
       <ButtonGroup>
         <Button
+          variant='contained'
           onClick={getPreviousDatesTasks}
         >
           Copy Previous Day
         </Button>
         <Button
+          variant='contained'
           onClick={showManagementModal}
         >
           Select Tasks
         </Button>
         <Button
+          variant='contained'
           onClick={showAddNewTaskModal}
         >
           Add New Task
@@ -146,10 +149,12 @@ const TodoList = () => {
           <ButtonGroup>
             <Button
               onClick={showManagementModal}
+              variant='contained'
             >
               Select Tasks
             </Button>
             <Button
+              variant='contained'
               onClick={showAddNewTaskModal}
             >
               Add New Task
@@ -157,9 +162,9 @@ const TodoList = () => {
           </ButtonGroup>
         </Box>
         <ButtonGroup>
-          <Button onClick={setPreviousDate}>&lt;</Button>
-          <Button css={todayButtonCSS} onClick={getToday}><span>{formatDateDisplayString(selectedDate)}</span></Button>
-          <Button onClick={getNextDate}>&gt;</Button>
+          <Button variant='contained' onClick={setPreviousDate}>&lt;</Button>
+          <Button variant='contained' css={todayButtonCSS} onClick={getToday}><span>{formatDateDisplayString(selectedDate)}</span></Button>
+          <Button variant='contained' onClick={getNextDate}>&gt;</Button>
         </ButtonGroup>
       </Box>
       {!selectedDateTodoListItems || selectedDateTodoListItems.length === 0

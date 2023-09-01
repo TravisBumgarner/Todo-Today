@@ -61,8 +61,8 @@ const AddSuccessModal = () => {
             {projectSelectOptions.map(({ label, value }) => <MenuItem key={label} value={value}>{label}</MenuItem>)}
           </Select>
         </FormControl>
-        <Button fullWidth key="cancel" onClick={handleCancel}>Cancel</Button>
-        <Button fullWidth variant='contained' disabled={description.length === 0} key="save" onClick={handleSubmit}>Save</Button>
+        <Button variant='contained' fullWidth key="cancel" onClick={handleCancel}>Cancel</Button>
+        <Button variant='contained' fullWidth disabled={description.length === 0} key="save" onClick={handleSubmit}>Save</Button>
       </form>
     </Modal>
   )

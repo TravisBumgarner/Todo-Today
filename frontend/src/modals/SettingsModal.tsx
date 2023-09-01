@@ -143,9 +143,6 @@ const Settings = () => {
       <Box css={sectionWrapperCSS}>
         <Typography variant="h3">Backup</Typography>
         <Button fullWidth variant='contained' onClick={async () => { await handleBackup() }}>Create Backup</Button>
-      </Box>
-
-      <Box css={sectionWrapperCSS}>
         <Select
           fullWidth
           labelId="backup-interval"
@@ -155,8 +152,8 @@ const Settings = () => {
         >
           {Object.keys(EBackupInterval).map(key => <MenuItem key={key} value={key}>{backupIntervalLookup[key as EBackupInterval]}</MenuItem>)}
         </Select>
-        <Typography variant="body1">Last Backup: {getLocalStorage('lastBackup')}</Typography>
-        <Typography variant="body1">Backup Location: {state.settings.backupDir}</Typography>
+        <Typography variant="body2">Last Backup: {getLocalStorage('lastBackup')}</Typography>
+        <Typography variant="body2">Backup Location: {state.settings.backupDir}</Typography>
       </Box>
 
       <Box css={sectionWrapperCSS}>
@@ -182,8 +179,9 @@ const Settings = () => {
 
 const sectionWrapperCSS = css`
   border-radius: 1rem;
-  padding: 0.5rem 0;
+  padding: 1rem;
   margin: 1rem 0;
+  background-color: var(--mui-palette-background-paper);
 `
 
 export default Settings
