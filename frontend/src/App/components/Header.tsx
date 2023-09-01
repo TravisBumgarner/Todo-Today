@@ -70,7 +70,7 @@ const Title = () => {
       case '/successess':
         return 'Successes'
       default:
-        return 'Today'
+        return 'Todo Today'
     }
   }, [pathname])
 
