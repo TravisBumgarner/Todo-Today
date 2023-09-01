@@ -1,9 +1,8 @@
 import { useLiveQuery } from 'dexie-react-hooks'
 import { useState, useCallback, useMemo, useContext } from 'react'
 import { Box, Card, IconButton, ToggleButton, Tooltip, Typography, css } from '@mui/material'
-import NotesIcon from '@mui/icons-material/Notes'
-import ShortTextIcon from '@mui/icons-material/ShortText'
 import EditIcon from '@mui/icons-material/Edit'
+import { ChevronRight } from '@mui/icons-material'
 
 import { EmptyStateDisplay } from 'sharedComponents'
 import database from 'database'
@@ -11,6 +10,7 @@ import { pageCSS } from 'theme'
 import { type TProject, type TTask } from 'sharedTypes'
 import { context } from 'Context'
 import { ModalID } from 'modals'
+import { projectStatusLookup } from 'utilities'
 
 interface TaskProps {
   task: TTask
@@ -65,16 +65,20 @@ const Project = ({ project }: ProjectProps) => {
   return (
     <Card css={wrapperCSS}>
       <Box css={projectHeaderCSS(showTasks)}>
-        <Typography variant="h4">{project.title}</Typography>
+        <Box>
+          <Typography variant="h2">{project.title}</Typography>
+          <Typography variant="body1">Status: {projectStatusLookup[project.status]}</Typography>
+        </Box>
         <Box css={rightHeaderCSS}>
           <ToggleButton
             size='small'
             value="text"
             onChange={toggleShowTasks}
+            disabled={!tasks || tasks.length === 0}
             css={{ marginRight: '1rem' }}
           >
             <Tooltip title="Toggle Tasks">
-              {tasks && tasks.length > 0 ? <NotesIcon fontSize="small" /> : <ShortTextIcon fontSize="small" />}
+              <ChevronRight fontSize="small" css={{ transform: `rotate(${showTasks ? '90deg' : '0deg'})` }} />
             </Tooltip>
           </ToggleButton>
 

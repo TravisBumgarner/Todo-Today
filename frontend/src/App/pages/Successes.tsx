@@ -35,9 +35,9 @@ const Success = ({ description, projectTitle, id, date }: SuccessProps) => {
         <Typography variant="body1">{metadata}</Typography>
       </Box>
       <Box css={rightHeaderCSS}>
-        <IconButton color="primary" onClick={handleEditClick}>
+        <IconButton size='small' onClick={handleEditClick}>
           <Tooltip title="Edit Success">
-            <EditIcon />
+            <EditIcon fontSize='small' />
           </Tooltip>
         </IconButton>
       </Box>
@@ -56,8 +56,8 @@ const wrapperCSS = css`
   background-color: var(--mui-palette-background-paper);
   color: var(--mui-palette-secondary-main);
   border-radius: 0.5rem;
-  padding: 0.5rem 1rem;
-  margin: 0.5rem 0;
+  padding: 1rem;
+  margin: 1rem 0;
   display: flex;
   justify-content: space-between;
 `
@@ -95,7 +95,7 @@ const SuccessesPage = () => {
 
   return (
     <Box css={pageCSS}>
-      <Button key="add" onClick={handleSuccess} >Add Success</Button>
+      <Button variant='contained' key="add" onClick={handleSuccess} >Add Success</Button>
       {content}
     </Box>
   )

@@ -35,16 +35,14 @@ const baseThemeOptions: ThemeOptions = {
       color: 'var(--mui-palette-secondary-main)',
       fontSize: '1.7rem',
       fontWeight: 700,
-      lineHeight: 1.35,
-      margin: '0.25rem 0'
+      lineHeight: 1.35
 
     },
     h3: {
       color: 'var(--mui-palette-primary-main)',
       fontSize: '1.4rem',
       fontWeight: 400,
-      lineHeight: 1.35,
-      margin: '0.25rem 0'
+      lineHeight: 1.35
     },
     body1: {
       color: 'var(--mui-palette-text-primary)'
