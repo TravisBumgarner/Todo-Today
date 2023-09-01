@@ -18,7 +18,7 @@ const style = {
   left: '50%',
   transform: 'translate(-50%, -50%)',
   width: 500,
-  bgcolor: 'primary.main',
+  bgcolor: 'background.default',
   borderRadius: '1rem',
   boxShadow: 24,
   maxHeight: `${MODAL_MAX_HEIGHT}px`,
@@ -38,7 +38,7 @@ const Modal: FC<ModalProps> = ({ children, title }) => {
       onClose={handleClose}
     >
       <Box sx={style}>
-        <Typography variant="h1">{title}</Typography>
+        <Typography variant="h2">{title}</Typography>
         {children}
       </Box>
     </MUIModal>

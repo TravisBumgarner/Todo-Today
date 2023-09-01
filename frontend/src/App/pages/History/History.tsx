@@ -110,7 +110,7 @@ const tasksHeaderCSS = css`
 `
 
 const wrapperCSS = css`
-  background-color: var(--mui-palette-primary-dark);
+  background-color: var(--mui-palette-background-paper);
   color: var(--mui-palette-secondary-main);
   border-radius: 0.5rem;
   padding: 0.5rem 1rem;

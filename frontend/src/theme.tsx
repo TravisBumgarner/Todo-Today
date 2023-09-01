@@ -32,27 +32,25 @@ const baseThemeOptions: ThemeOptions = {
       lineHeight: 1.35
     },
     h2: {
-      fontSize: '2.5rem',
+      color: 'var(--mui-palette-secondary-main)',
+      fontSize: '1.7rem',
       fontWeight: 700,
       lineHeight: 1.35,
-      color: 'var(--mui-palette-warning-main)'
+      margin: '0.25rem 0'
+
     },
     h3: {
-      fontSize: '1.5rem',
+      color: 'var(--mui-palette-primary-main)',
+      fontSize: '1.4rem',
       fontWeight: 400,
       lineHeight: 1.35,
-      color: 'var(--mui-palette-warning-main)'
-    },
-    h4: {
-      fontSize: '1.2rem',
-      fontWeight: 700,
-      color: 'var(--mui-palette-background-default)'
+      margin: '0.25rem 0'
     },
     body1: {
-      color: 'var(--mui-palette-secondary-main)'
+      color: 'var(--mui-palette-text-primary)'
     },
     body2: {
-      color: 'var(--mui-palette-secondary-main)'
+      color: 'var(--mui-palette-text-primary)'
     }
   }
 }
@@ -66,14 +64,14 @@ const beachThemeOptions: ThemeOptions = {
       main: '#49beaa'
     },
     text: {
-      primary: '#1d2a38'
+      primary: '#5c5e5f'
     },
     action: {
       disabled: '#616060'
     },
     background: {
-      default: '#aadbee',
-      paper: '#89b4c4'
+      default: '#d7e3e8',
+      paper: '#b8cbd2'
     },
     warning: {
       main: '#eeb868'
@@ -93,14 +91,14 @@ const retroFutureThemeOptions = {
       main: '#7bff7f'
     },
     text: {
-      primary: '#dadada'
+      primary: '#efefef'
     },
     action: {
       disabled: '#767676'
     },
     background: {
-      default: '#1b1b1b',
-      paper: '#4a4848'
+      default: '#291543',
+      paper: '#712a6b'
     },
     warning: {
       main: '#ffe93f'
@@ -114,7 +112,7 @@ const retroFutureThemeOptions = {
 const underTheSeaThemeOptions = {
   palette: {
     primary: {
-      main: '#81ffff'
+      main: '#99c5c5'
     },
     secondary: {
       main: '#85FFC7'
@@ -126,14 +124,14 @@ const underTheSeaThemeOptions = {
       disabled: '#EAE2B7'
     },
     background: {
-      default: '#39393A',
-      paper: '#39393A'
+      default: '#393a3a',
+      paper: '#3e766f'
     },
     warning: {
-      main: '#ffd552'
+      main: '#ffa052'
     },
     error: {
-      main: '#ff6f52'
+      main: '#ffc552'
     }
   }
 }
@@ -141,10 +139,10 @@ const underTheSeaThemeOptions = {
 const highContrastThemeOptions = {
   palette: {
     primary: {
-      main: '#404040'
+      main: '#5669bc'
     },
     secondary: {
-      main: '#898989'
+      main: '#4aab64'
     },
     text: {
       primary: '#000000'
@@ -154,13 +152,13 @@ const highContrastThemeOptions = {
     },
     background: {
       default: '#ffffff',
-      paper: '#ffffff'
+      paper: '#e8e8e8'
     },
     warning: {
-      main: '#a89704'
+      main: '#eeb868'
     },
     error: {
-      main: '#871717'
+      main: '#ef767a'
     }
   }
 }
