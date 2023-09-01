@@ -48,12 +48,12 @@ const Task = ({ task, isSelected }: TaskProps) => {
     <Box css={tasksHeaderCSS}>
       <Typography variant="body1">{task.title}</Typography>
       <Box css={rightHeaderCSS}>
-        <IconButton color="primary" onClick={isSelected ? handleDeselect : handleSelect}>
+        <IconButton color={isSelected ? 'secondary' : 'default'} onClick={isSelected ? handleDeselect : handleSelect}>
           <CheckIcon fontSize="small" />
         </IconButton>
 
       </Box>
-    </Box>
+    </Box >
   )
 }
 
@@ -128,7 +128,7 @@ const tasksHeaderCSS = css`
 `
 
 const wrapperCSS = css`
-  background-color: var(--mui-palette-primary-dark);
+  background-color: var(--mui-palette-background-paper);
   color: var(--mui-palette-secondary-main);
   border-radius: 0.5rem;
   padding: 0.5rem 1rem;

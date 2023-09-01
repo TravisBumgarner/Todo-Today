@@ -77,8 +77,8 @@ const TodoListItem = ({ id, taskId, details: defaultDetails, sortOrder }: TodoLi
     <Card css={wrapperCSS}>
       <Box css={headerCSS(showDetails)}>
         <Box>
-          <Typography variant="h4">{task.title}</Typography>
-          <Typography variant="caption" css={{ color: 'var(--mui-palette-background-default)' }}>{project.title}</Typography>
+          <Typography variant="h2">{task.title}</Typography>
+          <Typography variant="body1">{project.title}</Typography>
         </Box>
         <Box css={rightHeaderCSS}>
           <ToggleButton
@@ -157,8 +157,7 @@ const headerCSS = (showDetails: boolean) => css`
 `
 
 const wrapperCSS = css`
-  background-color: var(--mui-palette-primary-dark);
-  color: var(--mui-palette-secondary-main);
+  background-color: var(--mui-palette-background-paper);
   border-radius: 0.5rem;
   padding: 0.5rem 1rem;
   margin: 0.5rem 0;

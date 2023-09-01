@@ -128,7 +128,7 @@ const Settings = () => {
       showModal={true}
     >
       <Box css={sectionWrapperCSS}>
-        <Typography variant="h4">Theme</Typography>
+        <Typography variant="h3">Theme</Typography>
         <Select
           fullWidth
           labelId="color-theme"
@@ -141,7 +141,7 @@ const Settings = () => {
       </Box>
 
       <Box css={sectionWrapperCSS}>
-        <Typography variant="h4">Backup</Typography>
+        <Typography variant="h3">Backup</Typography>
         <Button fullWidth variant='contained' onClick={async () => { await handleBackup() }}>Create Backup</Button>
       </Box>
 
@@ -155,13 +155,13 @@ const Settings = () => {
         >
           {Object.keys(EBackupInterval).map(key => <MenuItem key={key} value={key}>{backupIntervalLookup[key as EBackupInterval]}</MenuItem>)}
         </Select>
-        <Typography variant="body2">Last Backup: {getLocalStorage('lastBackup')}</Typography>
-        <Typography variant="body2">Backup Location: {state.settings.backupDir}</Typography>
+        <Typography variant="body1">Last Backup: {getLocalStorage('lastBackup')}</Typography>
+        <Typography variant="body1">Backup Location: {state.settings.backupDir}</Typography>
       </Box>
 
       <Box css={sectionWrapperCSS}>
 
-        <Typography variant="h4">Restore</Typography>
+        <Typography variant="h3">Restore</Typography>
         <input
           onChange={(event) => { event.target.files && setRestore(event.target.files[0]) }}
           name="file"

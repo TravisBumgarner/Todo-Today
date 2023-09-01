@@ -31,8 +31,8 @@ const Success = ({ description, projectTitle, id, date }: SuccessProps) => {
   return (
     <Card css={wrapperCSS}>
       <Box>
-        <Typography variant="h4">{description}</Typography>
-        <Typography variant="caption" css={{ color: 'var(--mui-palette-background-default)' }}>{metadata}</Typography>
+        <Typography variant="h2">{description}</Typography>
+        <Typography variant="body1">{metadata}</Typography>
       </Box>
       <Box css={rightHeaderCSS}>
         <IconButton color="primary" onClick={handleEditClick}>
@@ -53,7 +53,7 @@ const rightHeaderCSS = css`
 `
 
 const wrapperCSS = css`
-  background-color: var(--mui-palette-primary-dark);
+  background-color: var(--mui-palette-background-paper);
   color: var(--mui-palette-secondary-main);
   border-radius: 0.5rem;
   padding: 0.5rem 1rem;
