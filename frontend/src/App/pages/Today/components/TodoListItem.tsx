@@ -46,6 +46,8 @@ const TodoListItem = ({ id, taskId, details: defaultDetails, sortOrder }: TodoLi
       const lastTodoListItem = await database.todoListItems.orderBy('sortOrder').reverse().first()
       const sortOrder = lastTodoListItem?.sortOrder ? lastTodoListItem?.sortOrder + 1 : 0
       await database.todoListItems.where('id').equals(id).modify({ sortOrder })
+
+      setShowDetails(false)
     }
   }, [taskId, id])
 
