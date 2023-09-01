@@ -85,7 +85,7 @@ const TodoListItem = ({ id, taskId, details: defaultDetails, sortOrder }: TodoLi
             size='small'
             value="text"
             onChange={toggleShowDetails}
-            css={{ marginRight: '1rem' }}
+            css={{ marginRight: '0.5rem' }}
           >
             <Tooltip title="Toggle Details">
               {details.length === 0 ? <ShortTextIcon fontSize="small" /> : <NotesIcon fontSize="small" />}
@@ -125,11 +125,13 @@ const TodoListItem = ({ id, taskId, details: defaultDetails, sortOrder }: TodoLi
             </ToggleButton>
           </ToggleButtonGroup>
 
-          <IconButton onClick={handleEdit}>
+          <IconButton onClick={handleEdit} css={{ marginLeft: '0.5rem' }}
+          >
             <EditIcon fontSize="small" />
           </IconButton>
 
-          <IconButton onClick={handleRemoveFromToday}>
+          <IconButton onClick={handleRemoveFromToday} css={{ marginLeft: '0.5rem' }}
+          >
             <CloseIcon fontSize="small" />
           </IconButton>
 

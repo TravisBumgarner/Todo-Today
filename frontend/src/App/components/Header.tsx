@@ -37,19 +37,19 @@ const Navigation = () => {
         </Tooltip>
       </IconButton>
 
-      <IconButton color="primary" onClick={handleSuccess}>
+      <IconButton color="secondary" onClick={handleSuccess}>
         <Tooltip title="Successes">
           <CelebrationIcon />
         </Tooltip>
       </IconButton>
 
-      <IconButton color="primary" onClick={handleHistory}>
+      <IconButton color="warning" onClick={handleHistory}>
         <Tooltip title="Project and Task History">
           <MenuBookIcon />
         </Tooltip>
       </IconButton>
 
-      <IconButton color="primary" onClick={handleSettings}>
+      <IconButton color="error" onClick={handleSettings}>
         <Tooltip title="Settings">
           <SettingsIcon />
         </Tooltip>

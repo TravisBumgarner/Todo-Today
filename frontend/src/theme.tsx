@@ -73,7 +73,7 @@ const beachThemeOptions: ThemeOptions = {
     },
     background: {
       default: '#aadbee',
-      paper: '#a8ffc8'
+      paper: '#89b4c4'
     },
     warning: {
       main: '#eeb868'
@@ -100,7 +100,7 @@ const retroFutureThemeOptions = {
     },
     background: {
       default: '#1b1b1b',
-      paper: '#767676'
+      paper: '#4a4848'
     },
     warning: {
       main: '#ffe93f'

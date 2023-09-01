@@ -22,20 +22,7 @@ const reorder = (list: any[], startIndex: number, endIndex: number) => {
 }
 
 const EmptyTodoList = () => {
-  return (
-    <Box css={emptyTodoListCSS}>
-      <Typography>Poco a Poco.</Typography>
-    </Box>
-  )
-}
-
-const TodoList = () => {
   const { state: { selectedDate }, dispatch } = useContext(context)
-
-  const selectedDateTodoListItems = useLiveQuery<TTodoListItem[]>(
-    async () => await database.todoListItems.where('todoListDate').equals(selectedDate).sortBy('sortOrder'),
-    [selectedDate]
-  )
 
   const getPreviousDatesTasks = useCallback(async () => {
     const lastDate = (
@@ -83,6 +70,46 @@ const TodoList = () => {
     dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.ADD_TASK } })
   }, [dispatch])
 
+  return (
+    <Box css={emptyTodoListCSS}>
+      <Typography variant='h2'>What will you do today?</Typography>
+      <ButtonGroup>
+        <Button
+          onClick={getPreviousDatesTasks}
+        >
+          Copy Previous Day
+        </Button>
+        <Button
+          onClick={showManagementModal}
+        >
+          Select Tasks
+        </Button>
+        <Button
+          onClick={showAddNewTaskModal}
+        >
+          Add New Task
+        </Button>
+      </ButtonGroup>
+    </Box>
+  )
+}
+
+const TodoList = () => {
+  const { state: { selectedDate }, dispatch } = useContext(context)
+
+  const selectedDateTodoListItems = useLiveQuery<TTodoListItem[]>(
+    async () => await database.todoListItems.where('todoListDate').equals(selectedDate).sortBy('sortOrder'),
+    [selectedDate]
+  )
+
+  const showManagementModal = useCallback(() => {
+    dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.MANAGE_TASKS } })
+  }, [dispatch])
+
+  const showAddNewTaskModal = useCallback(() => {
+    dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.ADD_TASK } })
+  }, [dispatch])
+
   const setPreviousDate = () => {
     dispatch({ type: 'SET_SELECTED_DATE', payload: { date: formatDateKeyLookup(moment(selectedDate).subtract(1, 'day')) } })
   }
@@ -116,12 +143,6 @@ const TodoList = () => {
     <Box css={todoListWrapperCSS}>
       <Box css={{ display: 'flex', justifyContent: 'space-between' }}>
         <Box>
-          <Button
-            disabled={selectedDateTodoListItems && selectedDateTodoListItems.length > 0}
-            onClick={getPreviousDatesTasks}
-          >
-            Copy Previous
-          </Button>
           <ButtonGroup>
             <Button
               onClick={showManagementModal}
@@ -213,6 +234,7 @@ const emptyTodoListCSS = css`
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
 `
 
 export default TodoList
