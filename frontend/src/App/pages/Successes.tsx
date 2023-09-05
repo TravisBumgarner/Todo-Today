@@ -57,7 +57,7 @@ const wrapperCSS = css`
   color: var(--mui-palette-secondary-main);
   border-radius: 0.5rem;
   padding: 1rem;
-  margin: 1rem 0;
+  margin: 0 0 1rem 0;
   display: flex;
   justify-content: space-between;
 `
@@ -96,9 +96,17 @@ const SuccessesPage = () => {
   return (
     <Box css={pageCSS}>
       <Button variant='contained' key="add" onClick={handleSuccess} >Add Success</Button>
-      {content}
-    </Box>
+      <Box css={scrollWrapperCSS}>
+        {content}
+      </Box>
+    </Box >
   )
 }
+
+const scrollWrapperCSS = css`
+    height: 90%;
+    overflow: auto;
+    margin-top: 1rem;
+`
 
 export default SuccessesPage

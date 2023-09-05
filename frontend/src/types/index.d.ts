@@ -1,7 +1,7 @@
-export {}
+export { }
 
 declare global {
   interface Window {
-    automatedBackupIntervalId: any;
+    automatedBackupIntervalId: any
   }
 }
