@@ -12,6 +12,7 @@ import { ModalID } from 'modals'
 import { formatDateDisplayString, formatDateKeyLookup } from 'utilities'
 import moment from 'moment'
 import { HEADER_HEIGHT } from '../../../components/Header'
+import { pageCSS } from 'theme'
 
 const reorder = (list: any[], startIndex: number, endIndex: number) => {
   const result = Array.from(list)
@@ -143,7 +144,7 @@ const TodoList = () => {
     }))
   }
   return (
-    <Box css={todoListWrapperCSS}>
+    <Box css={pageCSS}>
       <Box css={{ display: 'flex', justifyContent: 'space-between' }}>
         <Box>
           <ButtonGroup>
@@ -170,56 +171,54 @@ const TodoList = () => {
       {!selectedDateTodoListItems || selectedDateTodoListItems.length === 0
         ? <EmptyTodoList />
         : (
-          <DragDropContext onDragEnd={onDragEnd}>
-            <Droppable droppableId="tasks">
-              {(provided, snapshot) => (
-                <div
-                  ref={provided.innerRef}
-                  {...provided.droppableProps}
-                  style={dragAndDropCSS(snapshot.isDraggingOver)}
-                >
-                  {selectedDateTodoListItems.map((it, index) => (
-                    <Draggable
-                      key={it.id}
-                      draggableId={it.id}
-                      // It's quite a pain, and probably bug prone, to keep sort order sequential.
-                      // Therefore, see if using index is sufficient since `selectedDateTodoListItems` is already
-                      // sorted by `sortOrder` and `index` is sequential.
-                      index={index}
-                    >
-                      {(provided) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                        >
-                          <TodoListItem {...it}
-                          />
-                        </div>
-                      )}
-                    </Draggable>
-                  ))}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
-          </DragDropContext>
+          <Box css={scrollWrapperCSS}>
+            <DragDropContext onDragEnd={onDragEnd}>
+              <Droppable droppableId="tasks">
+                {(provided, snapshot) => (
+                  <div
+                    ref={provided.innerRef}
+                    {...provided.droppableProps}
+                    style={dragAndDropCSS(snapshot.isDraggingOver)}
+                  >
+                    {selectedDateTodoListItems.map((it, index) => (
+                      <Draggable
+                        key={it.id}
+                        draggableId={it.id}
+                        // It's quite a pain, and probably bug prone, to keep sort order sequential.
+                        // Therefore, see if using index is sufficient since `selectedDateTodoListItems` is already
+                        // sorted by `sortOrder` and `index` is sequential.
+                        index={index}
+                      >
+                        {(provided) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                          >
+                            <TodoListItem {...it}
+                            />
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+            </DragDropContext>
+          </Box>
         )
       }
     </Box>
   )
 }
 
-const todoListWrapperCSS = css`
-  height: calc(100vh - ${HEADER_HEIGHT}px);
-  display: flex;
-  flex-direction: column;
-`
-
 const dragAndDropCSS = (isDraggingOver: boolean) => {
   return ({
     border: isDraggingOver ? '1px solid var(--mui-palette-primary-main)' : '1px transparent',
-    borderRadius: '0.5rem'
+    borderRadius: '0.5rem',
+    overflow: 'auto',
+    height: '90%'
   })
 }
 
@@ -240,6 +239,12 @@ const emptyTodoListCSS = css`
   justify-content: center;
   align-items: center;
   flex-direction: column;
+`
+
+const scrollWrapperCSS = css`
+  margin-top: 1rem;
+  height: 90%;
+  overflow: auto;
 `
 
 export default TodoList

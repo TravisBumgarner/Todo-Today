@@ -9,6 +9,7 @@ import { setupAutomatedBackup } from '../modals/SettingsModal'
 import LazyLoadModal, { ModalID } from 'modals'
 import { baseTheme, beachTheme, highContrastTheme, retroFutureTheme, underTheSeaTheme } from 'theme'
 import { EColorTheme } from 'sharedTypes'
+import { HEADER_HEIGHT } from './components/Header'
 
 const App = () => {
   const { state, dispatch } = useContext(context)
@@ -49,22 +50,20 @@ const App = () => {
       <Box css={appWrapperCSS}>
         <Header />
         <Router />
-        <LazyLoadModal />
       </Box>
+      <LazyLoadModal />
     </CssVarsProvider>
   )
 }
 
 const appWrapperCSS = css`
-  margin: 0 auto;
-  padding: 0 1rem;
+  padding: 1rem;
   max-width: 1200px;
   display: flex;
-  justify-content: center;
-  align-items: center;
   flex-direction: column;
   box-sizing: border-box;
-  height: 100%;
+  height: 100vh;
+  overflow: hidden;
 `
 
 class ErrorBoundary extends Component<{ children: any }, { hasError: boolean, error: string }> {
@@ -81,7 +80,7 @@ class ErrorBoundary extends Component<{ children: any }, { hasError: boolean, er
   }
 
   componentDidCatch(error: Error, errorInfo: unknown) {
-    this.setState({ error: `${JSON.stringify(error.message)}\n${JSON.stringify(errorInfo)}` })
+    this.setState({ error: `${JSON.stringify(error.message)}\n${JSON.stringify(errorInfo)} ` })
   }
 
   render() {

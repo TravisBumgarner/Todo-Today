@@ -118,7 +118,7 @@ const wrapperCSS = css`
   color: var(--mui-palette-secondary-main);
   border-radius: 0.5rem;
   padding: 0.5rem 1rem;
-  margin: 0.5rem 0;
+  margin: 0 0 1rem 0;
 `
 
 const History = () => {
@@ -134,9 +134,17 @@ const History = () => {
 
   return (
     <Box css={pageCSS}>
-      {content}
+      <Box css={scrollWrapperCSS}>
+        {content}
+      </Box>
     </Box>
   )
 }
+
+const scrollWrapperCSS = css`
+    height: 90%;
+    overflow: auto;
+    margin-top: 1rem;
+`
 
 export default History

@@ -1,6 +1,8 @@
 import { useState, useContext } from 'react'
 import moment from 'moment'
-import { Box, Button, InputLabel, MenuItem, Select, Typography, css } from '@mui/material'
+import { Box, Button, FormControl, InputLabel, MenuItem, Select, Typography, css } from '@mui/material'
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
+import { HtmlTooltip } from 'sharedComponents'
 
 import database from 'database'
 import { EColorTheme, EBackupInterval } from 'sharedTypes'
@@ -129,48 +131,71 @@ const Settings = () => {
     >
       <Box css={sectionWrapperCSS}>
         <Typography variant="h3">Theme</Typography>
-        <Select
-          fullWidth
-          labelId="color-theme"
-          value={state.settings.colorTheme}
-          label="Color Theme"
-          onChange={(event) => { handleSubmit({ key: 'colorTheme', value: event.target.value }) }}
-        >
-          {Object.keys(EColorTheme).map(key => <MenuItem key={key} value={key}>{colorThemeOptionLabels[key as EColorTheme]}</MenuItem>)}
-        </Select>
+        <FormControl fullWidth margin='normal'>
+          <InputLabel id="setting-modal-color-theme">Color Theme</InputLabel>
+          <Select
+            fullWidth
+            labelId="setting-modal-color-theme"
+            value={state.settings.colorTheme}
+            label="Color Theme"
+            onChange={(event) => { handleSubmit({ key: 'colorTheme', value: event.target.value }) }}
+          >
+            {Object.keys(EColorTheme).map(key => <MenuItem key={key} value={key}>{colorThemeOptionLabels[key as EColorTheme]}</MenuItem>)}
+          </Select>
+        </FormControl>
       </Box>
 
       <Box css={sectionWrapperCSS}>
-        <Typography variant="h3">Backup</Typography>
+        <Box css={sectionHeaderWrapperCSS}>
+          <Typography variant="h3">Backup</Typography>
+          <HtmlTooltip title={
+            <>
+              <Typography variant="body2"><Box component="span" fontWeight={700}>Last Backup<br /></Box> {getLocalStorage('lastBackup')}</Typography>
+              <Typography variant="body2"><Box component="span" fontWeight={700}>Location<br /></Box> {state.settings.backupDir}</Typography></>
+          }>
+            <HelpOutlineIcon color="primary" fontSize='small' />
+          </HtmlTooltip>
+        </Box>
         <Button fullWidth variant='contained' onClick={async () => { await handleBackup() }}>Create Backup</Button>
-        <Select
-          fullWidth
-          labelId="backup-interval"
-          value={state.settings.backupInterval}
-          label="Color Theme"
-          onChange={(event) => { dispatch({ type: 'EDIT_USER_SETTING', payload: { key: 'backupInterval', value: event.target.value } }) }}
-        >
-          {Object.keys(EBackupInterval).map(key => <MenuItem key={key} value={key}>{backupIntervalLookup[key as EBackupInterval]}</MenuItem>)}
-        </Select>
-        <Typography variant="body2">Last Backup: {getLocalStorage('lastBackup')}</Typography>
-        <Typography variant="body2">Backup Location: {state.settings.backupDir}</Typography>
+        <FormControl fullWidth margin='normal'>
+          <InputLabel id="setting-modal-backup-interval">Backup Interval</InputLabel>
+          <Select
+            margin='dense'
+            fullWidth
+            labelId="setting-modal-backup-interval"
+            value={state.settings.backupInterval}
+            label="Backup Interval"
+            onChange={(event) => { dispatch({ type: 'EDIT_USER_SETTING', payload: { key: 'backupInterval', value: event.target.value } }) }}
+          >
+            {Object.keys(EBackupInterval).map(key => <MenuItem key={key} value={key}>{backupIntervalLookup[key as EBackupInterval]}</MenuItem>)}
+          </Select>
+        </FormControl>
+
       </Box>
 
       <Box css={sectionWrapperCSS}>
 
         <Typography variant="h3">Restore</Typography>
-        <input
-          onChange={(event) => { event.target.files && setRestore(event.target.files[0]) }}
-          name="file"
-          type="file"
-        />
+        <Button
+          variant="contained"
+          component="label"
+          fullWidth
+        >
+          Choose File
+          <input
+            onChange={(event) => { event.target.files && setRestore(event.target.files[0]) }}
+            type="file"
+            hidden
+          />
+        </Button>
+        <Typography css={fileNameCSS} variant='body1'>Filename: {restore ? restore.name : ''}</Typography>
         <Button
           disabled={!restore}
           onClick={handleRestore}
           fullWidth
           variant='contained'
         >
-          Restore from Backup
+          Restore
         </Button>
       </Box>
     </Modal >
@@ -182,6 +207,15 @@ const sectionWrapperCSS = css`
   padding: 1rem;
   margin: 1rem 0;
   background-color: var(--mui-palette-background-paper);
+`
+
+const fileNameCSS = css`
+  margin: 0.5rem 0;
+`
+
+const sectionHeaderWrapperCSS = css`
+  display: flex;
+  justify-content: space-between;
 `
 
 export default Settings

@@ -113,7 +113,7 @@ const navigationCSS = css`
 `
 
 const titleCSS = css`
-    position: relative;
+  position: relative;
    
     h1{
         white-space: nowrap;
@@ -172,6 +172,11 @@ const headerCSS = css`
   justify-content: space-between;
   align-items: center;
   padding: 0.5rem 0;
+  background-color: var(--mui-palette-background-default);
+  /* position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 999; */
 `
 
 export default Header

@@ -130,8 +130,7 @@ const TodoListItem = ({ id, taskId, details: defaultDetails, sortOrder }: TodoLi
             <EditIcon fontSize="small" />
           </IconButton>
 
-          <IconButton onClick={handleRemoveFromToday} css={{ marginLeft: '0.5rem' }}
-          >
+          <IconButton onClick={handleRemoveFromToday} css={{ marginLeft: '0.5rem' }}>
             <CloseIcon fontSize="small" />
           </IconButton>
 
@@ -160,7 +159,7 @@ const wrapperCSS = css`
   background-color: var(--mui-palette-background-paper);
   border-radius: 0.5rem;
   padding: 1rem;
-  margin: 1rem 0;
+  margin: 0 0 1rem 0;
 `
 
 export default TodoListItem
