@@ -86,7 +86,7 @@ const EmptyTodoList = () => {
 
   return (
     <Box css={emptyTodoListCSS}>
-      <Typography variant='h2'>What will you do today?</Typography>
+      <Typography css={css`margin-bottom: 1rem`} variant='h2'>What will you do today?</Typography>
       <ButtonGroup>
         <Button
           variant='contained'
@@ -257,6 +257,7 @@ const emptyTodoListCSS = css`
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  height: 100%;
 `
 
 const scrollWrapperCSS = css`
