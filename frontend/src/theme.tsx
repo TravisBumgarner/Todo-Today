@@ -172,4 +172,3 @@ export const pageCSS = css`
   width:100%;
   height: calc(100vh - ${HEADER_HEIGHT}px);
 `
-

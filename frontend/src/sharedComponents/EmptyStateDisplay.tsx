@@ -22,6 +22,7 @@ const wrapperCSS = css`
     justify-content: center;
     margin: 1.5rem 0;
     flex-direction: column;
+    height: 100%;
 
     button {
         margin-bottom: 1rem;
