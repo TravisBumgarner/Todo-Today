@@ -1,5 +1,5 @@
 import React, { type FC, useContext } from 'react'
-import { type State, context } from 'Context'
+import { context } from 'Context'
 import AddTaskModal from './AddTaskModal'
 import EditTaskModal from './EditTaskModal'
 import EditProjectModal from './EditProjectModal'
@@ -7,6 +7,7 @@ import ManageTasksModal from './ManageTasksModal'
 import AddSuccessModal from './AddSuccessModal'
 import EditSuccessModal from './EditSuccessModal'
 import SettingsModal from './SettingsModal'
+import ConfirmationModal, { type ConfirmationModalProps } from './ConfirmationModal'
 
 export enum ModalID {
   ADD_TASK = 'ADD_TASK',
@@ -16,7 +17,8 @@ export enum ModalID {
   BACKUP_FAILURE_MODAL = 'BACKUP_FAILURE_MODAL',
   ADD_SUCCESS_MODAL = 'ADD_SUCCESS_MODAL',
   EDIT_SUCCESS_MODAL = 'EDIT_SUCCESS_MODAL',
-  SETTINGS_MODAL = 'SETTINGS_MODAL'
+  SETTINGS_MODAL = 'SETTINGS_MODAL',
+  CONFIRMATION_MODAL = 'CONFIRMATION_MODAL',
 }
 
 export type ActiveModal =
@@ -28,12 +30,9 @@ export type ActiveModal =
   | { id: ModalID.ADD_SUCCESS_MODAL }
   | { id: ModalID.EDIT_SUCCESS_MODAL, successId: string }
   | { id: ModalID.SETTINGS_MODAL }
+  | { id: ModalID.CONFIRMATION_MODAL } & ConfirmationModalProps
 
 const LazyLoadModal: FC = () => {
-  // HEY!
-  // state.activeModal.data is typed as any.
-  // Be warned. Maybe figure out a better solution.
-
   const { state } = useContext(context)
 
   if (!state.activeModal?.id) return null
@@ -53,6 +52,14 @@ const LazyLoadModal: FC = () => {
       return <EditSuccessModal successId={state.activeModal.successId} />
     case ModalID.SETTINGS_MODAL:
       return <SettingsModal />
+    case ModalID.CONFIRMATION_MODAL:
+      return < ConfirmationModal
+        id={state.activeModal.id}
+        title={state.activeModal.title}
+        body={state.activeModal.body}
+        cancelCallback={state.activeModal.cancelCallback}
+        confirmationCallback={state.activeModal.confirmationCallback}
+      />
     default:
       return null
   }

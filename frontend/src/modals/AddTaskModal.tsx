@@ -9,6 +9,7 @@ import { type TProject, ETaskStatus, EProjectStatus } from 'sharedTypes'
 import database from 'database'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { context } from 'Context'
+import { ButtonWrapper } from 'sharedComponents'
 
 const CREATE_NEW_PROJECT_DROPDOWN_ITEM = 'create-new-project'
 
@@ -134,24 +135,28 @@ const AddTaskModal = () => {
           </ToggleButton>
         </ToggleButtonGroup>
       </Box>
-      <Button
-        key="cancel"
-        fullWidth
-        onClick={handleCancel}
-      >
-        Cancel
-      </Button>
-      <Button
-        fullWidth
-        type="button"
-        variant='contained'
-        disabled={title.length === 0 || projectId.length === 0 || (projectId === CREATE_NEW_PROJECT_DROPDOWN_ITEM && addProjectInput.length === 0)}
-        key="save"
+      <ButtonWrapper>
+        <Button
+          key="cancel"
+          fullWidth
+          variant='contained'
+          color='secondary'
+          onClick={handleCancel}
+        >
+          Cancel
+        </Button>
+        <Button
+          fullWidth
+          type="button"
+          variant='contained'
+          disabled={title.length === 0 || projectId.length === 0 || (projectId === CREATE_NEW_PROJECT_DROPDOWN_ITEM && addProjectInput.length === 0)}
+          key="save"
 
-        onClick={handleSubmit}
-      >
-        Save
-      </Button>
+          onClick={handleSubmit}
+        >
+          Save
+        </Button>
+      </ButtonWrapper>
 
     </Modal >
   )

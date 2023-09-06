@@ -8,6 +8,7 @@ import database from 'database'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { formatDateKeyLookup } from 'utilities'
 import { context } from 'Context'
+import { ButtonWrapper } from 'sharedComponents'
 
 interface Props {
   successId: string
@@ -93,22 +94,25 @@ const EditSuccessModal = ({ successId }: Props) => {
                 type="date"
                 onChange={(event) => { setDate(event.target.value) }}
               />
-              <Button
-                fullWidth
-                key="cancel"
-                onClick={handleCancel}
-              >
-                Cancel
-              </Button>
-              <Button
-                variant='contained'
-                fullWidth
-                disabled={description.length === 0}
-                key="save"
-                onClick={handleSubmit}
-              >
-                Save
-              </Button>
+              <ButtonWrapper>
+
+                <Button
+                  fullWidth
+                  key="cancel"
+                  onClick={handleCancel}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  variant='contained'
+                  fullWidth
+                  disabled={description.length === 0}
+                  key="save"
+                  onClick={handleSubmit}
+                >
+                  Save
+                </Button>
+              </ButtonWrapper>
             </form>
           )
       }

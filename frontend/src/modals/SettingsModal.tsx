@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react'
+import { useState, useContext, useCallback } from 'react'
 import moment from 'moment'
 import { Box, Button, FormControl, InputLabel, MenuItem, Select, Typography, css } from '@mui/material'
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
@@ -16,6 +16,7 @@ import {
 import Modal from './Modal'
 import { context } from 'Context'
 import { type BackupIPC } from '../../../shared/types'
+import { ModalID } from './LazyLoadModal'
 
 const { ipcRenderer } = window.require('electron')
 
@@ -80,7 +81,7 @@ const setupAutomatedBackup = (triggerBackupFailureModal: () => void) => {
 
 const Settings = () => {
   const { state, dispatch } = useContext(context)
-  const [restore, setRestore] = useState<File | null>(null)
+  const [restoreFile, setRestoreFile] = useState<File | null>(null)
 
   const handleBackup = async () => {
     const data = await createBackup()
@@ -95,34 +96,65 @@ const Settings = () => {
     dispatch({ type: 'EDIT_USER_SETTING', payload: { key, value } })
   }
 
-  const handleRestore = () => {
-    if (restore) {
+  const restore = useCallback((restoreFile: File | null) => {
+    dispatch({ type: 'RESTORE_STARTED' })
+    if (restoreFile) {
       const reader = new FileReader()
-      reader.readAsText(restore, 'UTF-8')
+      reader.readAsText(restoreFile, 'UTF-8')
       reader.onload = async function (event) {
-        if (event.target?.result) {
-          const newStore = JSON.parse(event.target.result as string)
+        try {
+          if (event.target?.result) {
+            const newStore = JSON.parse(event.target.result as string)
 
-          await Promise.all([
-            database.projects.clear(),
-            database.tasks.clear(),
-            database.todoListItems.clear(),
-            database.successes.clear()
-          ])
+            await Promise.all([
+              database.projects.clear(),
+              database.tasks.clear(),
+              database.todoListItems.clear(),
+              database.successes.clear()
+            ])
 
-          await Promise.all([
-            database.projects.bulkAdd(newStore.projects),
-            database.tasks.bulkAdd(newStore.tasks),
-            database.todoListItems.bulkAdd(newStore.todoListItems),
-            database.successes.bulkAdd(newStore.successes)
-          ])
-          setRestore(null)
-        } else {
-          alert('bad data')
+            await Promise.all([
+              database.projects.bulkAdd(newStore.projects),
+              database.tasks.bulkAdd(newStore.tasks),
+              database.todoListItems.bulkAdd(newStore.todoListItems),
+              database.successes.bulkAdd(newStore.successes)
+            ])
+          } else {
+            dispatch({
+              type: 'SET_ACTIVE_MODAL',
+              payload: {
+                id: ModalID.CONFIRMATION_MODAL,
+                title: 'Something went Wrong',
+                body: 'Please select a valid backup file and try again'
+              }
+            })
+          }
+        } catch (error) {
+          dispatch({
+            type: 'SET_ACTIVE_MODAL',
+            payload: {
+              id: ModalID.CONFIRMATION_MODAL,
+              title: 'Something went Wrong',
+              body: 'Please select a valid backup file and try again'
+            }
+          })
         }
       }
     }
-  }
+    dispatch({ type: 'RESTORE_ENDED' })
+  }, [dispatch])
+
+  const handleRestore = useCallback(() => {
+    dispatch({
+      type: 'SET_ACTIVE_MODAL',
+      payload: {
+        id: ModalID.CONFIRMATION_MODAL,
+        title: 'Restore from Backup?',
+        body: 'All current data will be lost.',
+        confirmationCallback: () => { restore(restoreFile) }
+      }
+    })
+  }, [dispatch, restore, restoreFile])
 
   return (
     <Modal
@@ -183,14 +215,14 @@ const Settings = () => {
         >
           Choose File
           <input
-            onChange={(event) => { event.target.files && setRestore(event.target.files[0]) }}
+            onChange={(event) => { event.target.files && setRestoreFile(event.target.files[0]) }}
             type="file"
             hidden
           />
         </Button>
-        <Typography css={fileNameCSS} variant='body1'>Filename: {restore ? restore.name : ''}</Typography>
+        <Typography css={fileNameCSS} variant='body1'>Filename: {restoreFile ? restoreFile.name : ''}</Typography>
         <Button
-          disabled={!restore}
+          disabled={!restoreFile}
           onClick={handleRestore}
           fullWidth
           variant='contained'
