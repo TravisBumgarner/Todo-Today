@@ -22,7 +22,7 @@ const reorder = (list: any[], startIndex: number, endIndex: number) => {
 }
 
 const EmptyTodoList = () => {
-  const { state: { selectedDate, restoreInProgress }, dispatch } = useContext(context)
+  const { state: { selectedDate }, dispatch } = useContext(context)
 
   const getPreviousDatesTasks = useCallback(async () => {
     const lastDate = (
@@ -37,7 +37,14 @@ const EmptyTodoList = () => {
         .toArray()
 
       if (previousDay.length === 0) {
-        alert('nothing to show modal')
+        dispatch({
+          type: 'SET_ACTIVE_MODAL',
+          payload: {
+            id: ModalID.CONFIRMATION_MODAL,
+            title: 'Something went Wrong',
+            body: 'There is nothing to copy from the previous day'
+          }
+        })
       } else {
         previousDay.map(async ({ taskId, details }, index) => {
           const task = await database.tasks.where('id').equals(taskId).first()
@@ -58,9 +65,16 @@ const EmptyTodoList = () => {
         })
       }
     } else {
-      alert('Nothing to copy modal')
+      dispatch({
+        type: 'SET_ACTIVE_MODAL',
+        payload: {
+          id: ModalID.CONFIRMATION_MODAL,
+          title: 'Something went Wrong',
+          body: 'There is nothing to copy from the previous day'
+        }
+      })
     }
-  }, [selectedDate])
+  }, [selectedDate, dispatch])
 
   const showManagementModal = useCallback(() => {
     dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.MANAGE_TASKS } })
