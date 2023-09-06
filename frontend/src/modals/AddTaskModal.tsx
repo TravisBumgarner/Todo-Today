@@ -10,16 +10,12 @@ import database from 'database'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { context } from 'Context'
 
-interface AddTaskModalProps {
-  project?: TProject
-}
-
 const CREATE_NEW_PROJECT_DROPDOWN_ITEM = 'create-new-project'
 
-const AddTaskModal = ({ project }: AddTaskModalProps) => {
+const AddTaskModal = () => {
   const { state, dispatch } = useContext(context)
   const [title, setTitle] = useState<string>('')
-  const [projectId, setProjectId] = useState<TProject['id'] | ''>(project ? project.id : '')
+  const [projectId, setProjectId] = useState<TProject['id'] | ''>('')
   const [addProjectInput, setAddProjectInput] = useState<string>('')
   const [addToSelectedDate, setAddToSelectedDate] = useState<'yes' | 'no'>('yes')
 

@@ -11,7 +11,6 @@ import { Box, Button, ButtonGroup, Typography, css } from '@mui/material'
 import { ModalID } from 'modals'
 import { formatDateDisplayString, formatDateKeyLookup } from 'utilities'
 import moment from 'moment'
-import { HEADER_HEIGHT } from '../../../components/Header'
 import { pageCSS } from 'theme'
 
 const reorder = (list: any[], startIndex: number, endIndex: number) => {

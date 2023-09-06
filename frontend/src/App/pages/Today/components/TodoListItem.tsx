@@ -64,7 +64,7 @@ const TodoListItem = ({ id, taskId, details: defaultDetails, sortOrder }: TodoLi
   }, [id])
 
   const handleEdit = useCallback(() => {
-    dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.EDIT_TASK, data: { taskId } } })
+    dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.EDIT_TASK, taskId } })
   }, [dispatch, taskId])
 
   if (!metadata) {

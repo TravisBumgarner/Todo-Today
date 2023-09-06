@@ -8,8 +8,12 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import { taskStatusLookup } from 'utilities'
 import { context } from 'Context'
 
-const EditTaskModal = () => {
-  const { state, dispatch } = useContext(context)
+interface Props {
+  taskId: string
+}
+
+const EditTaskModal = ({ taskId }: Props) => {
+  const { dispatch } = useContext(context)
   const [title, setTitle] = useState<string>('')
   const [status, setStatus] = useState<ETaskStatus>(ETaskStatus.NEW)
   const [projectId, setProjectId] = useState<string>('')
@@ -17,23 +21,23 @@ const EditTaskModal = () => {
 
   useEffect(() => {
     void database
-      .tasks.where('id').equals(state.activeModal?.data.taskId).first()
+      .tasks.where('id').equals(taskId).first()
       .then((t: TTask) => {
         setTitle(t.title)
         setProjectId(t.projectId)
         setStatus(t.status)
       })
-  }, [state.activeModal?.data.taskId])
+  }, [taskId])
 
   const handleCancel = useCallback(() => {
     dispatch({ type: 'CLEAR_ACTIVE_MODAL' })
   }, [dispatch])
 
   const handleSubmit = useCallback(async () => {
-    await database.tasks.where('id').equals(state.activeModal?.data.taskId).modify({ title, status, projectId })
+    await database.tasks.where('id').equals(taskId).modify({ title, status, projectId })
 
     dispatch({ type: 'CLEAR_ACTIVE_MODAL' })
-  }, [dispatch, state.activeModal?.data.taskId, projectId, status, title])
+  }, [dispatch, taskId, projectId, status, title])
 
   const projectSelectOptions = projects ? projects.map(({ id, title }) => ({ value: id, label: title })) : []
 

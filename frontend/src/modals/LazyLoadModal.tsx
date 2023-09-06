@@ -1,5 +1,5 @@
 import React, { type FC, useContext } from 'react'
-import { context } from 'Context'
+import { type State, context } from 'Context'
 import AddTaskModal from './AddTaskModal'
 import EditTaskModal from './EditTaskModal'
 import EditProjectModal from './EditProjectModal'
@@ -19,23 +19,38 @@ export enum ModalID {
   SETTINGS_MODAL = 'SETTINGS_MODAL'
 }
 
+export type ActiveModal =
+  | { id: ModalID.ADD_TASK }
+  | { id: ModalID.EDIT_TASK, taskId: string }
+  | { id: ModalID.EDIT_PROJECT, projectId: string }
+  | { id: ModalID.MANAGE_TASKS }
+  | { id: ModalID.BACKUP_FAILURE_MODAL }
+  | { id: ModalID.ADD_SUCCESS_MODAL }
+  | { id: ModalID.EDIT_SUCCESS_MODAL, successId: string }
+  | { id: ModalID.SETTINGS_MODAL }
+
 const LazyLoadModal: FC = () => {
+  // HEY!
+  // state.activeModal.data is typed as any.
+  // Be warned. Maybe figure out a better solution.
+
   const { state } = useContext(context)
 
   if (!state.activeModal?.id) return null
+
   switch (state.activeModal.id) {
     case ModalID.ADD_TASK:
       return <AddTaskModal />
     case ModalID.EDIT_TASK:
-      return <EditTaskModal />
+      return <EditTaskModal taskId={state.activeModal.taskId} />
     case ModalID.EDIT_PROJECT:
-      return <EditProjectModal />
+      return <EditProjectModal projectId={state.activeModal.projectId} />
     case ModalID.MANAGE_TASKS:
       return <ManageTasksModal />
     case ModalID.ADD_SUCCESS_MODAL:
       return <AddSuccessModal />
     case ModalID.EDIT_SUCCESS_MODAL:
-      return <EditSuccessModal />
+      return <EditSuccessModal successId={state.activeModal.successId} />
     case ModalID.SETTINGS_MODAL:
       return <SettingsModal />
     default:
