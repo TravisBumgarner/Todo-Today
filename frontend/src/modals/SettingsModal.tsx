@@ -86,7 +86,14 @@ const Settings = () => {
   const handleBackup = async () => {
     const data = await createBackup()
     if (!data) {
-      alert('no data')
+      dispatch({
+        type: 'SET_ACTIVE_MODAL',
+        payload: {
+          id: ModalID.CONFIRMATION_MODAL,
+          title: 'Something went Wrong',
+          body: 'There is no data to backup'
+        }
+      })
     } else {
       void saveFile(`${moment().toISOString()}.json`, data)
     }
