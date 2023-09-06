@@ -9,7 +9,6 @@ import { setupAutomatedBackup } from '../modals/SettingsModal'
 import LazyLoadModal, { ModalID } from 'modals'
 import { baseTheme, beachTheme, highContrastTheme, retroFutureTheme, underTheSeaTheme } from 'theme'
 import { EColorTheme } from 'sharedTypes'
-import { HEADER_HEIGHT } from './components/Header'
 
 const App = () => {
   const { state, dispatch } = useContext(context)
@@ -18,7 +17,9 @@ const App = () => {
     dispatch({
       type: 'SET_ACTIVE_MODAL',
       payload: {
-        id: ModalID.BACKUP_FAILURE_MODAL
+        id: ModalID.CONFIRMATION_MODAL,
+        title: 'Something went Wrong',
+        body: 'Automated backup failed to run'
       }
     })
   }, [dispatch])

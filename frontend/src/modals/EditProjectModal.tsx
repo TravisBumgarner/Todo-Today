@@ -6,6 +6,7 @@ import { type TProject, EProjectStatus } from 'sharedTypes'
 import { projectStatusLookup } from 'utilities'
 import database from 'database'
 import { context } from 'Context'
+import { ButtonWrapper } from 'sharedComponents'
 
 interface Props {
   projectId: string
@@ -74,16 +75,19 @@ const EditProjectModal = ({ projectId }: Props) => {
                   {Object.keys(EProjectStatus).map((key) => <MenuItem key={key} value={key}>{projectStatusLookup[key as EProjectStatus]}</MenuItem>)}
                 </Select>
               </FormControl>
-              <Button fullWidth key="cancel" onClick={handleCancel}>Cancel</Button>
-              <Button
-                key="save"
-                type="button"
-                fullWidth
-                onClick={handleSubmit}
-                variant='contained'
-              >
-                Save
-              </Button>
+              <ButtonWrapper>
+                <Button variant='contained'
+                  color="secondary" fullWidth key="cancel" onClick={handleCancel}>Cancel</Button>
+                <Button
+                  key="save"
+                  type="button"
+                  fullWidth
+                  onClick={handleSubmit}
+                  variant='contained'
+                >
+                  Save
+                </Button>
+              </ButtonWrapper>
             </form>
           )
       }

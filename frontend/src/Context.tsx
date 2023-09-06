@@ -18,6 +18,7 @@ export interface State {
   }
   activeModal: ActiveModal | null
   selectedDate: TDateISODate
+  restoreInProgress: boolean
 }
 
 const EMPTY_STATE: State = {
@@ -27,7 +28,8 @@ const EMPTY_STATE: State = {
     backupDir: ''
   },
   activeModal: null,
-  selectedDate: formatDateKeyLookup(moment())
+  selectedDate: formatDateKeyLookup(moment()),
+  restoreInProgress: false
 }
 const initialSetup = () => {
   Object
@@ -77,12 +79,22 @@ interface ClearActiveModal {
   type: 'CLEAR_ACTIVE_MODAL'
 }
 
+interface RestoreStarted {
+  type: 'RESTORE_STARTED'
+}
+
+interface RestoreEnded {
+  type: 'RESTORE_ENDED'
+}
+
 type Action =
   | EditUserSettings
   | HydrateUserSettings
   | SetActiveModal
   | ClearActiveModal
   | SetSelectedDate
+  | RestoreStarted
+  | RestoreEnded
 
 const reducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -103,6 +115,12 @@ const reducer = (state: State, action: Action): State => {
     case 'SET_SELECTED_DATE': {
       const { date } = action.payload
       return { ...state, selectedDate: date }
+    }
+    case 'RESTORE_STARTED': {
+      return { ...state, restoreInProgress: true }
+    }
+    case 'RESTORE_ENDED': {
+      return { ...state, restoreInProgress: false }
     }
     default:
       throw new Error('Unexpected action')

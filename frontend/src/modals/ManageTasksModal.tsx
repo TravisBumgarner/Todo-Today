@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useMemo, useState } from 'react'
 import { v4 as uuid4 } from 'uuid'
 import { useLiveQuery } from 'dexie-react-hooks'
-import { Box, Button, Card, IconButton, ToggleButton, Tooltip, Typography, css } from '@mui/material'
+import { Box, Card, IconButton, ToggleButton, Tooltip, Typography, css } from '@mui/material'
 import NotesIcon from '@mui/icons-material/Notes'
 import ShortTextIcon from '@mui/icons-material/ShortText'
 import CheckIcon from '@mui/icons-material/Check'
@@ -87,7 +87,7 @@ const Project = ({ project, selectedTaskIds }: ProjectProps) => {
   }
 
   return (
-    <Card css={wrapperCSS}>
+    <Box css={wrapperCSS}>
       <Box css={projectHeaderCSS(showTasks)}>
         <Typography variant="h2">{project.title}</Typography>
         <Box css={rightHeaderCSS}>
@@ -103,7 +103,7 @@ const Project = ({ project, selectedTaskIds }: ProjectProps) => {
         </Box>
       </Box>
       {content}
-    </Card>
+    </Box>
   )
 }
 
@@ -136,15 +136,11 @@ const wrapperCSS = css`
 `
 
 const ManageTodoListItemsModal = () => {
-  const { state, dispatch } = useContext(context)
+  const { state } = useContext(context)
   const projects = useLiveQuery(async () => await database.projects.where('status').anyOf(EProjectStatus.ACTIVE).toArray())
 
   const todoListItems = useLiveQuery(async () => await database.todoListItems.where({ todoListDate: state.selectedDate }).toArray(), [state.selectedDate])
   const selectedTaskIds = todoListItems?.map(({ taskId }) => taskId)
-
-  const handleCancel = useCallback(() => {
-    dispatch({ type: 'CLEAR_ACTIVE_MODAL' })
-  }, [dispatch])
 
   const content = useMemo(() => {
     if (!projects || projects.length === 0) {
@@ -165,10 +161,9 @@ const ManageTodoListItemsModal = () => {
               ))
           }
         </Box>
-        <Button fullWidth variant='contained' key="finished" onClick={handleCancel}>Done!</Button>
       </Box>
     )
-  }, [handleCancel, projects, selectedTaskIds])
+  }, [projects, selectedTaskIds])
 
   return (
     <Modal
@@ -182,7 +177,7 @@ const ManageTodoListItemsModal = () => {
 
 const scrollWrapperCSS = css`
   overflow: auto;
-  height: ${MODAL_MAX_HEIGHT - 200}px;
+  max-height: ${MODAL_MAX_HEIGHT - 200}px;
 `
 
 const projectsWrapperCSS = css`

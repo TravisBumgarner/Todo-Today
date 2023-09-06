@@ -7,6 +7,7 @@ import database from 'database'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { taskStatusLookup } from 'utilities'
 import { context } from 'Context'
+import { ButtonWrapper } from 'sharedComponents'
 
 interface Props {
   taskId: string
@@ -79,16 +80,19 @@ const EditTaskModal = ({ taskId }: Props) => {
             {projectSelectOptions.map(({ label, value }) => <MenuItem key={label} value={value}>{label}</MenuItem>)}
           </Select>
         </FormControl>
-        <Button fullWidth key="cancel" onClick={handleCancel}>Cancel</Button>
-        <Button
-          fullWidth
-          type="button"
-          key="save"
-          variant='contained'
-          onClick={handleSubmit}
-        >
-          Save
-        </Button>
+        <ButtonWrapper>
+          <Button variant='contained'
+            color="secondary" fullWidth key="cancel" onClick={handleCancel}>Cancel</Button>
+          <Button
+            fullWidth
+            type="button"
+            key="save"
+            variant='contained'
+            onClick={handleSubmit}
+          >
+            Save
+          </Button>
+        </ButtonWrapper>
       </form>
     </Modal>
   )

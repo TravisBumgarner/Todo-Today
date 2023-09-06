@@ -22,7 +22,7 @@ const reorder = (list: any[], startIndex: number, endIndex: number) => {
 }
 
 const EmptyTodoList = () => {
-  const { state: { selectedDate }, dispatch } = useContext(context)
+  const { state: { selectedDate, restoreInProgress }, dispatch } = useContext(context)
 
   const getPreviousDatesTasks = useCallback(async () => {
     const lastDate = (
@@ -98,7 +98,7 @@ const EmptyTodoList = () => {
 }
 
 const TodoList = () => {
-  const { state: { selectedDate }, dispatch } = useContext(context)
+  const { state: { selectedDate, restoreInProgress }, dispatch } = useContext(context)
 
   const selectedDateTodoListItems = useLiveQuery<TTodoListItem[]>(
     async () => await database.todoListItems.where('todoListDate').equals(selectedDate).sortBy('sortOrder'),
@@ -142,6 +142,11 @@ const TodoList = () => {
       return null
     }))
   }
+
+  if (restoreInProgress) {
+    return null
+  }
+
   return (
     <Box css={pageCSS}>
       <Box css={{ display: 'flex', justifyContent: 'space-between' }}>

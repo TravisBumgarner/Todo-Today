@@ -7,6 +7,7 @@ import { type TProject } from 'sharedTypes'
 import database from 'database'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { context } from 'Context'
+import { ButtonWrapper } from 'sharedComponents'
 
 const AddSuccessModal = () => {
   const { state, dispatch } = useContext(context)
@@ -61,8 +62,10 @@ const AddSuccessModal = () => {
             {projectSelectOptions.map(({ label, value }) => <MenuItem key={label} value={value}>{label}</MenuItem>)}
           </Select>
         </FormControl>
-        <Button variant='contained' fullWidth key="cancel" onClick={handleCancel}>Cancel</Button>
-        <Button variant='contained' fullWidth disabled={description.length === 0} key="save" onClick={handleSubmit}>Save</Button>
+        <ButtonWrapper>
+          <Button color="secondary" variant='contained' fullWidth key="cancel" onClick={handleCancel}>Cancel</Button>
+          <Button variant='contained' fullWidth disabled={description.length === 0} key="save" onClick={handleSubmit}>Save</Button>
+        </ButtonWrapper>
       </form>
     </Modal>
   )
