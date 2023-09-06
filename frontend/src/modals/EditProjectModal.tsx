@@ -7,8 +7,12 @@ import { projectStatusLookup } from 'utilities'
 import database from 'database'
 import { context } from 'Context'
 
-const EditProjectModal = () => {
-  const { state, dispatch } = useContext(context)
+interface Props {
+  projectId: string
+}
+
+const EditProjectModal = ({ projectId }: Props) => {
+  const { dispatch } = useContext(context)
   const [title, setTitle] = useState<string>('')
   const [status, setStatus] = useState<EProjectStatus>(EProjectStatus.ACTIVE)
   const [isLoading, setIsLoading] = useState<boolean>(true)
@@ -16,7 +20,7 @@ const EditProjectModal = () => {
   useEffect(() => {
     const func = async () => {
       await database
-        .projects.where('id').equals(state.activeModal?.data.projectId).first()
+        .projects.where('id').equals(projectId).first()
         .then((project: TProject) => {
           setTitle(project.title)
           setStatus(project.status)
@@ -24,17 +28,17 @@ const EditProjectModal = () => {
         })
     }
     void func()
-  }, [state.activeModal?.data.projectId])
+  }, [projectId])
 
   const handleSubmit = useCallback(async () => {
     const editedProject = {
       title,
       status,
-      id: state.activeModal?.data.projectId
+      id: projectId
     }
-    await database.projects.put(editedProject, [state.activeModal?.data.projectId])
+    await database.projects.put(editedProject, [projectId])
     dispatch({ type: 'CLEAR_ACTIVE_MODAL' })
-  }, [dispatch, state.activeModal?.data.projectId, status, title])
+  }, [dispatch, projectId, status, title])
 
   const handleCancel = useCallback(() => {
     dispatch({ type: 'CLEAR_ACTIVE_MODAL' })

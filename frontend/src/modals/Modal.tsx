@@ -6,7 +6,7 @@ import CloseIcon from '@mui/icons-material/CloseOutlined'
 
 import { context } from 'Context'
 
-interface ModalProps {
+interface ActiveModal {
   children: any
   showModal: boolean
   title: string
@@ -14,7 +14,7 @@ interface ModalProps {
 
 export const MODAL_MAX_HEIGHT = 800
 
-const Modal: FC<ModalProps> = ({ children, title }) => {
+const Modal: FC<ActiveModal> = ({ children, title }) => {
   const { dispatch } = useContext(context)
 
   const handleClose = useCallback(() => {

@@ -20,7 +20,7 @@ const Task = ({ task }: TaskProps) => {
   const { dispatch } = useContext(context)
 
   const handleEditTask = useCallback(() => {
-    dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.EDIT_TASK, data: { taskId: task.id } } })
+    dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.EDIT_TASK, taskId: task.id } })
   }, [dispatch, task.id])
 
   return (
@@ -47,7 +47,7 @@ const Project = ({ project }: ProjectProps) => {
   const tasks = useLiveQuery(async () => await database.tasks.where({ projectId: project.id }).toArray())
 
   const handleEditProject = useCallback(() => {
-    dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.EDIT_PROJECT, data: { projectId: project.id } } })
+    dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.EDIT_PROJECT, projectId: project.id } })
   }, [dispatch, project.id])
 
   const content = useMemo(() => {

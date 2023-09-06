@@ -4,20 +4,19 @@ import { EColorTheme, EBackupInterval, type TSettings, type TDateISODate } from 
 import { formatDateKeyLookup, getLocalStorage, setLocalStorage } from 'utilities'
 import { type AppStartIPC } from '../../shared/types'
 import moment from 'moment'
-import { type ModalID } from './modals/LazyLoadModal'
-
+import { type ActiveModal } from './modals/LazyLoadModal'
 const { ipcRenderer } = window.require('electron')
 
 const HAS_DONE_WARM_START = 'HAS_DONE_WARM_START'
 const TRUE = 'TRUE'
 
-interface State {
+export interface State {
   settings: {
     colorTheme: EColorTheme
     backupInterval: EBackupInterval
     backupDir: string
   }
-  activeModal: { id: ModalID, data: any } | null
+  activeModal: ActiveModal | null
   selectedDate: TDateISODate
 }
 
@@ -64,10 +63,7 @@ interface EditUserSettings {
 
 interface SetActiveModal {
   type: 'SET_ACTIVE_MODAL'
-  payload: {
-    id: ModalID
-    data?: any
-  }
+  payload: ActiveModal
 }
 
 interface SetSelectedDate {
@@ -99,8 +95,7 @@ const reducer = (state: State, action: Action): State => {
       return { ...state, settings: { ...state.settings, [key]: value } }
     }
     case 'SET_ACTIVE_MODAL': {
-      const { id, data } = action.payload
-      return { ...state, activeModal: { id, data } }
+      return { ...state, activeModal: action.payload }
     }
     case 'CLEAR_ACTIVE_MODAL': {
       return { ...state, activeModal: null }

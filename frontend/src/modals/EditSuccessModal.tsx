@@ -9,8 +9,12 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import { formatDateKeyLookup } from 'utilities'
 import { context } from 'Context'
 
-const EditSuccessModal = () => {
-  const { state, dispatch } = useContext(context)
+interface Props {
+  successId: string
+}
+
+const EditSuccessModal = ({ successId }: Props) => {
+  const { dispatch } = useContext(context)
   const [description, setDescription] = useState<string>('')
   const [projectId, setProjectId] = useState<TProject['id'] | ''>('')
   const [date, setDate] = useState<TProject['id'] | ''>('')
@@ -22,25 +26,25 @@ const EditSuccessModal = () => {
 
   useEffect(() => {
     void database
-      .successes.where('id').equals(state.activeModal?.data.successId).first()
+      .successes.where('id').equals(successId).first()
       .then((s: TSuccess) => {
         setDate(s.date)
         setDescription(s.description)
         setProjectId(s.projectId)
         setIsLoading(false)
       })
-  }, [state.activeModal?.data.successId])
+  }, [successId])
 
   const handleSubmit = useCallback(async () => {
     const editedSuccess = {
       description,
-      id: state.activeModal?.data.successId,
+      id: successId,
       projectId,
       date: formatDateKeyLookup(moment(date))
     }
-    await database.successes.put(editedSuccess, [state.activeModal?.data.successId])
+    await database.successes.put(editedSuccess, [successId])
     dispatch({ type: 'CLEAR_ACTIVE_MODAL' })
-  }, [dispatch, description, projectId, state.activeModal?.data.successId, date])
+  }, [dispatch, description, projectId, successId, date])
 
   const handleCancel = useCallback(() => {
     dispatch({ type: 'CLEAR_ACTIVE_MODAL' })

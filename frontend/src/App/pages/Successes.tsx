@@ -21,7 +21,7 @@ const Success = ({ description, projectTitle, id, date }: SuccessProps) => {
   const { dispatch } = useContext(context)
 
   const handleEditClick = useCallback(() => {
-    dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.EDIT_SUCCESS_MODAL, data: { successId: id } } })
+    dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.EDIT_SUCCESS_MODAL, successId: id } })
   }, [dispatch, id])
 
   const metadata = useMemo(() => {
