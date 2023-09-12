@@ -3,17 +3,17 @@ import { context } from 'Context'
 import AddTaskModal from './AddTaskModal'
 import EditTaskModal from './EditTaskModal'
 import EditProjectModal from './EditProjectModal'
-import ManageTasksModal from './ManageTasksModal'
+import SelectTasksModal from './SelectTasksModal'
 import AddSuccessModal from './AddSuccessModal'
 import EditSuccessModal from './EditSuccessModal'
 import SettingsModal from './SettingsModal'
 import ConfirmationModal, { type ConfirmationModalProps } from './ConfirmationModal'
 
 export enum ModalID {
-  ADD_TASK = 'ADD_TASK',
-  EDIT_TASK = 'EDIT_TASK',
-  EDIT_PROJECT = 'EDIT_PROJECT',
-  MANAGE_TASKS = 'MANAGE_TASKS',
+  ADD_TASK_MODAL = 'ADD_TASK_MODAL',
+  EDIT_TASK_MODAL = 'EDIT_TASK_MODAL',
+  EDIT_PROJECT_MODAL = 'EDIT_PROJECT_MODAL',
+  SELECT_TASKS_MODAL = 'SELECT_TASKS_MODAL',
   BACKUP_FAILURE_MODAL = 'BACKUP_FAILURE_MODAL',
   ADD_SUCCESS_MODAL = 'ADD_SUCCESS_MODAL',
   EDIT_SUCCESS_MODAL = 'EDIT_SUCCESS_MODAL',
@@ -22,10 +22,10 @@ export enum ModalID {
 }
 
 export type ActiveModal =
-  | { id: ModalID.ADD_TASK }
-  | { id: ModalID.EDIT_TASK, taskId: string }
-  | { id: ModalID.EDIT_PROJECT, projectId: string }
-  | { id: ModalID.MANAGE_TASKS }
+  | { id: ModalID.ADD_TASK_MODAL }
+  | { id: ModalID.EDIT_TASK_MODAL, taskId: string }
+  | { id: ModalID.EDIT_PROJECT_MODAL, projectId: string }
+  | { id: ModalID.SELECT_TASKS_MODAL }
   | { id: ModalID.BACKUP_FAILURE_MODAL }
   | { id: ModalID.ADD_SUCCESS_MODAL }
   | { id: ModalID.EDIT_SUCCESS_MODAL, successId: string }
@@ -38,14 +38,14 @@ const LazyLoadModal: FC = () => {
   if (!state.activeModal?.id) return null
 
   switch (state.activeModal.id) {
-    case ModalID.ADD_TASK:
+    case ModalID.ADD_TASK_MODAL:
       return <AddTaskModal />
-    case ModalID.EDIT_TASK:
+    case ModalID.EDIT_TASK_MODAL:
       return <EditTaskModal taskId={state.activeModal.taskId} />
-    case ModalID.EDIT_PROJECT:
+    case ModalID.EDIT_PROJECT_MODAL:
       return <EditProjectModal projectId={state.activeModal.projectId} />
-    case ModalID.MANAGE_TASKS:
-      return <ManageTasksModal />
+    case ModalID.SELECT_TASKS_MODAL:
+      return <SelectTasksModal />
     case ModalID.ADD_SUCCESS_MODAL:
       return <AddSuccessModal />
     case ModalID.EDIT_SUCCESS_MODAL:

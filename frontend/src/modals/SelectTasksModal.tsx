@@ -1,16 +1,16 @@
 import React, { useCallback, useContext, useMemo, useState } from 'react'
 import { v4 as uuid4 } from 'uuid'
 import { useLiveQuery } from 'dexie-react-hooks'
-import { Box, Card, IconButton, ToggleButton, Tooltip, Typography, css } from '@mui/material'
-import NotesIcon from '@mui/icons-material/Notes'
-import ShortTextIcon from '@mui/icons-material/ShortText'
+import { Box, Button, IconButton, ToggleButton, Tooltip, Typography, css } from '@mui/material'
 import CheckIcon from '@mui/icons-material/Check'
+import { ChevronRight } from '@mui/icons-material'
 
 import Modal, { MODAL_MAX_HEIGHT } from './Modal'
 import { EmptyStateDisplay } from 'sharedComponents'
 import { type TProject, EProjectStatus, type TTask, ETaskStatus } from 'sharedTypes'
 import database from 'database'
 import { context } from 'Context'
+import { ModalID } from './LazyLoadModal'
 
 interface TaskProps {
   task: TTask
@@ -96,8 +96,8 @@ const Project = ({ project, selectedTaskIds }: ProjectProps) => {
             value="text"
             onChange={toggleShowTasks}
           >
-            <Tooltip title="Toggle Tasks">
-              {tasks && tasks.length > 0 ? <NotesIcon fontSize="small" /> : <ShortTextIcon fontSize="small" />}
+            <Tooltip title="Show Tasks">
+              <ChevronRight fontSize="small" css={{ transform: `rotate(${showTasks ? '90deg' : '0deg'})` }} />
             </Tooltip>
           </ToggleButton>
         </Box>
@@ -136,15 +136,26 @@ const wrapperCSS = css`
 `
 
 const ManageTodoListItemsModal = () => {
-  const { state } = useContext(context)
+  const { state, dispatch } = useContext(context)
   const projects = useLiveQuery(async () => await database.projects.where('status').anyOf(EProjectStatus.ACTIVE).toArray())
+  const tasks = useLiveQuery(async () => await database.tasks.where('status').anyOf(ETaskStatus.BLOCKED, ETaskStatus.NEW, ETaskStatus.IN_PROGRESS).toArray())
 
   const todoListItems = useLiveQuery(async () => await database.todoListItems.where({ todoListDate: state.selectedDate }).toArray(), [state.selectedDate])
   const selectedTaskIds = todoListItems?.map(({ taskId }) => taskId)
 
+  const showAddNewTaskModal = useCallback(() => {
+    dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.ADD_TASK_MODAL } })
+  }, [dispatch])
+
   const content = useMemo(() => {
-    if (!projects || projects.length === 0) {
-      return <EmptyStateDisplay message="No projects" />
+    if (!projects || projects.length === 0 || !tasks || tasks.length === 0) {
+      return <EmptyStateDisplay message="There are no Tasks to Work On" callToActionButton={<Button
+        onClick={showAddNewTaskModal}
+        fullWidth
+        variant='contained'
+      >
+        Add New Task
+      </Button>} />
     }
 
     return (

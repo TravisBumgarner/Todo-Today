@@ -83,12 +83,17 @@ const AddTaskModal = () => {
     setAddToSelectedDate(newValue)
   }, [])
 
+  const toggleOpen = useCallback(() => {
+    setIsOpen(prev => !prev)
+  }, [])
+
   return (
     <Modal
       title="Add New Task"
       showModal={true}
     >
       <TextField
+        autoFocus
         multiline
         fullWidth
         label="Task"

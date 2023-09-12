@@ -1,4 +1,4 @@
-import { useCallback, useContext, useMemo } from 'react'
+import { useCallback, useContext, useMemo, useState } from 'react'
 import { Button, Box, Card, Typography, css, Tooltip, IconButton } from '@mui/material'
 import { useLiveQuery } from 'dexie-react-hooks'
 import EditIcon from '@mui/icons-material/Edit'
@@ -7,7 +7,7 @@ import { ModalID } from 'modals'
 import { context } from 'Context'
 import database from 'database'
 import { EmptyStateDisplay } from 'sharedComponents'
-import { type TProject } from 'sharedTypes'
+import { type TSuccess, type TProject } from 'sharedTypes'
 import { pageCSS } from 'theme'
 
 interface SuccessProps {
@@ -64,25 +64,32 @@ const wrapperCSS = css`
 
 const SuccessesPage = () => {
   const { dispatch } = useContext(context)
+  const [successItems, setSuccessItems] = useState<Array<TSuccess & { projectTitle: string }> | undefined>(undefined)
 
   const handleSuccess = useCallback(() => {
     dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.ADD_SUCCESS_MODAL } })
   }, [dispatch])
 
-  const successItems = useLiveQuery(async () => {
+  useLiveQuery(async () => {
     const successes = (await database.successes.toCollection().sortBy('date')).reverse()
 
-    return await Promise.all(successes.map(async (success) => {
+    const result = await Promise.all(successes.map(async (success) => {
       const project = (await database.projects.where({ id: success.projectId }).first()) as TProject
       return {
         projectTitle: project ? project.title : '',
         ...success
       }
     }))
+    setSuccessItems(result)
   }, [])
 
   const content = useMemo(() => {
-    if (!successItems || successItems.length === 0) {
+    if (!successItems) {
+      // Don't flicker screen while successes load.
+      return null
+    }
+
+    if (successItems.length === 0) {
       return (
         <EmptyStateDisplay
           message="What was something that went well today?"
@@ -106,7 +113,7 @@ const SuccessesPage = () => {
 const scrollWrapperCSS = css`
     height: 90%;
     overflow: auto;
-    margin-top: 1rem;
+    margin: 1rem 0 3rem 0;
 `
 
 export default SuccessesPage
