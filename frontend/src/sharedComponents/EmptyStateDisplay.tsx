@@ -1,4 +1,5 @@
 import { Box, Typography, css } from '@mui/material'
+import ButtonWrapper from './ButtonWrapper'
 
 interface EmptyStateDisplayProps {
   message: string
@@ -11,7 +12,7 @@ const EmptyStateDisplay = ({ message, callToActionButton }: EmptyStateDisplayPro
       <Typography variant="body1">
         {message}
       </Typography>
-      {callToActionButton ?? ''}
+      {callToActionButton ? <ButtonWrapper>{callToActionButton}</ButtonWrapper> : ''}
     </Box>
   )
 }
@@ -20,7 +21,6 @@ const wrapperCSS = css`
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 1.5rem 0;
     flex-direction: column;
     height: 100%;
 

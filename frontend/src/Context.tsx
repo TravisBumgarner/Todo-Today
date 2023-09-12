@@ -24,7 +24,7 @@ export interface State {
 const EMPTY_STATE: State = {
   settings: {
     colorTheme: EColorTheme.BEACH,
-    backupInterval: EBackupInterval.DAILY,
+    backupInterval: EBackupInterval.OFF,
     backupDir: ''
   },
   activeModal: null,

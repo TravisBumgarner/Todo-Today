@@ -1,4 +1,4 @@
-import { useCallback, useContext } from 'react'
+import { useCallback, useContext, useState } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { v4 as uuid4 } from 'uuid'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
@@ -77,11 +77,11 @@ const EmptyTodoList = () => {
   }, [selectedDate, dispatch])
 
   const showManagementModal = useCallback(() => {
-    dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.MANAGE_TASKS } })
+    dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.SELECT_TASKS_MODAL } })
   }, [dispatch])
 
   const showAddNewTaskModal = useCallback(() => {
-    dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.ADD_TASK } })
+    dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.ADD_TASK_MODAL } })
   }, [dispatch])
 
   return (
@@ -113,18 +113,25 @@ const EmptyTodoList = () => {
 
 const TodoList = () => {
   const { state: { selectedDate, restoreInProgress }, dispatch } = useContext(context)
+  const [selectedDateTodoListItems, setSelectedDateTodoListItems] = useState<TTodoListItem[]>([])
 
-  const selectedDateTodoListItems = useLiveQuery<TTodoListItem[]>(
-    async () => await database.todoListItems.where('todoListDate').equals(selectedDate).sortBy('sortOrder'),
+  useLiveQuery(
+    async () => {
+      await database.todoListItems
+        .where('todoListDate')
+        .equals(selectedDate)
+        .sortBy('sortOrder')
+        .then(r => { setSelectedDateTodoListItems(r) })
+    },
     [selectedDate]
   )
 
   const showManagementModal = useCallback(() => {
-    dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.MANAGE_TASKS } })
+    dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.SELECT_TASKS_MODAL } })
   }, [dispatch])
 
   const showAddNewTaskModal = useCallback(() => {
-    dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.ADD_TASK } })
+    dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.ADD_TASK_MODAL } })
   }, [dispatch])
 
   const setPreviousDate = () => {
@@ -141,7 +148,9 @@ const TodoList = () => {
 
   // Laziness for types lol
   const onDragEnd = async (result: any) => {
-    if (!selectedDateTodoListItems) return
+    // Sorting order gets updated a little weirdly if data goes all the way to Dexie and back.
+    // That's why we call set state at the end of this function.
+    if (!selectedDateTodoListItems || !result.destination) return
 
     const source = selectedDateTodoListItems[result.source.index]
     const destination = selectedDateTodoListItems[result.destination.index]
@@ -155,6 +164,8 @@ const TodoList = () => {
       })
       return null
     }))
+
+    setSelectedDateTodoListItems(reordered)
   }
 
   if (restoreInProgress) {
@@ -189,56 +200,65 @@ const TodoList = () => {
       {!selectedDateTodoListItems || selectedDateTodoListItems.length === 0
         ? <EmptyTodoList />
         : (
-          <Box css={scrollWrapperCSS}>
-            <DragDropContext onDragEnd={onDragEnd}>
-              <Droppable droppableId="tasks">
-                {(provided, snapshot) => (
-                  <div
-                    ref={provided.innerRef}
-                    {...provided.droppableProps}
-                    style={dragAndDropCSS(snapshot.isDraggingOver)}
-                  >
-                    {selectedDateTodoListItems.map((it, index) => (
-                      <Draggable
-                        key={it.id}
-                        draggableId={it.id}
-                        // It's quite a pain, and probably bug prone, to keep sort order sequential.
-                        // Therefore, see if using index is sufficient since `selectedDateTodoListItems` is already
-                        // sorted by `sortOrder` and `index` is sequential.
-                        index={index}
-                      >
-                        {(provided) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                          >
-                            <TodoListItem {...it}
-                            />
-                          </div>
-                        )}
-                      </Draggable>
-                    ))}
-                    {provided.placeholder}
-                  </div>
-                )}
-              </Droppable>
-            </DragDropContext>
-          </Box>
+          <DragDropContext onDragEnd={onDragEnd}>
+            <Droppable droppableId="droppable">
+              {(provided, snapshot) => (
+                <div
+                  {...provided.droppableProps}
+                  ref={provided.innerRef}
+                  style={dragAndDropCSS(snapshot.isDraggingOver)}
+                >
+                  {selectedDateTodoListItems.map((it, index) => (
+                    <Draggable
+                      key={it.id}
+                      draggableId={it.id}
+                      // It's quite a pain, and probably bug prone, to keep sort order sequential.
+                      // Therefore, see if using index is sufficient since `selectedDateTodoListItems` is already
+                      // sorted by `sortOrder` and `index` is sequential.
+                      index={index}
+                    >
+                      {(provided) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                          style={dragItemCSS(snapshot.isDraggingOver, provided.draggableProps.style)}
+                        >
+                          <TodoListItem {...it}
+                          />
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
         )
       }
-    </Box>
+    </Box >
   )
 }
 
 const dragAndDropCSS = (isDraggingOver: boolean) => {
   return ({
-    border: isDraggingOver ? '1px solid var(--mui-palette-primary-main)' : '1px transparent',
+    /* border: isDraggingOver ? '1px solid var(--mui-palette-primary-main)' : '1px transparent', */
     borderRadius: '0.5rem',
     overflow: 'auto',
-    height: '90%'
+    height: '100%',
+    margin: '1rem 0 3rem 0' // For whatever reason scroll starts at a different height than the bottom of the content.
   })
 }
+
+const dragItemCSS = (isDragging: boolean, draggableStyle: any) => ({
+  // some basic styles to make the items look a bit nicer
+  padding: '0.5rem 0', // Without this padding, animations look terrible. No idea why.
+  margin: 0,
+
+  // styles we need to apply on draggables
+  ...draggableStyle
+})
 
 const todayButtonCSS = css`
   width: 250px;
@@ -252,18 +272,11 @@ const todayButtonCSS = css`
 `
 
 const emptyTodoListCSS = css`
-  flex-grow: 1;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
   height: 100%;
-`
-
-const scrollWrapperCSS = css`
-  margin-top: 1rem;
-  height: 90%;
-  overflow: auto;
 `
 
 export default TodoList

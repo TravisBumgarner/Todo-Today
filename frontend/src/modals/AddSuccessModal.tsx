@@ -42,6 +42,7 @@ const AddSuccessModal = () => {
     >
       <form>
         <TextField
+          autoFocus
           multiline
           margin='normal'
           fullWidth

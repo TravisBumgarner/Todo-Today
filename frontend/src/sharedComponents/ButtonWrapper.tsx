@@ -8,6 +8,8 @@ const ButtonWrapper = ({ children }: any) => {
 }
 
 const wrapperCSS = css`
+  width: 100%;
+
   button {
     margin: 0.5rem 0;
   }

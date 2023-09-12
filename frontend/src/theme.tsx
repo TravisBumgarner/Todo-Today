@@ -4,6 +4,7 @@ import { Link as RouterLink, type LinkProps as RouterLinkProps } from 'react-rou
 import { type ThemeOptions, css, experimental_extendTheme as extendTheme } from '@mui/material/styles'
 import _ from 'lodash'
 import { HEADER_HEIGHT } from './App/components/Header'
+import { margin } from 'polished'
 
 const LinkBehavior = forwardRef<HTMLAnchorElement, Omit<RouterLinkProps, 'to'> & { href: RouterLinkProps['to'] }
 >((props, ref) => {
@@ -43,7 +44,8 @@ const baseThemeOptions: ThemeOptions = {
       color: 'var(--mui-palette-primary-main)',
       fontSize: '1.4rem',
       fontWeight: 400,
-      lineHeight: 1.35
+      lineHeight: 1.35,
+      margin: '0 0 0.5rem 0'
     },
     body1: {
       color: 'var(--mui-palette-text-primary)'
@@ -54,29 +56,29 @@ const baseThemeOptions: ThemeOptions = {
   }
 }
 
-const beachThemeOptions: ThemeOptions = {
+const beachThemeOptions = {
   palette: {
     primary: {
-      main: '#4c7da5'
+      main: 'rgb(76, 125, 165)'
     },
     secondary: {
-      main: '#49beaa'
+      main: 'rgb(73, 190, 170)'
     },
     text: {
-      primary: '#5c5e5f'
+      primary: 'rgb(92, 94, 95)'
     },
     action: {
-      disabled: '#616060'
+      disabled: 'rgb(97, 96, 96)'
     },
     background: {
-      default: '#d7e3e8',
-      paper: '#b8cbd2'
+      default: 'rgb(215, 227, 232)',
+      paper: 'rgb(184, 203, 210)'
     },
     warning: {
-      main: '#eeb868'
+      main: 'rgb(238, 184, 104)'
     },
     error: {
-      main: '#ef767a'
+      main: 'rgb(239, 118, 122)'
     }
   }
 }
@@ -84,26 +86,26 @@ const beachThemeOptions: ThemeOptions = {
 const retroFutureThemeOptions = {
   palette: {
     primary: {
-      main: '#7bc3ff'
+      main: 'rgb(123, 195, 255)'
     },
     secondary: {
-      main: '#7bff7f'
+      main: 'rgb(123, 255, 127)'
     },
     text: {
-      primary: '#efefef'
+      primary: 'rgb(239, 239, 239)'
     },
     action: {
-      disabled: '#767676'
+      disabled: 'rgb(118, 118, 118)'
     },
     background: {
-      default: '#291543',
-      paper: '#712a6b'
+      default: 'rgb(41, 21, 67)',
+      paper: 'rgb(113, 42, 107)'
     },
     warning: {
-      main: '#ffe93f'
+      main: 'rgb(239, 233, 63)'
     },
     error: {
-      main: '#ff3f85'
+      main: 'rgb(255, 63, 133)'
     }
   }
 }
@@ -111,26 +113,26 @@ const retroFutureThemeOptions = {
 const underTheSeaThemeOptions = {
   palette: {
     primary: {
-      main: '#99c5c5'
+      main: 'rgb(153, 197, 197)'
     },
     secondary: {
-      main: '#85FFC7'
+      main: 'rgb(133, 255, 199)'
     },
     text: {
-      primary: '#dedede'
+      primary: 'rgb(222, 222, 222)'
     },
     action: {
-      disabled: '#EAE2B7'
+      disabled: 'rgb(234, 226, 183)'
     },
     background: {
-      default: '#393a3a',
-      paper: '#3e766f'
+      default: 'rgb(57, 58, 58)',
+      paper: 'rgb(62, 118, 111)'
     },
     warning: {
-      main: '#ffa052'
+      main: 'rgb(255, 160, 82)'
     },
     error: {
-      main: '#ffc552'
+      main: 'rgb(255, 197, 82)'
     }
   }
 }
@@ -138,26 +140,26 @@ const underTheSeaThemeOptions = {
 const highContrastThemeOptions = {
   palette: {
     primary: {
-      main: '#5669bc'
+      main: 'rgb(86, 105, 188)'
     },
     secondary: {
-      main: '#4aab64'
+      main: 'rgb(74, 171, 100)'
     },
     text: {
-      primary: '#000000'
+      primary: 'rgb(0, 0, 0)'
     },
     action: {
-      disabled: '#7e7e7e'
+      disabled: 'rgb(126, 126, 126)'
     },
     background: {
-      default: '#ffffff',
-      paper: '#e8e8e8'
+      default: 'rgb(255, 255, 255)',
+      paper: 'rgb(232, 232, 232)'
     },
     warning: {
-      main: '#eeb868'
+      main: 'rgb(238, 184, 104)'
     },
     error: {
-      main: '#ef767a'
+      main: 'rgb(239, 118, 122)'
     }
   }
 }
@@ -170,5 +172,7 @@ export const underTheSeaTheme = extendTheme(_.merge(baseThemeOptions, underTheSe
 
 export const pageCSS = css`
   width:100%;
-  height: calc(100vh - ${HEADER_HEIGHT}px);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 `

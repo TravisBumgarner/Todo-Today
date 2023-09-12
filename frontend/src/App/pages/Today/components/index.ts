@@ -1,5 +1,5 @@
 import TodoListItems from './TodoListItem'
-import ManageTodoListItemsModal from '../../../../modals/ManageTasksModal'
+import ManageTodoListItemsModal from '../../../../modals/SelectTasksModal'
 import TodoList from './TodoList'
 import Successes from '../../Successes'
 

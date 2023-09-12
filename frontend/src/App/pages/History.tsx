@@ -1,8 +1,9 @@
 import { useLiveQuery } from 'dexie-react-hooks'
-import { useState, useCallback, useMemo, useContext } from 'react'
+import { useState, useCallback, useMemo, useContext, useEffect } from 'react'
 import { Box, Card, IconButton, ToggleButton, Tooltip, Typography, css } from '@mui/material'
 import EditIcon from '@mui/icons-material/Edit'
 import { ChevronRight } from '@mui/icons-material'
+import DeleteIcon from '@mui/icons-material/Delete'
 
 import { EmptyStateDisplay } from 'sharedComponents'
 import database from 'database'
@@ -20,8 +21,20 @@ const Task = ({ task }: TaskProps) => {
   const { dispatch } = useContext(context)
 
   const handleEditTask = useCallback(() => {
-    dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.EDIT_TASK, taskId: task.id } })
+    dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.EDIT_TASK_MODAL, taskId: task.id } })
   }, [dispatch, task.id])
+
+  const handleDeleteTask = useCallback(() => {
+    dispatch({
+      type: 'SET_ACTIVE_MODAL',
+      payload: {
+        id: ModalID.CONFIRMATION_MODAL,
+        title: `Delete ${task.title}?`,
+        body: 'This will remove the task',
+        confirmationCallback: async () => { await deleteTask(task.id) }
+      }
+    })
+  }, [dispatch, task.title, task.id])
 
   return (
     <Box css={tasksHeaderCSS}>
@@ -31,6 +44,9 @@ const Task = ({ task }: TaskProps) => {
           <EditIcon fontSize="small" />
         </IconButton>
 
+        <IconButton onClick={handleDeleteTask} css={{ marginLeft: '0.5rem' }}>
+          <DeleteIcon fontSize="small" />
+        </IconButton>
       </Box>
     </Box>
   )
@@ -40,6 +56,15 @@ interface ProjectProps {
   project: TProject
 }
 
+const deleteProject = async (projectId: string) => {
+  await database.projects.where('id').equals(projectId).delete()
+  await database.tasks.where('projectId').equals(projectId).delete()
+}
+
+const deleteTask = async (taskId: string) => {
+  await database.tasks.where('id').equals(taskId).delete()
+}
+
 const Project = ({ project }: ProjectProps) => {
   const { dispatch } = useContext(context)
   const [showTasks, setShowTasks] = useState(false)
@@ -47,8 +72,20 @@ const Project = ({ project }: ProjectProps) => {
   const tasks = useLiveQuery(async () => await database.tasks.where({ projectId: project.id }).toArray())
 
   const handleEditProject = useCallback(() => {
-    dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.EDIT_PROJECT, projectId: project.id } })
+    dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.EDIT_PROJECT_MODAL, projectId: project.id } })
   }, [dispatch, project.id])
+
+  const handleDeleteProject = useCallback(() => {
+    dispatch({
+      type: 'SET_ACTIVE_MODAL',
+      payload: {
+        id: ModalID.CONFIRMATION_MODAL,
+        title: `Delete ${project.title}?`,
+        body: 'This will remove the project and all associated tasks',
+        confirmationCallback: async () => { await deleteProject(project.id) }
+      }
+    })
+  }, [dispatch, project.title, project.id])
 
   const content = useMemo(() => {
     if (!showTasks) {
@@ -62,8 +99,14 @@ const Project = ({ project }: ProjectProps) => {
     return tasks.map(task => <Task key={task.id} task={task} />)
   }, [tasks, showTasks])
 
+  useEffect(() => {
+    if (tasks && tasks.length === 0) {
+      setShowTasks(false)
+    }
+  }, [tasks, toggleShowTasks])
+
   return (
-    <Card css={wrapperCSS}>
+    <Card css={projectWrapperCSS}>
       <Box css={projectHeaderCSS(showTasks)}>
         <Box>
           <Typography variant="h2">{project.title}</Typography>
@@ -84,6 +127,10 @@ const Project = ({ project }: ProjectProps) => {
 
           <IconButton onClick={handleEditProject}>
             <EditIcon fontSize="small" />
+          </IconButton>
+
+          <IconButton onClick={handleDeleteProject} css={{ marginLeft: '0.5rem' }}>
+            <DeleteIcon fontSize="small" />
           </IconButton>
 
         </Box>
@@ -113,7 +160,7 @@ const tasksHeaderCSS = css`
   align-items: center;
 `
 
-const wrapperCSS = css`
+const projectWrapperCSS = css`
   background-color: var(--mui-palette-background-paper);
   color: var(--mui-palette-secondary-main);
   border-radius: 0.5rem;
@@ -122,11 +169,21 @@ const wrapperCSS = css`
 `
 
 const History = () => {
-  const projects = useLiveQuery(async () => await database.projects.toCollection().sortBy('title'))
+  const [projects, setProjects] = useState<TProject[] | undefined>(undefined)
+
+  useLiveQuery(async () => {
+    const projects = await database.projects.toCollection().sortBy('title')
+    setProjects(projects)
+  })
 
   const content = useMemo(() => {
-    if (!projects || projects.length === 0) {
-      return <EmptyStateDisplay message="No projects" />
+    if (!projects) {
+      // Don't flicker screen while projects load.
+      return null
+    }
+
+    if (projects.length === 0) {
+      return <EmptyStateDisplay message="There is no history to show" />
     }
 
     return projects.map(project => <Project key={project.id} project={project} />)
@@ -144,7 +201,7 @@ const History = () => {
 const scrollWrapperCSS = css`
     height: 90%;
     overflow: auto;
-    margin-top: 1rem;
+    margin: 1rem 0 3rem 0;
 `
 
 export default History

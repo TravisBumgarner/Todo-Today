@@ -9,11 +9,10 @@ import EditIcon from '@mui/icons-material/Edit'
 import RemoveDoneIcon from '@mui/icons-material/RemoveDone'
 import CheckBoxOutlineBlankIcon from '@mui/icons-material/CheckBoxOutlineBlank'
 import CloseIcon from '@mui/icons-material/CloseOutlined'
-import NotesIcon from '@mui/icons-material/Notes'
-import ShortTextIcon from '@mui/icons-material/ShortText'
+import { ChevronRight } from '@mui/icons-material'
 
 import database from 'database'
-import { ETaskStatus, type TProject, type TTask, type TTodoListItem } from 'sharedTypes'
+import { ETaskStatus, type TProject, type TTodoListItem } from 'sharedTypes'
 import { ModalID } from 'modals'
 import { context } from 'Context'
 import { useLiveQuery } from 'dexie-react-hooks'
@@ -21,16 +20,32 @@ import { EmptyStateDisplay } from 'sharedComponents'
 
 type TodoListItemProps = TTodoListItem
 
+const colorStatus: Record<ETaskStatus, 'secondary' | 'primary' | 'warning' | 'error'> = {
+  [ETaskStatus.NEW]: 'secondary',
+  [ETaskStatus.IN_PROGRESS]: 'secondary',
+  [ETaskStatus.COMPLETED]: 'secondary',
+  [ETaskStatus.BLOCKED]: 'warning',
+  [ETaskStatus.CANCELED]: 'error'
+} as const
+
 const TodoListItem = ({ id, taskId, details: defaultDetails, sortOrder }: TodoListItemProps) => {
   const { dispatch } = useContext(context)
   const [details, setDetails] = useState(defaultDetails)
   const [showDetails, setShowDetails] = useState(defaultDetails.length > 0)
 
-  const metadata = useLiveQuery<{ project: TProject, task: TTask }>(
+  const metadata = useLiveQuery<{ projectTitle: string, taskTitle: string, taskStatus: ETaskStatus }>(
     async () => {
-      const task = await database.tasks.where('id').equals(taskId).first() as TTask
+      const task = await database.tasks.where('id').equals(taskId).first()
+      if (!task) {
+        return {
+          taskTitle: 'Unable to find task',
+          projectTitle: 'Unable to find project',
+          taskStatus: ETaskStatus.CANCELED
+        }
+      }
+
       const project = await database.projects.where('id').equals(task.projectId).first() as TProject
-      return { task, project }
+      return { taskTitle: task.title, projectTitle: project.title, taskStatus: task.status }
     })
 
   const toggleShowDetails = useCallback(() => { setShowDetails(prev => !prev) }, [])
@@ -64,61 +79,59 @@ const TodoListItem = ({ id, taskId, details: defaultDetails, sortOrder }: TodoLi
   }, [id])
 
   const handleEdit = useCallback(() => {
-    dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.EDIT_TASK, taskId } })
+    dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.EDIT_TASK_MODAL, taskId } })
   }, [dispatch, taskId])
 
   if (!metadata) {
     return <EmptyStateDisplay message='Unable to find project or task details' />
   }
 
-  const { project, task } = metadata
-
   return (
-    <Card css={wrapperCSS}>
+    <Card css={wrapperCSS(metadata.taskStatus)}>
       <Box css={headerCSS(showDetails)}>
         <Box>
-          <Typography variant="h2">{task.title}</Typography>
-          <Typography variant="body1">{project.title}</Typography>
+          <Typography variant="h2">{metadata.taskTitle}</Typography>
+          <Typography variant="body1">{metadata.projectTitle}</Typography>
         </Box>
         <Box css={rightHeaderCSS}>
           <ToggleButton
             size='small'
             value="text"
             onChange={toggleShowDetails}
-            css={{ marginRight: '0.5rem' }}
+            css={{ marginRight: '0.5rem', backgroundColor: 'css={css`background-color: var(--mui-palette-background-paper)' }}
           >
-            <Tooltip title="Toggle Details">
-              {details.length === 0 ? <ShortTextIcon fontSize="small" /> : <NotesIcon fontSize="small" />}
+            <Tooltip title="Show Details" >
+              <ChevronRight fontSize="small" css={{ transform: `rotate(${showDetails ? '90deg' : '0deg'})` }} />
             </Tooltip>
           </ToggleButton>
 
           <ToggleButtonGroup
-            value={task.status}
+            value={metadata.taskStatus}
             exclusive
             onChange={handleStatusChange}
             size="small"
           >
-            <ToggleButton color="error" size='small' value={ETaskStatus.CANCELED}>
+            <ToggleButton color={colorStatus[ETaskStatus.CANCELED]} size='small' value={ETaskStatus.CANCELED}>
               <Tooltip title="Canceled">
                 <DeleteIcon fontSize="small" />
               </Tooltip>
             </ToggleButton>
-            <ToggleButton color="warning" size='small' value={ETaskStatus.BLOCKED}>
+            <ToggleButton color={colorStatus[ETaskStatus.BLOCKED]} size='small' value={ETaskStatus.BLOCKED}>
               <Tooltip title="Blocked">
                 <RemoveDoneIcon fontSize="small" />
               </Tooltip>
             </ToggleButton>
-            <ToggleButton color="secondary" size='small' value={ETaskStatus.NEW}>
+            <ToggleButton color={colorStatus[ETaskStatus.NEW]} size='small' value={ETaskStatus.NEW}>
               <Tooltip title="Todo">
                 <CheckBoxOutlineBlankIcon fontSize="small" />
               </Tooltip>
             </ToggleButton>
-            <ToggleButton color="secondary" size='small' value={ETaskStatus.IN_PROGRESS}>
+            <ToggleButton color={colorStatus[ETaskStatus.IN_PROGRESS]} size='small' value={ETaskStatus.IN_PROGRESS}>
               <Tooltip title="Doing">
                 <LightbulbIcon fontSize="small" />
               </Tooltip>
             </ToggleButton>
-            <ToggleButton color="secondary" size='small' value={ETaskStatus.COMPLETED}>
+            <ToggleButton color={colorStatus[ETaskStatus.COMPLETED]} size='small' value={ETaskStatus.COMPLETED}>
               <Tooltip title="Done">
                 <DoneIcon fontSize="small" />
               </Tooltip>
@@ -136,7 +149,7 @@ const TodoListItem = ({ id, taskId, details: defaultDetails, sortOrder }: TodoLi
 
         </Box>
       </Box>
-      {showDetails && <TextField fullWidth multiline value={details} onChange={handleDetailsChange} />}
+      {showDetails && <TextField css={detailsCSS} fullWidth multiline value={details} onChange={handleDetailsChange} />}
     </Card>
   )
 }
@@ -146,20 +159,30 @@ const rightHeaderCSS = css`
   display: flex;
   align-items: center;
   flex-shrink: 0;
+  padding: 0.25rem;
+  border-radius: 0.25rem;
+  background: var(--mui-palette-background-paper);
+  padding: 1.5rem 1.5rem 1.5rem 2rem;
 `
 
 const headerCSS = (showDetails: boolean) => css`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: ${showDetails ? '0.5rem' : 0};
+  /* padding-bottom: ${showDetails ? '0.5rem' : 0}; */
 `
 
-const wrapperCSS = css`
-  background-color: var(--mui-palette-background-paper);
-  border-radius: 0.5rem;
-  padding: 1rem;
-  margin: 0 0 1rem 0;
+const detailsCSS = css`
+  background: var(--mui-palette-background-paper);
+  padding: 1.5rem 1.5rem 1.5rem 2rem;
+`
+
+const wrapperCSS = (color: ETaskStatus) => css`
+/* background-color: var(--mui-palette-background-paper); */
+background: linear-gradient(90deg, var(--mui-palette-background-paper) 70%, var(--mui-palette-${colorStatus[color]}-main) 100%);
+border: 2px solid var(--mui-palette-${colorStatus[color]}-main);
+border-radius: 0.5rem;
+padding: 0.5rem 0.5rem 0.5rem 1rem;
 `
 
 export default TodoListItem
