@@ -51,8 +51,8 @@ const TodoListItem = ({ id, taskId }: TodoListItemProps) => {
 
       const project = await database.projects.where('id').equals(task.projectId).first() as TProject
       setMetadata({ taskId: task.id, taskTitle: task.title, projectTitle: project.title, taskStatus: task.status })
-      setDetails(task.details)
-      task.details.length > 0 && setShowDetails(true)
+      setDetails(task.details ?? '')
+      task.details && task.details.length > 0 && setShowDetails(true)
     })
 
   const toggleShowDetails = useCallback(() => { setShowDetails(prev => !prev) }, [])

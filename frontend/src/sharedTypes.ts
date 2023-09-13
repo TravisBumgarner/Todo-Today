@@ -34,7 +34,7 @@ interface TTask {
   projectId: string
   title: string
   status: ETaskStatus
-  details: string
+  details?: string // Migrated from TTodoListItem. Not every task has details.
 }
 
 interface TTodoListItem {
