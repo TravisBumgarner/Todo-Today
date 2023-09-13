@@ -5,7 +5,7 @@ import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
 import CancelIcon from '@mui/icons-material/Cancel'
 
 import Modal from './Modal'
-import { type TProject, ETaskStatus, EProjectStatus } from 'sharedTypes'
+import { type TProject, ETaskStatus, EProjectStatus, type TTask } from 'sharedTypes'
 import database from 'database'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { context } from 'Context'
@@ -46,29 +46,22 @@ const AddTaskModal = () => {
       projectIdForTask = newProject.id
       await database.projects.add(newProject)
     }
-    const newTask = {
+    const newTask: TTask = {
       title,
       status: ETaskStatus.NEW,
       id: taskId,
-      projectId: projectIdForTask
+      projectId: projectIdForTask,
+      details: ''
     }
 
     await database.tasks.add(newTask)
 
     if (addToSelectedDate === 'yes') {
-      const lastTodoListItem = (await database
-        .todoListItems
-        .where('todoListDate')
-        .equals(state.selectedDate)
-        .reverse()
-        .sortBy('sortOrder'))[0]
-
       await database.todoListItems.add({
         taskId,
         id: taskId,
         todoListDate: state.selectedDate,
-        details: '',
-        sortOrder: lastTodoListItem ? lastTodoListItem.sortOrder + 1 : 0
+        sortOrder: -1 // Prepend to list
       })
     }
     dispatch({ type: 'CLEAR_ACTIVE_MODAL' })
@@ -81,10 +74,6 @@ const AddTaskModal = () => {
     if (newValue === null) return
 
     setAddToSelectedDate(newValue)
-  }, [])
-
-  const toggleOpen = useCallback(() => {
-    setIsOpen(prev => !prev)
   }, [])
 
   return (

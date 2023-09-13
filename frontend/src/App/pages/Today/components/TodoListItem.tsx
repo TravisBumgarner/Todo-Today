@@ -20,6 +20,8 @@ import { EmptyStateDisplay } from 'sharedComponents'
 
 type TodoListItemProps = TTodoListItem
 
+interface Metadata { taskId: string, projectTitle: string, taskTitle: string, taskStatus: ETaskStatus }
+
 const colorStatus: Record<ETaskStatus, 'secondary' | 'primary' | 'warning' | 'error'> = {
   [ETaskStatus.NEW]: 'secondary',
   [ETaskStatus.IN_PROGRESS]: 'secondary',
@@ -28,27 +30,33 @@ const colorStatus: Record<ETaskStatus, 'secondary' | 'primary' | 'warning' | 'er
   [ETaskStatus.CANCELED]: 'error'
 } as const
 
-const TodoListItem = ({ id, taskId, details: defaultDetails, sortOrder }: TodoListItemProps) => {
+const TodoListItem = ({ id, taskId }: TodoListItemProps) => {
   const { dispatch } = useContext(context)
-  const [details, setDetails] = useState(defaultDetails)
-  const [showDetails, setShowDetails] = useState(defaultDetails.length > 0)
+  const [showDetails, setShowDetails] = useState(false)
+  const [metadata, setMetadata] = useState<Metadata>({} as Metadata)
+  const [details, setDetails] = useState('') // Undo doesn't work if synced directly to DB. Might be a more elegant solution, but for now, this works.
 
-  const metadata = useLiveQuery<{ projectTitle: string, taskTitle: string, taskStatus: ETaskStatus }>(
+  useLiveQuery(
     async () => {
       const task = await database.tasks.where('id').equals(taskId).first()
       if (!task) {
-        return {
+        setMetadata({
           taskTitle: 'Unable to find task',
           projectTitle: 'Unable to find project',
-          taskStatus: ETaskStatus.CANCELED
-        }
+          taskStatus: ETaskStatus.CANCELED,
+          taskId: ''
+        })
+        return
       }
 
       const project = await database.projects.where('id').equals(task.projectId).first() as TProject
-      return { taskTitle: task.title, projectTitle: project.title, taskStatus: task.status }
+      setMetadata({ taskId: task.id, taskTitle: task.title, projectTitle: project.title, taskStatus: task.status })
+      setDetails(task.details)
+      task.details.length > 0 && setShowDetails(true)
     })
 
   const toggleShowDetails = useCallback(() => { setShowDetails(prev => !prev) }, [])
+
   const handleStatusChange = useCallback(async (
     event: MouseEvent<HTMLElement>,
     status: ETaskStatus
@@ -69,10 +77,9 @@ const TodoListItem = ({ id, taskId, details: defaultDetails, sortOrder }: TodoLi
   const handleDetailsChange = useCallback(async (
     event: ChangeEvent<HTMLInputElement>
   ) => {
-    // Undo doesn't work if synced directly to DB. Might be a more elegant solution, but for now, this works.
-    void database.todoListItems.where('id').equals(id).modify({ details: event.target.value })
+    void database.tasks.where('id').equals(metadata.taskId).modify({ details: event.target.value })
     setDetails(event.target.value)
-  }, [id])
+  }, [metadata.taskId])
 
   const handleRemoveFromToday = useCallback(async () => {
     await database.todoListItems.where({ id }).delete()
@@ -87,70 +94,72 @@ const TodoListItem = ({ id, taskId, details: defaultDetails, sortOrder }: TodoLi
   }
 
   return (
-    <Card css={wrapperCSS(metadata.taskStatus)}>
-      <Box css={headerCSS(showDetails)}>
-        <Box>
-          <Typography variant="h2">{metadata.taskTitle}</Typography>
-          <Typography variant="body1">{metadata.projectTitle}</Typography>
+    <Card css={gradientWrapperCSS(metadata.taskStatus)}>
+      <Box css={wrapperCSS}>
+        <Box css={headerCSS(showDetails)}>
+          <Box>
+            <Typography css={headerTextCSS(metadata.taskStatus)} variant="h2">{metadata.taskTitle}</Typography>
+            <Typography variant="body1">{metadata.projectTitle}</Typography>
+          </Box>
+          <Box css={rightHeaderCSS}>
+            <ToggleButton
+              size='small'
+              value="text"
+              onChange={toggleShowDetails}
+              css={{ marginRight: '0.5rem', backgroundColor: 'css={css`background-color: var(--mui-palette-background-paper)' }}
+            >
+              <Tooltip title="Show Details" >
+                <ChevronRight fontSize="small" css={{ transform: `rotate(${showDetails ? '90deg' : '0deg'})` }} />
+              </Tooltip>
+            </ToggleButton>
+
+            <ToggleButtonGroup
+              value={metadata.taskStatus}
+              exclusive
+              onChange={handleStatusChange}
+              size="small"
+            >
+              <ToggleButton color={colorStatus[ETaskStatus.CANCELED]} size='small' value={ETaskStatus.CANCELED}>
+                <Tooltip title="Canceled">
+                  <DeleteIcon fontSize="small" />
+                </Tooltip>
+              </ToggleButton>
+              <ToggleButton color={colorStatus[ETaskStatus.BLOCKED]} size='small' value={ETaskStatus.BLOCKED}>
+                <Tooltip title="Blocked">
+                  <RemoveDoneIcon fontSize="small" />
+                </Tooltip>
+              </ToggleButton>
+              <ToggleButton color={colorStatus[ETaskStatus.NEW]} size='small' value={ETaskStatus.NEW}>
+                <Tooltip title="Todo">
+                  <CheckBoxOutlineBlankIcon fontSize="small" />
+                </Tooltip>
+              </ToggleButton>
+              <ToggleButton color={colorStatus[ETaskStatus.IN_PROGRESS]} size='small' value={ETaskStatus.IN_PROGRESS}>
+                <Tooltip title="Doing">
+                  <LightbulbIcon fontSize="small" />
+                </Tooltip>
+              </ToggleButton>
+              <ToggleButton color={colorStatus[ETaskStatus.COMPLETED]} size='small' value={ETaskStatus.COMPLETED}>
+                <Tooltip title="Done">
+                  <DoneIcon fontSize="small" />
+                </Tooltip>
+              </ToggleButton>
+            </ToggleButtonGroup>
+
+            <IconButton onClick={handleEdit} css={{ marginLeft: '0.5rem' }}
+            >
+              <EditIcon fontSize="small" />
+            </IconButton>
+
+            <IconButton onClick={handleRemoveFromToday} css={{ marginLeft: '0.5rem' }}>
+              <CloseIcon fontSize="small" />
+            </IconButton>
+
+          </Box>
         </Box>
-        <Box css={rightHeaderCSS}>
-          <ToggleButton
-            size='small'
-            value="text"
-            onChange={toggleShowDetails}
-            css={{ marginRight: '0.5rem', backgroundColor: 'css={css`background-color: var(--mui-palette-background-paper)' }}
-          >
-            <Tooltip title="Show Details" >
-              <ChevronRight fontSize="small" css={{ transform: `rotate(${showDetails ? '90deg' : '0deg'})` }} />
-            </Tooltip>
-          </ToggleButton>
-
-          <ToggleButtonGroup
-            value={metadata.taskStatus}
-            exclusive
-            onChange={handleStatusChange}
-            size="small"
-          >
-            <ToggleButton color={colorStatus[ETaskStatus.CANCELED]} size='small' value={ETaskStatus.CANCELED}>
-              <Tooltip title="Canceled">
-                <DeleteIcon fontSize="small" />
-              </Tooltip>
-            </ToggleButton>
-            <ToggleButton color={colorStatus[ETaskStatus.BLOCKED]} size='small' value={ETaskStatus.BLOCKED}>
-              <Tooltip title="Blocked">
-                <RemoveDoneIcon fontSize="small" />
-              </Tooltip>
-            </ToggleButton>
-            <ToggleButton color={colorStatus[ETaskStatus.NEW]} size='small' value={ETaskStatus.NEW}>
-              <Tooltip title="Todo">
-                <CheckBoxOutlineBlankIcon fontSize="small" />
-              </Tooltip>
-            </ToggleButton>
-            <ToggleButton color={colorStatus[ETaskStatus.IN_PROGRESS]} size='small' value={ETaskStatus.IN_PROGRESS}>
-              <Tooltip title="Doing">
-                <LightbulbIcon fontSize="small" />
-              </Tooltip>
-            </ToggleButton>
-            <ToggleButton color={colorStatus[ETaskStatus.COMPLETED]} size='small' value={ETaskStatus.COMPLETED}>
-              <Tooltip title="Done">
-                <DoneIcon fontSize="small" />
-              </Tooltip>
-            </ToggleButton>
-          </ToggleButtonGroup>
-
-          <IconButton onClick={handleEdit} css={{ marginLeft: '0.5rem' }}
-          >
-            <EditIcon fontSize="small" />
-          </IconButton>
-
-          <IconButton onClick={handleRemoveFromToday} css={{ marginLeft: '0.5rem' }}>
-            <CloseIcon fontSize="small" />
-          </IconButton>
-
-        </Box>
+        {showDetails && <TextField css={detailsCSS} fullWidth multiline value={details} onChange={handleDetailsChange} />}
       </Box>
-      {showDetails && <TextField css={detailsCSS} fullWidth multiline value={details} onChange={handleDetailsChange} />}
-    </Card>
+    </Card >
   )
 }
 
@@ -159,30 +168,33 @@ const rightHeaderCSS = css`
   display: flex;
   align-items: center;
   flex-shrink: 0;
-  padding: 0.25rem;
-  border-radius: 0.25rem;
-  background: var(--mui-palette-background-paper);
-  padding: 1.5rem 1.5rem 1.5rem 2rem;
 `
 
 const headerCSS = (showDetails: boolean) => css`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  /* padding-bottom: ${showDetails ? '0.5rem' : 0}; */
+  margin-bottom: ${showDetails ? '0.5rem' : '0'};
 `
 
 const detailsCSS = css`
   background: var(--mui-palette-background-paper);
-  padding: 1.5rem 1.5rem 1.5rem 2rem;
 `
 
-const wrapperCSS = (color: ETaskStatus) => css`
-/* background-color: var(--mui-palette-background-paper); */
-background: linear-gradient(90deg, var(--mui-palette-background-paper) 70%, var(--mui-palette-${colorStatus[color]}-main) 100%);
-border: 2px solid var(--mui-palette-${colorStatus[color]}-main);
+const gradientWrapperCSS = (color: ETaskStatus) => css`
 border-radius: 0.5rem;
-padding: 0.5rem 0.5rem 0.5rem 1rem;
+padding: 0.5rem;
+background: linear-gradient(90deg, var(--mui-palette-background-paper) 30%, var(--mui-palette-${colorStatus[color]}-main) 100%);
+`
+
+const headerTextCSS = (color: ETaskStatus) => css`
+color: var(--mui-palette-${colorStatus[color]}-main);
+`
+
+const wrapperCSS = css`
+background: var(--mui-palette-background-paper);
+border-radius: 0.5rem;
+padding: 0.5rem;
 `
 
 export default TodoListItem

@@ -102,7 +102,7 @@ const SuccessesPage = () => {
 
   return (
     <Box css={pageCSS}>
-      <Button variant='contained' key="add" onClick={handleSuccess} >Add Success</Button>
+      <Button css={css`align-self: flex-start;`} variant='contained' key="add" onClick={handleSuccess} >Add Success</Button>
       <Box css={scrollWrapperCSS}>
         {content}
       </Box>
