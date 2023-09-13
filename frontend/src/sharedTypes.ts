@@ -34,13 +34,14 @@ interface TTask {
   projectId: string
   title: string
   status: ETaskStatus
+  details: string
 }
 
 interface TTodoListItem {
   taskId: string
   todoListDate: string
   id: string
-  details: string
+  // details?: string // Deprecated, get data from TTask.
   sortOrder: number
 }
 

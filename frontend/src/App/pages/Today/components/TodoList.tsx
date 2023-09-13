@@ -46,7 +46,7 @@ const EmptyTodoList = () => {
           }
         })
       } else {
-        previousDay.map(async ({ taskId, details }, index) => {
+        previousDay.map(async ({ taskId }, index) => {
           const task = await database.tasks.where('id').equals(taskId).first()
 
           if (
@@ -58,7 +58,6 @@ const EmptyTodoList = () => {
               taskId,
               id: uuid4(),
               todoListDate: selectedDate,
-              details,
               sortOrder: index
             })
           }
@@ -261,7 +260,7 @@ const dragItemCSS = (isDragging: boolean, draggableStyle: any) => ({
 })
 
 const todayButtonCSS = css`
-  width: 250px;
+  width: 220px;
   &:hover span {
     display: none;
   }

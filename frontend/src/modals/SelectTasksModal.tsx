@@ -21,19 +21,11 @@ const Task = ({ task, isSelected }: TaskProps) => {
   const { state } = useContext(context)
 
   const handleSelect = async () => {
-    const lastTodoListItem = (await database
-      .todoListItems
-      .where('todoListDate')
-      .equals(state.selectedDate)
-      .reverse()
-      .sortBy('sortOrder'))[0]
-
     await database.todoListItems.add({
       taskId: task.id,
       id: uuid4(),
       todoListDate: state.selectedDate,
-      details: '',
-      sortOrder: lastTodoListItem ? lastTodoListItem.sortOrder + 1 : 0
+      sortOrder: -1
     })
   }
 
@@ -174,7 +166,7 @@ const ManageTodoListItemsModal = () => {
         </Box>
       </Box>
     )
-  }, [projects, selectedTaskIds])
+  }, [projects, selectedTaskIds, tasks, showAddNewTaskModal])
 
   return (
     <Modal
