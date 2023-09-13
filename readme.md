@@ -11,12 +11,10 @@
 - Create Notifications!
 - Super awesome color themes!
 
-# Features in Development
+# Future Features
 
-- Make UI/UX more User Friendly
-- (Maybe) Windows / Linux Support
-- Figure out how to create installers that don't require cloning the repository
-- Add ability to Sync App across multiple computers
+- Windows / Linux Support
+- Multiple device support / syncing
 
 # Contributing
 
