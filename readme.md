@@ -1,6 +1,6 @@
 ![alt text](./readme/logo.png "Logo")
 
-> Todo List for Consulting - Track projects, tasks, work completed, achievements, and more.
+> Todo List for ADHD minded folks - Track projects, tasks, work completed, successes, and more.
 
 # Features
 
