@@ -4,14 +4,11 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "sd:fe": "cd frontend && yarn run sd:fe",
-        "sd:be": "cd backend && yarn run sd:be",
-        "start": "concurrently -n fe,be \"yarn run sd:fe\" \"wait-on http://localhost:3003 && yarn run sd:be\"",
+        "start": "concurrently -n fe,be \"cd frontend && yarn run start\" \"wait-on http://localhost:3003 && cd backend && yarn run start\"",
         "open": "open backend/dist-electron/mac-arm64",
         "build": "cd frontend && yarn run build && cd ../backend && yarn run build && cd .. && yarn run open",
-        "extract-build": "rm -rf ./extracted-build && npx asar extract  backend/dist-electron/mac-arm64/TODO\\ TODAY.app/Contents/Resources/app.asar extracted-build && open ./extracted-build",
-        "kill-it": "rm -rf node_modules && rm -rf ./backend/node_modules && rm -rf ./frontend/node_modules",
-        "fill-it": "yarn && cd backend && yarn && cd ../frontend && yarn"
+        "cleanup": "rm -rf node_modules && rm -rf ./backend/node_modules && rm -rf ./frontend/node_modules",
+        "bootstrap": "yarn && cd backend && yarn && cd ../frontend && yarn"
     },
     "repository": {
         "type": "git",

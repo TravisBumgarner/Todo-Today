@@ -5,9 +5,7 @@
     "description": "Consulting Todo List App",
     "main": "dist/backend/src/index.js",
     "scripts": {
-        "sd:be": "export NODE_ENV=local && concurrently \"tsc -w\" \"wait-on ./dist/backend/src/index.js && electron ./dist/backend/src/index.js\"",
-        "why": "electron ./dist/backend/src/index.js",
-        "app:dir": "electron-builder --dir",
+        "start": "export NODE_ENV=local && concurrently \"tsc -w\" \"wait-on ./dist/backend/src/index.js && electron ./dist/backend/src/index.js\"",
         "build": "rm -rf ./dist && rm -rf ./dist-electron && mkdir ./dist && mv ../react-dist/ ./dist && tsc && electron-builder"
     },
     "keywords": [],

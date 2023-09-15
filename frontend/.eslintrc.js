@@ -19,7 +19,6 @@ module.exports = {
     'react'
   ],
   rules: {
-    indent: 'off',
     '@typescript-eslint/restrict-template-expressions': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/strict-boolean-expressions': 'off',
@@ -27,10 +26,6 @@ module.exports = {
     '@typescript-eslint/naming-convention': 'off',
     'react/react-in-jsx-scope': 'off',
     '@typescript-eslint/consistent-type-assertions': 'off',
-    '@typescript-eslint/no-non-null-assertion': 'off',
-    '@typescript-eslint/indent': 'off',
-    '@typescript-eslint/key-spacing': 'off',
-    '@typescript-eslint/space-before-function-paren': 'off'
-
+    '@typescript-eslint/no-non-null-assertion': 'off'
   }
 }

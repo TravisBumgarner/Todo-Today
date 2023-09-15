@@ -3,8 +3,6 @@ import { type LinkProps } from '@mui/material'
 import { Link as RouterLink, type LinkProps as RouterLinkProps } from 'react-router-dom'
 import { type ThemeOptions, css, experimental_extendTheme as extendTheme } from '@mui/material/styles'
 import _ from 'lodash'
-import { HEADER_HEIGHT } from './App/components/Header'
-import { margin } from 'polished'
 
 const LinkBehavior = forwardRef<HTMLAnchorElement, Omit<RouterLinkProps, 'to'> & { href: RouterLinkProps['to'] }
 >((props, ref) => {
