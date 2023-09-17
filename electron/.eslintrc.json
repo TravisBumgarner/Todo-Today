@@ -10,13 +10,24 @@
     "plugin:@typescript-eslint/recommended",
     "plugin:import/recommended",
     "plugin:import/electron",
-    "plugin:import/typescript"
+    "plugin:import/typescript",
+    "plugin:react/recommended",
+    "standard-with-typescript",
+    "plugin:react-hooks/recommended"
   ],
   "parser": "@typescript-eslint/parser",
-  "plugins": ["import"],
+  "plugins": ["import", "react"],
   "rules": {
     // turn on errors for missing imports
-    "import/no-unresolved": "off"
+    "import/no-unresolved": "on",
+    "@typescript-eslint/restrict-template-expressions": "off",
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/strict-boolean-expressions": "off",
+    "@typescript-eslint/no-misused-promises": "off",
+    "@typescript-eslint/naming-convention": "off",
+    "react/react-in-jsx-scope": "off",
+    "@typescript-eslint/consistent-type-assertions": "off",
+    "@typescript-eslint/no-non-null-assertion": "off"
   },
   "settings": {
     "import/parsers": {
@@ -24,7 +35,7 @@
     },
     "import/resolver": {
       "typescript": {
-        "alwaysTryTypes": true, // always try to resolve types under `<root>@types` directory even it doesn't contain any source code, like `@types/unist`
+        "alwaysTryTypes": true, // always try to resolve types under `<root>@types` directory even it doesn"t contain any source code, like `@types/unist`
         "project": "./tsconfig.json"
       }
     }

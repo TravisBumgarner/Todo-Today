@@ -24,7 +24,7 @@ const App = () => {
     })
   }, [dispatch])
   useEffect(() => { setupAutomatedBackup(triggerBackupFailureModal) }, [state.settings.backupInterval, triggerBackupFailureModal])
-
+  
   const theme = useMemo(() => {
     switch (state.settings.colorTheme) {
       case EColorTheme.BEACH: {
