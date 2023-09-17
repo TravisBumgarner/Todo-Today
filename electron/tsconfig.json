@@ -13,7 +13,15 @@
     "resolveJsonModule": true,
     "jsx": "react-jsx",
     "paths": {
-      "*": ["node_modules/*"]
+      "*": ["node_modules/*"],
+      "sharedComponents": ["src/react-src/sharedComponents"],
+      "modals": ["src/react-src/modals"],
+      "sharedTypes": ["src/react-src/sharedTypes.ts"],
+      "theme": ["src/react-src/theme.tsx"],
+      "colors": ["src/react-src/colors.tsx"],
+      "utilities": ["src/react-src/utilities.ts"],
+      "Context": ["src/react-src/Context.tsx"],
+      "database": ["src/react-src/database.ts"]
     }
   },
   "include": ["src/**/*"]

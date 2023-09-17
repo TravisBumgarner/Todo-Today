@@ -1,8 +1,6 @@
 import { createRoot } from 'react-dom/client';
+import App from './react-src/App'
 
-const App = () => {
-  return <p>Hi.</p>
-}
 const container = document.getElementById('root');
-const root = createRoot(container);
+const root = createRoot(container!); //eslint-disable-line
 root.render(<App />);
