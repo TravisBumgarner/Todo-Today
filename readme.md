@@ -30,5 +30,5 @@ Create new color themes!!
 
 # Installing
 
-1. Run `yarn run build` from root.
+1. Run `yarn package` from root.
 2. For Mac - installer is contained in `backend/dist-electron/mac-arm64/TODO\ TODAY.app`
