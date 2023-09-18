@@ -2,10 +2,10 @@ import React, { createContext, useReducer, useState, type Dispatch, useEffect } 
 
 import { EColorTheme, EBackupInterval, type TSettings, type TDateISODate } from 'sharedTypes'
 import { formatDateKeyLookup, getLocalStorage, setLocalStorage } from 'utilities'
-// import { type AppStartIPC } from '../sharedTypes'
+import { type AppStartIPC } from '../sharedTypes'
 import moment from 'moment'
 import { type ActiveModal } from './modals/LazyLoadModal'
-// const { ipcRenderer } = require('electron')
+const { ipcRenderer } = window.require('electron');
 
 const HAS_DONE_WARM_START = 'HAS_DONE_WARM_START'
 const TRUE = 'TRUE'
@@ -143,13 +143,13 @@ const ResultsContext = ({ children }: { children: any }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      // const { backupDir }: AppStartIPC = await ipcRenderer.invoke('app-start')
+      const { backupDir }: AppStartIPC = await ipcRenderer.invoke('app-start')
 
       if (getLocalStorage(HAS_DONE_WARM_START) !== TRUE) {
         initialSetup()
       } else {
         const currentLocalStorage = getKeysFromStorage()
-        const payload = { ...currentLocalStorage, backupDir: 'dir' }
+        const payload = { ...currentLocalStorage, backupDir }
         dispatch({ type: 'HYDRATE_USER_SETTINGS', payload })
       }
     }

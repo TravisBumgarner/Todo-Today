@@ -13,6 +13,7 @@ export const mainConfig: Configuration = {
   module: {
     rules,
   },
+
   resolve: {
     extensions: ['.js', '.ts', '.jsx', '.tsx', '.css', '.json'],
     alias: {

@@ -15,10 +15,10 @@ import {
 } from 'utilities'
 import Modal from './Modal'
 import { context } from 'Context'
-// import { type BackupIPC } from '../../sharedTypes'
+import { type BackupIPC } from '../../sharedTypes'
 import { ModalID } from './LazyLoadModal'
 
-// const { ipcRenderer } = require('electron')
+const { ipcRenderer } = require('electron')
 
 const createBackup = async () => {
   const data = {
