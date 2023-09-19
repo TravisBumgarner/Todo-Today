@@ -1,24 +1,24 @@
-import { useState, useContext, useCallback } from 'react'
+import { useState, useContext, useCallback, useMemo } from 'react'
 import moment from 'moment'
 import { Box, Button, FormControl, InputLabel, MenuItem, Select, Typography, css } from '@mui/material'
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 import { HtmlTooltip } from 'sharedComponents'
+const { ipcRenderer } = window.require('electron');
 
 import database from 'database'
-import { EColorTheme, EBackupInterval } from 'sharedTypes'
+import { EColorTheme, EBackupInterval, DATE_BACKUP_DATE } from 'sharedTypes'
 import {
   colorThemeOptionLabels,
   saveFile,
   getLocalStorage,
   setLocalStorage,
-  backupIntervalLookup
+  backupIntervalLookup,
+  TLocalStorage
 } from 'utilities'
 import Modal from './Modal'
-import { context } from 'Context'
+import { State, context } from 'Context'
 import { type BackupIPC } from '../../sharedTypes'
 import { ModalID } from './LazyLoadModal'
-
-const { ipcRenderer } = require('electron')
 
 const createBackup = async () => {
   const data = {
@@ -43,10 +43,10 @@ const runAutomatedBackup = (triggerBackupFailureModal: () => void) => {
   void createBackup().then(async (data) => {
     const response = await ipcRenderer.invoke(
       'backup',
-      { filename: `${moment().toISOString()}.json`, data: JSON.stringify(data) } as BackupIPC
+      { filename: `${moment().format(DATE_BACKUP_DATE)}.json`, data: JSON.stringify(data) } as BackupIPC
     )
     if (response.isSuccess === true) {
-      setLocalStorage('lastBackup', moment().toLocaleString())
+      setLocalStorage('lastBackup', moment().format(DATE_BACKUP_DATE))
     } else {
       triggerBackupFailureModal()
     }
@@ -82,6 +82,7 @@ const setupAutomatedBackup = (triggerBackupFailureModal: () => void) => {
 const Settings = () => {
   const { state, dispatch } = useContext(context)
   const [restoreFile, setRestoreFile] = useState<File | null>(null)
+  const [refreshBackupDate, shouldRefreshBackupDate] = useState(false)
 
   const handleBackup = async () => {
     const data = await createBackup()
@@ -95,11 +96,20 @@ const Settings = () => {
         }
       })
     } else {
-      void saveFile(`${moment().toISOString()}.json`, data)
+      const backupDate = moment().format(DATE_BACKUP_DATE)
+      void saveFile(`${backupDate}.json`, data)
+      setLocalStorage('lastBackup', backupDate)
+      shouldRefreshBackupDate(prev => !prev)
     }
   }
 
-  const handleSubmit = ({ key, value }: { key: string, value: string }) => {
+  const lastBackup = useMemo(() => {
+    return getLocalStorage('lastBackup')
+  }, [refreshBackupDate])
+
+  const handleSubmit = ({ key, value }: {
+    key: keyof State['settings'], value: string
+  }) => {
     dispatch({ type: 'EDIT_USER_SETTING', payload: { key, value } })
   }
 
@@ -189,7 +199,7 @@ const Settings = () => {
           <Typography variant="h3">Backup</Typography>
           <HtmlTooltip title={
             <>
-              <Typography variant="body2"><Box component="span" fontWeight={700}>Last Backup<br /></Box> {getLocalStorage('lastBackup')}</Typography>
+              <Typography variant="body2"><Box component="span" fontWeight={700}>Last Backup<br /></Box> {lastBackup}</Typography>
               <Typography variant="body2"><Box component="span" fontWeight={700}>Location<br /></Box> {state.settings.backupDir}</Typography></>
           }>
             <HelpOutlineIcon color="primary" fontSize='small' />

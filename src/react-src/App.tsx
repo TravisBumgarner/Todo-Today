@@ -9,17 +9,12 @@ import { setupAutomatedBackup } from './modals/SettingsModal'
 import LazyLoadModal, { ModalID } from 'modals'
 import { baseTheme, beachTheme, highContrastTheme, retroFutureTheme, underTheSeaTheme } from 'theme'
 import { EColorTheme } from 'sharedTypes'
-import { channels } from '../constants';
-
 const { ipcRenderer } = window.require('electron');
+import { type AppStartIPC } from '../sharedTypes'
 
 
 const App = () => {
   const { state, dispatch } = useContext(context)
-
-  const getData = () => {
-    ipcRenderer.send(channels.GET_DATA, { product: 'notebook' });
-  };
 
   const triggerBackupFailureModal = useCallback(() => {
     dispatch({
@@ -55,8 +50,6 @@ const App = () => {
 
   return (
     <CssVarsProvider theme={theme}>
-      <button onClick={getData}>Click Me</button>
-
       <CssBaseline />
       <Box css={appWrapperCSS}>
         <Header />

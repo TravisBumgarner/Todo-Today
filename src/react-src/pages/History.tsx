@@ -14,7 +14,7 @@ import { ModalID } from 'modals'
 import { projectStatusLookup } from 'utilities'
 
 interface TaskProps {
-  task: TTask
+  task: TTask & { lastTodoListDate: string }
 }
 
 const Task = ({ task }: TaskProps) => {
@@ -38,7 +38,7 @@ const Task = ({ task }: TaskProps) => {
 
   return (
     <Box css={tasksHeaderCSS}>
-      <Typography variant="body1">{task.title}</Typography>
+      <Typography variant="body1">{task.lastTodoListDate} - {task.title}</Typography>
       <Box css={rightHeaderCSS}>
         <IconButton onClick={handleEditTask}>
           <EditIcon fontSize="small" />
@@ -69,7 +69,35 @@ const Project = ({ project }: ProjectProps) => {
   const { dispatch } = useContext(context)
   const [showTasks, setShowTasks] = useState(false)
   const toggleShowTasks = useCallback(() => { setShowTasks(prev => !prev) }, [])
-  const tasks = useLiveQuery(async () => await database.tasks.where({ projectId: project.id }).toArray())
+  const [tasksWithLastActiveDate, setTasksWithLastActiveDate] = useState<(TTask & { lastTodoListDate: string })[]>([])
+
+  useLiveQuery(async () => {
+    const tasks = await database.tasks.where({ projectId: project.id }).toArray();
+
+    const taskIdToLastDate: Record<string, string> = {};
+
+    for (const task of tasks) {
+      const lastItem = await database.todoListItems
+        .where('taskId')
+        .equals(task.id)
+        .reverse()
+        .first();
+
+      if (lastItem) {
+        taskIdToLastDate[task.id] = lastItem.todoListDate;
+      } else {
+        taskIdToLastDate[task.id] = null;
+      }
+    }
+
+    // Combine the tasks with the last todoListDate
+    const tasksWithLastDate = tasks.map(task => ({
+      ...task,
+      lastTodoListDate: taskIdToLastDate[task.id],
+    }));
+
+    setTasksWithLastActiveDate(tasksWithLastDate);
+  }, [project.id]);
 
   const handleEditProject = useCallback(() => {
     dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.EDIT_PROJECT_MODAL, projectId: project.id } })
@@ -92,18 +120,18 @@ const Project = ({ project }: ProjectProps) => {
       return null
     }
 
-    if (!tasks || tasks.length === 0) {
+    if (!tasksWithLastActiveDate || tasksWithLastActiveDate.length === 0) {
       return <EmptyStateDisplay message="No tasks" />
     }
 
-    return tasks.map(task => <Task key={task.id} task={task} />)
-  }, [tasks, showTasks])
+    return tasksWithLastActiveDate.sort((a, b) => a.lastTodoListDate < b.lastTodoListDate ? 1 : -1).map(task => <Task key={task.id} task={task} />)
+  }, [tasksWithLastActiveDate, showTasks])
 
   useEffect(() => {
-    if (tasks && tasks.length === 0) {
+    if (tasksWithLastActiveDate && tasksWithLastActiveDate.length === 0) {
       setShowTasks(false)
     }
-  }, [tasks, toggleShowTasks])
+  }, [tasksWithLastActiveDate, toggleShowTasks])
 
   return (
     <Card css={projectWrapperCSS}>
@@ -117,7 +145,7 @@ const Project = ({ project }: ProjectProps) => {
             size='small'
             value="text"
             onChange={toggleShowTasks}
-            disabled={!tasks || tasks.length === 0}
+            disabled={!tasksWithLastActiveDate || tasksWithLastActiveDate.length === 0}
             css={{ marginRight: '1rem' }}
           >
             <Tooltip title="Toggle Tasks">
@@ -141,32 +169,32 @@ const Project = ({ project }: ProjectProps) => {
 }
 
 const rightHeaderCSS = css`
-  margin-left: 1rem;
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-`
+      margin-left: 1rem;
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+      `
 
 const projectHeaderCSS = (showDetails: boolean) => css`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: ${showDetails ? '0.5rem' : 0};
-`
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: ${showDetails ? '0.5rem' : 0};
+      `
 
 const tasksHeaderCSS = css`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      `
 
 const projectWrapperCSS = css`
-  background-color: var(--mui-palette-background-paper);
-  color: var(--mui-palette-secondary-main);
-  border-radius: 0.5rem;
-  padding: 0.5rem 1rem;
-  margin: 0 0 1rem 0;
-`
+      background-color: var(--mui-palette-background-paper);
+      color: var(--mui-palette-secondary-main);
+      border-radius: 0.5rem;
+      padding: 0.5rem 1rem;
+      margin: 0 0 1rem 0;
+      `
 
 const History = () => {
   const [projects, setProjects] = useState<TProject[] | undefined>(undefined)
@@ -199,9 +227,9 @@ const History = () => {
 }
 
 const scrollWrapperCSS = css`
-    height: 90%;
-    overflow: auto;
-    margin: 1rem 0 3rem 0;
-`
+      height: 90%;
+      overflow: auto;
+      margin: 1rem 0 3rem 0;
+      `
 
 export default History

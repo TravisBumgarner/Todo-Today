@@ -11,7 +11,6 @@ declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
 
 import menu from './menu'
 import { NotificationIPC, BackupIPC, AppStartIPC } from './sharedTypes'
-import { channels } from "./constants";
 
 const BACKUPS_DIR = path.resolve(app.getPath('documents'), app.name, 'backups')
 if (!fs.existsSync(BACKUPS_DIR)) {
@@ -37,7 +36,8 @@ const createWindow = (): void => {
       nodeIntegration: true,
       contextIsolation: false,
       devTools: isDev || isDebugProduction,
-      spellcheck: true
+      spellcheck: true,
+      sandbox: false
     }
   });
 
@@ -87,8 +87,3 @@ ipcMain.handle('backup', async (event, arg: BackupIPC) => {
     return { isSuccess: false, message: JSON.stringify(e) }
   }
 })
-
-ipcMain.on(channels.GET_DATA, (event, arg) => {
-  const { product } = arg;
-  console.log(product);
-});

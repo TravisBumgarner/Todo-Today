@@ -2,6 +2,8 @@ type TYear = `${number}${number}${number}${number}`
 type TMonth = `${number}${number}`
 type TDay = `${number}${number}`
 type TDateISODate = `${TYear}-${TMonth}-${TDay}`
+export const DATE_ISO_DATE_MOMENT_STRING = 'YYYY-MM-DD'
+export const DATE_BACKUP_DATE = 'YYYY-MM-DD-HH-mm-ss'
 
 enum EProjectStatus {
   ACTIVE = 'ACTIVE',

@@ -4,7 +4,7 @@ import { v4 as uuid4 } from 'uuid'
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 
 import database from 'database'
-import { ETaskStatus, type TTodoListItem } from 'sharedTypes'
+import { DATE_ISO_DATE_MOMENT_STRING, ETaskStatus, type TTodoListItem } from 'sharedTypes'
 import { context } from 'Context'
 import TodoListItem from './TodoListItem'
 import { Box, Button, ButtonGroup, Typography, css } from '@mui/material'
@@ -134,11 +134,11 @@ const TodoList = () => {
   }, [dispatch])
 
   const setPreviousDate = () => {
-    dispatch({ type: 'SET_SELECTED_DATE', payload: { date: formatDateKeyLookup(moment(selectedDate).subtract(1, 'day')) } })
+    dispatch({ type: 'SET_SELECTED_DATE', payload: { date: formatDateKeyLookup(moment(selectedDate, DATE_ISO_DATE_MOMENT_STRING).subtract(1, 'day')) } })
   }
 
   const getNextDate = () => {
-    dispatch({ type: 'SET_SELECTED_DATE', payload: { date: formatDateKeyLookup(moment(selectedDate).add(1, 'day')) } })
+    dispatch({ type: 'SET_SELECTED_DATE', payload: { date: formatDateKeyLookup(moment(selectedDate, DATE_ISO_DATE_MOMENT_STRING).add(1, 'day')) } })
   }
 
   const getToday = () => {

@@ -3,7 +3,7 @@ import moment from 'moment'
 import { Button, FormControl, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material'
 
 import Modal from './Modal'
-import { type TProject, type TSuccess } from 'sharedTypes'
+import { DATE_ISO_DATE_MOMENT_STRING, TDateISODate, type TProject, type TSuccess } from 'sharedTypes'
 import database from 'database'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { formatDateKeyLookup } from 'utilities'
@@ -18,7 +18,7 @@ const EditSuccessModal = ({ successId }: Props) => {
   const { dispatch } = useContext(context)
   const [description, setDescription] = useState<string>('')
   const [projectId, setProjectId] = useState<TProject['id'] | ''>('')
-  const [date, setDate] = useState<TProject['id'] | ''>('')
+  const [date, setDate] = useState<TSuccess['date'] | ''>('')
   const [isLoading, setIsLoading] = useState<boolean>(true)
 
   const projects = useLiveQuery(async () => {
@@ -90,9 +90,9 @@ const EditSuccessModal = ({ successId }: Props) => {
                 fullWidth
                 margin='normal'
                 name="date"
-                value={moment(date).format('YYYY-MM-DD')}
+                value={moment(date, DATE_ISO_DATE_MOMENT_STRING).format('YYYY-MM-DD')}
                 type="date"
-                onChange={(event) => { setDate(event.target.value) }}
+                onChange={(event) => { setDate(event.target.value as TDateISODate) }}
               />
               <ButtonWrapper>
 

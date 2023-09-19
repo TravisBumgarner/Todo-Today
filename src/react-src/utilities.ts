@@ -1,8 +1,5 @@
 import moment from 'moment'
-import { EProjectStatus, type TDateISODate, ETaskStatus, EColorTheme, EBackupInterval } from 'sharedTypes'
-// import { type NotificationIPC } from '../../shared/types'
-
-// const { ipcRenderer } = window.require('electron')
+import { EProjectStatus, type TDateISODate, ETaskStatus, EColorTheme, EBackupInterval, DATE_ISO_DATE_MOMENT_STRING, TColor } from 'sharedTypes'
 
 const projectStatusLookup: Record<EProjectStatus, string> = {
   [EProjectStatus.INACTIVE]: 'Inactive',
@@ -38,7 +35,7 @@ const formatDateDisplayString = (date: TDateISODate | null): string => {
     return ''
   }
 
-  return moment(date).format('dddd, MMM Do')
+  return moment(date, DATE_ISO_DATE_MOMENT_STRING).format('dddd, MMM Do')
 }
 
 const formatDateKeyLookup = (date: moment.Moment): TDateISODate => {
@@ -65,17 +62,21 @@ const saveFile = async (fileName: string, jsonData: unknown) => {
   a.click()
 }
 
-// const sendNotification = (title: string, body: string) => {
-//   ipcRenderer.send('notification', { title, body } as NotificationIPC)
-// }
+export type TLocalStorage = {
+  backupDir: string,
+  lastBackup: string,
+  hasDoneWarmStart: boolean,
+  colorTheme: EColorTheme,
+  backupInterval: EBackupInterval
+}
 
-const getLocalStorage = (key: string) => {
+const getLocalStorage = (key: keyof TLocalStorage) => {
   const result = localStorage.getItem(key)
   return result ? JSON.parse(result) : ''
 }
 
-const setLocalStorage = (key: string, value: any) => {
-  localStorage.setItem(key, JSON.stringify(value))
+const setLocalStorage = <T extends TLocalStorage>(key: keyof T, value: T[keyof T]) => {
+  localStorage.setItem(key as string, JSON.stringify(value))
 }
 
 export {
@@ -88,7 +89,6 @@ export {
   backupIntervalLookup,
   sumArray,
   saveFile,
-  sendNotification,
   getLocalStorage,
   setLocalStorage
 }

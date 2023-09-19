@@ -25,6 +25,7 @@
     "@electron-forge/maker-zip": "^6.4.2",
     "@electron-forge/plugin-auto-unpack-natives": "^6.4.2",
     "@electron-forge/plugin-webpack": "^6.4.2",
+    "@types/lodash": "^4.14.198",
     "@types/react": "^18.2.21",
     "@types/react-beautiful-dnd": "^13.1.4",
     "@types/uuid": "^9.0.4",

@@ -11,6 +11,8 @@ import { rendererConfig } from './webpack.renderer.config';
 
 const config: ForgeConfig = {
   packagerConfig: {
+    name: "Todo Today",
+    icon: "src/icon.icns",
     asar: true,
   },
   rebuildConfig: {},
@@ -26,9 +28,6 @@ const config: ForgeConfig = {
             html: './src/index.html',
             js: './src/renderer.ts',
             name: 'main_window',
-            preload: {
-              js: './src/preload.ts',
-            },
           },
         ],
       },

@@ -7,7 +7,7 @@ import moment from 'moment'
 import { type ActiveModal } from './modals/LazyLoadModal'
 const { ipcRenderer } = window.require('electron');
 
-const HAS_DONE_WARM_START = 'HAS_DONE_WARM_START'
+const HAS_DONE_WARM_START = 'hasDoneWarmStart'
 const TRUE = 'TRUE'
 
 export interface State {
@@ -44,8 +44,8 @@ const getKeysFromStorage = () => {
 
   Object
     .keys(EMPTY_STATE.settings)
-    .forEach((key: string) => {
-      output[key] = getLocalStorage(key) as string
+    .forEach((key: keyof State['settings']) => {
+      output[key] = getLocalStorage(key)
     })
   return output as unknown as State['settings']
 }
@@ -58,7 +58,7 @@ interface HydrateUserSettings {
 interface EditUserSettings {
   type: 'EDIT_USER_SETTING'
   payload: {
-    key: string
+    key: keyof State['settings']
     value: string
   }
 }
