@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "useDefineForClassFields": true,
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "allowJs": false,
+    "skipLibCheck": true,
+    "esModuleInterop": false,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "jsxImportSource": "@emotion/react",
+    "baseUrl": "./",
+    "paths": {
+      "sharedComponents": ["src/sharedComponents"],
+      "modals": ["src/modals"],
+      "types": ["src/types.ts"],
+      "theme": ["src/theme.tsx"],
+      "colors": ["src/colors.tsx"],
+      "utilities": ["src/utilities.ts"],
+      "Context": ["src/Context.tsx"],
+      "database": ["src/database.ts"]
+    },
+  },
+  "include": ["src", "electron"],
+  "references": [{ "path": "./tsconfig.node.json" }]
+}
