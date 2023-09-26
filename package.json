@@ -14,7 +14,8 @@
   },
   "scripts": {
     "dev": "vite --force",
-    "build": "tsc && vite build && electron-builder",
+    "build": "tsc && vite build",
+    "build-locally": "tsc && vite build && electron-builder",
     "preview": "vite preview",
     "lint": "eslint src --ext .ts,.tsx"
   },
