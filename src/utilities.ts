@@ -52,6 +52,8 @@ const formatDurationDisplayString = (rawMinutes: number) => {
 
 const sumArray = (arr: number[]) => arr.reduce((partialSum, a) => partialSum + a, 0)
 
+export const sortStrings = (a: string, b: string) => a.toLocaleLowerCase() > b.toLocaleLowerCase() ? 1 : -1
+
 const saveFile = async (fileName: string, jsonData: unknown) => {
   const blob = new Blob([JSON.stringify(jsonData, null, 2)], { type: 'application/json' })
   const a = document.createElement('a')

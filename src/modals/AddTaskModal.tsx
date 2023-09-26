@@ -10,6 +10,7 @@ import { type TProject, ETaskStatus, EProjectStatus, type TTask } from 'types'
 import database from 'database'
 import { context } from 'Context'
 import { ButtonWrapper } from 'sharedComponents'
+import { sortStrings } from 'utilities'
 
 const CREATE_NEW_PROJECT_DROPDOWN_ITEM = 'create-new-project'
 
@@ -67,7 +68,7 @@ const AddTaskModal = () => {
     dispatch({ type: 'CLEAR_ACTIVE_MODAL' })
   }
 
-  const projectSelectOptions = projects ? projects.map((p) => ({ value: p.id, label: p.title })) : []
+  const projectSelectOptions = projects ? projects.sort((a, b) => sortStrings(a.title, b.title)).map((p) => ({ value: p.id, label: p.title })) : []
   projectSelectOptions.unshift({ value: CREATE_NEW_PROJECT_DROPDOWN_ITEM, label: 'Create new Project' })
 
   const handleAddToTodayChange = useCallback((event: React.MouseEvent<HTMLElement>, newValue: 'yes' | 'no') => {

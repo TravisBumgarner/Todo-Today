@@ -11,6 +11,7 @@ import { type TProject, EProjectStatus, type TTask, ETaskStatus } from 'types'
 import database from 'database'
 import { context } from 'Context'
 import { ModalID } from './LazyLoadModal'
+import { sortStrings } from 'utilities'
 
 interface TaskProps {
   task: TTask
@@ -155,6 +156,7 @@ const ManageTodoListItemsModal = () => {
         <Box css={scrollWrapperCSS}>
           {
             projects
+              .sort((a, b) => sortStrings(a.title, b.title))
               .map(project => (
                 <Project
                   key={project.id}

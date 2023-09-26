@@ -5,7 +5,7 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import Modal from './Modal'
 import { type TTask, ETaskStatus } from 'types'
 import database from 'database'
-import { taskStatusLookup } from 'utilities'
+import { sortStrings, taskStatusLookup } from 'utilities'
 import { context } from 'Context'
 import { ButtonWrapper } from 'sharedComponents'
 
@@ -42,7 +42,7 @@ const EditTaskModal = ({ taskId }: Props) => {
     dispatch({ type: 'CLEAR_ACTIVE_MODAL' })
   }, [dispatch, taskId, projectId, status, title])
 
-  const projectSelectOptions = projects ? projects.map(({ id, title }) => ({ value: id, label: title })) : []
+  const projectSelectOptions = projects ? projects.sort((a, b) => sortStrings(a.title, b.title)).map(({ id, title }) => ({ value: id, label: title })) : []
 
   return (
     <Modal

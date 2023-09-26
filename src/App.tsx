@@ -4,7 +4,7 @@ import { CssBaseline, Box, Experimental_CssVarsProvider, css } from '@mui/materi
 import { EColorTheme } from './types'
 import Context, { context } from 'Context'
 import { baseTheme, beachTheme, highContrastTheme, retroFutureTheme, underTheSeaTheme } from 'theme'
-import { Header, Router } from './components'
+import { Footer, Header, Router, TrafficLightsHover } from './components'
 import LazyLoadModal from 'modals'
 
 const App = () => {
@@ -36,14 +36,16 @@ const App = () => {
       <Box css={appWrapperCSS}>
         <Header />
         <Router />
+        <Footer />
       </Box>
       <LazyLoadModal />
+      <TrafficLightsHover />
     </Experimental_CssVarsProvider>
   )
 }
 
 const appWrapperCSS = css`
-  padding: 1rem;
+  padding: 0 0.5rem 0.5rem 0.5rem;
   max-width: 1200px;
   display: flex;
   flex-direction: column;

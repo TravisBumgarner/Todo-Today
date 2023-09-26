@@ -11,7 +11,7 @@ import { pageCSS } from 'theme'
 import { type TProject, type TTask } from 'types'
 import { context } from 'Context'
 import { ModalID } from 'modals'
-import { projectStatusLookup } from 'utilities'
+import { projectStatusLookup, sortStrings } from 'utilities'
 
 interface TaskProps {
   task: TTask & { lastTodoListDate: string }
@@ -214,7 +214,7 @@ const History = () => {
       return <EmptyStateDisplay message="There is no history to show" />
     }
 
-    return projects.map(project => <Project key={project.id} project={project} />)
+    return projects.sort((a, b) => sortStrings(a.title, b.title)).map(project => <Project key={project.id} project={project} />)
   }, [projects])
 
   return (

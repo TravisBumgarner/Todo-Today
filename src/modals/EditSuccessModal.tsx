@@ -6,7 +6,7 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import Modal from './Modal'
 import { DATE_ISO_DATE_MOMENT_STRING, type TDateISODate, type TProject, type TSuccess } from 'types'
 import database from 'database'
-import { formatDateKeyLookup } from 'utilities'
+import { formatDateKeyLookup, sortStrings } from 'utilities'
 import { context } from 'Context'
 import { ButtonWrapper } from 'sharedComponents'
 
@@ -53,7 +53,7 @@ const EditSuccessModal = ({ successId }: Props) => {
     dispatch({ type: 'CLEAR_ACTIVE_MODAL' })
   }, [dispatch])
 
-  const projectSelectOptions = projects ? projects.map(({ id, title }) => ({ value: id, label: title })) : []
+  const projectSelectOptions = projects ? projects.sort((a, b) => sortStrings(a.title, b.title)).map(({ id, title }) => ({ value: id, label: title })) : []
   projectSelectOptions.unshift({ value: '', label: 'Select a Project' })
 
   return (

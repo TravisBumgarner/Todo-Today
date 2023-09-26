@@ -4,13 +4,11 @@ import { join, resolve } from 'node:path'
 import { writeFileSync, existsSync, mkdirSync } from 'node:fs'
 
 import { update } from './update'
-import { AppStartIPC, BackupIPC } from 'src/sharedTypes'
+import { type AppStartIPC, type BackupIPC } from 'src/sharedTypes'
 import menu from './menu'
 import { isDev, isDebugProduction } from './config'
 
-
 Menu.setApplicationMenu(menu)
-
 
 // The built directory structure
 //
@@ -50,13 +48,17 @@ const preload = join(__dirname, '../preload/index.js')
 const url = process.env.VITE_DEV_SERVER_URL
 const indexHtml = join(process.env.DIST, 'index.html')
 console.log(process.platform)
-async function createWindow() {
+async function createWindow () {
   win = new BrowserWindow({
     width: isDev || isDebugProduction ? 1000 : 800,
     height: isDev || isDebugProduction ? 1000 : 600,
+    titleBarStyle: 'customButtonsOnHover',
+    titleBarOverlay: {
+      height: 30
+    },
     x: 0,
     y: 0,
-    title: isDev ? "DEV MODE" : "Todo Today",
+    title: isDev ? 'DEV MODE' : 'Todo Today',
     icon: join(process.env.VITE_PUBLIC, 'icon.icns'),
     webPreferences: {
       preload,
@@ -64,16 +66,16 @@ async function createWindow() {
       // Consider using contextBridge.exposeInMainWorld
       // Read more on https://www.electronjs.org/docs/latest/tutorial/context-isolation
       nodeIntegration: true,
-      contextIsolation: false,
-    },
+      contextIsolation: false
+    }
   })
 
   if (url) { // electron-vite-vue#298
-    win.loadURL(url)
-    // Open devTool if the app is not packaged
+    await win.loadURL(url)
+    // Open devTool if the app is not` packaged
     win.webContents.openDevTools()
   } else {
-    win.loadFile(indexHtml)
+    await win.loadFile(indexHtml)
   }
 
   // Test actively push message to the Electron-Renderer
@@ -121,8 +123,8 @@ ipcMain.handle('open-win', (_, arg) => {
     webPreferences: {
       preload,
       nodeIntegration: true,
-      contextIsolation: false,
-    },
+      contextIsolation: false
+    }
   })
 
   if (process.env.VITE_DEV_SERVER_URL) {
@@ -134,7 +136,7 @@ ipcMain.handle('open-win', (_, arg) => {
 
 const BACKUPS_DIR = resolve(app.getPath('documents'), app.name, 'backups')
 if (!existsSync(BACKUPS_DIR)) {
-  mkdirSync(BACKUPS_DIR, { recursive: true });
+  mkdirSync(BACKUPS_DIR, { recursive: true })
 }
 
 ipcMain.handle('app-start', async () => {
@@ -145,7 +147,7 @@ ipcMain.handle('app-start', async () => {
 
 ipcMain.handle('backup', async (event, arg: BackupIPC) => {
   try {
-    writeFileSync(resolve(BACKUPS_DIR, arg.filename), arg.data, 'utf8');
+    writeFileSync(resolve(BACKUPS_DIR, arg.filename), arg.data, 'utf8')
     return { isSuccess: true, moreData: 'hi' }
   } catch (e) {
     return { isSuccess: false, message: JSON.stringify(e) }

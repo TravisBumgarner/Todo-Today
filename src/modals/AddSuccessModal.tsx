@@ -8,6 +8,7 @@ import { type TProject } from 'types'
 import database from 'database'
 import { context } from 'Context'
 import { ButtonWrapper } from 'sharedComponents'
+import { sortStrings } from 'utilities'
 
 const AddSuccessModal = () => {
   const { state, dispatch } = useContext(context)
@@ -33,7 +34,7 @@ const AddSuccessModal = () => {
     dispatch({ type: 'CLEAR_ACTIVE_MODAL' })
   }, [dispatch])
 
-  const projectSelectOptions = projects ? projects.map((p) => ({ value: p.id, label: p.title })) : []
+  const projectSelectOptions = projects ? projects.sort((a, b) => sortStrings(a.title, b.title)).map((p) => ({ value: p.id, label: p.title })) : []
 
   return (
     <Modal
