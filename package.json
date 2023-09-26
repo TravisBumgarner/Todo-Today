@@ -4,8 +4,8 @@
   "version": "1.0.3",
   "main": "dist-electron/main/index.js",
   "description": "Minimalistic Todo List",
-  "author": "Travis Bumgarner",
   "license": "MIT",
+  "author": "Travis Bumgarner",
   "private": true,
   "debug": {
     "env": {
