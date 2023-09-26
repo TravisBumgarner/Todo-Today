@@ -1,7 +1,7 @@
 {
   "name": "TodoToday",
   "productName": "Todo Today",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "main": "dist-electron/main/index.js",
   "description": "Minimalistic Todo List",
   "author": "Travis Bumgarner",
