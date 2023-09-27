@@ -109,8 +109,8 @@ const footerCSS = css`
   align-items: center;
   padding: 0.5rem 0;
   background-color: var(--mui-palette-background-default);
-  position: fixed;
   bottom: 0.5rem;
+  position: fixed;
   left: 0.5rem;
   z-index: 999;
 `
