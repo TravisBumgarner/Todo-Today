@@ -60,5 +60,11 @@
   },
   "engines": {
     "node": "^14.18.0 || >=16.0.0"
+  },
+  "build": {
+    "appId": "your.id",
+    "mac": {
+      "category": "public.app-category.productivity"
+    }
   }
 }
