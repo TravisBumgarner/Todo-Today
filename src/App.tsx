@@ -1,5 +1,6 @@
 import { useContext, useMemo } from 'react'
-import { CssBaseline, Box, Experimental_CssVarsProvider, css } from '@mui/material'
+import CssBaseline from '@mui/material/CssBaseline' // https://stackoverflow.com/questions/74542488/react-material-ui-createtheme-default-is-not-a-function
+import { Box, Experimental_CssVarsProvider, css } from '@mui/material'
 
 import { EColorTheme } from './types'
 import Context, { context } from 'Context'

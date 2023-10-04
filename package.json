@@ -13,9 +13,11 @@
     }
   },
   "scripts": {
-    "dev": "vite --force",
+    "start": "vite --force",
     "build": "tsc && vite build",
     "build-locally": "tsc && vite build && electron-builder",
+    "build-for-github": "electron-builder --mac",
+    "release-for-github": "electron-builder --mac --publish always",
     "preview": "vite preview",
     "lint": "eslint src --ext .ts,.tsx"
   },
@@ -52,6 +54,7 @@
     "moment": "^2.29.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-svg": "^16.1.27",
     "typescript": "^5.1.6",
     "uuid": "^9.0.1",
     "vite": "^4.4.9",
