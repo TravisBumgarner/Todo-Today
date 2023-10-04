@@ -52,10 +52,6 @@ async function createWindow () {
   win = new BrowserWindow({
     width: isDev || isDebugProduction ? 1000 : 800,
     height: isDev || isDebugProduction ? 1000 : 600,
-    titleBarStyle: 'customButtonsOnHover',
-    titleBarOverlay: {
-      height: 30
-    },
     x: 0,
     y: 0,
     title: isDev ? 'DEV MODE' : 'Todo Today',

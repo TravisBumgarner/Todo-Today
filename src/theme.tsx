@@ -5,7 +5,7 @@ const baseThemeOptions: ThemeOptions = {
   typography: {
     fontFamily: 'Comfortaa',
     h1: {
-      fontSize: '2rem',
+      fontSize: '1.5rem',
       fontWeight: 400,
       lineHeight: 1.35
     },

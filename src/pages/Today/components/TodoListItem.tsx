@@ -136,11 +136,13 @@ const TodoListItem = ({ id, taskId }: TodoListItemProps) => {
         <Box css={headerCSS(showDetails)}>
           <Box css={leftHeaderCSS}>
             <Box>
-              <IconButton
-                onClick={handleOpenMenu}
-              >
-                {statusIcon}
-              </IconButton>
+              <Tooltip title="Change Status">
+                <IconButton
+                  onClick={handleOpenMenu}
+                >
+                  {statusIcon}
+                </IconButton>
+              </Tooltip>
               <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleCloseMenu}>
                 <MenuItem onClick={async () => { await handleStatusChange(ETaskStatus.CANCELED) }}>
                   <ListItemIcon>
