@@ -1,7 +1,7 @@
 {
   "name": "TodoToday",
   "productName": "Todo Today",
-  "version": "1.1.7",
+  "version": "1.1.8",
   "main": "dist-electron/main/index.js",
   "description": "Minimalistic Todo List",
   "license": "MIT",
@@ -65,9 +65,39 @@
     "node": "^14.18.0 || >=16.0.0"
   },
   "build": {
-    "appId": "your.id",
-    "mac": {
-      "category": "public.app-category.productivity"
-    }
-  }
+		"appId": "com.travisbumgarner.todotoday",
+		"files": [
+			"!**/*",
+			"./bundle/**/*"
+		],
+		"mac": {
+			"target": [
+				"dmg",
+				"mas",
+				"zip"
+			],
+			"category": "public.app-category.productivity",
+			"darkModeSupport": true,
+			"electronLanguages": [
+				"en",
+				"en_AU",
+				"en_CA",
+				"en_GB",
+				"en_NZ",
+				"en_US",
+				"en_ZA"
+			],
+		},
+		"mas": {
+			"entitlements": "./build/entitlements.mas.plist",
+			"entitlementsInherit": "./build/entitlements.mas.inherit.plist",
+			"hardenedRuntime": false
+		},
+		"linux": {
+			"category": "Utility"
+		},
+		"dmg": {
+			"icon": false
+		}
+	}
 }
