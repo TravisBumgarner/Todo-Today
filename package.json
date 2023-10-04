@@ -1,7 +1,7 @@
 {
   "name": "TodoToday",
   "productName": "Todo Today",
-  "version": "1.1.8",
+  "version": "1.0.0",
   "main": "dist-electron/main/index.js",
   "description": "Minimalistic Todo List",
   "license": "MIT",
@@ -14,10 +14,8 @@
   },
   "scripts": {
     "start": "vite --force",
-    "build": "tsc && vite build",
-    "build-locally": "tsc && vite build && electron-builder",
-    "build-for-github": "electron-builder --mac",
-    "release-for-github": "electron-builder --mac --publish always",
+    "build": "tsc && vite build && electron-builder --mac",
+    "build-all": "tsc && vite build && electron-builder --mac --windows",
     "preview": "vite preview",
     "lint": "eslint src --ext .ts,.tsx"
   },
@@ -63,41 +61,5 @@
   },
   "engines": {
     "node": "^14.18.0 || >=16.0.0"
-  },
-  "build": {
-		"appId": "com.travisbumgarner.todotoday",
-		"files": [
-			"!**/*",
-			"./bundle/**/*"
-		],
-		"mac": {
-			"target": [
-				"dmg",
-				"mas",
-				"zip"
-			],
-			"category": "public.app-category.productivity",
-			"darkModeSupport": true,
-			"electronLanguages": [
-				"en",
-				"en_AU",
-				"en_CA",
-				"en_GB",
-				"en_NZ",
-				"en_US",
-				"en_ZA"
-			],
-		},
-		"mas": {
-			"entitlements": "./build/entitlements.mas.plist",
-			"entitlementsInherit": "./build/entitlements.mas.inherit.plist",
-			"hardenedRuntime": false
-		},
-		"linux": {
-			"category": "Utility"
-		},
-		"dmg": {
-			"icon": false
-		}
-	}
+  }
 }
