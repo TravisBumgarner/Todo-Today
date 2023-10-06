@@ -1,4 +1,4 @@
-import { app, Menu, MenuItemConstructorOptions } from 'electron'
+import { app, Menu, type MenuItemConstructorOptions, shell } from 'electron'
 
 import { isDev, isMac } from './config'
 
@@ -23,7 +23,7 @@ const template = [
     label: 'File',
     submenu: [
       { role: 'reload' },
-      isMac ? { role: 'close' } : { role: 'quit' },
+      isMac ? { role: 'close' } : { role: 'quit' }
     ]
   },
   // { role: 'editMenu' }
@@ -36,23 +36,25 @@ const template = [
       { role: 'cut' },
       { role: 'copy' },
       { role: 'paste' },
-      ...(isMac ? [
-        { role: 'pasteAndMatchStyle' },
-        { role: 'delete' },
-        { role: 'selectAll' },
-        { type: 'separator' },
-        {
-          label: 'Speech',
-          submenu: [
-            { role: 'startSpeaking' },
-            { role: 'stopSpeaking' }
-          ]
-        }
-      ] : [
-        { role: 'delete' },
-        { type: 'separator' },
-        { role: 'selectAll' }
-      ])
+      ...(isMac
+        ? [
+          { role: 'pasteAndMatchStyle' },
+          { role: 'delete' },
+          { role: 'selectAll' },
+          { type: 'separator' },
+          {
+            label: 'Speech',
+            submenu: [
+              { role: 'startSpeaking' },
+              { role: 'stopSpeaking' }
+            ]
+          }
+        ]
+        : [
+          { role: 'delete' },
+          { type: 'separator' },
+          { role: 'selectAll' }
+        ])
     ]
   },
   // { role: 'viewMenu' }
@@ -79,28 +81,31 @@ const template = [
     submenu: [
       { role: 'minimize' },
       { role: 'zoom' },
-      ...(isMac ? [
-        { type: 'separator' },
-        { role: 'front' },
-        { type: 'separator' },
-        { role: 'window' }
-      ] : [
-        { role: 'close' }
-      ])
+      ...(isMac
+        ? [
+          { type: 'separator' },
+          { role: 'front' },
+          { type: 'separator' },
+          { role: 'window' }
+        ]
+        : [
+          { role: 'close' }
+        ])
     ]
   },
-  // {
-  //     role: 'help',
-  //     submenu: [
-  //         {
-  //             label: 'Learn More',
-  //             click: async () => {
-  //                 const { shell } = require('electron')
-  //                 await shell.openExternal('https://electronjs.org')
-  //             }
-  //         }
-  //     ]
-  // }
+  {
+    role: 'help',
+    submenu: [
+      {
+        label: 'Website',
+        click: async () => { await shell.openExternal('http://todo.sillysideprojects.com/') }
+      },
+      {
+        label: 'Changelog',
+        click: async () => { await shell.openExternal('http://todo.sillysideprojects.com/changelog') }
+      }
+    ]
+  }
 ]
 
 const menu = Menu.buildFromTemplate(template as MenuItemConstructorOptions[])
