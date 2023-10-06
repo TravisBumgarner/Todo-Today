@@ -16,6 +16,7 @@ interface Props {
 const EditTaskModal = ({ taskId }: Props) => {
   const { dispatch } = useContext(context)
   const [title, setTitle] = useState<string>('')
+  const [details, setDetails] = useState<string>('')
   const [status, setStatus] = useState<ETaskStatus>(ETaskStatus.NEW)
   const [projectId, setProjectId] = useState<string>('')
   const projects = useLiveQuery(async () => await database.projects.toArray(), [])
@@ -29,6 +30,7 @@ const EditTaskModal = ({ taskId }: Props) => {
         setTitle(t.title)
         setProjectId(t.projectId)
         setStatus(t.status)
+        setDetails(t.details ?? '')
       })
   }, [taskId])
 
@@ -37,10 +39,10 @@ const EditTaskModal = ({ taskId }: Props) => {
   }, [dispatch])
 
   const handleSubmit = useCallback(async () => {
-    await database.tasks.where('id').equals(taskId).modify({ title, status, projectId })
+    await database.tasks.where('id').equals(taskId).modify({ title, status, projectId, details })
 
     dispatch({ type: 'CLEAR_ACTIVE_MODAL' })
-  }, [dispatch, taskId, projectId, status, title])
+  }, [dispatch, taskId, projectId, status, title, details])
 
   const projectSelectOptions = projects ? projects.sort((a, b) => sortStrings(a.title, b.title)).map(({ id, title }) => ({ value: id, label: title })) : []
 
@@ -70,6 +72,16 @@ const EditTaskModal = ({ taskId }: Props) => {
             {Object.keys(ETaskStatus).map(key => <MenuItem key={key} value={key}>{taskStatusLookup[key as ETaskStatus]}</MenuItem>)}
           </Select>
         </FormControl>
+        <TextField
+          autoFocus
+          multiline
+          fullWidth
+          label="Details"
+          name="details"
+          value={details}
+          margin='normal'
+          onChange={(event) => { setDetails(event.target.value) }}
+        />
         <FormControl fullWidth margin='normal'>
           <InputLabel id="edit-task-modal-project-select">Project</InputLabel>
           <Select

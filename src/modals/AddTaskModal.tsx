@@ -17,6 +17,7 @@ const CREATE_NEW_PROJECT_DROPDOWN_ITEM = 'create-new-project'
 const AddTaskModal = () => {
   const { state, dispatch } = useContext(context)
   const [title, setTitle] = useState<string>('')
+  const [details, setDetails] = useState<string>('')
   const [projectId, setProjectId] = useState<TProject['id'] | ''>('')
   const [addProjectInput, setAddProjectInput] = useState<string>('')
   const [addToSelectedDate, setAddToSelectedDate] = useState<'yes' | 'no'>('yes')
@@ -52,7 +53,7 @@ const AddTaskModal = () => {
       status: ETaskStatus.NEW,
       id: taskId,
       projectId: projectIdForTask,
-      details: ''
+      details
     }
 
     await database.tasks.add(newTask)
@@ -114,6 +115,16 @@ const AddTaskModal = () => {
           onChange={(event) => { setAddProjectInput(event.target.value) }}
         />
       }
+      <TextField
+        autoFocus
+        multiline
+        fullWidth
+        label="Details"
+        name="details"
+        value={details}
+        margin='normal'
+        onChange={(event) => { setDetails(event.target.value) }}
+      />
       <Box css={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <InputLabel>Add to Today?</InputLabel>
 
