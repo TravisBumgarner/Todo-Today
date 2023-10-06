@@ -5,7 +5,7 @@ import { Box, Experimental_CssVarsProvider, css } from '@mui/material'
 import { EColorTheme } from './types'
 import Context, { context } from 'Context'
 import { baseTheme, beachTheme, highContrastTheme, retroFutureTheme, underTheSeaTheme } from 'theme'
-import { Footer, Header, Router } from './components'
+import { Header, Router } from './components'
 import LazyLoadModal from 'modals'
 
 const App = () => {
@@ -37,7 +37,6 @@ const App = () => {
       <Box css={appWrapperCSS}>
         <Header />
         <Router />
-        <Footer />
       </Box>
       <LazyLoadModal />
     </Experimental_CssVarsProvider>
