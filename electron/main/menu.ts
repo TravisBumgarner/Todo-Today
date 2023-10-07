@@ -103,6 +103,10 @@ const template = [
       {
         label: 'Changelog',
         click: async () => { await shell.openExternal('http://todo.sillysideprojects.com/changelog') }
+      },
+      {
+        label: 'Contact',
+        click: async () => { await shell.openExternal('http://todo.sillysideprojects.com/support') }
       }
     ]
   }
