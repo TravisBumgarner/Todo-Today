@@ -50,7 +50,7 @@ const TodoListItem = ({ id, taskId }: TodoListItemProps) => {
   }
 
   const handleStartTimer = () => {
-
+    dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.TIMER_MODAL, taskId } })
   }
 
   useLiveQuery(
