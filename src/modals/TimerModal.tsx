@@ -1,6 +1,6 @@
-import { useCallback, useState, useContext, useEffect } from 'react'
+import { useCallback, useState, useContext, useEffect, useMemo } from 'react'
 import { v4 as uuid4 } from 'uuid'
-import { Button, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material'
+import { Button, FormControl, InputLabel, MenuItem, Select, TextField, Typography, css } from '@mui/material'
 import { useLiveQuery } from 'dexie-react-hooks'
 
 import Modal from './Modal'
@@ -14,6 +14,8 @@ const TimerModal = ({ taskId }: { taskId: string }) => {
   const { state, dispatch } = useContext(context)
   const [minutes, setMinutes] = useState(25)
   const [seconds, setSeconds] = useState(0)
+
+  const [isBeingSetup, setIsBeingSetup] = useState(true)
   const [isRunning, setIsRunning] = useState(false)
   const [isComplete, setIsComplete] = useState(false)
 
@@ -59,7 +61,8 @@ const TimerModal = ({ taskId }: { taskId: string }) => {
 
   const resetTimer = () => {
     setIsRunning(false)
-    setMinutes(25)
+    setIsBeingSetup(true)
+    setMinutes(0)
     setSeconds(0)
   }
 
@@ -68,21 +71,39 @@ const TimerModal = ({ taskId }: { taskId: string }) => {
       title="Timer"
       showModal={true}
     >
-      <p>
-        {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
-      </p>
-      {isRunning
-        ? (<button onClick={pauseTimer}>Pause</button>)
-        : (<button onClick={startTimer}>Start</button>)}
-      <button onClick={resetTimer}>Reset</button>
-      <form>
-        <ButtonWrapper>
-          <Button color="secondary" variant='contained' fullWidth key="cancel" onClick={handleCancel}>Cancel</Button>
-          <Button variant='contained' fullWidth disabled={!isComplete} key="save" onClick={handleSubmit}>Done</Button>
-        </ButtonWrapper>
-      </form>
+      {isBeingSetup
+        ? (
+          <>
+            <Typography variant='body1'>How long do you want to work?</Typography>
+            <ButtonWrapper isHorizontal>
+              <Button variant='contained' onClick={() => { setMinutes(25); setIsBeingSetup(false) }}>25 minutes</Button>
+              <Button variant='contained' onClick={() => { setMinutes(50); setIsBeingSetup(false) }}>50 minutes</Button>
+              <Button variant='contained' onClick={() => { setMinutes(90); setIsBeingSetup(false) }}>90 minutes</Button>
+            </ButtonWrapper>
+          </>)
+        : (
+          <>
+            <Typography css={timerCSS} variant='body1'>
+              {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
+            </Typography>
+            <ButtonWrapper>
+              <Button fullWidth variant='contained' color="secondary" onClick={resetTimer}>Reset</Button>
+              {
+                isRunning
+                  ? (<Button fullWidth variant='contained' onClick={pauseTimer}>Pause</Button>)
+                  : (<Button fullWidth variant='contained' onClick={startTimer}>Start</Button>)
+              }
+            </ButtonWrapper>
+          </>)
+      }
     </Modal>
   )
 }
+
+const timerCSS = css`
+  font-size: 3rem;
+  text-align: center;
+
+`
 
 export default TimerModal

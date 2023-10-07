@@ -1,18 +1,21 @@
 import { Box, css } from '@mui/material'
 import { type ReactElement } from 'react'
 
-// Expects full width buttons as children
-const ButtonWrapper = ({ children }: { children: ReactElement | ReactElement[] }) => {
+const ButtonWrapper = ({ children, isHorizontal }: { children: ReactElement | ReactElement[], isHorizontal?: boolean }) => {
   return (
-    <Box css={wrapperCSS}>{children}</Box>
+    <Box css={wrapperCSS(isHorizontal)}>{children}</Box>
   )
 }
 
-const wrapperCSS = css`
+const wrapperCSS = (isHorizontal?: boolean) => css`
   width: 100%;
+  ${isHorizontal && 'display: flex; justify-content: space-between;'}
 
   button {
     margin: 0.5rem 0;
+    ${isHorizontal && 'margin-right: 0.5rem'};
+    ${isHorizontal && 'flex-grow:1'};
+    
   }
 `
 
