@@ -70,6 +70,8 @@ const TimerModal = ({ taskId }: { taskId: string }) => {
     <Modal
       title="Timer"
       showModal={true}
+      disableEscapeKeyDown
+      disableBackdropClick
     >
       {isBeingSetup
         ? (

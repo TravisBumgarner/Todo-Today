@@ -10,21 +10,26 @@ interface ActiveModal {
   children: any
   showModal: boolean
   title: string
+  disableEscapeKeyDown?: boolean
+  disableBackdropClick?: boolean
 }
 
 export const MODAL_MAX_HEIGHT = 800
 
-const Modal: FC<ActiveModal> = ({ children, title }) => {
+const Modal: FC<ActiveModal> = ({ children, title, disableEscapeKeyDown, disableBackdropClick }) => {
   const { dispatch } = useContext(context)
 
-  const handleClose = useCallback(() => {
+  const handleClose = useCallback((event?: any, reason?: 'backdropClick' | 'escapeKeyDown') => {
+    if (reason === 'backdropClick' && disableBackdropClick) return
+
     dispatch({ type: 'CLEAR_ACTIVE_MODAL' })
-  }, [dispatch])
+  }, [dispatch, disableBackdropClick])
 
   return (
     <MUIModal
       open={true}
       onClose={handleClose}
+      disableEscapeKeyDown={disableEscapeKeyDown}
     >
       <Box css={wrapperCSS}>
         <Box css={headerWrapperCSS}>
