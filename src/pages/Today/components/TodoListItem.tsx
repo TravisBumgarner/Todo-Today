@@ -1,9 +1,10 @@
 import { type ChangeEvent, useState, useCallback, useContext, useMemo } from 'react'
-import { Box, Button, Card, Icon, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, TextField, Tooltip, Typography, css } from '@mui/material'
+import { Box, Card, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, TextField, Tooltip, Typography, css } from '@mui/material'
 import ToggleButton from '@mui/material/ToggleButton'
 import EditIcon from '@mui/icons-material/Edit'
 import CloseIcon from '@mui/icons-material/CloseOutlined'
 import { ChevronRight } from '@mui/icons-material'
+import TimerIcon from '@mui/icons-material/Timer'
 import { useLiveQuery } from 'dexie-react-hooks'
 
 import database from 'database'
@@ -46,6 +47,10 @@ const TodoListItem = ({ id, taskId }: TodoListItemProps) => {
 
   const handleCloseMenu = () => {
     setAnchorEl(null)
+  }
+
+  const handleStartTimer = () => {
+
   }
 
   useLiveQuery(
@@ -136,7 +141,7 @@ const TodoListItem = ({ id, taskId }: TodoListItemProps) => {
         <Box css={headerCSS(showDetails)}>
           <Box css={leftHeaderCSS}>
             <Box>
-              <Tooltip title="Change Status">
+              <Tooltip title="Change status">
                 <IconButton
                   onClick={handleOpenMenu}
                 >
@@ -188,19 +193,29 @@ const TodoListItem = ({ id, taskId }: TodoListItemProps) => {
               onChange={toggleShowDetails}
               css={{ marginRight: '0.5rem', backgroundColor: 'css={css`background-color: var(--mui-palette-background-paper)' }}
             >
-              <Tooltip title="Show Details" >
+              <Tooltip title="Show details" >
                 <ChevronRight fontSize="small" css={{ transform: `rotate(${showDetails ? '90deg' : '0deg'})` }} />
               </Tooltip>
             </ToggleButton>
 
-            <IconButton onClick={handleEdit} css={{ marginLeft: '0.5rem' }}
-            >
-              <EditIcon fontSize="small" />
-            </IconButton>
+            <Tooltip title="Start focus timer">
+              <IconButton onClick={handleStartTimer} css={{ marginLeft: '0.5rem' }}>
+                <TimerIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
 
-            <IconButton onClick={handleRemoveFromToday} css={{ marginLeft: '0.5rem' }}>
-              <CloseIcon fontSize="small" />
-            </IconButton>
+            <Tooltip title="Edit task">
+              <IconButton onClick={handleEdit} css={{ marginLeft: '0.5rem' }}
+              >
+                <EditIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
+
+            <Tooltip title="Remove from today">
+              <IconButton onClick={handleRemoveFromToday} css={{ marginLeft: '0.5rem' }}>
+                <CloseIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
 
           </Box>
         </Box>
