@@ -1,6 +1,6 @@
-import LazyLoadModal, { ModalID } from './LazyLoadModal'
+import RenderModal, { ModalID } from './RenderModal'
 
-export default LazyLoadModal
+export default RenderModal
 export {
   ModalID
 }

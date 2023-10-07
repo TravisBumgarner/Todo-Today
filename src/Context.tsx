@@ -4,7 +4,7 @@ import moment from 'moment'
 import { EColorTheme, EBackupInterval, type TSettings, type TDateISODate, EActivePage } from 'types'
 import { formatDateKeyLookup, getLocalStorage, setLocalStorage } from 'utilities'
 import { type AppStartIPC } from './sharedTypes'
-import { type ActiveModal } from './modals/LazyLoadModal'
+import { type ActiveModal } from './modals/RenderModal'
 const { ipcRenderer } = window.require('electron')
 
 const HAS_DONE_WARM_START = 'hasDoneWarmStart'

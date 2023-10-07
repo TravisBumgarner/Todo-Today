@@ -16,7 +16,7 @@ import {
 import Modal from './Modal'
 import { type State, context } from 'Context'
 import { type BackupIPC } from '../sharedTypes'
-import { ModalID } from './LazyLoadModal'
+import { ModalID } from './RenderModal'
 const { ipcRenderer } = window.require('electron')
 
 const createBackup = async () => {

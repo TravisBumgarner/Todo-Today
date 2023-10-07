@@ -10,7 +10,7 @@ import { EmptyStateDisplay } from 'sharedComponents'
 import { type TProject, EProjectStatus, type TTask, ETaskStatus } from 'types'
 import database from 'database'
 import { context } from 'Context'
-import { ModalID } from './LazyLoadModal'
+import { ModalID } from './RenderModal'
 import { sortStrings } from 'utilities'
 
 interface TaskProps {

@@ -3,7 +3,7 @@ import { Button, Typography } from '@mui/material'
 
 import Modal from './Modal'
 import { context } from 'Context'
-import { type ModalID } from './LazyLoadModal'
+import { type ModalID } from './RenderModal'
 import { ButtonWrapper } from 'sharedComponents'
 
 export interface ConfirmationModalProps {

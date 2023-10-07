@@ -32,7 +32,7 @@ export type ActiveModal =
   | { id: ModalID.SETTINGS_MODAL }
   | { id: ModalID.CONFIRMATION_MODAL } & ConfirmationModalProps
 
-const LazyLoadModal: FC = () => {
+const RenderModal: FC = () => {
   const { state } = useContext(context)
 
   if (!state.activeModal?.id) return null
@@ -65,4 +65,4 @@ const LazyLoadModal: FC = () => {
   }
 }
 
-export default LazyLoadModal
+export default RenderModal
