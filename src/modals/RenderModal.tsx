@@ -64,7 +64,7 @@ const RenderModal: FC = () => {
         confirmationCallback={state.activeModal.confirmationCallback}
       />
     case ModalID.TIMER_MODAL:
-      return <TimerModal />
+      return <TimerModal taskId={state.activeModal.taskId} />
     default:
       return null
   }
