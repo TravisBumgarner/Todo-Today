@@ -28,6 +28,6 @@
       "database": ["src/database.ts"]
     },
   },
-  "include": ["src", "electron"],
+  "include": ["src", "electron", "shared"], // shared doesn't seem to work in Electron
   "references": [{ "path": "./tsconfig.node.json" }]
 }

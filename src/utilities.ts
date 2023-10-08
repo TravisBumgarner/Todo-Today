@@ -1,6 +1,8 @@
 import moment from 'moment'
+import { ipcRenderer } from 'electron'
 
 import { EProjectStatus, type TDateISODate, ETaskStatus, EColorTheme, EBackupInterval, DATE_ISO_DATE_MOMENT_STRING } from './types'
+import { type MessageIPC } from 'shared/types'
 
 const projectStatusLookup: Record<EProjectStatus, string> = {
   [EProjectStatus.INACTIVE]: 'Inactive',
@@ -82,6 +84,11 @@ const setLocalStorage = <T extends TLocalStorage>(key: keyof T, value: T[keyof T
   localStorage.setItem(key as string, JSON.stringify(value))
 }
 
+const sendIPCMessage = async (message: MessageIPC) => {
+  const response = await ipcRenderer.invoke(message.type, message.body)
+  return response
+}
+
 export {
   projectStatusLookup,
   taskStatusLookup,
@@ -93,5 +100,6 @@ export {
   sumArray,
   saveFile,
   getLocalStorage,
-  setLocalStorage
+  setLocalStorage,
+  sendIPCMessage
 }

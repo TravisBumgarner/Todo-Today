@@ -11,13 +11,13 @@ import {
   saveFile,
   getLocalStorage,
   setLocalStorage,
-  backupIntervalLookup
+  backupIntervalLookup,
+  sendIPCMessage
 } from 'utilities'
 import Modal from './Modal'
 import { type State, context } from 'Context'
-import { type BackupIPC } from '../sharedTypes'
 import { ModalID } from './RenderModal'
-const { ipcRenderer } = window.require('electron')
+import { ENotificationIPC } from 'shared/types'
 
 const createBackup = async () => {
   const data = {
@@ -40,10 +40,14 @@ const backupIntervalToMilliseconds = {
 
 const runAutomatedBackup = (triggerBackupFailureModal: () => void) => {
   void createBackup().then(async (data) => {
-    const response = await ipcRenderer.invoke(
-      'backup',
-      { filename: `${moment().format(DATE_BACKUP_DATE)}.json`, data: JSON.stringify(data) } as BackupIPC
-    )
+    const payload = {
+      type: ENotificationIPC.Backup,
+      body: {
+        filename: `${moment().format(DATE_BACKUP_DATE)}.json`,
+        data: JSON.stringify(data)
+      }
+    } as const
+    const response = await sendIPCMessage(payload)
     if (response.isSuccess === true) {
       setLocalStorage('lastBackup', moment().format(DATE_BACKUP_DATE))
     } else {

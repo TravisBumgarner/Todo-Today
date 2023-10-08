@@ -1,12 +1,12 @@
-import { Menu, app, BrowserWindow, shell, ipcMain } from 'electron'
+import { Menu, app, BrowserWindow, shell, ipcMain, Notification } from 'electron'
 import { release } from 'node:os'
 import { join, resolve } from 'node:path'
 import { writeFileSync, existsSync, mkdirSync } from 'node:fs'
 
 import { update } from './update'
-import { type AppStartIPC, type BackupIPC } from 'src/sharedTypes'
 import menu from './menu'
 import { isDev, isDebugProduction } from './config'
+import { type BackupIPC, ENotificationIPC, type AppStartIPC, type NotificationIPC } from '../../shared/types'
 
 Menu.setApplicationMenu(menu)
 
@@ -48,7 +48,7 @@ const preload = join(__dirname, '../preload/index.js')
 const url = process.env.VITE_DEV_SERVER_URL
 const indexHtml = join(process.env.DIST, 'index.html')
 console.log(process.platform)
-async function createWindow () {
+async function createWindow() {
   win = new BrowserWindow({
     width: isDev || isDebugProduction ? 1000 : 800,
     height: isDev || isDebugProduction ? 1000 : 600,
@@ -81,7 +81,7 @@ async function createWindow () {
 
   // Make all links open with the browser, not with the application
   win.webContents.setWindowOpenHandler(({ url }) => {
-    if (url.startsWith('https:')) shell.openExternal(url)
+    if (url.startsWith('https:')) void shell.openExternal(url)
     return { action: 'deny' }
   })
 
@@ -89,7 +89,7 @@ async function createWindow () {
   update(win)
 }
 
-app.whenReady().then(createWindow)
+void app.whenReady().then(createWindow)
 
 app.on('window-all-closed', () => {
   win = null
@@ -109,7 +109,7 @@ app.on('activate', () => {
   if (allWindows.length) {
     allWindows[0].focus()
   } else {
-    createWindow()
+    void createWindow()
   }
 })
 
@@ -124,9 +124,9 @@ ipcMain.handle('open-win', (_, arg) => {
   })
 
   if (process.env.VITE_DEV_SERVER_URL) {
-    childWindow.loadURL(`${url}#${arg}`)
+    void childWindow.loadURL(`${url}#${arg}`)
   } else {
-    childWindow.loadFile(indexHtml, { hash: arg })
+    void childWindow.loadFile(indexHtml, { hash: arg })
   }
 })
 
@@ -135,17 +135,21 @@ if (!existsSync(BACKUPS_DIR)) {
   mkdirSync(BACKUPS_DIR, { recursive: true })
 }
 
-ipcMain.handle('app-start', async () => {
+ipcMain.handle(ENotificationIPC.AppStart, async (event, arg: AppStartIPC['body']) => {
   return {
     backupDir: BACKUPS_DIR
-  } as AppStartIPC
+  }
 })
 
-ipcMain.handle('backup', async (event, arg: BackupIPC) => {
+ipcMain.handle(ENotificationIPC.Backup, async (event, arg: BackupIPC['body']) => {
   try {
     writeFileSync(resolve(BACKUPS_DIR, arg.filename), arg.data, 'utf8')
     return { isSuccess: true, moreData: 'hi' }
   } catch (e) {
     return { isSuccess: false, message: JSON.stringify(e) }
   }
+})
+
+ipcMain.handle(ENotificationIPC.Notification, async (event: any, arg: NotificationIPC['body']) => {
+  new Notification(arg).show()
 })
