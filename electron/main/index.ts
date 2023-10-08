@@ -6,7 +6,7 @@ import { writeFileSync, existsSync, mkdirSync } from 'node:fs'
 import { update } from './update'
 import menu from './menu'
 import { isDev, isDebugProduction } from './config'
-import { type BackupIPC, ENotificationIPC, type AppStartIPC, type NotificationIPC } from '../../shared/types'
+import { type BackupIPCFromRenderer, EMessageIPCFromRenderer, type NotificationIPCFromRenderer } from '../../shared/types'
 
 Menu.setApplicationMenu(menu)
 
@@ -135,13 +135,13 @@ if (!existsSync(BACKUPS_DIR)) {
   mkdirSync(BACKUPS_DIR, { recursive: true })
 }
 
-ipcMain.handle(ENotificationIPC.AppStart, async (event, arg: AppStartIPC['body']) => {
+ipcMain.handle(EMessageIPCFromRenderer.AppStart, async () => {
   return {
     backupDir: BACKUPS_DIR
   }
 })
 
-ipcMain.handle(ENotificationIPC.Backup, async (event, arg: BackupIPC['body']) => {
+ipcMain.handle(EMessageIPCFromRenderer.Backup, async (event, arg: BackupIPCFromRenderer['body']) => {
   try {
     writeFileSync(resolve(BACKUPS_DIR, arg.filename), arg.data, 'utf8')
     return { isSuccess: true, moreData: 'hi' }
@@ -150,6 +150,6 @@ ipcMain.handle(ENotificationIPC.Backup, async (event, arg: BackupIPC['body']) =>
   }
 })
 
-ipcMain.handle(ENotificationIPC.Notification, async (event: any, arg: NotificationIPC['body']) => {
+ipcMain.handle(EMessageIPCFromRenderer.Notification, async (event: any, arg: NotificationIPCFromRenderer['body']) => {
   new Notification(arg).show()
 })

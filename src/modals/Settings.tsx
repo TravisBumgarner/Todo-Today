@@ -17,7 +17,7 @@ import {
 import Modal from './Modal'
 import { type State, context } from 'Context'
 import { ModalID } from './RenderModal'
-import { ENotificationIPC } from 'shared/types'
+import { EMessageIPCFromRenderer } from 'shared/types'
 
 const createBackup = async () => {
   const data = {
@@ -41,14 +41,14 @@ const backupIntervalToMilliseconds = {
 const runAutomatedBackup = (triggerBackupFailureModal: () => void) => {
   void createBackup().then(async (data) => {
     const payload = {
-      type: ENotificationIPC.Backup,
+      type: EMessageIPCFromRenderer.Backup,
       body: {
         filename: `${moment().format(DATE_BACKUP_DATE)}.json`,
         data: JSON.stringify(data)
       }
     } as const
     const response = await sendIPCMessage(payload)
-    if (response.isSuccess === true) {
+    if (response.success) {
       setLocalStorage('lastBackup', moment().format(DATE_BACKUP_DATE))
     } else {
       triggerBackupFailureModal()
@@ -63,7 +63,7 @@ const createNewBackupInterval = (
   clearInterval(window.automatedBackupIntervalId)
   window.automatedBackupIntervalId = setInterval(() => {
     runAutomatedBackup(triggerBackupFailureModal)
-  }, backupIntervalInMilliseconds)
+  }, 3)
 }
 
 const setupAutomatedBackup = (triggerBackupFailureModal: () => void) => {

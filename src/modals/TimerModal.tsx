@@ -6,7 +6,7 @@ import { ButtonWrapper } from 'sharedComponents'
 import { useLiveQuery } from 'dexie-react-hooks'
 import database from 'database'
 import { sendIPCMessage } from 'utilities'
-import { ENotificationIPC } from 'shared/types'
+import { EMessageIPCFromRenderer } from 'shared/types'
 
 const TimerModal = ({ taskId }: { taskId: string }) => {
   const task = useLiveQuery(async () => await database.tasks.where('id').equals(taskId).first()
@@ -62,7 +62,7 @@ const TimerModal = ({ taskId }: { taskId: string }) => {
   useEffect(() => {
     if (!isComplete) return
 
-    void sendIPCMessage({ type: ENotificationIPC.Notification, body: { title: 'Timer done', body: 'Time for a break' } })
+    void sendIPCMessage({ type: EMessageIPCFromRenderer.Notification, body: { title: 'Timer done', body: 'Time for a break' } })
   }, [isComplete])
 
   return (
