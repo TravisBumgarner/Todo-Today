@@ -63,7 +63,7 @@ const createNewBackupInterval = (
   clearInterval(window.automatedBackupIntervalId)
   window.automatedBackupIntervalId = setInterval(() => {
     runAutomatedBackup(triggerBackupFailureModal)
-  }, backupIntervalInMilliseconds)
+  }, 3)
 }
 
 const setupAutomatedBackup = (triggerBackupFailureModal: () => void) => {
