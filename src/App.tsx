@@ -6,7 +6,7 @@ import { EColorTheme } from './types'
 import Context, { context } from 'Context'
 import { baseTheme, beachTheme, highContrastTheme, retroFutureTheme, underTheSeaTheme } from 'theme'
 import { Header, Router } from './components'
-import LazyLoadModal from 'modals'
+import RenderModal from 'modals'
 
 const App = () => {
   const { state } = useContext(context)
@@ -38,7 +38,7 @@ const App = () => {
         <Header />
         <Router />
       </Box>
-      <LazyLoadModal />
+      <RenderModal />
     </Experimental_CssVarsProvider>
   )
 }

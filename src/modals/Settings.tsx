@@ -11,13 +11,13 @@ import {
   saveFile,
   getLocalStorage,
   setLocalStorage,
-  backupIntervalLookup
+  backupIntervalLookup,
+  sendIPCMessage
 } from 'utilities'
 import Modal from './Modal'
 import { type State, context } from 'Context'
-import { type BackupIPC } from '../sharedTypes'
-import { ModalID } from './LazyLoadModal'
-const { ipcRenderer } = window.require('electron')
+import { ModalID } from './RenderModal'
+import { EMessageIPCFromRenderer } from 'shared/types'
 
 const createBackup = async () => {
   const data = {
@@ -40,11 +40,15 @@ const backupIntervalToMilliseconds = {
 
 const runAutomatedBackup = (triggerBackupFailureModal: () => void) => {
   void createBackup().then(async (data) => {
-    const response = await ipcRenderer.invoke(
-      'backup',
-      { filename: `${moment().format(DATE_BACKUP_DATE)}.json`, data: JSON.stringify(data) } as BackupIPC
-    )
-    if (response.isSuccess === true) {
+    const payload = {
+      type: EMessageIPCFromRenderer.Backup,
+      body: {
+        filename: `${moment().format(DATE_BACKUP_DATE)}.json`,
+        data: JSON.stringify(data)
+      }
+    } as const
+    const response = await sendIPCMessage(payload)
+    if (response.success) {
       setLocalStorage('lastBackup', moment().format(DATE_BACKUP_DATE))
     } else {
       triggerBackupFailureModal()

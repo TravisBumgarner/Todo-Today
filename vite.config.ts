@@ -24,7 +24,8 @@ export default defineConfig(({ command }) => {
         colors: path.resolve(__dirname, 'src/colors.tsx'),
         utilities: path.resolve(__dirname, 'src/utilities.ts'),
         Context: path.resolve(__dirname, 'src/Context.tsx'),
-        database: path.resolve(__dirname, 'src/database.ts')
+        database: path.resolve(__dirname, 'src/database.ts'),
+        shared: path.resolve(__dirname, 'shared/'),
       },
     },
     plugins: [

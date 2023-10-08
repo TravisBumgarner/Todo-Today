@@ -8,6 +8,7 @@ import AddSuccessModal from './AddSuccessModal'
 import EditSuccessModal from './EditSuccessModal'
 import SettingsModal from './Settings'
 import ConfirmationModal, { type ConfirmationModalProps } from './ConfirmationModal'
+import TimerModal from './TimerModal'
 
 export enum ModalID {
   ADD_TASK_MODAL = 'ADD_TASK_MODAL',
@@ -19,6 +20,7 @@ export enum ModalID {
   EDIT_SUCCESS_MODAL = 'EDIT_SUCCESS_MODAL',
   SETTINGS_MODAL = 'SETTINGS_MODAL',
   CONFIRMATION_MODAL = 'CONFIRMATION_MODAL',
+  TIMER_MODAL = 'TIMER_MODAL'
 }
 
 export type ActiveModal =
@@ -31,8 +33,9 @@ export type ActiveModal =
   | { id: ModalID.EDIT_SUCCESS_MODAL, successId: string }
   | { id: ModalID.SETTINGS_MODAL }
   | { id: ModalID.CONFIRMATION_MODAL } & ConfirmationModalProps
+  | { id: ModalID.TIMER_MODAL, taskId: string }
 
-const LazyLoadModal: FC = () => {
+const RenderModal: FC = () => {
   const { state } = useContext(context)
 
   if (!state.activeModal?.id) return null
@@ -60,9 +63,11 @@ const LazyLoadModal: FC = () => {
         cancelCallback={state.activeModal.cancelCallback}
         confirmationCallback={state.activeModal.confirmationCallback}
       />
+    case ModalID.TIMER_MODAL:
+      return <TimerModal taskId={state.activeModal.taskId} />
     default:
       return null
   }
 }
 
-export default LazyLoadModal
+export default RenderModal
