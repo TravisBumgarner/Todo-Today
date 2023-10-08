@@ -13,7 +13,7 @@ const TimerModal = ({ taskId }: { taskId: string }) => {
   )
 
   const [minutes, setMinutes] = useState(0)
-  const [seconds, setSeconds] = useState(3)
+  const [seconds, setSeconds] = useState(0)
 
   const [isBeingSetup, setIsBeingSetup] = useState(true)
   const [isRunning, setIsRunning] = useState(false)
@@ -78,7 +78,7 @@ const TimerModal = ({ taskId }: { taskId: string }) => {
             <>
               <Typography variant='body1'>How long do you want to work?</Typography>
               <ButtonWrapper isHorizontal>
-                <Button variant='contained' onClick={() => { setMinutes(0); setIsBeingSetup(false) }}>25 minutes</Button>
+                <Button variant='contained' onClick={() => { setMinutes(25); setIsBeingSetup(false) }}>25 minutes</Button>
                 <Button variant='contained' onClick={() => { setMinutes(50); setIsBeingSetup(false) }}>50 minutes</Button>
                 <Button variant='contained' onClick={() => { setMinutes(90); setIsBeingSetup(false) }}>90 minutes</Button>
               </ButtonWrapper>
