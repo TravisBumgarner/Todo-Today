@@ -2,10 +2,9 @@ import { createContext, useReducer, useState, type Dispatch, useEffect } from 'r
 import moment from 'moment'
 
 import { EColorTheme, EBackupInterval, type TSettings, type TDateISODate, EActivePage } from 'types'
-import { formatDateKeyLookup, getLocalStorage, setLocalStorage } from 'utilities'
-import { type AppStartIPC } from './sharedTypes'
+import { formatDateKeyLookup, getLocalStorage, sendIPCMessage, setLocalStorage } from 'utilities'
+import { EMessageIPCFromRenderer } from 'shared/types'
 import { type ActiveModal } from './modals/RenderModal'
-const { ipcRenderer } = window.require('electron')
 
 const HAS_DONE_WARM_START = 'hasDoneWarmStart'
 const TRUE = 'TRUE'
@@ -32,12 +31,14 @@ const EMPTY_STATE: State = {
   selectedDate: formatDateKeyLookup(moment()),
   restoreInProgress: false,
   activePage: EActivePage.Home
+
 }
-const initialSetup = () => {
+const initialSetup = (backupDir: string) => {
   Object
     .keys(EMPTY_STATE.settings)
     .forEach((key) => { setLocalStorage(key as keyof typeof EMPTY_STATE['settings'], EMPTY_STATE.settings[key as keyof typeof EMPTY_STATE['settings']]) })
 
+  setLocalStorage('backupDir', backupDir)
   setLocalStorage(HAS_DONE_WARM_START, TRUE)
 }
 
@@ -157,10 +158,9 @@ const ResultsContext = ({ children }: { children: any }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const { backupDir }: AppStartIPC = await ipcRenderer.invoke('app-start')
-
+      const { backupDir } = await sendIPCMessage({ type: EMessageIPCFromRenderer.AppStart })
       if (getLocalStorage(HAS_DONE_WARM_START) !== TRUE) {
-        initialSetup()
+        initialSetup(backupDir)
       } else {
         const currentLocalStorage = getKeysFromStorage()
         const payload = { ...currentLocalStorage, backupDir }

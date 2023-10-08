@@ -2,7 +2,7 @@ import moment from 'moment'
 import { ipcRenderer } from 'electron'
 
 import { EProjectStatus, type TDateISODate, ETaskStatus, EColorTheme, EBackupInterval, DATE_ISO_DATE_MOMENT_STRING } from './types'
-import { type MessageIPC } from 'shared/types'
+import { type BackupIPCFromMain, EMessageIPCFromRenderer, type MessageIPCFromRenderer, type AppStartIPCFromMain } from 'shared/types'
 
 const projectStatusLookup: Record<EProjectStatus, string> = {
   [EProjectStatus.INACTIVE]: 'Inactive',
@@ -84,9 +84,31 @@ const setLocalStorage = <T extends TLocalStorage>(key: keyof T, value: T[keyof T
   localStorage.setItem(key as string, JSON.stringify(value))
 }
 
-const sendIPCMessage = async (message: MessageIPC) => {
-  const response = await ipcRenderer.invoke(message.type, message.body)
-  return response
+interface MessageReturnTypeMap {
+  [EMessageIPCFromRenderer.Notification]: null
+  [EMessageIPCFromRenderer.Backup]: BackupIPCFromMain['body']
+  [EMessageIPCFromRenderer.AppStart]: AppStartIPCFromMain['body']
+}
+
+const sendIPCMessage = async <T extends MessageIPCFromRenderer>(
+  message: T
+): Promise<MessageReturnTypeMap[T['type']]> => {
+  switch (message.type) {
+    case EMessageIPCFromRenderer.Notification: {
+      ipcRenderer.send(message.type, message.body)
+      return null as MessageReturnTypeMap[T['type']]
+    }
+    case EMessageIPCFromRenderer.Backup: {
+      return (await ipcRenderer.invoke(
+        message.type,
+        message.body
+      )) as MessageReturnTypeMap[T['type']]
+    }
+    case EMessageIPCFromRenderer.AppStart:
+      return (await ipcRenderer.invoke(
+        message.type
+      )) as MessageReturnTypeMap[T['type']]
+  }
 }
 
 export {
