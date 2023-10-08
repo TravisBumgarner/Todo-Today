@@ -1,0 +1,27 @@
+{
+    "compilerOptions": {
+        "target": "ES5",
+        "resolveJsonModule": true,
+        "strict": true,
+        "baseUrl": ".",
+        "paths": {
+            "*": [
+                "types/*"
+            ]
+        },
+        "module": "commonjs",
+        "noImplicitAny": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "sourceMap": true,
+        "strictNullChecks": true,
+        "esModuleInterop": true,
+        "outDir": "build/"
+    },
+    "include": [
+        "src/**/*"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
+}
