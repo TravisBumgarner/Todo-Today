@@ -95,7 +95,7 @@ const sendIPCMessage = async <T extends MessageIPCFromRenderer>(
 ): Promise<MessageReturnTypeMap[T['type']]> => {
   switch (message.type) {
     case EMessageIPCFromRenderer.Notification: {
-      ipcRenderer.send(message.type, message.body)
+      await ipcRenderer.invoke(message.type, message.body)
       return null as MessageReturnTypeMap[T['type']]
     }
     case EMessageIPCFromRenderer.Backup: {
