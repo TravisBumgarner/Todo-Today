@@ -30,6 +30,7 @@ const Modal: FC<ActiveModal> = ({ children, title, disableEscapeKeyDown, disable
       open={true}
       onClose={handleClose}
       disableEscapeKeyDown={disableEscapeKeyDown}
+      style={{ backgroundColor: 'var(--mui-palette-background-default)' }}
     >
       <Box css={wrapperCSS}>
         <Box css={headerWrapperCSS}>
@@ -42,7 +43,7 @@ const Modal: FC<ActiveModal> = ({ children, title, disableEscapeKeyDown, disable
         </Box>
         {children}
       </Box>
-    </MUIModal>
+    </MUIModal >
   )
 }
 

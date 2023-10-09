@@ -15,6 +15,10 @@ const wrapperCSS = (isHorizontal?: boolean) => css`
     margin: 0.5rem 0;
     ${isHorizontal && 'margin-right: 0.5rem'};
     ${isHorizontal && 'flex-grow:1'};
+
+    :last-child{
+      margin-right: 0;
+    }
     
   }
 `
