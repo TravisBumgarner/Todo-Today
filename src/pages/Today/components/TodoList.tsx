@@ -211,9 +211,6 @@ const TodoList = () => {
                     <Draggable
                       key={it.id}
                       draggableId={it.id}
-                      // It's quite a pain, and probably bug prone, to keep sort order sequential.
-                      // Therefore, see if using index is sufficient since `selectedDateTodoListItems` is already
-                      // sorted by `sortOrder` and `index` is sequential.
                       index={index}
                     >
                       {(provided) => (
