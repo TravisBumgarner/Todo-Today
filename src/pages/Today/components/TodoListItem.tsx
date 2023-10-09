@@ -25,14 +25,6 @@ const colorStatus: Record<ETaskStatus, 'secondary' | 'primary' | 'warning' | 'er
   [ETaskStatus.CANCELED]: 'error'
 } as const
 
-const percentLookup: Record<ETaskStatus, number> = {
-  [ETaskStatus.NEW]: 33,
-  [ETaskStatus.IN_PROGRESS]: 66,
-  [ETaskStatus.COMPLETED]: 100,
-  [ETaskStatus.BLOCKED]: 33,
-  [ETaskStatus.CANCELED]: 33
-}
-
 const TodoListItem = ({ id, taskId }: TodoListItemProps) => {
   const { dispatch } = useContext(context)
   const [showDetails, setShowDetails] = useState(false)
@@ -136,91 +128,89 @@ const TodoListItem = ({ id, taskId }: TodoListItemProps) => {
   }
 
   return (
-    <Card css={gradientWrapperCSS(metadata.taskStatus)}>
-      <Box css={wrapperCSS}>
-        <Box css={headerCSS(showDetails)}>
-          <Box css={leftHeaderCSS}>
-            <Box>
-              <Tooltip title="Change status">
-                <IconButton
-                  onClick={handleOpenMenu}
-                >
-                  {statusIcon}
-                </IconButton>
-              </Tooltip>
-              <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleCloseMenu}>
-                <MenuItem onClick={async () => { await handleStatusChange(ETaskStatus.CANCELED) }}>
-                  <ListItemIcon>
-                    <Icons.ThreeThirdsCircle css={iconCSS(colorStatus[ETaskStatus.CANCELED])} />
-                  </ListItemIcon>
-                  <ListItemText>Cancel</ListItemText>
-                </MenuItem>
-                <MenuItem onClick={async (event) => { await handleStatusChange(ETaskStatus.BLOCKED) }}>
-                  <ListItemIcon>
-                    <Icons.ThreeThirdsCircle css={iconCSS(colorStatus[ETaskStatus.BLOCKED])} />
-                  </ListItemIcon>
-                  <ListItemText>Blocked</ListItemText>
-                </MenuItem>
-                <MenuItem onClick={async () => { await handleStatusChange(ETaskStatus.NEW) }}>
-                  <ListItemIcon>
-                    <Icons.OneThirdsCircle css={iconCSS(colorStatus[ETaskStatus.NEW])} />
-                  </ListItemIcon>
-                  <ListItemText>New</ListItemText>
-                </MenuItem>
-                <MenuItem onClick={async () => { await handleStatusChange(ETaskStatus.IN_PROGRESS) }}>
-                  <ListItemIcon>
-                    <Icons.TwoThirdsCircle css={iconCSS(colorStatus[ETaskStatus.IN_PROGRESS])} />
-                  </ListItemIcon>
-                  <ListItemText>In Progress</ListItemText>
-                </MenuItem>
-                <MenuItem onClick={async () => { await handleStatusChange(ETaskStatus.COMPLETED) }}>
-                  <ListItemIcon>
-                    <Icons.ThreeThirdsCircle css={iconCSS(colorStatus[ETaskStatus.COMPLETED])} />
-                  </ListItemIcon>
-                  <ListItemText>Completed</ListItemText>
-                </MenuItem>
-              </Menu>
-            </Box>
-            <Box css={css`margin-left: 1rem`}>
-              <Typography css={headerTextCSS(metadata.taskStatus)} variant="h2">{metadata.taskTitle}</Typography>
-              <Typography variant="body1">{metadata.projectTitle}</Typography>
-            </Box>
-          </Box>
-          <Box css={rightHeaderCSS}>
-            <ToggleButton
-              size='small'
-              value="text"
-              onChange={toggleShowDetails}
-              css={{ marginRight: '0.5rem', backgroundColor: 'css={css`background-color: var(--mui-palette-background-paper)' }}
-            >
-              <Tooltip title="Show details" >
-                <ChevronRight fontSize="small" css={{ transform: `rotate(${showDetails ? '90deg' : '0deg'})` }} />
-              </Tooltip>
-            </ToggleButton>
-
-            <Tooltip title="Start focus timer">
-              <IconButton onClick={handleStartTimer} css={{ marginLeft: '0.5rem' }}>
-                <TimerIcon fontSize="small" />
-              </IconButton>
-            </Tooltip>
-
-            <Tooltip title="Edit task">
-              <IconButton onClick={handleEdit} css={{ marginLeft: '0.5rem' }}
+    <Card css={wrapperCSS}>
+      <Box css={headerCSS(showDetails)}>
+        <Box css={leftHeaderCSS}>
+          <Box>
+            <Tooltip title="Change status">
+              <IconButton
+                onClick={handleOpenMenu}
               >
-                <EditIcon fontSize="small" />
+                {statusIcon}
               </IconButton>
             </Tooltip>
-
-            <Tooltip title="Remove from today">
-              <IconButton onClick={handleRemoveFromToday} css={{ marginLeft: '0.5rem' }}>
-                <CloseIcon fontSize="small" />
-              </IconButton>
-            </Tooltip>
-
+            <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleCloseMenu}>
+              <MenuItem onClick={async () => { await handleStatusChange(ETaskStatus.CANCELED) }}>
+                <ListItemIcon>
+                  <Icons.ThreeThirdsCircle css={iconCSS(colorStatus[ETaskStatus.CANCELED])} />
+                </ListItemIcon>
+                <ListItemText>Cancel</ListItemText>
+              </MenuItem>
+              <MenuItem onClick={async (event) => { await handleStatusChange(ETaskStatus.BLOCKED) }}>
+                <ListItemIcon>
+                  <Icons.ThreeThirdsCircle css={iconCSS(colorStatus[ETaskStatus.BLOCKED])} />
+                </ListItemIcon>
+                <ListItemText>Blocked</ListItemText>
+              </MenuItem>
+              <MenuItem onClick={async () => { await handleStatusChange(ETaskStatus.NEW) }}>
+                <ListItemIcon>
+                  <Icons.OneThirdsCircle css={iconCSS(colorStatus[ETaskStatus.NEW])} />
+                </ListItemIcon>
+                <ListItemText>New</ListItemText>
+              </MenuItem>
+              <MenuItem onClick={async () => { await handleStatusChange(ETaskStatus.IN_PROGRESS) }}>
+                <ListItemIcon>
+                  <Icons.TwoThirdsCircle css={iconCSS(colorStatus[ETaskStatus.IN_PROGRESS])} />
+                </ListItemIcon>
+                <ListItemText>In Progress</ListItemText>
+              </MenuItem>
+              <MenuItem onClick={async () => { await handleStatusChange(ETaskStatus.COMPLETED) }}>
+                <ListItemIcon>
+                  <Icons.ThreeThirdsCircle css={iconCSS(colorStatus[ETaskStatus.COMPLETED])} />
+                </ListItemIcon>
+                <ListItemText>Completed</ListItemText>
+              </MenuItem>
+            </Menu>
+          </Box>
+          <Box css={css`margin-left: 1rem`}>
+            <Typography css={headerTextCSS} variant="h2">{metadata.taskTitle}</Typography>
+            <Typography variant="body1">{metadata.projectTitle}</Typography>
           </Box>
         </Box>
-        {showDetails && <TextField css={detailsCSS} fullWidth multiline value={details} onChange={handleDetailsChange} />}
+        <Box css={rightHeaderCSS}>
+          <ToggleButton
+            size='small'
+            value="text"
+            onChange={toggleShowDetails}
+            css={{ marginRight: '0.5rem', backgroundColor: 'css={css`background-color: var(--mui-palette-background-paper)' }}
+          >
+            <Tooltip title="Show details" >
+              <ChevronRight fontSize="small" css={{ transform: `rotate(${showDetails ? '90deg' : '0deg'})` }} />
+            </Tooltip>
+          </ToggleButton>
+
+          <Tooltip title="Start focus timer">
+            <IconButton onClick={handleStartTimer} css={{ marginLeft: '0.5rem' }}>
+              <TimerIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+
+          <Tooltip title="Edit task">
+            <IconButton onClick={handleEdit} css={{ marginLeft: '0.5rem' }}
+            >
+              <EditIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+
+          <Tooltip title="Remove from today">
+            <IconButton onClick={handleRemoveFromToday} css={{ marginLeft: '0.5rem' }}>
+              <CloseIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+
+        </Box>
       </Box>
+      {showDetails && <TextField css={detailsCSS} fullWidth multiline value={details} onChange={handleDetailsChange} />}
     </Card >
   )
 }
@@ -243,14 +233,9 @@ const detailsCSS = css`
   background: var(--mui-palette-background-paper);
 `
 
-const gradientWrapperCSS = (color: ETaskStatus) => css`
-border-radius: 0.5rem;
-padding: 0.5rem;
-background: linear-gradient(90deg, var(--mui-palette-${colorStatus[color]}-main) 0%, var(--mui-palette-background-paper)  ${percentLookup[color]}%);
-`
-
-const headerTextCSS = (color: ETaskStatus) => css`
-color: var(--mui-palette-${colorStatus[color]}-main);
+const headerTextCSS = css`
+  font-size: 1.5rem;
+  color: var(--mui-palette-text-primary);
 `
 
 const leftHeaderCSS = css`
