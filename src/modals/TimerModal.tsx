@@ -1,15 +1,18 @@
-import { useState, useEffect, type ChangeEvent, useCallback } from 'react'
+import { useState, useEffect, type ChangeEvent, useCallback, useContext } from 'react'
 import { Button, TextField, Typography, css } from '@mui/material'
 
 import Modal from './Modal'
-import { ButtonWrapper } from 'sharedComponents'
+import { ButtonWrapper, Divider } from 'sharedComponents'
 import { useLiveQuery } from 'dexie-react-hooks'
 import database from 'database'
 import { sendIPCMessage } from 'utilities'
 import { EMessageIPCFromRenderer } from 'shared/types'
 import { ETaskStatus, type TTask } from 'types'
+import { context } from 'Context'
 
 const TimerModal = ({ taskId }: { taskId: string }) => {
+  const { dispatch } = useContext(context)
+
   const [details, setDetails] = useState('') // Undo doesn't work if synced directly to DB. Might be a more elegant solution, but for now, this works.
   const [task, setTask] = useState<TTask | null>(null)
   useLiveQuery(
@@ -39,7 +42,7 @@ const TimerModal = ({ taskId }: { taskId: string }) => {
     setDetails(event.target.value)
   }, [task])
 
-  const [minutes, setMinutes] = useState(0)
+  const [minutes, setMinutes] = useState(10)
   const [seconds, setSeconds] = useState(0)
 
   const [isBeingSetup, setIsBeingSetup] = useState(true)
@@ -82,9 +85,18 @@ const TimerModal = ({ taskId }: { taskId: string }) => {
     setIsRunning(false)
     setIsBeingSetup(true)
     setIsComplete(false)
-    setMinutes(0)
+    setMinutes(10)
     setSeconds(0)
   }
+
+  const handleMinutesChange = (e: any) => {
+    const value = parseInt(e.target.value)
+    setMinutes(value)
+  }
+
+  const closeTimer = useCallback(() => {
+    dispatch({ type: 'CLEAR_ACTIVE_MODAL' })
+  }, [dispatch])
 
   useEffect(() => {
     if (!isComplete) return
@@ -107,7 +119,17 @@ const TimerModal = ({ taskId }: { taskId: string }) => {
               <ButtonWrapper isHorizontal>
                 <Button variant='contained' onClick={() => { setMinutes(25); setIsBeingSetup(false) }}>25 minutes</Button>
                 <Button variant='contained' onClick={() => { setMinutes(50); setIsBeingSetup(false) }}>50 minutes</Button>
-                <Button variant='contained' onClick={() => { setMinutes(90); setIsBeingSetup(false) }}>90 minutes</Button>
+              </ButtonWrapper>
+              <Divider text="Or" />
+              <TextField
+                label="Set a Custom Timer"
+                type="number"
+                value={minutes}
+                onChange={handleMinutesChange}
+                fullWidth
+              />
+              <ButtonWrapper>
+                <Button fullWidth variant='contained' onClick={() => { setIsBeingSetup(false) }}> Submit</Button>
               </ButtonWrapper>
             </>)
           : (
@@ -115,27 +137,29 @@ const TimerModal = ({ taskId }: { taskId: string }) => {
               <Typography css={timerCSS} variant='body1'>
                 {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
               </Typography>
-              <ButtonWrapper>
-                <Button fullWidth variant='contained' color="secondary" onClick={resetTimer}>Reset</Button>
+              <ButtonWrapper isHorizontal>
+                <Button fullWidth variant='contained' color="error" onClick={resetTimer}>Reset</Button>
                 {
                   isRunning
                     ? (<Button fullWidth variant='contained' onClick={pauseTimer}>Pause</Button>)
                     : (<Button fullWidth variant='contained' onClick={startTimer}>Start</Button>)
                 }
               </ButtonWrapper>
+              <Divider />
+              <TextField
+                multiline
+                fullWidth
+                label="Task Details"
+                name="details"
+                value={details}
+                margin='normal'
+                onChange={handleDetailsChange}
+              />
+              <ButtonWrapper>
+                <Button fullWidth variant='contained' color="secondary" onClick={closeTimer}>Done</Button>
+              </ButtonWrapper>
             </>)
       }
-
-      <TextField
-        autoFocus
-        multiline
-        fullWidth
-        label="Details"
-        name="details"
-        value={details}
-        margin='normal'
-        onChange={handleDetailsChange}
-      />
 
     </Modal >
   )
