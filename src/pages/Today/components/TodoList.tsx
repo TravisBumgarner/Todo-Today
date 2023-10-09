@@ -234,7 +234,7 @@ const TodoList = () => {
               )}
             </Droppable>
           </DragDropContext>
-          )
+        )
       }
     </Box >
   )
@@ -242,7 +242,6 @@ const TodoList = () => {
 
 const dragAndDropCSS = (isDraggingOver: boolean) => {
   return ({
-    /* border: isDraggingOver ? '1px solid var(--mui-palette-primary-main)' : '1px transparent', */
     borderRadius: '0.5rem',
     overflow: 'auto',
     height: '100%',
@@ -252,8 +251,8 @@ const dragAndDropCSS = (isDraggingOver: boolean) => {
 
 const dragItemCSS = (isDragging: boolean, draggableStyle: any) => ({
   // some basic styles to make the items look a bit nicer
-  padding: '0.5rem 0', // Without this padding, animations look terrible. No idea why.
-  margin: 0,
+  margin: '0.5rem 0',
+  cursor: 'pointer',
 
   // styles we need to apply on draggables
   ...draggableStyle
