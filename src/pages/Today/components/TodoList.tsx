@@ -239,7 +239,6 @@ const TodoList = () => {
 
 const dragAndDropCSS = (isDraggingOver: boolean) => {
   return ({
-    borderRadius: '0.5rem',
     overflow: 'auto',
     height: '100%',
     margin: '1rem 0 3rem 0' // For whatever reason scroll starts at a different height than the bottom of the content.
@@ -248,8 +247,6 @@ const dragAndDropCSS = (isDraggingOver: boolean) => {
 
 const dragItemCSS = (isDragging: boolean, draggableStyle: any) => ({
   // some basic styles to make the items look a bit nicer
-  margin: '0.5rem 0',
-  cursor: 'pointer',
 
   // styles we need to apply on draggables
   ...draggableStyle

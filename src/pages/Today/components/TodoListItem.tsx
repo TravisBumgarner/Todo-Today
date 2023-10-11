@@ -1,4 +1,4 @@
-import { type ChangeEvent, useState, useCallback, useContext, useMemo } from 'react'
+import { type ChangeEvent, useState, useCallback, useContext, useMemo, memo } from 'react'
 import { Box, Card, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, TextField, Tooltip, Typography, css } from '@mui/material'
 import ToggleButton from '@mui/material/ToggleButton'
 import EditIcon from '@mui/icons-material/Edit'
@@ -25,12 +25,7 @@ const colorStatus: Record<ETaskStatus, 'secondary' | 'primary' | 'warning' | 'er
   [ETaskStatus.CANCELED]: 'error'
 } as const
 
-const TodoListItem = ({ id, taskId }: TodoListItemProps) => {
-  const { dispatch } = useContext(context)
-  const [showDetails, setShowDetails] = useState(false)
-  const [metadata, setMetadata] = useState<Metadata>({} as Metadata)
-  const [details, setDetails] = useState('') // Undo doesn't work if synced directly to DB. Might be a more elegant solution, but for now, this works.
-
+const StatusChange = ({ taskStatus, taskId, id, closeDetails }: { taskStatus: ETaskStatus, id: string, taskId: string, closeDetails: () => void }) => {
   const [anchorEl, setAnchorEl] = useState(null)
 
   const handleOpenMenu = (event: any) => {
@@ -40,6 +35,99 @@ const TodoListItem = ({ id, taskId }: TodoListItemProps) => {
   const handleCloseMenu = () => {
     setAnchorEl(null)
   }
+
+  const handleStatusChange = useCallback(async (
+    status: ETaskStatus
+  ) => {
+    if (status === null) return
+    handleCloseMenu()
+
+    await database.tasks.where('id').equals(taskId).modify({ status })
+
+    if (status === ETaskStatus.COMPLETED || status === ETaskStatus.CANCELED) {
+      const lastTodoListItem = await database.todoListItems.orderBy('sortOrder').reverse().first()
+      const sortOrder = lastTodoListItem?.sortOrder ? lastTodoListItem?.sortOrder + 1 : 0
+      await database.todoListItems.where('id').equals(id).modify({ sortOrder })
+
+      closeDetails()
+    }
+  }, [taskId, id, closeDetails])
+
+  const statusIcon = useMemo(() => {
+    switch (taskStatus) {
+      case ETaskStatus.CANCELED:
+        return (
+          <Icons.ThreeThirdsCircle css={iconCSS(colorStatus[ETaskStatus.CANCELED])} />
+        )
+      case ETaskStatus.BLOCKED:
+        return (
+          <Icons.ThreeThirdsCircle css={iconCSS(colorStatus[ETaskStatus.BLOCKED])} />
+        )
+      case ETaskStatus.NEW:
+        return (
+          <Icons.OneThirdsCircle css={iconCSS(colorStatus[ETaskStatus.NEW])} />
+        )
+      case ETaskStatus.IN_PROGRESS:
+        return (
+          <Icons.TwoThirdsCircle css={iconCSS(colorStatus[ETaskStatus.IN_PROGRESS])} />
+        )
+      case ETaskStatus.COMPLETED:
+        return (
+          <Icons.ThreeThirdsCircle css={iconCSS(colorStatus[ETaskStatus.COMPLETED])} />
+        )
+    }
+  }, [taskStatus])
+
+  return (
+    <>
+      <Tooltip title="Change status">
+        <IconButton
+          onClick={handleOpenMenu}
+        >
+          {statusIcon}
+        </IconButton>
+      </Tooltip>
+      <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleCloseMenu}>
+        <MenuItem onClick={async () => { await handleStatusChange(ETaskStatus.CANCELED) }}>
+          <ListItemIcon>
+            <Icons.ThreeThirdsCircle css={iconCSS(colorStatus[ETaskStatus.CANCELED])} />
+          </ListItemIcon>
+          <ListItemText>Cancel</ListItemText>
+        </MenuItem>
+        <MenuItem onClick={async (event) => { await handleStatusChange(ETaskStatus.BLOCKED) }}>
+          <ListItemIcon>
+            <Icons.ThreeThirdsCircle css={iconCSS(colorStatus[ETaskStatus.BLOCKED])} />
+          </ListItemIcon>
+          <ListItemText>Blocked</ListItemText>
+        </MenuItem>
+        <MenuItem onClick={async () => { await handleStatusChange(ETaskStatus.NEW) }}>
+          <ListItemIcon>
+            <Icons.OneThirdsCircle css={iconCSS(colorStatus[ETaskStatus.NEW])} />
+          </ListItemIcon>
+          <ListItemText>New</ListItemText>
+        </MenuItem>
+        <MenuItem onClick={async () => { await handleStatusChange(ETaskStatus.IN_PROGRESS) }}>
+          <ListItemIcon>
+            <Icons.TwoThirdsCircle css={iconCSS(colorStatus[ETaskStatus.IN_PROGRESS])} />
+          </ListItemIcon>
+          <ListItemText>In Progress</ListItemText>
+        </MenuItem>
+        <MenuItem onClick={async () => { await handleStatusChange(ETaskStatus.COMPLETED) }}>
+          <ListItemIcon>
+            <Icons.ThreeThirdsCircle css={iconCSS(colorStatus[ETaskStatus.COMPLETED])} />
+          </ListItemIcon>
+          <ListItemText>Completed</ListItemText>
+        </MenuItem>
+      </Menu>
+    </>
+  )
+}
+
+const TodoListItem = memo(({ id, taskId }: TodoListItemProps) => {
+  const { dispatch } = useContext(context)
+  const [showDetails, setShowDetails] = useState(false)
+  const [metadata, setMetadata] = useState<Metadata>({} as Metadata)
+  const [details, setDetails] = useState('') // Undo doesn't work if synced directly to DB. Might be a more elegant solution, but for now, this works.
 
   const handleStartTimer = () => {
     dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.TIMER_MODAL, taskId } })
@@ -66,23 +154,6 @@ const TodoListItem = ({ id, taskId }: TodoListItemProps) => {
 
   const toggleShowDetails = useCallback(() => { setShowDetails(prev => !prev) }, [])
 
-  const handleStatusChange = useCallback(async (
-    status: ETaskStatus
-  ) => {
-    if (status === null) return
-    handleCloseMenu()
-
-    await database.tasks.where('id').equals(taskId).modify({ status })
-
-    if (status === ETaskStatus.COMPLETED || status === ETaskStatus.CANCELED) {
-      const lastTodoListItem = await database.todoListItems.orderBy('sortOrder').reverse().first()
-      const sortOrder = lastTodoListItem?.sortOrder ? lastTodoListItem?.sortOrder + 1 : 0
-      await database.todoListItems.where('id').equals(id).modify({ sortOrder })
-
-      setShowDetails(false)
-    }
-  }, [taskId, id])
-
   const handleDetailsChange = useCallback(async (
     event: ChangeEvent<HTMLInputElement>
   ) => {
@@ -98,30 +169,9 @@ const TodoListItem = ({ id, taskId }: TodoListItemProps) => {
     dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.EDIT_TASK_MODAL, taskId } })
   }, [dispatch, taskId])
 
-  const statusIcon = useMemo(() => {
-    switch (metadata.taskStatus) {
-      case ETaskStatus.CANCELED:
-        return (
-          <Icons.ThreeThirdsCircle css={iconCSS(colorStatus[ETaskStatus.CANCELED])} />
-        )
-      case ETaskStatus.BLOCKED:
-        return (
-          <Icons.ThreeThirdsCircle css={iconCSS(colorStatus[ETaskStatus.BLOCKED])} />
-        )
-      case ETaskStatus.NEW:
-        return (
-          <Icons.OneThirdsCircle css={iconCSS(colorStatus[ETaskStatus.NEW])} />
-        )
-      case ETaskStatus.IN_PROGRESS:
-        return (
-          <Icons.TwoThirdsCircle css={iconCSS(colorStatus[ETaskStatus.IN_PROGRESS])} />
-        )
-      case ETaskStatus.COMPLETED:
-        return (
-          <Icons.ThreeThirdsCircle css={iconCSS(colorStatus[ETaskStatus.COMPLETED])} />
-        )
-    }
-  }, [metadata.taskStatus])
+  const closeDetails = useCallback(() => {
+    setShowDetails(false)
+  }, [])
 
   if (!metadata) {
     return <EmptyStateDisplay message='Unable to find project or task details' />
@@ -132,45 +182,7 @@ const TodoListItem = ({ id, taskId }: TodoListItemProps) => {
       <Box css={headerCSS(showDetails)}>
         <Box css={leftHeaderCSS}>
           <Box>
-            <Tooltip title="Change status">
-              <IconButton
-                onClick={handleOpenMenu}
-              >
-                {statusIcon}
-              </IconButton>
-            </Tooltip>
-            <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleCloseMenu}>
-              <MenuItem onClick={async () => { await handleStatusChange(ETaskStatus.CANCELED) }}>
-                <ListItemIcon>
-                  <Icons.ThreeThirdsCircle css={iconCSS(colorStatus[ETaskStatus.CANCELED])} />
-                </ListItemIcon>
-                <ListItemText>Cancel</ListItemText>
-              </MenuItem>
-              <MenuItem onClick={async (event) => { await handleStatusChange(ETaskStatus.BLOCKED) }}>
-                <ListItemIcon>
-                  <Icons.ThreeThirdsCircle css={iconCSS(colorStatus[ETaskStatus.BLOCKED])} />
-                </ListItemIcon>
-                <ListItemText>Blocked</ListItemText>
-              </MenuItem>
-              <MenuItem onClick={async () => { await handleStatusChange(ETaskStatus.NEW) }}>
-                <ListItemIcon>
-                  <Icons.OneThirdsCircle css={iconCSS(colorStatus[ETaskStatus.NEW])} />
-                </ListItemIcon>
-                <ListItemText>New</ListItemText>
-              </MenuItem>
-              <MenuItem onClick={async () => { await handleStatusChange(ETaskStatus.IN_PROGRESS) }}>
-                <ListItemIcon>
-                  <Icons.TwoThirdsCircle css={iconCSS(colorStatus[ETaskStatus.IN_PROGRESS])} />
-                </ListItemIcon>
-                <ListItemText>In Progress</ListItemText>
-              </MenuItem>
-              <MenuItem onClick={async () => { await handleStatusChange(ETaskStatus.COMPLETED) }}>
-                <ListItemIcon>
-                  <Icons.ThreeThirdsCircle css={iconCSS(colorStatus[ETaskStatus.COMPLETED])} />
-                </ListItemIcon>
-                <ListItemText>Completed</ListItemText>
-              </MenuItem>
-            </Menu>
+            <StatusChange taskId={taskId} taskStatus={metadata.taskStatus} id={id} closeDetails={closeDetails} />
           </Box>
           <Box css={css`margin-left: 1rem`}>
             <Typography css={headerTextCSS} variant="h2">{metadata.taskTitle}</Typography>
@@ -213,6 +225,16 @@ const TodoListItem = ({ id, taskId }: TodoListItemProps) => {
       {showDetails && <TextField css={detailsCSS} fullWidth multiline value={details} onChange={handleDetailsChange} />}
     </Card >
   )
+}, arePropsEqual)
+TodoListItem.displayName = 'TodoListItem'
+
+function arePropsEqual(oldProps: TodoListItemProps, newProps: TodoListItemProps) {
+  const oldPropsWithoutSort: Partial<TodoListItemProps> = { ...oldProps }
+  delete oldPropsWithoutSort.sortOrder
+
+  const newPropsWithoutSort: Partial<TodoListItemProps> = { ...newProps }
+  delete newPropsWithoutSort.sortOrder
+  return Object.keys(oldPropsWithoutSort).every((key) => oldPropsWithoutSort[key as keyof typeof oldPropsWithoutSort] === newPropsWithoutSort[key as keyof typeof oldPropsWithoutSort])
 }
 
 const rightHeaderCSS = css`
@@ -251,6 +273,7 @@ const wrapperCSS = css`
 background: var(--mui-palette-background-paper);
 border-radius: 0.5rem;
 padding: 0.5rem;
+cursor: pointer;
 `
 
 export default TodoListItem
