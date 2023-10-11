@@ -274,6 +274,7 @@ background: var(--mui-palette-background-paper);
 border-radius: 0.5rem;
 padding: 0.5rem;
 cursor: pointer;
+margin-bottom: 1rem;
 `
 
 export default TodoListItem

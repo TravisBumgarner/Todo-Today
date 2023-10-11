@@ -247,8 +247,7 @@ const dragAndDropCSS = (isDraggingOver: boolean) => {
 
 const dragItemCSS = (isDragging: boolean, draggableStyle: any) => ({
   // some basic styles to make the items look a bit nicer
-
-  // styles we need to apply on draggables
+  marginBottom: '1rem',
   ...draggableStyle
 })
 
