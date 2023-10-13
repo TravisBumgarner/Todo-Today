@@ -3,19 +3,33 @@ import CssBaseline from '@mui/material/CssBaseline' // https://stackoverflow.com
 import { Box, Experimental_CssVarsProvider, css } from '@mui/material'
 
 import { EColorTheme } from './types'
-import Context, { context } from 'Context'
+import Context, { type Action, context } from 'Context'
 import { baseTheme, beachTheme, highContrastTheme, retroFutureTheme, underTheSeaTheme } from 'theme'
 import { Header, Router, Message } from './components'
 import RenderModal from 'modals'
 import { useAsyncEffect } from 'use-async-effect'
 import { EMessageIPCFromRenderer } from 'shared/types'
 import { sendIPCMessage } from 'utilities'
+import { ipcRenderer } from 'electron'
+
+const useIPCRendererEffect = (dispatch: (any) => void) => {
+  ipcRenderer.on('update_available', () => {
+    ipcRenderer.removeAllListeners('update_available')
+    dispatch({ type: 'ADD_MESSAGE', data: { text: 'A new update is available. Downloading now...', severity: 'info' } })
+  })
+
+  ipcRenderer.on('update_downloaded', () => {
+    ipcRenderer.removeAllListeners('update_downloaded')
+    dispatch({ type: 'ADD_MESSAGE', data: { text: 'Update Downloaded. It will be installed on restart. Restart now?', severity: 'info', callback: () => { ipcRenderer.send('restart_app') } } })
+  })
+}
 
 const App = () => {
   const { state, dispatch } = useContext(context)
+  useIPCRendererEffect(dispatch)
 
   useEffect(() => {
-    dispatch({ type: 'ADD_MESSAGE', data: { text: 'Hello World', severity: 'success' } })
+    dispatch({ type: 'ADD_MESSAGE', data: { text: 'Hello World', severity: 'success', callback: () => { alert('hi') } } })
   }, [dispatch])
 
   const theme = useMemo(() => {
