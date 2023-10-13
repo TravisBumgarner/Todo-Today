@@ -1,4 +1,4 @@
-import { useContext, useMemo } from 'react'
+import { useContext, useMemo, useState } from 'react'
 import CssBaseline from '@mui/material/CssBaseline' // https://stackoverflow.com/questions/74542488/react-material-ui-createtheme-default-is-not-a-function
 import { Box, Experimental_CssVarsProvider, css } from '@mui/material'
 
@@ -7,6 +7,10 @@ import Context, { context } from 'Context'
 import { baseTheme, beachTheme, highContrastTheme, retroFutureTheme, underTheSeaTheme } from 'theme'
 import { Header, Router } from './components'
 import RenderModal from 'modals'
+import useAsyncEffect from 'use-async-effect'
+import { EMessageIPCFromRenderer } from 'shared/types'
+import { ipcRenderer } from 'electron'
+import { sendIPCMessage } from 'utilities'
 
 const App = () => {
   const { state } = useContext(context)
@@ -54,9 +58,20 @@ const appWrapperCSS = css`
 `
 
 const InjectedApp = () => {
+  const [appVersion, setAppVersion] = useState<string>()
+
+  useAsyncEffect(async (isMounted) => {
+    const response = await sendIPCMessage({ type: EMessageIPCFromRenderer.Version })
+    console.log(response)
+    if (!isMounted()) return
+
+    setAppVersion(response.version)
+  }, [])
+
   return (
     <Context>
       <App />
+      <p style={{ position: 'absolute', bottom: 0, right: '1rem' }}>Version: {appVersion} </p>
     </Context>
   )
 }

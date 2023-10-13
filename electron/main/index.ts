@@ -2,6 +2,7 @@ import { Menu, app, BrowserWindow, shell, ipcMain, Notification } from 'electron
 import { release } from 'node:os'
 import { join, resolve } from 'node:path'
 import { writeFileSync, existsSync, mkdirSync } from 'node:fs'
+import { autoUpdater } from 'electron-updater'
 
 import { update } from './update'
 import menu from './menu'
@@ -50,8 +51,8 @@ const indexHtml = join(process.env.DIST, 'index.html')
 console.log(process.platform)
 async function createWindow() {
   win = new BrowserWindow({
-    width: isDev || isDebugProduction ? 1000 : 800,
-    height: isDev || isDebugProduction ? 1000 : 600,
+    width: 800,
+    height: 600,
     x: 0,
     y: 0,
     title: isDev ? 'DEV MODE' : 'Todo Today',
@@ -83,6 +84,10 @@ async function createWindow() {
   win.webContents.setWindowOpenHandler(({ url }) => {
     if (url.startsWith('https:')) void shell.openExternal(url)
     return { action: 'deny' }
+  })
+
+  win.once('ready-to-show', () => {
+    void autoUpdater.checkForUpdatesAndNotify()
   })
 
   // Apply electron-updater
@@ -152,4 +157,26 @@ ipcMain.handle(EMessageIPCFromRenderer.Backup, async (event, arg: BackupIPCFromR
 
 ipcMain.handle(EMessageIPCFromRenderer.Notification, async (event: any, arg: NotificationIPCFromRenderer['body']) => {
   new Notification(arg).show()
+})
+
+ipcMain.handle(EMessageIPCFromRenderer.Version, () => {
+  console.log('called')
+  return {
+    version: app.getVersion()
+  }
+})
+
+autoUpdater.on('update-available', () => {
+  if (win) {
+    win.webContents.send('update_available')
+  } else {
+    throw new Error('No window available')
+  }
+})
+autoUpdater.on('update-downloaded', () => {
+  if (win) {
+    win.webContents.send('update_downloaded')
+  } else {
+    throw new Error('No window available')
+  }
 })
