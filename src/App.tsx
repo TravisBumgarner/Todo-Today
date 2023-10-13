@@ -1,19 +1,22 @@
-import { useContext, useMemo, useState } from 'react'
+import { useContext, useEffect, useMemo, useState } from 'react'
 import CssBaseline from '@mui/material/CssBaseline' // https://stackoverflow.com/questions/74542488/react-material-ui-createtheme-default-is-not-a-function
 import { Box, Experimental_CssVarsProvider, css } from '@mui/material'
 
 import { EColorTheme } from './types'
 import Context, { context } from 'Context'
 import { baseTheme, beachTheme, highContrastTheme, retroFutureTheme, underTheSeaTheme } from 'theme'
-import { Header, Router } from './components'
+import { Header, Router, Message } from './components'
 import RenderModal from 'modals'
-import useAsyncEffect from 'use-async-effect'
+import { useAsyncEffect } from 'use-async-effect'
 import { EMessageIPCFromRenderer } from 'shared/types'
-import { ipcRenderer } from 'electron'
 import { sendIPCMessage } from 'utilities'
 
 const App = () => {
-  const { state } = useContext(context)
+  const { state, dispatch } = useContext(context)
+
+  useEffect(() => {
+    dispatch({ type: 'ADD_MESSAGE', data: { text: 'Hello World', severity: 'success' } })
+  }, [dispatch])
 
   const theme = useMemo(() => {
     switch (state.settings.colorTheme) {
@@ -39,6 +42,7 @@ const App = () => {
     <Experimental_CssVarsProvider theme={theme}>
       <CssBaseline />
       <Box css={appWrapperCSS}>
+        <Message />
         <Header />
         <Router />
       </Box>

@@ -10,6 +10,10 @@ const HAS_DONE_WARM_START = 'hasDoneWarmStart'
 const TRUE = 'TRUE'
 
 export interface State {
+  message: {
+    text: string
+    severity: 'error' | 'warning' | 'info' | 'success'
+  } | null
   settings: {
     colorTheme: EColorTheme
     backupInterval: EBackupInterval
@@ -30,7 +34,8 @@ const EMPTY_STATE: State = {
   activeModal: null,
   selectedDate: formatDateKeyLookup(moment()),
   restoreInProgress: false,
-  activePage: EActivePage.Home
+  activePage: EActivePage.Home,
+  message: null
 
 }
 const initialSetup = (backupDir: string) => {
@@ -97,6 +102,19 @@ interface SetActivePage {
   }
 }
 
+interface AddMessage {
+  type: 'ADD_MESSAGE'
+  data: {
+    text: string
+    severity: 'error' | 'warning' | 'info' | 'success'
+    url?: string
+  }
+}
+
+interface DeleteMessage {
+  type: 'DELETE_MESSAGE'
+}
+
 type Action =
   | EditUserSettings
   | HydrateUserSettings
@@ -106,6 +124,8 @@ type Action =
   | RestoreStarted
   | RestoreEnded
   | SetActivePage
+  | AddMessage
+  | DeleteMessage
 
 const reducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -136,6 +156,12 @@ const reducer = (state: State, action: Action): State => {
     case 'SET_ACTIVE_PAGE': {
       const { page } = action.payload
       return { ...state, activePage: page }
+    }
+    case 'ADD_MESSAGE': {
+      return { ...state, message: { ...action.data } }
+    }
+    case 'DELETE_MESSAGE': {
+      return { ...state, message: null }
     }
     default:
       throw new Error('Unexpected action')
