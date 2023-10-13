@@ -173,10 +173,15 @@ autoUpdater.on('update-available', () => {
     throw new Error('No window available')
   }
 })
+
 autoUpdater.on('update-downloaded', () => {
   if (win) {
     win.webContents.send('update_downloaded')
   } else {
     throw new Error('No window available')
   }
+})
+
+ipcMain.on('restart_app', () => {
+  autoUpdater.quitAndInstall()
 })

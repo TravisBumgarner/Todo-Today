@@ -8,6 +8,7 @@ const Alert = () => {
   const { state, dispatch } = useContext(context)
 
   const handleSubmit = () => {
+    state.message?.callback?.()
     dispatch({ type: 'DELETE_MESSAGE' })
   }
   console.log('hi')

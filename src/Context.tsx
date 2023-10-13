@@ -13,6 +13,7 @@ export interface State {
   message: {
     text: string
     severity: 'error' | 'warning' | 'info' | 'success'
+    callback?: () => void
   } | null
   settings: {
     colorTheme: EColorTheme
@@ -108,6 +109,7 @@ interface AddMessage {
     text: string
     severity: 'error' | 'warning' | 'info' | 'success'
     url?: string
+    callback?: () => void
   }
 }
 
@@ -115,7 +117,7 @@ interface DeleteMessage {
   type: 'DELETE_MESSAGE'
 }
 
-type Action =
+export type Action =
   | EditUserSettings
   | HydrateUserSettings
   | SetActiveModal
