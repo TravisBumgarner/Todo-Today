@@ -20,7 +20,8 @@
     "lint": "eslint src --ext .ts,.tsx"
   },
   "dependencies": {
-    "electron-updater": "^6.1.1"
+    "electron-updater": "^6.1.4",
+    "use-async-effect": "^2.2.7"
   },
   "devDependencies": {
     "@emotion/react": "^11.11.1",

@@ -2,11 +2,13 @@ export enum EMessageIPCFromRenderer {
   Notification = 'notification',
   Backup = 'backup',
   AppStart = 'app-start',
+  Version = 'app-version'
 }
 
 export enum EMessageIPCFromMain {
   Backup = 'backup',
   AppStart = 'app-start',
+  Version = 'version'
 }
 
 export interface NotificationIPCFromRenderer {
@@ -15,6 +17,10 @@ export interface NotificationIPCFromRenderer {
     title: string
     body: string
   }
+}
+
+export interface VersionIPCFromRenderer {
+  type: EMessageIPCFromRenderer.Version
 }
 
 export interface BackupIPCFromRenderer {
@@ -26,9 +32,16 @@ export interface BackupIPCFromRenderer {
 }
 
 export interface BackupIPCFromMain {
-  type: EMessageIPCFromRenderer.Backup
+  type: EMessageIPCFromMain.Backup
   body: {
     success: boolean
+  }
+}
+
+export interface VersionIPCFromMain {
+  type: EMessageIPCFromMain.Version
+  body: {
+    version: string
   }
 }
 
@@ -47,7 +60,9 @@ export type MessageIPCFromRenderer =
   | NotificationIPCFromRenderer
   | BackupIPCFromRenderer
   | AppStartIPCFromRenderer
+  | VersionIPCFromRenderer
 
 export type MessageIPCFromMain =
   | AppStartIPCFromMain
   | BackupIPCFromMain
+  | VersionIPCFromMain
