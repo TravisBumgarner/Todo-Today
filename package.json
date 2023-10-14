@@ -7,6 +7,10 @@
   "license": "MIT",
   "author": "Travis Bumgarner",
   "private": true,
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/travisBumgarner/todo-today.git"
+},
   "debug": {
     "env": {
       "VITE_DEV_SERVER_URL": "http://127.0.0.1:7777/"
@@ -14,14 +18,13 @@
   },
   "scripts": {
     "start": "vite --force",
-    "build": "tsc && vite build && electron-builder --mac",
-    "build-all": "tsc && vite build && electron-builder --mac --windows",
-    "preview": "vite preview",
+    "build": "electron-builder build --mac --win --publish never",
+    "deploy": "electron-builder build --mac --win --publish always",
     "lint": "eslint src --ext .ts,.tsx"
   },
   "dependencies": {
     "electron-updater": "^6.1.4",
-    "use-async-effect": "^2.2.7"
+    "use-async-effect": "^2.2.7" 
   },
   "devDependencies": {
     "@emotion/react": "^11.11.1",

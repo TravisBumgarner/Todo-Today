@@ -34,3 +34,4 @@ yarn.lock
 /playwright/.cache/
 
 utilities/build
+.env
