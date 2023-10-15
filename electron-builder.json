@@ -4,16 +4,18 @@
   "directories": {
     "output": "release/${version}"
   },
+  "afterSign": "scripts/notarize.js",
   "files": [
     "dist-electron",
     "dist"
   ],
   "mac": {
     "artifactName": "${productName}_${version}.${ext}",
-    "target": [
-      "dmg",
-      "zip"
-    ]
+    "entitlements": "build/mac/entitlements.plist",
+    "entitlementsInherit": "build/mac/entitlements.plist",
+    "hardenedRuntime" : true,
+    "gatekeeperAssess": false,
+    "target": "default"
   },
   "win": {
     "target": [

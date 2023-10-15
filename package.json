@@ -1,16 +1,16 @@
 {
   "name": "TodoToday",
   "productName": "Todo Today",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "main": "dist-electron/main/index.js",
   "description": "Minimalistic Todo List",
   "license": "MIT",
   "author": "Travis Bumgarner",
   "private": true,
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/TravisBumgarner/Todo-Today-Releases.git"
-},
+    "type": "git",
+    "url": "https://github.com/TravisBumgarner/Todo-Today-Releases.git"
+  },
   "debug": {
     "env": {
       "VITE_DEV_SERVER_URL": "http://127.0.0.1:7777/"
@@ -24,9 +24,10 @@
   },
   "dependencies": {
     "electron-updater": "^6.1.4",
-    "use-async-effect": "^2.2.7" 
+    "use-async-effect": "^2.2.7"
   },
   "devDependencies": {
+    "@electron/notarize": "^2.1.0",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@fontsource/comfortaa": "^5.0.12",
