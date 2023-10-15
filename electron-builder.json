@@ -1,8 +1,5 @@
-/**
- * @see https://www.electron.build/configuration/configuration
- */
 {
-  "appId": "com.exaple.Todotoday",
+  "appId": "us.sillysideprojects.todotoday",
   "asar": true,
   "directories": {
     "output": "release/${version}"
@@ -37,8 +34,8 @@
   },
   "publish": {
     "provider": "github",
-    "token": 'LOAD ME'
-  },
+    "token": "LOAD ME"
+  }
 }
 
 
