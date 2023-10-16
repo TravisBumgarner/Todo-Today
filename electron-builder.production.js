@@ -1,10 +1,12 @@
-{
+require('dotenv').config({path: './electron-builder.env'});
+
+const config = {
   "appId": "us.sillysideprojects.todotoday",
   "asar": true,
+  "afterSign": "scripts/notarize.js",
   "directories": {
     "output": "release/${version}"
   },
-  "afterSign": "scripts/notarize.js",
   "files": [
     "dist-electron",
     "dist"
@@ -12,7 +14,6 @@
   "mac": {
     "artifactName": "${productName}_${version}.${ext}",
     "entitlements": "build/mac/entitlements.plist",
-    "entitlementsInherit": "build/mac/entitlements.plist",
     "hardenedRuntime" : true,
     "gatekeeperAssess": false,
     "target": "default"
@@ -36,8 +37,8 @@
   },
   "publish": {
     "provider": "github",
-    "token": "LOAD ME"
+    "token": process.env.GITHUB_TOKEN
   }
 }
 
-
+module.exports = config;

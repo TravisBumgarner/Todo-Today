@@ -18,8 +18,9 @@
   },
   "scripts": {
     "start": "vite --force",
-    "build": "electron-builder build --mac --publish never",
-    "deploy": "electron-builder build --mac --publish always",
+    "build-dev": "export CSC_IDENTITY_AUTO_DISCOVERY=false && electron-builder build --mac --publish never --config ./electron-builder.dev.js",
+    "build": "export CSC_IDENTITY_AUTO_DISCOVERY=true && electron-builder build --mac --publish never --config ./electron-builder.production.js",
+    "deploy": "export CSC_IDENTITY_AUTO_DISCOVERY=true && electron-builder build --mac --publish always --config ./electron-builder.production.js",
     "lint": "eslint src --ext .ts,.tsx"
   },
   "dependencies": {
