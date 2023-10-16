@@ -1,7 +1,7 @@
 const { notarize } = require('@electron/notarize');
-require('dotenv').config();
+require('dotenv').config({path: './electron-builder.env'});
 
-console.log('notarizinggignb')
+console.log('Notarizing')
 
 
 exports.default = async function notarizing(context) {
