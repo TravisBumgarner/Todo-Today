@@ -1,7 +1,7 @@
 {
   "name": "TodoToday",
   "productName": "Todo Today",
-  "version": "1.2.8",
+  "version": "1.2.10",
   "main": "dist-electron/main/index.js",
   "description": "Minimalistic Todo List",
   "license": "MIT",
@@ -27,10 +27,11 @@
     "lint": "eslint src --ext .ts,.tsx"
   },
   "dependencies": {
-    "electron-updater": "^6.1.4",
-    "use-async-effect": "^2.2.7"
+    "electron-updater": "^6.1.4"
   },
   "devDependencies": {
+    "electron-log": "^4.4.8",
+    "use-async-effect": "^2.2.7",
     "@electron/notarize": "^2.1.0",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
