@@ -1,7 +1,7 @@
 {
   "name": "TodoToday",
   "productName": "Todo Today",
-  "version": "1.2.3",
+  "version": "1.2.8",
   "main": "dist-electron/main/index.js",
   "description": "Minimalistic Todo List",
   "license": "MIT",
@@ -18,9 +18,12 @@
   },
   "scripts": {
     "start": "vite --force",
-    "build-dev": "export CSC_IDENTITY_AUTO_DISCOVERY=false && electron-builder build --mac --publish never --config ./electron-builder.dev.js",
-    "build": "export CSC_IDENTITY_AUTO_DISCOVERY=true && electron-builder build --mac --publish never --config ./electron-builder.production.js",
-    "deploy": "export CSC_IDENTITY_AUTO_DISCOVERY=true && electron-builder build --mac --publish always --config ./electron-builder.production.js",
+    "build-react": "tsc && vite build",
+    "setup-dev": "rm -rf ./release && export CSC_IDENTITY_AUTO_DISCOVERY=false",
+    "setup-prod": "rm -rf ./release && export CSC_IDENTITY_AUTO_DISCOVERY=true",
+    "build-electron-dev": "yarn run setup-dev && yarn build-react && electron-builder build --mac --publish never --config ./electron-builder.dev.js",
+    "build-electron-prod": "yarn run setup-prod && yarn build-react && electron-builder build --mac --publish never --config ./electron-builder.production.js",
+    "deploy-electron-prod": "yarn run setup-prod && yarn build-react && electron-builder build --mac --publish always --config ./electron-builder.production.js",
     "lint": "eslint src --ext .ts,.tsx"
   },
   "dependencies": {

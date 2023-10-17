@@ -72,6 +72,9 @@ async function createWindow() {
     // Open devTool if the app is not` packaged
     win.webContents.openDevTools()
   } else {
+    if (isDebugProduction) {
+      win.webContents.openDevTools()
+    }
     await win.loadFile(indexHtml)
   }
 
@@ -160,7 +163,6 @@ ipcMain.handle(EMessageIPCFromRenderer.Notification, async (event: any, arg: Not
 })
 
 ipcMain.handle(EMessageIPCFromRenderer.Version, () => {
-  console.log('called')
   return {
     version: app.getVersion()
   }

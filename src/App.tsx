@@ -12,7 +12,7 @@ import { EMessageIPCFromRenderer } from 'shared/types'
 import { sendIPCMessage } from 'utilities'
 import { ipcRenderer } from 'electron'
 
-const useIPCRendererEffect = (dispatch: (any) => void) => {
+const useIPCRendererEffect = (dispatch: React.Dispatch<Action>) => {
   ipcRenderer.on('update_available', () => {
     ipcRenderer.removeAllListeners('update_available')
     dispatch({ type: 'ADD_MESSAGE', data: { text: 'A new update is available. Downloading now...', severity: 'info' } })
