@@ -1,7 +1,6 @@
 import { Box, css } from '@mui/material'
-import { type ReactElement } from 'react'
 
-const ButtonWrapper = ({ children, isHorizontal }: { children: ReactElement | ReactElement[], isHorizontal?: boolean }) => {
+const ButtonWrapper = ({ children, isHorizontal }: { children: React.ReactNode, isHorizontal?: boolean }) => {
   return (
     <Box css={wrapperCSS(isHorizontal)}>{children}</Box>
   )

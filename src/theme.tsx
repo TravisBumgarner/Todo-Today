@@ -34,6 +34,9 @@ const baseThemeOptions: ThemeOptions = {
 
 const beachThemeOptions = {
   palette: {
+    info: {
+      main: 'rgb(184, 203, 210)'
+    },
     primary: {
       main: 'rgb(76, 125, 165)'
     },

@@ -13,7 +13,10 @@ export interface State {
   message: {
     text: string
     severity: 'error' | 'warning' | 'info' | 'success'
-    callback?: () => void
+    confirmCallback?: () => void
+    confirmCallbackText?: string
+    cancelCallback?: () => void
+    cancelCallbackText?: string
   } | null
   settings: {
     colorTheme: EColorTheme
@@ -109,7 +112,10 @@ interface AddMessage {
     text: string
     severity: 'error' | 'warning' | 'info' | 'success'
     url?: string
-    callback?: () => void
+    confirmCallback?: () => void
+    confirmCallbackText?: string
+    cancelCallback?: () => void
+    cancelCallbackText?: string
   }
 }
 

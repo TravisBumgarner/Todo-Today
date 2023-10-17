@@ -1,6 +1,6 @@
 import { useContext, useMemo, useState } from 'react'
 import CssBaseline from '@mui/material/CssBaseline' // https://stackoverflow.com/questions/74542488/react-material-ui-createtheme-default-is-not-a-function
-import { Box, Experimental_CssVarsProvider, css } from '@mui/material'
+import { Box, Experimental_CssVarsProvider, Typography, css } from '@mui/material'
 
 import { EColorTheme } from './types'
 import Context, { type Action, context } from 'Context'
@@ -14,15 +14,13 @@ import { ipcRenderer } from 'electron'
 
 const useIPCRendererEffect = (dispatch: React.Dispatch<Action>) => {
   ipcRenderer.on('update_available', () => {
-    console.log('update_available')
     ipcRenderer.removeAllListeners('update_available')
     dispatch({ type: 'ADD_MESSAGE', data: { text: 'A new update is available. Downloading now...', severity: 'info' } })
   })
 
   ipcRenderer.on('update_downloaded', () => {
-    console.log('update_downloaded')
     ipcRenderer.removeAllListeners('update_downloaded')
-    dispatch({ type: 'ADD_MESSAGE', data: { text: 'Update Downloaded. It will be installed on restart. Restart now?', severity: 'info', callback: () => { ipcRenderer.send('restart_app') } } })
+    dispatch({ type: 'ADD_MESSAGE', data: { text: 'Update Downloaded. It will be installed on restart. Restart now?', severity: 'info', cancelCallbackText: 'Later', confirmCallbackText: 'Restart', confirmCallback: () => { ipcRenderer.send('restart_app') } } })
   })
 }
 
@@ -78,7 +76,6 @@ const InjectedApp = () => {
 
   useAsyncEffect(async (isMounted) => {
     const response = await sendIPCMessage({ type: EMessageIPCFromRenderer.Version })
-    console.log(response)
     if (!isMounted()) return
 
     setAppVersion(response.version)
@@ -87,7 +84,7 @@ const InjectedApp = () => {
   return (
     <Context>
       <App />
-      <p style={{ position: 'absolute', bottom: 0, right: '1rem' }}>Version: {appVersion} </p>
+      <Typography variant="body2" style={{ position: 'absolute', bottom: 0, right: '1rem', zIndex: -1 }}>{appVersion} </Typography>
     </Context>
   )
 }
