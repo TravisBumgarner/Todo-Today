@@ -3,6 +3,7 @@ import { release } from 'node:os'
 import { join, resolve } from 'node:path'
 import { writeFileSync, existsSync, mkdirSync } from 'node:fs'
 import { autoUpdater } from 'electron-updater'
+import log from 'electron-log'
 
 import { update } from './update'
 import menu from './menu'
@@ -77,11 +78,6 @@ async function createWindow() {
     }
     await win.loadFile(indexHtml)
   }
-
-  // Test actively push message to the Electron-Renderer
-  win.webContents.on('did-finish-load', () => {
-    win?.webContents.send('main-process-message', new Date().toLocaleString())
-  })
 
   // Make all links open with the browser, not with the application
   win.webContents.setWindowOpenHandler(({ url }) => {
@@ -169,18 +165,20 @@ ipcMain.handle(EMessageIPCFromRenderer.Version, () => {
 })
 
 autoUpdater.on('update-available', () => {
+  log.info('update-available')
   if (win) {
     win.webContents.send('update_available')
   } else {
-    throw new Error('No window available')
+    log.error('update-available - No window available')
   }
 })
 
 autoUpdater.on('update-downloaded', () => {
+  log.info('update-downloaded')
   if (win) {
     win.webContents.send('update_downloaded')
   } else {
-    throw new Error('No window available')
+    log.error('update-downloaded - No window available')
   }
 })
 

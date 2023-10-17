@@ -1,7 +1,7 @@
 require('dotenv').config({path: './electron-builder.env'});
 
 const config = {
-  "appId": "us.sillysideprojects.todotoday",
+  "appId": "dev.dev.dev",
   "asar": true,
   "directories": {
     "output": "release/${version}"

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useState } from 'react'
+import { useContext, useMemo, useState } from 'react'
 import CssBaseline from '@mui/material/CssBaseline' // https://stackoverflow.com/questions/74542488/react-material-ui-createtheme-default-is-not-a-function
 import { Box, Experimental_CssVarsProvider, css } from '@mui/material'
 
@@ -14,11 +14,13 @@ import { ipcRenderer } from 'electron'
 
 const useIPCRendererEffect = (dispatch: React.Dispatch<Action>) => {
   ipcRenderer.on('update_available', () => {
+    console.log('update_available')
     ipcRenderer.removeAllListeners('update_available')
     dispatch({ type: 'ADD_MESSAGE', data: { text: 'A new update is available. Downloading now...', severity: 'info' } })
   })
 
   ipcRenderer.on('update_downloaded', () => {
+    console.log('update_downloaded')
     ipcRenderer.removeAllListeners('update_downloaded')
     dispatch({ type: 'ADD_MESSAGE', data: { text: 'Update Downloaded. It will be installed on restart. Restart now?', severity: 'info', callback: () => { ipcRenderer.send('restart_app') } } })
   })
@@ -27,10 +29,6 @@ const useIPCRendererEffect = (dispatch: React.Dispatch<Action>) => {
 const App = () => {
   const { state, dispatch } = useContext(context)
   useIPCRendererEffect(dispatch)
-
-  useEffect(() => {
-    dispatch({ type: 'ADD_MESSAGE', data: { text: 'Hello World', severity: 'success', callback: () => { alert('hi') } } })
-  }, [dispatch])
 
   const theme = useMemo(() => {
     switch (state.settings.colorTheme) {
