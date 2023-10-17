@@ -12,6 +12,12 @@ import { type BackupIPCFromRenderer, EMessageIPCFromRenderer, type NotificationI
 
 Menu.setApplicationMenu(menu)
 
+log.info('test log')
+log.warn('test warn')
+log.error('test error')
+log.transports.file.level = 'info'
+autoUpdater.logger = log
+
 // The built directory structure
 //
 // ├─┬ dist-electron
@@ -168,6 +174,7 @@ autoUpdater.on('update-available', () => {
   log.info('update-available')
   if (win) {
     win.webContents.send('update_available')
+    void autoUpdater.downloadUpdate()
   } else {
     log.error('update-available - No window available')
   }
