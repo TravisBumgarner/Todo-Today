@@ -2,7 +2,7 @@ import moment from 'moment'
 import { ipcRenderer } from 'electron'
 
 import { EProjectStatus, type TDateISODate, ETaskStatus, EColorTheme, EBackupInterval, DATE_ISO_DATE_MOMENT_STRING } from './types'
-import { type BackupIPCFromMain, EMessageIPCFromRenderer, type MessageIPCFromRenderer, type AppStartIPCFromMain, type VersionIPCFromMain } from 'shared/types'
+import { type BackupIPCFromMain, EMessageIPCFromRenderer, type MessageIPCFromRenderer, type AppStartIPCFromMain } from 'shared/types'
 
 const projectStatusLookup: Record<EProjectStatus, string> = {
   [EProjectStatus.INACTIVE]: 'Inactive',
@@ -88,7 +88,6 @@ interface MessageReturnTypeMap {
   [EMessageIPCFromRenderer.Notification]: null
   [EMessageIPCFromRenderer.Backup]: BackupIPCFromMain['body']
   [EMessageIPCFromRenderer.AppStart]: AppStartIPCFromMain['body']
-  [EMessageIPCFromRenderer.Version]: VersionIPCFromMain['body']
 }
 
 const sendIPCMessage = async <T extends MessageIPCFromRenderer>(
@@ -105,14 +104,11 @@ const sendIPCMessage = async <T extends MessageIPCFromRenderer>(
         message.body
       )) as MessageReturnTypeMap[T['type']]
     }
-    case EMessageIPCFromRenderer.AppStart:
+    case EMessageIPCFromRenderer.AppStart: {
       return (await ipcRenderer.invoke(
         message.type
       )) as MessageReturnTypeMap[T['type']]
-    case EMessageIPCFromRenderer.Version:
-      return (await ipcRenderer.invoke(
-        message.type
-      )) as MessageReturnTypeMap[T['type']]
+    }
   }
 }
 

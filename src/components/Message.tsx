@@ -38,7 +38,6 @@ const Alert = () => {
             </Button>
           </ButtonWrapper>
         }
-        // color={severityToColor[state.message.severity]}
         color="info"
       >{state.message.text}</AlertMUI>
     </Box >

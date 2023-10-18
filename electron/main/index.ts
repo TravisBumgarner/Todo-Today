@@ -12,9 +12,7 @@ import { type BackupIPCFromRenderer, EMessageIPCFromRenderer, type NotificationI
 
 Menu.setApplicationMenu(menu)
 
-log.info('test log')
-log.warn('test warn')
-log.error('test error')
+log.info('backend logs intialized')
 log.transports.file.level = 'info'
 autoUpdater.logger = log
 
@@ -55,7 +53,6 @@ let win: BrowserWindow | null = null
 const preload = join(__dirname, '../preload/index.js')
 const url = process.env.VITE_DEV_SERVER_URL
 const indexHtml = join(process.env.DIST, 'index.html')
-console.log(process.platform)
 async function createWindow() {
   win = new BrowserWindow({
     width: 800,
@@ -162,12 +159,6 @@ ipcMain.handle(EMessageIPCFromRenderer.Backup, async (event, arg: BackupIPCFromR
 
 ipcMain.handle(EMessageIPCFromRenderer.Notification, async (event: any, arg: NotificationIPCFromRenderer['body']) => {
   new Notification(arg).show()
-})
-
-ipcMain.handle(EMessageIPCFromRenderer.Version, () => {
-  return {
-    version: app.getVersion()
-  }
 })
 
 autoUpdater.on('update-available', () => {

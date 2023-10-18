@@ -19,10 +19,6 @@ export interface NotificationIPCFromRenderer {
   }
 }
 
-export interface VersionIPCFromRenderer {
-  type: EMessageIPCFromRenderer.Version
-}
-
 export interface BackupIPCFromRenderer {
   type: EMessageIPCFromRenderer.Backup
   body: {
@@ -35,13 +31,6 @@ export interface BackupIPCFromMain {
   type: EMessageIPCFromMain.Backup
   body: {
     success: boolean
-  }
-}
-
-export interface VersionIPCFromMain {
-  type: EMessageIPCFromMain.Version
-  body: {
-    version: string
   }
 }
 
@@ -60,9 +49,7 @@ export type MessageIPCFromRenderer =
   | NotificationIPCFromRenderer
   | BackupIPCFromRenderer
   | AppStartIPCFromRenderer
-  | VersionIPCFromRenderer
 
 export type MessageIPCFromMain =
   | AppStartIPCFromMain
   | BackupIPCFromMain
-  | VersionIPCFromMain
