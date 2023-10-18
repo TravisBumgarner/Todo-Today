@@ -1,15 +1,12 @@
-import { useContext, useMemo, useState } from 'react'
+import { useContext, useMemo } from 'react'
 import CssBaseline from '@mui/material/CssBaseline' // https://stackoverflow.com/questions/74542488/react-material-ui-createtheme-default-is-not-a-function
-import { Box, Experimental_CssVarsProvider, Typography, css } from '@mui/material'
+import { Box, Experimental_CssVarsProvider, css } from '@mui/material'
 
 import { EColorTheme } from './types'
 import Context, { type Action, context } from 'Context'
 import { baseTheme, beachTheme, highContrastTheme, retroFutureTheme, underTheSeaTheme } from 'theme'
 import { Header, Router, Message } from './components'
 import RenderModal from 'modals'
-import { useAsyncEffect } from 'use-async-effect'
-import { EMessageIPCFromRenderer } from 'shared/types'
-import { sendIPCMessage } from 'utilities'
 import { ipcRenderer } from 'electron'
 
 const useIPCRendererEffect = (dispatch: React.Dispatch<Action>) => {
@@ -72,19 +69,9 @@ const appWrapperCSS = css`
 `
 
 const InjectedApp = () => {
-  const [appVersion, setAppVersion] = useState<string>()
-
-  useAsyncEffect(async (isMounted) => {
-    const response = await sendIPCMessage({ type: EMessageIPCFromRenderer.Version })
-    if (!isMounted()) return
-
-    setAppVersion(response.version)
-  }, [])
-
   return (
     <Context>
       <App />
-      <Typography variant="body2" style={{ position: 'absolute', bottom: 0, right: '1rem', zIndex: -1 }}>{appVersion} </Typography>
     </Context>
   )
 }
