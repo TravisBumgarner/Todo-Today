@@ -14,6 +14,7 @@ import TodoListItem, { TODO_LIST_ITEM_MARGIN, type Entry } from './TodoListItem'
 import { ModalID } from 'modals'
 import { TASK_STATUS_IS_ACTIVE, formatDateDisplayString, formatDateKeyLookup } from 'utilities'
 import { pageCSS } from 'theme'
+import { HEADER_HEIGHT } from '../../../components/Header'
 
 const reorder = (list: any[], startIndex: number, endIndex: number) => {
   const result = Array.from(list)
@@ -22,6 +23,8 @@ const reorder = (list: any[], startIndex: number, endIndex: number) => {
 
   return result
 }
+
+const MENU_ITEMS_HEIGHT = 50
 
 const EmptyTodoList = () => {
   const { state: { selectedDate }, dispatch } = useContext(context)
@@ -195,7 +198,7 @@ const TodoList = () => {
 
   return (
     <Box css={pageCSS}>
-      <Box css={{ display: 'flex', justifyContent: 'space-between' }}>
+      <Box css={{ display: 'flex', justifyContent: 'space-between', height: `${MENU_ITEMS_HEIGHT}px` }}>
         <Box>
           <ButtonGroup>
             <Button
@@ -218,71 +221,77 @@ const TodoList = () => {
           <Button variant='contained' onClick={getNextDate}>&gt;</Button>
         </ButtonGroup>
       </Box>
-      {selectedDateActiveEntries.length === 0 && selectedDateInactiveEntries.length === 0
-        ? <EmptyTodoList />
-        : (
-          <DragDropContext onDragEnd={onDragEnd}>
-            <Droppable droppableId="droppable">
-              {(provided, snapshot) => (
-                <div
-                  {...provided.droppableProps}
-                  ref={provided.innerRef}
-                  style={dragAndDropCSS()}
+      <Box css={todolistItemsWrapperCSS}>
+        {selectedDateActiveEntries.length === 0 && selectedDateInactiveEntries.length === 0
+          ? <EmptyTodoList />
+          : (
+            <DragDropContext onDragEnd={onDragEnd}>
+              <Droppable droppableId="droppable">
+                {(provided, snapshot) => (
+                  <div
+                    {...provided.droppableProps}
+                    ref={provided.innerRef}
+                    style={dragAndDropCSS()}
+                  >
+                    {selectedDateActiveEntries.map((it, index) => (
+                      <Draggable
+                        key={it.id}
+                        draggableId={it.id}
+                        index={index}
+                      >
+                        {(provided) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            style={dragItemCSS(snapshot.isDraggingOver, provided.draggableProps.style)}
+                          >
+                            <TodoListItem {...it}
+                            />
+                          </div>
+                        )}
+                      </Draggable>
+                    ))
+                    }
+                    {provided.placeholder}
+                  </div >
+                )}
+              </Droppable >
+            </DragDropContext >
+          )
+        }
+        {
+          (selectedDateInactiveEntries.length > 0) && (
+            <>
+              <Stack direction="row" css={css`margin-bottom: 0.5rem;`}>
+                <Typography variant="h2">Archive</Typography>
+                <ToggleButton
+                  size='small'
+                  value="text"
+                  onChange={toggleShowArchive}
+                  css={{ marginLeft: '0.5rem' }}
                 >
-                  {selectedDateActiveEntries.map((it, index) => (
-                    <Draggable
-                      key={it.id}
-                      draggableId={it.id}
-                      index={index}
-                    >
-                      {(provided) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          style={dragItemCSS(snapshot.isDraggingOver, provided.draggableProps.style)}
-                        >
-                          <TodoListItem {...it}
-                          />
-                        </div>
-                      )}
-                    </Draggable>
-                  ))
-                  }
-                  {provided.placeholder}
-                </div >
-              )}
-            </Droppable >
-          </DragDropContext >
-        )
-      }
-      {
-        (selectedDateInactiveEntries.length > 0) && (
-          <>
-            <Stack direction="row" css={css`margin-bottom: 0.5rem;`}>
-              <Typography variant="h2">Archive</Typography>
-              <ToggleButton
-                size='small'
-                value="text"
-                onChange={toggleShowArchive}
-                css={{ marginLeft: '0.5rem' }}
-              >
-                <Tooltip title="Show archive" >
-                  <ChevronRight fontSize="small" css={{ transform: `rotate(${showArchive ? '90deg' : '0deg'})` }} />
-                </Tooltip>
-              </ToggleButton>
-            </Stack>
-            {showArchive && selectedDateInactiveEntries.map((it) => <TodoListItem key={it.id} {...it} />)}
-          </>
-        )
-      }
+                  <Tooltip title="Show archive" >
+                    <ChevronRight fontSize="small" css={{ transform: `rotate(${showArchive ? '90deg' : '0deg'})` }} />
+                  </Tooltip>
+                </ToggleButton>
+              </Stack>
+              {showArchive && selectedDateInactiveEntries.map((it) => <TodoListItem key={it.id} {...it} />)}
+            </>
+          )
+        }
+      </Box >
     </Box >
   )
 }
 
+const todolistItemsWrapperCSS = css`
+  overflow: auto;
+  height: calc(100vh - ${MENU_ITEMS_HEIGHT}px - ${HEADER_HEIGHT}px);
+`
+
 const dragAndDropCSS = () => {
   return ({
-    overflow: 'auto',
     margin: '0 0 1rem 0'
   })
 }

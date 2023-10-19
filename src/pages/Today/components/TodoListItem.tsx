@@ -26,7 +26,7 @@ export interface Entry {
 const TodoListItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTitle, projectTitle }: Entry) => {
   const { dispatch } = useContext(context)
   const [showDetails, setShowDetails] = useState(false)
-  const [details, setDetails] = useState(initialDetails || '') // Undo doesn't work if synced directly to DB. Might be a more elegant solution, but for now, this works.
+  const [details, setDetails] = useState(initialDetails ?? '') // Undo doesn't work if synced directly to DB. Might be a more elegant solution, but for now, this works.
 
   const handleStartTimer = () => {
     dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.TIMER_MODAL, taskId } })
