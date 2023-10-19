@@ -9,7 +9,7 @@ import Modal from './Modal'
 import { type TProject, ETaskStatus, EProjectStatus, type TTask } from 'types'
 import database from 'database'
 import { context } from 'Context'
-import { ButtonWrapper } from 'sharedComponents'
+import { ButtonWrapper, TaskStatusSelector } from 'sharedComponents'
 import { sortStrings } from 'utilities'
 
 const CREATE_NEW_PROJECT_DROPDOWN_ITEM = 'create-new-project'
@@ -17,6 +17,7 @@ const CREATE_NEW_PROJECT_DROPDOWN_ITEM = 'create-new-project'
 const AddTaskModal = () => {
   const { state, dispatch } = useContext(context)
   const [title, setTitle] = useState<string>('')
+  const [status, setStatus] = useState<ETaskStatus>(ETaskStatus.NEW)
   const [details, setDetails] = useState<string>('')
   const [projectId, setProjectId] = useState<TProject['id'] | ''>('')
   const [addProjectInput, setAddProjectInput] = useState<string>('')
@@ -50,7 +51,7 @@ const AddTaskModal = () => {
     }
     const newTask: TTask = {
       title,
-      status: ETaskStatus.NEW,
+      status,
       id: taskId,
       projectId: projectIdForTask,
       details
@@ -115,6 +116,7 @@ const AddTaskModal = () => {
           onChange={(event) => { setAddProjectInput(event.target.value) }}
         />
       }
+      <TaskStatusSelector taskStatus={status} handleStatusChange={setStatus} showLabel />
       <TextField
         autoFocus
         multiline
