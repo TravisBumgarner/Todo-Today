@@ -116,7 +116,7 @@ const AddTaskModal = () => {
           onChange={(event) => { setAddProjectInput(event.target.value) }}
         />
       }
-      <TaskStatusSelector taskStatus={status} handleStatusChange={setStatus} showLabel />
+      <TaskStatusSelector taskStatus={status} handleStatusChangeCallback={setStatus} showLabel />
       <TextField
         autoFocus
         multiline

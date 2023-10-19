@@ -82,7 +82,7 @@ const EditTaskModal = ({ taskId }: Props) => {
           margin='normal'
           onChange={(event) => { setDetails(event.target.value) }}
         />
-        <TaskStatusSelector taskStatus={status} handleStatusChange={setStatus} showLabel />
+        <TaskStatusSelector taskStatus={status} handleStatusChangeCallback={setStatus} showLabel />
         <ButtonWrapper>
           <Button variant='contained'
             color="secondary" fullWidth key="cancel" onClick={handleCancel}>Cancel</Button>

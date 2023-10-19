@@ -89,7 +89,7 @@ const TodoListItem = ({ id, taskId }: TodoListItemProps) => {
       <Box css={headerCSS(showDetails)}>
         <Box css={leftHeaderCSS}>
           <Box>
-            <TaskStatusSelector handleStatusChange={handleStatusChange} taskStatus={metadata.taskStatus} showLabel={false} />
+            <TaskStatusSelector handleStatusChangeCallback={handleStatusChange} taskStatus={metadata.taskStatus} showLabel={false} />
           </Box>
           <Box css={css`margin-left: 1rem`}>
             <Typography css={headerTextCSS} variant="h2">{metadata.taskTitle}</Typography>
