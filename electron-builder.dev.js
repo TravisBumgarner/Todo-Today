@@ -1,6 +1,7 @@
 require('dotenv').config({path: './electron-builder.env'});
 
 const config = {
+  "productName": "dev", // Needs to be unique for each environment or else can't open both at once.
   "appId": "dev.dev.dev",
   "asar": true,
   "directories": {
