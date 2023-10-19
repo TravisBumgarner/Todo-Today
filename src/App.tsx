@@ -61,6 +61,7 @@ const App = () => {
 const appWrapperCSS = css`
   padding: 0 0.5rem 0.5rem 0.5rem;
   max-width: 1200px;
+  margin:0px auto;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
