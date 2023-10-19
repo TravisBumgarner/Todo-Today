@@ -5,9 +5,9 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import Modal from './Modal'
 import { type TTask, ETaskStatus } from 'types'
 import database from 'database'
-import { sortStrings, taskStatusLookup } from 'utilities'
+import { sortStrings } from 'utilities'
 import { context } from 'Context'
-import { ButtonWrapper } from 'sharedComponents'
+import { ButtonWrapper, TaskStatusSelector } from 'sharedComponents'
 
 interface Props {
   taskId: string
@@ -53,34 +53,13 @@ const EditTaskModal = ({ taskId }: Props) => {
     >
       <form>
         <TextField
+          autoFocus
           fullWidth
           label="Task"
           name="title"
           margin='normal'
           value={title}
           onChange={(event) => { setTitle(event.target.value) }}
-        />
-        <FormControl fullWidth margin='normal'>
-          <InputLabel id="edit-task-modal-status">Status</InputLabel>
-          <Select
-            label="Status"
-            labelId="edit-task-modal-status"
-            fullWidth
-            value={status}
-            onChange={(event) => { setStatus(event.target.value as ETaskStatus) }}
-          >
-            {Object.keys(ETaskStatus).map(key => <MenuItem key={key} value={key}>{taskStatusLookup[key as ETaskStatus]}</MenuItem>)}
-          </Select>
-        </FormControl>
-        <TextField
-          autoFocus
-          multiline
-          fullWidth
-          label="Details"
-          name="details"
-          value={details}
-          margin='normal'
-          onChange={(event) => { setDetails(event.target.value) }}
         />
         <FormControl fullWidth margin='normal'>
           <InputLabel id="edit-task-modal-project-select">Project</InputLabel>
@@ -91,9 +70,19 @@ const EditTaskModal = ({ taskId }: Props) => {
             value={projectId}
             onChange={(event) => { setProjectId(event.target.value) }}
           >
-            {projectSelectOptions.map(({ label, value }) => <MenuItem key={label} value={value}>{label}</MenuItem>)}
+            {projectSelectOptions.map(({ label, value }) => <MenuItem key={value} value={value}>{label}</MenuItem>)}
           </Select>
         </FormControl>
+        <TextField
+          multiline
+          fullWidth
+          label="Details"
+          name="details"
+          value={details}
+          margin='normal'
+          onChange={(event) => { setDetails(event.target.value) }}
+        />
+        <TaskStatusSelector taskStatus={status} handleStatusChangeCallback={setStatus} showLabel />
         <ButtonWrapper>
           <Button variant='contained'
             color="secondary" fullWidth key="cancel" onClick={handleCancel}>Cancel</Button>
