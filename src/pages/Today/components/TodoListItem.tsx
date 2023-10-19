@@ -1,50 +1,36 @@
-import { type ChangeEvent, useState, useCallback, useContext } from 'react'
+import { type ChangeEvent, useState, useCallback, useContext, useEffect } from 'react'
 import { Box, Card, IconButton, TextField, Tooltip, Typography, css } from '@mui/material'
 import ToggleButton from '@mui/material/ToggleButton'
 import EditIcon from '@mui/icons-material/Edit'
 import CloseIcon from '@mui/icons-material/CloseOutlined'
 import { ChevronRight } from '@mui/icons-material'
 import TimerIcon from '@mui/icons-material/Timer'
-import { useLiveQuery } from 'dexie-react-hooks'
 
 import database from 'database'
-import { ETaskStatus, type TProject, type TTodoListItem } from 'types'
+import { ETaskStatus } from 'types'
 import { ModalID } from 'modals'
 import { context } from 'Context'
-import { EmptyStateDisplay, TaskStatusSelector } from 'sharedComponents'
+import { TaskStatusSelector } from 'sharedComponents'
 
-type TodoListItemProps = TTodoListItem
+export interface Entry {
+  id: string
+  taskId: string
+  todoListDate: string
+  sortOrder: number
+  taskTitle: string
+  taskStatus: ETaskStatus
+  projectTitle: string
+  taskDetails?: string
+}
 
-interface Metadata { taskId: string, projectTitle: string, taskTitle: string, taskStatus: ETaskStatus }
-
-const TodoListItem = ({ id, taskId }: TodoListItemProps) => {
+const TodoListItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTitle, projectTitle }: Entry) => {
   const { dispatch } = useContext(context)
   const [showDetails, setShowDetails] = useState(false)
-  const [metadata, setMetadata] = useState<Metadata | null>(null)
-  const [details, setDetails] = useState('') // Undo doesn't work if synced directly to DB. Might be a more elegant solution, but for now, this works.
+  const [details, setDetails] = useState(initialDetails || '') // Undo doesn't work if synced directly to DB. Might be a more elegant solution, but for now, this works.
 
   const handleStartTimer = () => {
     dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.TIMER_MODAL, taskId } })
   }
-
-  useLiveQuery(
-    async () => {
-      const task = await database.tasks.where('id').equals(taskId).first()
-      if (!task) {
-        setMetadata({
-          taskTitle: 'Unable to find task',
-          projectTitle: 'Unable to find project',
-          taskStatus: ETaskStatus.CANCELED,
-          taskId: ''
-        })
-        return
-      }
-
-      const project = await database.projects.where('id').equals(task.projectId).first() as TProject
-      setMetadata({ taskId: task.id, taskTitle: task.title, projectTitle: project.title, taskStatus: task.status })
-      setDetails(task.details ?? '')
-      task.details && task.details.length > 0 && setShowDetails(true)
-    })
 
   const toggleShowDetails = useCallback(() => { setShowDetails(prev => !prev) }, [])
 
@@ -63,14 +49,16 @@ const TodoListItem = ({ id, taskId }: TodoListItemProps) => {
     }
   }, [taskId, id])
 
+  useEffect(() => {
+    if (initialDetails && initialDetails.length > 0) setShowDetails(true)
+  }, [initialDetails])
+
   const handleDetailsChange = useCallback(async (
     event: ChangeEvent<HTMLInputElement>
   ) => {
-    if (!metadata) return
-
-    void database.tasks.where('id').equals(metadata.taskId).modify({ details: event.target.value })
+    void database.tasks.where('id').equals(taskId).modify({ details: event.target.value })
     setDetails(event.target.value)
-  }, [metadata])
+  }, [taskId])
 
   const handleRemoveFromToday = useCallback(async () => {
     await database.todoListItems.where({ id }).delete()
@@ -80,19 +68,16 @@ const TodoListItem = ({ id, taskId }: TodoListItemProps) => {
     dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.EDIT_TASK_MODAL, taskId } })
   }, [dispatch, taskId])
 
-  if (!metadata) {
-    return <EmptyStateDisplay message='Unable to find project or task details' />
-  }
   return (
     <Card css={wrapperCSS}>
       <Box css={headerCSS(showDetails)}>
         <Box css={leftHeaderCSS}>
           <Box>
-            <TaskStatusSelector handleStatusChangeCallback={handleStatusChange} taskStatus={metadata.taskStatus} showLabel={false} />
+            <TaskStatusSelector handleStatusChangeCallback={handleStatusChange} taskStatus={taskStatus} showLabel={false} />
           </Box>
           <Box css={css`margin-left: 1rem`}>
-            <Typography css={headerTextCSS} variant="h2">{metadata.taskTitle}</Typography>
-            <Typography variant="body1">{metadata.projectTitle}</Typography>
+            <Typography css={headerTextCSS} variant="h2">{taskTitle}</Typography>
+            <Typography variant="body1">{projectTitle}</Typography>
           </Box>
         </Box>
         <Box css={rightHeaderCSS}>
@@ -161,10 +146,13 @@ const leftHeaderCSS = css`
   align-items: center;
 `
 
+export const TODO_LIST_ITEM_MARGIN = '0.5rem 0 0.5rem 0'
+
 const wrapperCSS = css`
 background: var(--mui-palette-background-paper);
 border-radius: 0.5rem;
 padding: 0.5rem;
+margin: ${TODO_LIST_ITEM_MARGIN};
 `
 
 export default TodoListItem

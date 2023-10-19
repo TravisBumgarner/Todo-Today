@@ -18,6 +18,14 @@ const backupIntervalLookup: Record<EBackupInterval, string> = {
   [EBackupInterval.OFF]: 'Off'
 }
 
+export const TASK_STATUS_IS_ACTIVE: Record<ETaskStatus, boolean> = {
+  [ETaskStatus.CANCELED]: false,
+  [ETaskStatus.COMPLETED]: false,
+  [ETaskStatus.IN_PROGRESS]: true,
+  [ETaskStatus.NEW]: true,
+  [ETaskStatus.BLOCKED]: true
+}
+
 const taskStatusLookup: Record<ETaskStatus, string> = {
   [ETaskStatus.CANCELED]: 'Canceled',
   [ETaskStatus.COMPLETED]: 'Completed',
