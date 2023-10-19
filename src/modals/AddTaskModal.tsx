@@ -118,7 +118,6 @@ const AddTaskModal = () => {
       }
       <TaskStatusSelector taskStatus={status} handleStatusChangeCallback={setStatus} showLabel />
       <TextField
-        autoFocus
         multiline
         fullWidth
         label="Details"

@@ -53,6 +53,7 @@ const EditTaskModal = ({ taskId }: Props) => {
     >
       <form>
         <TextField
+          autoFocus
           fullWidth
           label="Task"
           name="title"
@@ -69,11 +70,10 @@ const EditTaskModal = ({ taskId }: Props) => {
             value={projectId}
             onChange={(event) => { setProjectId(event.target.value) }}
           >
-            {projectSelectOptions.map(({ label, value }) => <MenuItem key={label} value={value}>{label}</MenuItem>)}
+            {projectSelectOptions.map(({ label, value }) => <MenuItem key={value} value={value}>{label}</MenuItem>)}
           </Select>
         </FormControl>
         <TextField
-          autoFocus
           multiline
           fullWidth
           label="Details"

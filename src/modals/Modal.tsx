@@ -30,6 +30,7 @@ const Modal: FC<ActiveModal> = ({ children, title, disableEscapeKeyDown, disable
       open={true}
       onClose={handleClose}
       disableEscapeKeyDown={disableEscapeKeyDown}
+      disableRestoreFocus={true}
       style={{ backgroundColor: 'var(--mui-palette-background-default)' }}
     >
       <Box css={wrapperCSS}>
