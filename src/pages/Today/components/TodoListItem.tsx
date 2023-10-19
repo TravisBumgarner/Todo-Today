@@ -83,7 +83,6 @@ const TodoListItem = ({ id, taskId }: TodoListItemProps) => {
   if (!metadata) {
     return <EmptyStateDisplay message='Unable to find project or task details' />
   }
-  console.log(metadata)
   return (
     <Card css={wrapperCSS}>
       <Box css={headerCSS(showDetails)}>

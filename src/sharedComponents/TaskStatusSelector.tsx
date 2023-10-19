@@ -63,36 +63,14 @@ const TaskDropdown = ({ taskStatus, handleStatusChangeCallback }: Props) => {
         </IconButton>
       </Tooltip>
       <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleCloseMenu}>
-        <MenuItem onClick={async () => { handleStatusChange(ETaskStatus.CANCELED) }}>
-          <ListItemIcon>
-            <Icons.ThreeThirdsCircle css={iconCSS(colorStatus[ETaskStatus.CANCELED])} />
-          </ListItemIcon>
-          <ListItemText>Cancel</ListItemText>
-        </MenuItem>
-        <MenuItem onClick={async (event) => { handleStatusChange(ETaskStatus.BLOCKED) }}>
-          <ListItemIcon>
-            <Icons.ThreeThirdsCircle css={iconCSS(colorStatus[ETaskStatus.BLOCKED])} />
-          </ListItemIcon>
-          <ListItemText>Blocked</ListItemText>
-        </MenuItem>
-        <MenuItem onClick={async () => { handleStatusChange(ETaskStatus.NEW) }}>
-          <ListItemIcon>
-            <Icons.OneThirdsCircle css={iconCSS(colorStatus[ETaskStatus.NEW])} />
-          </ListItemIcon>
-          <ListItemText>New</ListItemText>
-        </MenuItem>
-        <MenuItem onClick={async () => { handleStatusChange(ETaskStatus.IN_PROGRESS) }}>
-          <ListItemIcon>
-            <Icons.TwoThirdsCircle css={iconCSS(colorStatus[ETaskStatus.IN_PROGRESS])} />
-          </ListItemIcon>
-          <ListItemText>In Progress</ListItemText>
-        </MenuItem>
-        <MenuItem onClick={async () => { handleStatusChange(ETaskStatus.COMPLETED) }}>
-          <ListItemIcon>
-            <Icons.ThreeThirdsCircle css={iconCSS(colorStatus[ETaskStatus.COMPLETED])} />
-          </ListItemIcon>
-          <ListItemText>Completed</ListItemText>
-        </MenuItem>
+        {(Object.keys(ETaskStatus)).map(taskStatus => {
+          return (<MenuItem key={taskStatus} onClick={async () => { handleStatusChange(ETaskStatus.CANCELED) }}>
+            <ListItemIcon>
+              {taskStatusIcon(taskStatus as ETaskStatus)}
+            </ListItemIcon>
+            <ListItemText>{taskStatusLookup[taskStatus as ETaskStatus]}</ListItemText>
+          </MenuItem>)
+        })}
       </Menu>
     </>
   )
