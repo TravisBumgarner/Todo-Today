@@ -1,26 +1,12 @@
-import { Box, css } from '@mui/material'
+import { Stack, css } from '@mui/material'
 
 const ButtonWrapper = ({ children, isHorizontal }: { children: React.ReactNode, isHorizontal?: boolean }) => {
   return (
-    <Box css={wrapperCSS(isHorizontal)}>{children}</Box>
+    <Stack mt={2} spacing={1} direction={isHorizontal ? 'row' : 'column'} css={wrapperCSS(isHorizontal)}>{children}</Stack>
   )
 }
 
 const wrapperCSS = (isHorizontal?: boolean) => css`
-  width: 100%;
-  display: block;
-  ${isHorizontal && 'display: flex; justify-content: space-between;'}
-
-  button {
-    margin: 0.5rem 0;
-    ${isHorizontal && 'margin-right: 0.5rem'};
-    ${isHorizontal && 'flex-grow:1'};
-
-    :last-child{
-      margin-right: 0;
-    }
-    
-  }
 `
 
 export default ButtonWrapper

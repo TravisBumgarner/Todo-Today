@@ -140,6 +140,10 @@ const ManageTodoListItemsModal = () => {
     dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.ADD_TASK_MODAL } })
   }, [dispatch])
 
+  const handleClose = useCallback(() => {
+    dispatch({ type: 'CLEAR_ACTIVE_MODAL' })
+  }, [dispatch])
+
   const content = useMemo(() => {
     if (!projects || projects.length === 0 || !tasks || tasks.length === 0) {
       return <EmptyStateDisplay message="There are no Tasks to Work On" callToActionButton={<Button
@@ -165,6 +169,16 @@ const ManageTodoListItemsModal = () => {
                 />
               ))
           }
+          <Button
+            fullWidth
+            type="button"
+            variant='contained'
+            key="save"
+
+            onClick={handleClose}
+          >
+            Done
+          </Button>
         </Box>
       </Box>
     )
