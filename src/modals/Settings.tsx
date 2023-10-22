@@ -181,7 +181,7 @@ const Settings = () => {
             <HelpOutlineIcon color="primary" fontSize='small' />
           </HtmlTooltip>
         </Box>
-        <Button fullWidth variant='contained' onClick={handleBackup}>Create Manul Backup</Button>
+        <Button fullWidth variant='contained' onClick={handleBackup}>Create Manual Backup</Button>
         <FormControl fullWidth margin='normal'>
           <InputLabel id="setting-modal-backup-interval">Automated Backup Interval</InputLabel>
           <Select
