@@ -39,6 +39,3 @@ export interface AsyncBackupIPCFromMain {
 export type AsyncMessageIPCFromRenderer =
   | AsyncNotificationIPCFromRenderer
   | AsyncBackupIPCFromRenderer
-
-export type AsyncMessageIPCFromMain =
-  | AsyncBackupIPCFromMain

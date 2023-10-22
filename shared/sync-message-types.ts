@@ -19,6 +19,3 @@ export interface AppStartIPCFromMain {
 
 export type SyncMessageIPCFromRenderer =
   | AppStartIPCFromRenderer
-
-export type SyncMessageIPCFromMain =
-  | AppStartIPCFromMain
