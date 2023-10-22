@@ -11,10 +11,11 @@ import RenderModal from 'modals'
 import { setupAutomatedBackup } from './modals/Settings'
 import { useIPCAsyncMessageEffect } from './hooks/useIPCAsyncMessageEffect'
 
-
 const App = () => {
   const { state, dispatch } = useContext(context)
-  useEffect(() => setupAutomatedBackup, [state.settings.backupInterval])
+  useEffect(() => {
+    setupAutomatedBackup(state.settings.backupInterval)
+  }, [state.settings.backupInterval])
   useIPCAsyncMessageEffect(dispatch)
 
   const theme = useMemo(() => {

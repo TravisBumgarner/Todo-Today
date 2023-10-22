@@ -1,6 +1,6 @@
 export enum EAsyncMessageIPCFromRenderer {
   CreateNotification = 'create_notification',
-  CreateBackup = 'start_backup',
+  CreateBackup = 'create_backup',
   RestartApp = 'restart_app'
 }
 

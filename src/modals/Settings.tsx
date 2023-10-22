@@ -8,7 +8,6 @@ import {
   sendAsyncIPCMessage,
   colorThemeOptionLabels,
   saveFile,
-  getLocalStorage,
   setLocalStorage,
   backupIntervalLookup
 } from 'utilities'
@@ -33,9 +32,8 @@ const copyIndexedDBToObject = async () => {
 const MINUTE_IN_MS = 1000 * 60
 const backupIntervalToMilliseconds = {
   [EBackupInterval.DAILY]: MINUTE_IN_MS * 60 * 24,
-  [EBackupInterval.WEEKLY]: MINUTE_IN_MS * 60 * 24 * 7,
-  [EBackupInterval.MONTHLY]: MINUTE_IN_MS * 60 * 24 * 30,
-  [EBackupInterval.OFF]: Infinity
+  [EBackupInterval.WEEKLY]: MINUTE_IN_MS * 60 * 24 * 7
+  // [EBackupInterval.MONTHLY]: MINUTE_IN_MS * 60 * 24 * 30 - Disabling this comment will cause the setInterval call to crash. Don't use it.
 } as const
 
 const runAutomatedBackup = async () => {
@@ -50,19 +48,14 @@ const runAutomatedBackup = async () => {
   sendAsyncIPCMessage(payload)
 }
 
-const setupAutomatedBackup = () => {
-  const backupInterval = getLocalStorage('backupInterval')
+const setupAutomatedBackup = (backupInterval: EBackupInterval) => {
   clearInterval(window.automatedBackupIntervalId)
 
-  if (Object.values(EBackupInterval).includes(backupInterval)) {
-    if (backupInterval === EBackupInterval.OFF) {
-      return
-    }
-
-    window.automatedBackupIntervalId = setInterval(() => {
-      void runAutomatedBackup()
-    }, backupIntervalToMilliseconds[backupInterval as EBackupInterval])
+  if (backupInterval === EBackupInterval.OFF) {
+    return
   }
+  const interval = backupIntervalToMilliseconds[backupInterval]
+  window.automatedBackupIntervalId = setInterval(runAutomatedBackup, interval)
 }
 
 const Settings = () => {

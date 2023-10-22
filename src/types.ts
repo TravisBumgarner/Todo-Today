@@ -49,7 +49,6 @@ export interface TTodoListItem {
 export enum EBackupInterval {
   DAILY = 'DAILY',
   WEEKLY = 'WEEKLY',
-  MONTHLY = 'MONTHLY',
   OFF = 'OFF'
 }
 

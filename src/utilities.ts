@@ -12,7 +12,6 @@ const projectStatusLookup: Record<EProjectStatus, string> = {
 const backupIntervalLookup: Record<EBackupInterval, string> = {
   [EBackupInterval.DAILY]: 'Every Day',
   [EBackupInterval.WEEKLY]: 'Every Week',
-  [EBackupInterval.MONTHLY]: 'Every Month',
   [EBackupInterval.OFF]: 'Off'
 }
 

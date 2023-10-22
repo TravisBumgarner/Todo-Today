@@ -151,7 +151,6 @@ ipcMain.handle(ESyncMessageIPCFromRenderer.AppStart, async (): Promise<AppStartI
 })
 
 ipcMain.on(EAsyncMessageIPCFromRenderer.CreateBackup, async (event, arg: AsyncBackupIPCFromRenderer['body']) => {
-  console.log('ruda')
   if (win) {
     try {
       writeFileSync(resolve(BACKUPS_DIR, arg.filename), arg.data, 'utf8')
@@ -167,6 +166,7 @@ ipcMain.on(EAsyncMessageIPCFromRenderer.CreateBackup, async (event, arg: AsyncBa
 })
 
 ipcMain.on(EAsyncMessageIPCFromRenderer.CreateNotification, async (event: any, arg: AsyncNotificationIPCFromRenderer['body']) => {
+  console.log('notification received')
   new Notification(arg).show()
 })
 
