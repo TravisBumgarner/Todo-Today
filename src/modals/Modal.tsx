@@ -32,6 +32,7 @@ const Modal: FC<ActiveModal> = ({ children, title, disableEscapeKeyDown, disable
       disableEscapeKeyDown={disableEscapeKeyDown}
       disableRestoreFocus={true}
       style={{ backgroundColor: 'var(--mui-palette-background-default)' }}
+      css={muiModalCSSWrapper}
     >
       <Box css={wrapperCSS}>
         <Box css={headerWrapperCSS}>
@@ -49,21 +50,28 @@ const Modal: FC<ActiveModal> = ({ children, title, disableEscapeKeyDown, disable
 }
 
 const wrapperCSS = css`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   width: 600px;
   background-color: var(--mui-palette-background-default);
   border-radius: 1rem;
   box-shadow: 24;
-  max-height: ${MODAL_MAX_HEIGHT}px;
+  overflow: auto;
   padding: 2rem;
+  box-sizing: border-box;
+  max-height: 100%;
+  overflow: auto;
 `
 
 const headerWrapperCSS = css`
   display: flex;
   justify-content: space-between;
+`
+
+const muiModalCSSWrapper = css`
+  max-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
 `
 
 export default Modal

@@ -5,10 +5,12 @@ import Modal from './Modal'
 import { ButtonWrapper, Divider } from 'sharedComponents'
 import { useLiveQuery } from 'dexie-react-hooks'
 import database from 'database'
-import { sendIPCMessage } from 'utilities'
-import { EMessageIPCFromRenderer } from 'shared/types'
+import { sendAsyncIPCMessage } from 'utilities'
+import { EAsyncMessageIPCFromRenderer } from 'shared/types'
 import { ETaskStatus, type TTask } from 'types'
 import { context } from 'Context'
+
+const CUSTOM_TIMER_DEFAULT = 10
 
 const TimerModal = ({ taskId }: { taskId: string }) => {
   const { dispatch } = useContext(context)
@@ -42,7 +44,7 @@ const TimerModal = ({ taskId }: { taskId: string }) => {
     setDetails(event.target.value)
   }, [task])
 
-  const [minutes, setMinutes] = useState(10)
+  const [minutes, setMinutes] = useState(CUSTOM_TIMER_DEFAULT)
   const [seconds, setSeconds] = useState(0)
 
   const [isBeingSetup, setIsBeingSetup] = useState(true)
@@ -85,7 +87,7 @@ const TimerModal = ({ taskId }: { taskId: string }) => {
     setIsRunning(false)
     setIsBeingSetup(true)
     setIsComplete(false)
-    setMinutes(10)
+    setMinutes(CUSTOM_TIMER_DEFAULT)
     setSeconds(0)
   }
 
@@ -101,7 +103,7 @@ const TimerModal = ({ taskId }: { taskId: string }) => {
   useEffect(() => {
     if (!isComplete) return
 
-    void sendIPCMessage({ type: EMessageIPCFromRenderer.Notification, body: { title: 'Timer done', body: 'Time for a break' } })
+    sendAsyncIPCMessage({ type: EAsyncMessageIPCFromRenderer.CreateNotification, body: { title: 'Timer done', body: 'Time for a break' } })
   }, [isComplete])
 
   return (

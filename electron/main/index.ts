@@ -4,11 +4,13 @@ import { join, resolve } from 'node:path'
 import { writeFileSync, existsSync, mkdirSync } from 'node:fs'
 import { autoUpdater } from 'electron-updater'
 import log from 'electron-log'
+import moment from 'moment'
 
 import { update } from './update'
 import menu from './menu'
 import { isDev, isDebugProduction } from './config'
-import { type BackupIPCFromRenderer, EMessageIPCFromRenderer, type NotificationIPCFromRenderer } from '../../shared/types'
+import { type AsyncBackupIPCFromRenderer, ESyncMessageIPCFromRenderer, type AsyncNotificationIPCFromRenderer, type AsyncBackupIPCFromMain, type AppStartIPCFromMain, EAsyncMessageIPCFromRenderer, EAsyncMessageIPCFromMain } from '../../shared/types'
+import { DATE_BACKUP_DATE } from '../../shared/utilities'
 
 Menu.setApplicationMenu(menu)
 
@@ -142,44 +144,51 @@ if (!existsSync(BACKUPS_DIR)) {
   mkdirSync(BACKUPS_DIR, { recursive: true })
 }
 
-ipcMain.handle(EMessageIPCFromRenderer.AppStart, async () => {
+ipcMain.handle(ESyncMessageIPCFromRenderer.AppStart, async (): Promise<AppStartIPCFromMain['body']> => {
   return {
     backupDir: BACKUPS_DIR
   }
 })
 
-ipcMain.handle(EMessageIPCFromRenderer.Backup, async (event, arg: BackupIPCFromRenderer['body']) => {
-  try {
-    writeFileSync(resolve(BACKUPS_DIR, arg.filename), arg.data, 'utf8')
-    return { isSuccess: true, moreData: 'hi' }
-  } catch (e) {
-    return { isSuccess: false, message: JSON.stringify(e) }
+ipcMain.on(EAsyncMessageIPCFromRenderer.CreateBackup, async (event, arg: AsyncBackupIPCFromRenderer['body']) => {
+  if (win) {
+    try {
+      writeFileSync(resolve(BACKUPS_DIR, arg.filename), arg.data, 'utf8')
+      const message: AsyncBackupIPCFromMain['body'] = { success: true, timestamp: moment().format(DATE_BACKUP_DATE) }
+      win.webContents.send(EAsyncMessageIPCFromMain.BackupCompleted, message)
+    } catch (e) {
+      const message: AsyncBackupIPCFromMain['body'] = { success: false }
+      win.webContents.send(EAsyncMessageIPCFromMain.BackupCompleted, message)
+    }
+  } else {
+    log.error(EAsyncMessageIPCFromMain.BackupCompleted, 'No window available')
   }
 })
 
-ipcMain.handle(EMessageIPCFromRenderer.Notification, async (event: any, arg: NotificationIPCFromRenderer['body']) => {
+ipcMain.on(EAsyncMessageIPCFromRenderer.CreateNotification, async (event: any, arg: AsyncNotificationIPCFromRenderer['body']) => {
+  console.log('notification received')
   new Notification(arg).show()
 })
 
 autoUpdater.on('update-available', () => {
   log.info('update-available')
   if (win) {
-    win.webContents.send('update_available')
+    win.webContents.send(EAsyncMessageIPCFromMain.UpdateAvailable)
     void autoUpdater.downloadUpdate()
   } else {
-    log.error('update-available - No window available')
+    log.error(EAsyncMessageIPCFromMain.UpdateAvailable, 'No window available')
   }
 })
 
 autoUpdater.on('update-downloaded', () => {
   log.info('update-downloaded')
   if (win) {
-    win.webContents.send('update_downloaded')
+    win.webContents.send(EAsyncMessageIPCFromMain.UpdateDownloaded)
   } else {
-    log.error('update-downloaded - No window available')
+    log.error(EAsyncMessageIPCFromMain.UpdateDownloaded, 'No window available')
   }
 })
 
-ipcMain.on('restart_app', () => {
+ipcMain.on(EAsyncMessageIPCFromRenderer.RestartApp, () => {
   autoUpdater.quitAndInstall()
 })

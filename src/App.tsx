@@ -1,29 +1,22 @@
-import { useContext, useMemo } from 'react'
+import { useContext, useEffect, useMemo } from 'react'
 import CssBaseline from '@mui/material/CssBaseline' // https://stackoverflow.com/questions/74542488/react-material-ui-createtheme-default-is-not-a-function
 import { Box, Experimental_CssVarsProvider, css } from '@mui/material'
 
 import { EColorTheme } from './types'
-import Context, { type Action, context } from 'Context'
+import Context, { context } from 'Context'
 import { baseTheme, beachTheme, highContrastTheme, retroFutureTheme, underTheSeaTheme } from 'theme'
 import { Header, Router, Message } from './components'
 import RenderModal from 'modals'
-import { ipcRenderer } from 'electron'
 
-const useIPCRendererEffect = (dispatch: React.Dispatch<Action>) => {
-  ipcRenderer.on('update_available', () => {
-    ipcRenderer.removeAllListeners('update_available')
-    dispatch({ type: 'ADD_MESSAGE', data: { text: 'A new update is available. Downloading now...', severity: 'info' } })
-  })
-
-  ipcRenderer.on('update_downloaded', () => {
-    ipcRenderer.removeAllListeners('update_downloaded')
-    dispatch({ type: 'ADD_MESSAGE', data: { text: 'Update Downloaded. It will be installed on restart. Restart now?', severity: 'info', cancelCallbackText: 'Later', confirmCallbackText: 'Restart', confirmCallback: () => { ipcRenderer.send('restart_app') } } })
-  })
-}
+import { setupAutomatedBackup } from './modals/Settings'
+import { useIPCAsyncMessageEffect } from './hooks/useIPCAsyncMessageEffect'
 
 const App = () => {
   const { state, dispatch } = useContext(context)
-  useIPCRendererEffect(dispatch)
+  useEffect(() => {
+    setupAutomatedBackup(state.settings.backupInterval)
+  }, [state.settings.backupInterval])
+  useIPCAsyncMessageEffect(dispatch)
 
   const theme = useMemo(() => {
     switch (state.settings.colorTheme) {

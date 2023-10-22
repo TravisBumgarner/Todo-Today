@@ -24,7 +24,8 @@
     "build-electron-dev": "yarn run setup-dev && yarn build-react && electron-builder build --mac --publish never --config ./electron-builder.dev.js",
     "build-electron-prod": "yarn run setup-prod && yarn build-react && electron-builder build --mac --publish never --config ./electron-builder.production.js",
     "deploy-electron-prod": "yarn run setup-prod && yarn build-react && electron-builder build --mac --publish always --config ./electron-builder.production.js",
-    "lint": "eslint src --ext .ts,.tsx"
+    "lint": "eslint src --ext .ts,.tsx",
+    "verify-types": "tsc --noEmit"
   },
   "dependencies": {
     "electron-updater": "^6.1.4"
