@@ -17,7 +17,7 @@ echo "yarn run lint" > .git/hooks/pre-commit
 echo "yarn run verify-types" >> .git/hooks/pre-commit
 
 # Make the script executable
-chmod +x .git/pre-commit
+chmod +x .git/hooks/pre-commit
 
 echo "Pre-commit hook script created successfully."
 
