@@ -2,7 +2,7 @@ import moment from 'moment'
 import { ipcRenderer } from 'electron'
 
 import { EProjectStatus, type TDateISODate, ETaskStatus, EColorTheme, EBackupInterval, DATE_ISO_DATE_MOMENT_STRING } from './types'
-import { type BackupIPCFromMain, EMessageIPCFromRenderer, type MessageIPCFromRenderer, type AppStartIPCFromMain } from 'shared/types'
+import { ESyncMessageIPCFromRenderer, type SyncMessageIPCFromRenderer, type AppStartIPCFromMain, type AsyncMessageIPCFromRenderer } from 'shared/types'
 
 const projectStatusLookup: Record<EProjectStatus, string> = {
   [EProjectStatus.INACTIVE]: 'Inactive',
@@ -10,8 +10,6 @@ const projectStatusLookup: Record<EProjectStatus, string> = {
 }
 
 const backupIntervalLookup: Record<EBackupInterval, string> = {
-  [EBackupInterval.MINUTELY]: 'Every Minute',
-  [EBackupInterval.HOURLY]: 'Ever Hour',
   [EBackupInterval.DAILY]: 'Every Day',
   [EBackupInterval.WEEKLY]: 'Every Week',
   [EBackupInterval.MONTHLY]: 'Every Month',
@@ -93,31 +91,26 @@ const setLocalStorage = <T extends TLocalStorage>(key: keyof T, value: T[keyof T
 }
 
 interface MessageReturnTypeMap {
-  [EMessageIPCFromRenderer.Notification]: null
-  [EMessageIPCFromRenderer.Backup]: BackupIPCFromMain['body']
-  [EMessageIPCFromRenderer.AppStart]: AppStartIPCFromMain['body']
+  [ESyncMessageIPCFromRenderer.AppStart]: AppStartIPCFromMain['body']
 }
 
-const sendIPCMessage = async <T extends MessageIPCFromRenderer>(
+const sendSyncIPCMessage = async <T extends SyncMessageIPCFromRenderer>(
   message: T
 ): Promise<MessageReturnTypeMap[T['type']]> => {
   switch (message.type) {
-    case EMessageIPCFromRenderer.Notification: {
-      await ipcRenderer.invoke(message.type, message.body)
-      return null as MessageReturnTypeMap[T['type']]
-    }
-    case EMessageIPCFromRenderer.Backup: {
-      return (await ipcRenderer.invoke(
-        message.type,
-        message.body
-      )) as MessageReturnTypeMap[T['type']]
-    }
-    case EMessageIPCFromRenderer.AppStart: {
+    case ESyncMessageIPCFromRenderer.AppStart: {
       return (await ipcRenderer.invoke(
         message.type
       )) as MessageReturnTypeMap[T['type']]
     }
   }
+}
+
+const sendAsyncIPCMessage = <T extends AsyncMessageIPCFromRenderer>(
+  message: T
+) => {
+  // Responses end up in useIPCRendererEffect.ts
+  ipcRenderer.send(message.type, message.body)
 }
 
 export {
@@ -132,5 +125,6 @@ export {
   saveFile,
   getLocalStorage,
   setLocalStorage,
-  sendIPCMessage
+  sendSyncIPCMessage,
+  sendAsyncIPCMessage
 }

@@ -3,7 +3,6 @@ type TMonth = `${number}${number}`
 type TDay = `${number}${number}`
 export type TDateISODate = `${TYear}-${TMonth}-${TDay}`
 export const DATE_ISO_DATE_MOMENT_STRING = 'YYYY-MM-DD'
-export const DATE_BACKUP_DATE = 'YYYY-MM-DD-HH-mm-ss'
 
 export enum EProjectStatus {
   ACTIVE = 'ACTIVE',
@@ -48,8 +47,6 @@ export interface TTodoListItem {
 }
 
 export enum EBackupInterval {
-  MINUTELY = 'MINITELY',
-  HOURLY = 'HOURLY',
   DAILY = 'DAILY',
   WEEKLY = 'WEEKLY',
   MONTHLY = 'MONTHLY',

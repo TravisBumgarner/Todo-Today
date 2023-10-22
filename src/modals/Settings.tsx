@@ -1,25 +1,26 @@
-import { useState, useContext, useCallback, useEffect } from 'react'
+import { useState, useContext, useCallback } from 'react'
 import moment from 'moment'
-import { Box, Button, FormControl, InputLabel, MenuItem, Select, Typography, css } from '@mui/material'
+import { Box, Button, FormControl, InputLabel, MenuItem, Select, type SelectChangeEvent, Typography, css } from '@mui/material'
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 import { HtmlTooltip } from 'sharedComponents'
 
-import database from 'database'
-import { EColorTheme, EBackupInterval, DATE_BACKUP_DATE } from 'types'
 import {
+  sendAsyncIPCMessage,
   colorThemeOptionLabels,
   saveFile,
   getLocalStorage,
   setLocalStorage,
-  backupIntervalLookup,
-  sendIPCMessage
+  backupIntervalLookup
 } from 'utilities'
+import database from 'database'
+import { EColorTheme, EBackupInterval } from 'types'
 import Modal from './Modal'
-import { type State, context } from 'Context'
+import { context } from 'Context'
 import { ModalID } from './RenderModal'
-import { EMessageIPCFromRenderer } from 'shared/types'
+import { EAsyncMessageIPCFromRenderer } from 'shared/types'
+import { DATE_BACKUP_DATE } from 'shared/utilities'
 
-const createBackup = async () => {
+const copyIndexedDBToObject = async () => {
   const data = {
     projects: await database.projects.toArray(),
     tasks: await database.tasks.toArray(),
@@ -31,92 +32,69 @@ const createBackup = async () => {
 
 const MINUTE_IN_MS = 1000 * 60
 const backupIntervalToMilliseconds = {
-  [EBackupInterval.MINUTELY]: MINUTE_IN_MS,
-  [EBackupInterval.HOURLY]: MINUTE_IN_MS * 60,
   [EBackupInterval.DAILY]: MINUTE_IN_MS * 60 * 24,
   [EBackupInterval.WEEKLY]: MINUTE_IN_MS * 60 * 24 * 7,
-  [EBackupInterval.MONTHLY]: MINUTE_IN_MS * 60 * 24 * 30
+  [EBackupInterval.MONTHLY]: MINUTE_IN_MS * 60 * 24 * 30,
+  [EBackupInterval.OFF]: Infinity
 } as const
 
-const runAutomatedBackup = (triggerBackupFailureModal: () => void) => {
-  void createBackup().then(async (data) => {
-    const payload = {
-      type: EMessageIPCFromRenderer.Backup,
-      body: {
-        filename: `${moment().format(DATE_BACKUP_DATE)}.json`,
-        data: JSON.stringify(data)
-      }
-    } as const
-    const response = await sendIPCMessage(payload)
-    if (response.success) {
-      setLocalStorage('lastBackup', moment().format(DATE_BACKUP_DATE))
-    } else {
-      triggerBackupFailureModal()
+const runAutomatedBackup = async () => {
+  const backupData = await copyIndexedDBToObject()
+  const payload = {
+    type: EAsyncMessageIPCFromRenderer.CreateBackup,
+    body: {
+      filename: `${moment().format(DATE_BACKUP_DATE)}.json`,
+      data: JSON.stringify(backupData)
     }
-  })
+  } as const
+  sendAsyncIPCMessage(payload)
 }
 
-const createNewBackupInterval = (
-  triggerBackupFailureModal: () => void,
-  backupIntervalInMilliseconds: number
-) => {
+const setupAutomatedBackup = () => {
+  const backupInterval = getLocalStorage('backupInterval')
   clearInterval(window.automatedBackupIntervalId)
-  window.automatedBackupIntervalId = setInterval(() => {
-    runAutomatedBackup(triggerBackupFailureModal)
-  }, backupIntervalInMilliseconds)
-}
 
-const setupAutomatedBackup = (triggerBackupFailureModal: () => void) => {
-  const backupInterval = getLocalStorage('backupInterval') as EBackupInterval
-  if (backupInterval === EBackupInterval.OFF) {
-    return
+  if (Object.values(EBackupInterval).includes(backupInterval)) {
+    if (backupInterval === EBackupInterval.OFF) {
+      return
+    }
+
+    window.automatedBackupIntervalId = setInterval(() => {
+      void runAutomatedBackup()
+    }, backupIntervalToMilliseconds[backupInterval as EBackupInterval])
   }
-  const lastBackup = getLocalStorage('lastBackup')
-
-  const lastBackupThreshold = moment()
-  lastBackupThreshold.subtract(backupIntervalToMilliseconds[backupInterval], 'milliseconds')
-
-  if (!lastBackup || moment(lastBackup) < lastBackupThreshold) {
-    runAutomatedBackup(triggerBackupFailureModal)
-  }
-  createNewBackupInterval(triggerBackupFailureModal, backupIntervalToMilliseconds[backupInterval])
 }
 
 const Settings = () => {
   const { state, dispatch } = useContext(context)
   const [restoreFile, setRestoreFile] = useState<File | null>(null)
-  const [refreshBackupDate, shouldRefreshBackupDate] = useState(false)
-  const [lastBackup, setLastBackup] = useState<string | null>(null)
 
   const handleBackup = async () => {
-    const data = await createBackup()
-    if (!data) {
+    const backupData = await copyIndexedDBToObject()
+    if (!backupData) {
       dispatch({
         type: 'SET_ACTIVE_MODAL',
         payload: {
           id: ModalID.CONFIRMATION_MODAL,
-          title: 'Something went Wrong',
+          title: 'Something went wrong',
           body: 'There is no data to backup'
         }
       })
     } else {
       const backupDate = moment().format(DATE_BACKUP_DATE)
-      void saveFile(`${backupDate}.json`, data)
+      void saveFile(`${backupDate}.json`, backupData)
       setLocalStorage('lastBackup', backupDate)
-      shouldRefreshBackupDate(prev => !prev)
+      dispatch({ type: 'EDIT_USER_SETTING', payload: { key: 'lastBackup', value: backupDate } })
     }
   }
 
-  useEffect(() => {
-    setLastBackup(getLocalStorage('lastBackup'))
-  }, [refreshBackupDate])
+  const handleThemeChange = useCallback((event: SelectChangeEvent<EColorTheme>) => {
+    dispatch({ type: 'EDIT_USER_SETTING', payload: { key: 'colorTheme', value: event.target.value } })
+  }, [dispatch])
 
-  const handleSubmit = ({ key, value }: {
-    key: keyof State['settings']
-    value: string
-  }) => {
-    dispatch({ type: 'EDIT_USER_SETTING', payload: { key, value } })
-  }
+  const handleBackupIntervalChange = useCallback((event: SelectChangeEvent<EBackupInterval>) => {
+    dispatch({ type: 'EDIT_USER_SETTING', payload: { key: 'backupInterval', value: event.target.value } })
+  }, [dispatch])
 
   const restore = useCallback((restoreFile: File | null) => {
     dispatch({ type: 'RESTORE_STARTED' })
@@ -166,7 +144,7 @@ const Settings = () => {
     dispatch({ type: 'RESTORE_ENDED' })
   }, [dispatch])
 
-  const handleRestore = useCallback(() => {
+  const handleRestoreClick = useCallback(() => {
     dispatch({
       type: 'SET_ACTIVE_MODAL',
       payload: {
@@ -192,7 +170,7 @@ const Settings = () => {
             labelId="setting-modal-color-theme"
             value={state.settings.colorTheme}
             label="Color Theme"
-            onChange={(event) => { handleSubmit({ key: 'colorTheme', value: event.target.value }) }}
+            onChange={handleThemeChange}
           >
             {Object.keys(EColorTheme).map(key => <MenuItem key={key} value={key}>{colorThemeOptionLabels[key as EColorTheme]}</MenuItem>)}
           </Select>
@@ -204,22 +182,22 @@ const Settings = () => {
           <Typography variant="h3">Backup</Typography>
           <HtmlTooltip title={
             <>
-              <Typography variant="body2"><Box component="span" fontWeight={700}>Last Backup<br /></Box> {lastBackup}</Typography>
+              <Typography variant="body2"><Box component="span" fontWeight={700}>Last Backup<br /></Box> {state.settings.lastBackup ?? 'No backups yet'}</Typography>
               <Typography variant="body2"><Box component="span" fontWeight={700}>Location<br /></Box> {state.settings.backupDir}</Typography></>
           }>
             <HelpOutlineIcon color="primary" fontSize='small' />
           </HtmlTooltip>
         </Box>
-        <Button fullWidth variant='contained' onClick={async () => { await handleBackup() }}>Create Backup</Button>
+        <Button fullWidth variant='contained' onClick={handleBackup}>Create Manul Backup</Button>
         <FormControl fullWidth margin='normal'>
-          <InputLabel id="setting-modal-backup-interval">Backup Interval</InputLabel>
+          <InputLabel id="setting-modal-backup-interval">Automated Backup Interval</InputLabel>
           <Select
             margin='dense'
             fullWidth
             labelId="setting-modal-backup-interval"
             value={state.settings.backupInterval}
-            label="Backup Interval"
-            onChange={(event) => { dispatch({ type: 'EDIT_USER_SETTING', payload: { key: 'backupInterval', value: event.target.value } }) }}
+            label="Automated Backup Interval"
+            onChange={handleBackupIntervalChange}
           >
             {Object.keys(EBackupInterval).map(key => <MenuItem key={key} value={key}>{backupIntervalLookup[key as EBackupInterval]}</MenuItem>)}
           </Select>
@@ -245,7 +223,7 @@ const Settings = () => {
         <Typography css={fileNameCSS} variant='body1'>Filename: {restoreFile ? restoreFile.name : ''}</Typography>
         <Button
           disabled={!restoreFile}
-          onClick={handleRestore}
+          onClick={handleRestoreClick}
           fullWidth
           variant='contained'
         >

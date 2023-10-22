@@ -5,8 +5,8 @@ import Modal from './Modal'
 import { ButtonWrapper, Divider } from 'sharedComponents'
 import { useLiveQuery } from 'dexie-react-hooks'
 import database from 'database'
-import { sendIPCMessage } from 'utilities'
-import { EMessageIPCFromRenderer } from 'shared/types'
+import { sendAsyncIPCMessage, sendSyncIPCMessage } from 'utilities'
+import { EAsyncMessageIPCFromRenderer, ESyncMessageIPCFromRenderer } from 'shared/types'
 import { ETaskStatus, type TTask } from 'types'
 import { context } from 'Context'
 
@@ -42,8 +42,8 @@ const TimerModal = ({ taskId }: { taskId: string }) => {
     setDetails(event.target.value)
   }, [task])
 
-  const [minutes, setMinutes] = useState(10)
-  const [seconds, setSeconds] = useState(0)
+  const [minutes, setMinutes] = useState(0)
+  const [seconds, setSeconds] = useState(5)
 
   const [isBeingSetup, setIsBeingSetup] = useState(true)
   const [isRunning, setIsRunning] = useState(false)
@@ -101,7 +101,7 @@ const TimerModal = ({ taskId }: { taskId: string }) => {
   useEffect(() => {
     if (!isComplete) return
 
-    void sendIPCMessage({ type: EMessageIPCFromRenderer.Notification, body: { title: 'Timer done', body: 'Time for a break' } })
+    sendAsyncIPCMessage({ type: EAsyncMessageIPCFromRenderer.CreateNotification, body: { title: 'Timer done', body: 'Time for a break' } })
   }, [isComplete])
 
   return (
@@ -117,7 +117,7 @@ const TimerModal = ({ taskId }: { taskId: string }) => {
             <>
               <Typography variant='body1'>How long do you want to work?</Typography>
               <ButtonWrapper isHorizontal>
-                <Button variant='contained' onClick={() => { setMinutes(25); setIsBeingSetup(false) }}>25 minutes</Button>
+                <Button variant='contained' onClick={() => { setMinutes(0); setIsBeingSetup(false) }}>25 minutes</Button>
                 <Button variant='contained' onClick={() => { setMinutes(50); setIsBeingSetup(false) }}>50 minutes</Button>
               </ButtonWrapper>
               <Divider text="Or" />

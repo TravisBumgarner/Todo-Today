@@ -2,8 +2,8 @@ import { createContext, useReducer, useState, type Dispatch, useEffect } from 'r
 import moment from 'moment'
 
 import { EColorTheme, EBackupInterval, type TSettings, type TDateISODate, EActivePage } from 'types'
-import { formatDateKeyLookup, getLocalStorage, sendIPCMessage, setLocalStorage } from 'utilities'
-import { EMessageIPCFromRenderer } from 'shared/types'
+import { formatDateKeyLookup, getLocalStorage, sendSyncIPCMessage, setLocalStorage } from 'utilities'
+import { ESyncMessageIPCFromRenderer } from 'shared/types'
 import { type ActiveModal } from './modals/RenderModal'
 
 const HAS_DONE_WARM_START = 'hasDoneWarmStart'
@@ -22,6 +22,7 @@ export interface State {
     colorTheme: EColorTheme
     backupInterval: EBackupInterval
     backupDir: string
+    lastBackup: string
   }
   activeModal: ActiveModal | null
   selectedDate: TDateISODate
@@ -33,7 +34,8 @@ const EMPTY_STATE: State = {
   settings: {
     colorTheme: EColorTheme.BEACH,
     backupInterval: EBackupInterval.OFF,
-    backupDir: ''
+    backupDir: '',
+    lastBackup: ''
   },
   activeModal: null,
   selectedDate: formatDateKeyLookup(moment()),
@@ -108,7 +110,7 @@ interface SetActivePage {
 
 interface AddMessage {
   type: 'ADD_MESSAGE'
-  data: {
+  payload: {
     text: string
     severity: 'error' | 'warning' | 'info' | 'success'
     url?: string
@@ -166,7 +168,7 @@ const reducer = (state: State, action: Action): State => {
       return { ...state, activePage: page }
     }
     case 'ADD_MESSAGE': {
-      return { ...state, message: { ...action.data } }
+      return { ...state, message: { ...action.payload } }
     }
     case 'DELETE_MESSAGE': {
       return { ...state, message: null }
@@ -192,7 +194,7 @@ const ResultsContext = ({ children }: { children: any }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const { backupDir } = await sendIPCMessage({ type: EMessageIPCFromRenderer.AppStart })
+      const { backupDir } = await sendSyncIPCMessage({ type: ESyncMessageIPCFromRenderer.AppStart })
       if (getLocalStorage(HAS_DONE_WARM_START) !== TRUE) {
         initialSetup(backupDir)
       } else {
