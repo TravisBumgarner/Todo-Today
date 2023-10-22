@@ -182,7 +182,7 @@ const ManageTodoListItemsModal = () => {
         </Box>
       </Box>
     )
-  }, [projects, selectedTaskIds, tasks, showAddNewTaskModal])
+  }, [projects, selectedTaskIds, tasks, showAddNewTaskModal, handleClose])
 
   return (
     <Modal
