@@ -22,9 +22,10 @@
     "build-react": "tsc && vite build",
     "setup-dev": "rm -rf ./release && export CSC_IDENTITY_AUTO_DISCOVERY=false",
     "setup-prod": "rm -rf ./release && export CSC_IDENTITY_AUTO_DISCOVERY=true",
-    "build-electron-dev": "yarn run setup-dev && yarn build-react && electron-builder build --mac --publish never --config ./electron-builder.dev.js",
-    "build-electron-prod": "yarn run setup-prod && yarn build-react && electron-builder build --mac --publish never --config ./electron-builder.production.js",
-    "deploy-electron-prod": "yarn run setup-prod && yarn build-react && electron-builder build --mac --publish always --config ./electron-builder.production.js",
+    "build-electron-dev": "yarn run setup-dev && yarn build-react && electron-builder build --mac --publish never --config ./electron-builder.dev.js && yarn run post-build-cleanup",
+    "build-electron-prod": "yarn run setup-prod && yarn build-react && electron-builder build --mac --publish never --config ./electron-builder.production.js && yarn run post-build-cleanup",
+    "deploy-electron-prod": "yarn run setup-prod && yarn build-react && electron-builder build --mac --publish always --config ./electron-builder.production.js && yarn run post-build-cleanup",
+    "post-build-cleanup": "rm -rf dist/ dist-electron/",
     "lint": "eslint src --ext .ts,.tsx",
     "verify-types": "tsc --noEmit"
   },
