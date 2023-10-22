@@ -17,6 +17,7 @@
     }
   },
   "scripts": {
+    "bootstrap": "./scripts/bootstrap.sh",
     "start": "vite --force",
     "build-react": "tsc && vite build",
     "setup-dev": "rm -rf ./release && export CSC_IDENTITY_AUTO_DISCOVERY=false",

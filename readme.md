@@ -1,3 +1,7 @@
+# Setup
+
+Run bootstrap
+
 # Signing and notarizing
 
 - https://www.npmjs.com/package/@electron/notarize
