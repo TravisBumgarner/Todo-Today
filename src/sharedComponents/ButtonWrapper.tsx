@@ -8,6 +8,7 @@ const ButtonWrapper = ({ children, isHorizontal }: { children: React.ReactNode, 
 
 const wrapperCSS = (isHorizontal?: boolean) => css`
   width: 100%;
+  display: block;
   ${isHorizontal && 'display: flex; justify-content: space-between;'}
 
   button {

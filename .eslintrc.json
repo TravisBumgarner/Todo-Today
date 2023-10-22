@@ -30,7 +30,8 @@
     "@typescript-eslint/consistent-type-assertions": "off",
     "@typescript-eslint/no-non-null-assertion": "off",
     "@typescript-eslint/no-explicit-any": "off",
-    "import/no-unresolved": "error"
+    "import/no-unresolved": "error",
+    "@typescript-eslint/indent": "off"
   },
   "settings": {
     "import/parsers": {

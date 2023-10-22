@@ -2,16 +2,19 @@ import { useCallback, useContext, useState } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { v4 as uuid4 } from 'uuid'
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd'
-import { Box, Button, ButtonGroup, Typography, css } from '@mui/material'
+import { Box, Button, ButtonGroup, Stack, ToggleButton, Tooltip, Typography, css } from '@mui/material'
+import { ChevronRight } from '@mui/icons-material'
+import _ from 'lodash'
+import moment from 'moment'
 
 import database from 'database'
-import { DATE_ISO_DATE_MOMENT_STRING, ETaskStatus, type TTodoListItem } from 'types'
+import { DATE_ISO_DATE_MOMENT_STRING, ETaskStatus, type TProject, type TTask, type TTodoListItem } from 'types'
 import { context } from 'Context'
-import TodoListItem from './TodoListItem'
+import TodoListItem, { TODO_LIST_ITEM_MARGIN, type Entry } from './TodoListItem'
 import { ModalID } from 'modals'
-import { formatDateDisplayString, formatDateKeyLookup } from 'utilities'
-import moment from 'moment'
+import { TASK_STATUS_IS_ACTIVE, formatDateDisplayString, formatDateKeyLookup } from 'utilities'
 import { pageCSS } from 'theme'
+import { HEADER_HEIGHT } from '../../../components/Header'
 
 const reorder = (list: any[], startIndex: number, endIndex: number) => {
   const result = Array.from(list)
@@ -20,6 +23,8 @@ const reorder = (list: any[], startIndex: number, endIndex: number) => {
 
   return result
 }
+
+const MENU_ITEMS_HEIGHT = 50
 
 const EmptyTodoList = () => {
   const { state: { selectedDate }, dispatch } = useContext(context)
@@ -112,15 +117,33 @@ const EmptyTodoList = () => {
 
 const TodoList = () => {
   const { state: { selectedDate, restoreInProgress }, dispatch } = useContext(context)
-  const [selectedDateTodoListItems, setSelectedDateTodoListItems] = useState<TTodoListItem[]>([])
+  const [selectedDateActiveEntries, setSelectedDateActiveEntries] = useState<Entry[]>([])
+  const [selectedDateInactiveEntries, setSelectedDateInactiveEntries] = useState<Entry[]>([])
+  const [showArchive, setShowArchive] = useState(false)
 
   useLiveQuery(
     async () => {
-      await database.todoListItems
+      const todoListItems = await database.todoListItems
         .where('todoListDate')
         .equals(selectedDate)
         .sortBy('sortOrder')
-        .then(r => { setSelectedDateTodoListItems(r) })
+
+      const entries = await Promise.all(todoListItems.map(async todoListItem => {
+        const task = await database.tasks.where('id').equals(todoListItem.id).first() as TTask
+        const project = await database.projects.where('id').equals(task.projectId).first() as TProject
+
+        return {
+          ...todoListItem,
+          taskTitle: task.title,
+          taskStatus: task.status,
+          projectTitle: project.title,
+          taskDetails: task.details
+        }
+      }))
+
+      const [activeEntries, inactiveEntries] = _.partition(entries, entry => TASK_STATUS_IS_ACTIVE[entry.taskStatus])
+      setSelectedDateActiveEntries(activeEntries)
+      setSelectedDateInactiveEntries(inactiveEntries)
     },
     [selectedDate]
   )
@@ -149,14 +172,14 @@ const TodoList = () => {
   const onDragEnd = async (result: any) => {
     // Sorting order gets updated a little weirdly if data goes all the way to Dexie and back.
     // That's why we call set state at the end of this function.
-    if (!selectedDateTodoListItems || !result.destination) return
+    if (!selectedDateActiveEntries || !result.destination) return
 
-    const source = selectedDateTodoListItems[result.source.index]
-    const destination = selectedDateTodoListItems[result.destination.index]
+    const source = selectedDateActiveEntries[result.source.index]
+    const destination = selectedDateActiveEntries[result.destination.index]
     if (!source || !destination) {
       return
     }
-    const reordered = reorder(selectedDateTodoListItems, result.source.index, result.destination.index)
+    const reordered = reorder(selectedDateActiveEntries, result.source.index, result.destination.index)
     await Promise.all(reordered.map(({ id }, index) => {
       void database.todoListItems.where('id').equals(id).modify((i: TTodoListItem) => {
         i.sortOrder = index
@@ -164,8 +187,10 @@ const TodoList = () => {
       return null
     }))
 
-    setSelectedDateTodoListItems(reordered)
+    setSelectedDateActiveEntries(reordered)
   }
+
+  const toggleShowArchive = useCallback(() => { setShowArchive(prev => !prev) }, [])
 
   if (restoreInProgress) {
     return null
@@ -173,7 +198,7 @@ const TodoList = () => {
 
   return (
     <Box css={pageCSS}>
-      <Box css={{ display: 'flex', justifyContent: 'space-between' }}>
+      <Box css={{ display: 'flex', justifyContent: 'space-between', height: `${MENU_ITEMS_HEIGHT}px` }}>
         <Box>
           <ButtonGroup>
             <Button
@@ -196,18 +221,18 @@ const TodoList = () => {
           <Button variant='contained' onClick={getNextDate}>&gt;</Button>
         </ButtonGroup>
       </Box>
-      {!selectedDateTodoListItems || selectedDateTodoListItems.length === 0
-        ? <EmptyTodoList />
-        : (
+      <Box css={todolistItemsWrapperCSS}>
+        {selectedDateActiveEntries.length === 0 && selectedDateInactiveEntries.length === 0 && <EmptyTodoList />}
+        {selectedDateActiveEntries.length > 0 && (
           <DragDropContext onDragEnd={onDragEnd}>
             <Droppable droppableId="droppable">
               {(provided, snapshot) => (
                 <div
                   {...provided.droppableProps}
                   ref={provided.innerRef}
-                  style={dragAndDropCSS(snapshot.isDraggingOver)}
+                  style={dragAndDropCSS()}
                 >
-                  {selectedDateTodoListItems.map((it, index) => (
+                  {selectedDateActiveEntries.map((it, index) => (
                     <Draggable
                       key={it.id}
                       draggableId={it.id}
@@ -225,30 +250,50 @@ const TodoList = () => {
                         </div>
                       )}
                     </Draggable>
-                  ))}
+                  ))
+                  }
                   {provided.placeholder}
-                </div>
+                </div >
               )}
-            </Droppable>
-          </DragDropContext>
-        )
-      }
+            </Droppable >
+          </DragDropContext >
+        )}
+        {(selectedDateInactiveEntries.length > 0) && (
+          <>
+            <Stack direction="row" css={css`margin-bottom: 0.5rem;`}>
+              <Typography variant="h2">Archive</Typography>
+              <ToggleButton
+                size='small'
+                value="text"
+                onChange={toggleShowArchive}
+                css={{ marginLeft: '0.5rem' }}
+              >
+                <Tooltip title="Show archive" >
+                  <ChevronRight fontSize="small" css={{ transform: `rotate(${showArchive ? '90deg' : '0deg'})` }} />
+                </Tooltip>
+              </ToggleButton>
+            </Stack>
+            {showArchive && selectedDateInactiveEntries.map((it) => <TodoListItem key={it.id} {...it} />)}
+          </>
+        )}
+      </Box >
     </Box >
   )
 }
 
-const dragAndDropCSS = (isDraggingOver: boolean) => {
+const todolistItemsWrapperCSS = css`
+  overflow: auto;
+  height: calc(100vh - ${MENU_ITEMS_HEIGHT}px - ${HEADER_HEIGHT}px);
+`
+
+const dragAndDropCSS = () => {
   return ({
-    borderRadius: '0.5rem',
-    overflow: 'auto',
-    height: '100%',
-    margin: '1rem 0 3rem 0' // For whatever reason scroll starts at a different height than the bottom of the content.
+    margin: '0 0 1rem 0'
   })
 }
 
-const dragItemCSS = (isDragging: boolean, draggableStyle: any) => ({
-  // some basic styles to make the items look a bit nicer
-  margin: '0.5rem 0',
+const dragItemCSS = (_isDragging: boolean, draggableStyle: any) => ({
+  margin: TODO_LIST_ITEM_MARGIN,
   cursor: 'pointer',
 
   // styles we need to apply on draggables
@@ -257,21 +302,21 @@ const dragItemCSS = (isDragging: boolean, draggableStyle: any) => ({
 
 const todayButtonCSS = css`
   width: 220px;
-  &:hover span {
-    display: none;
+      &:hover span {
+        display: none;
   }
 
-  :hover:before {
-    content:"Go to Today";
+      :hover:before {
+        content:"Go to Today";
   }
-`
+      `
 
 const emptyTodoListCSS = css`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  height: 100%;
-`
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      height: 100%;
+      `
 
 export default TodoList
