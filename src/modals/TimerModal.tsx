@@ -119,8 +119,8 @@ const TimerModal = ({ taskId }: { taskId: string }) => {
             <>
               <Typography variant='body1'>How long do you want to work?</Typography>
               <ButtonWrapper isHorizontal>
-                <Button variant='contained' onClick={() => { setMinutes(25); setIsBeingSetup(false) }}>25 minutes</Button>
-                <Button variant='contained' onClick={() => { setMinutes(50); setIsBeingSetup(false) }}>50 minutes</Button>
+                <Button fullWidth variant='contained' onClick={() => { setMinutes(25); setIsBeingSetup(false) }}>25 minutes</Button>
+                <Button fullWidth variant='contained' onClick={() => { setMinutes(50); setIsBeingSetup(false) }}>50 minutes</Button>
               </ButtonWrapper>
               <Divider text="Or" />
               <TextField

@@ -24,7 +24,7 @@ const reorder = (list: any[], startIndex: number, endIndex: number) => {
   return result
 }
 
-const MENU_ITEMS_HEIGHT = 50
+const MENU_ITEMS_HEIGHT = 36
 
 const EmptyTodoList = () => {
   const { state: { selectedDate }, dispatch } = useContext(context)
@@ -199,22 +199,20 @@ const TodoList = () => {
   return (
     <Box css={pageCSS}>
       <Box css={{ display: 'flex', justifyContent: 'space-between', height: `${MENU_ITEMS_HEIGHT}px` }}>
-        <Box>
-          <ButtonGroup>
-            <Button
-              onClick={showManagementModal}
-              variant='contained'
-            >
-              Select Tasks
-            </Button>
-            <Button
-              variant='contained'
-              onClick={showAddNewTaskModal}
-            >
-              Add New Task
-            </Button>
-          </ButtonGroup>
-        </Box>
+        <ButtonGroup>
+          <Button
+            onClick={showManagementModal}
+            variant='contained'
+          >
+            Select Tasks
+          </Button>
+          <Button
+            variant='contained'
+            onClick={showAddNewTaskModal}
+          >
+            Add New Task
+          </Button>
+        </ButtonGroup>
         <ButtonGroup>
           <Button variant='contained' onClick={setPreviousDate}>&lt;</Button>
           <Button variant='contained' css={todayButtonCSS} onClick={getToday}><span>{formatDateDisplayString(selectedDate)}</span></Button>
