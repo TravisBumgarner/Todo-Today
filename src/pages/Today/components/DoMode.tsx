@@ -5,7 +5,7 @@ import { Box, Typography, css } from '@mui/material'
 import database from 'database'
 import { type TProject, type TTask } from 'types'
 import { context } from 'Context'
-import TodoListItem, { type Entry } from './TodoListItem'
+import DoItem, { type Entry } from './DoItem'
 import { TASK_STATUS_IS_ACTIVE } from 'utilities'
 import { pageCSS } from 'theme'
 import { HEADER_HEIGHT } from '../../../components/Header'
@@ -52,7 +52,7 @@ const TodoList = () => {
 
   const selectedDateActiveEntriesFiltered = useMemo(() => {
     console.log(concurrentTodoListItems)
-    return selectedDateActiveEntries.filter((_, index) => index < concurrentTodoListItems).map((it) => (<TodoListItem key={it.id} {...it} />))
+    return selectedDateActiveEntries.filter((_, index) => index < concurrentTodoListItems).map((it) => (<DoItem key={it.id} {...it} />))
   }, [selectedDateActiveEntries, concurrentTodoListItems])
 
   if (restoreInProgress) {

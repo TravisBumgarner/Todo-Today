@@ -23,7 +23,7 @@ export interface Entry {
   taskDetails?: string
 }
 
-const TodoListItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTitle, projectTitle }: Entry) => {
+const QueueItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTitle, projectTitle }: Entry) => {
   const { dispatch } = useContext(context)
   const [showDetails, setShowDetails] = useState(false)
   const [details, setDetails] = useState(initialDetails ?? '') // Undo doesn't work if synced directly to DB. Might be a more elegant solution, but for now, this works.
@@ -155,4 +155,4 @@ padding: 0.5rem;
 margin: ${TODO_LIST_ITEM_MARGIN};
 `
 
-export default TodoListItem
+export default QueueItem

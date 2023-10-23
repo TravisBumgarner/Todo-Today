@@ -10,7 +10,7 @@ import moment from 'moment'
 import database from 'database'
 import { DATE_ISO_DATE_MOMENT_STRING, ETaskStatus, type TProject, type TTask, type TTodoListItem } from 'types'
 import { context } from 'Context'
-import TodoListItem, { TODO_LIST_ITEM_MARGIN, type Entry } from './TodoListItem'
+import QueueItem, { TODO_LIST_ITEM_MARGIN, type Entry } from './QueueItem'
 import { ModalID } from 'modals'
 import { TASK_STATUS_IS_ACTIVE, formatDateDisplayString, formatDateKeyLookup } from 'utilities'
 import { pageCSS } from 'theme'
@@ -243,7 +243,7 @@ const TodoList = () => {
                           {...provided.dragHandleProps}
                           style={dragItemCSS(snapshot.isDraggingOver, provided.draggableProps.style)}
                         >
-                          <TodoListItem {...it}
+                          <QueueItem {...it}
                           />
                         </div>
                       )}
@@ -271,7 +271,7 @@ const TodoList = () => {
                 </Tooltip>
               </ToggleButton>
             </Stack>
-            {showArchive && selectedDateInactiveEntries.map((it) => <TodoListItem key={it.id} {...it} />)}
+            {showArchive && selectedDateInactiveEntries.map((it) => <QueueItem key={it.id} {...it} />)}
           </>
         )}
       </Box >
