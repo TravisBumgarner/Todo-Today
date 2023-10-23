@@ -64,7 +64,7 @@ const TaskDropdown = ({ taskStatus, handleStatusChangeCallback }: Props) => {
       </Tooltip>
       <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleCloseMenu}>
         {(Object.keys(ETaskStatus)).map(taskStatus => {
-          return (<MenuItem key={taskStatus} onClick={async () => { handleStatusChange(ETaskStatus.CANCELED) }}>
+          return (<MenuItem key={taskStatus} onClick={async () => { handleStatusChange(taskStatus as ETaskStatus) }}>
             <ListItemIcon>
               {taskStatusIcon(taskStatus as ETaskStatus)}
             </ListItemIcon>
