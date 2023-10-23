@@ -2,7 +2,7 @@ import { useCallback, useContext, useState } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { v4 as uuid4 } from 'uuid'
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd'
-import { Box, Button, ButtonGroup, Stack, ToggleButton, Tooltip, Typography, css } from '@mui/material'
+import { Box, Button, Switch, ButtonGroup, Stack, ToggleButton, Tooltip, Typography, css, FormControlLabel } from '@mui/material'
 import { ChevronRight } from '@mui/icons-material'
 import _ from 'lodash'
 import moment from 'moment'
@@ -116,10 +116,14 @@ const EmptyTodoList = () => {
 }
 
 const TodoList = () => {
-  const { state: { selectedDate, restoreInProgress }, dispatch } = useContext(context)
+  const { state: { selectedDate, restoreInProgress, workMode }, dispatch } = useContext(context)
   const [selectedDateActiveEntries, setSelectedDateActiveEntries] = useState<Entry[]>([])
   const [selectedDateInactiveEntries, setSelectedDateInactiveEntries] = useState<Entry[]>([])
   const [showArchive, setShowArchive] = useState(false)
+
+  const handleWorkModeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch({ type: 'UPDATE_WORK_MODE', payload: { workMode: event.target.checked ? 'do' : 'queue' } })
+  }
 
   useLiveQuery(
     async () => {
@@ -199,6 +203,13 @@ const TodoList = () => {
   return (
     <Box css={pageCSS}>
       <Box css={{ display: 'flex', justifyContent: 'space-between', height: `${MENU_ITEMS_HEIGHT}px` }}>
+
+        <FormControlLabel control={<Switch
+          checked={workMode === 'do'}
+          onChange={handleWorkModeChange}
+          inputProps={{ 'aria-label': 'controlled' }}
+        />} label={workMode === 'do' ? 'Do Mode' : 'Queue Mode'} />
+
         <ButtonGroup>
           <Button
             onClick={showManagementModal}

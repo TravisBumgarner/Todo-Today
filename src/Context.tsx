@@ -28,6 +28,7 @@ export interface State {
   selectedDate: TDateISODate
   restoreInProgress: boolean
   activePage: EActivePage
+  workMode: 'queue' | 'do'
 }
 
 const EMPTY_STATE: State = {
@@ -41,7 +42,8 @@ const EMPTY_STATE: State = {
   selectedDate: formatDateKeyLookup(moment()),
   restoreInProgress: false,
   activePage: EActivePage.Home,
-  message: null
+  message: null,
+  workMode: 'queue'
 
 }
 const initialSetup = (backupDir: string) => {
@@ -125,6 +127,13 @@ interface DeleteMessage {
   type: 'DELETE_MESSAGE'
 }
 
+interface UpdateworkMode {
+  type: 'UPDATE_WORK_MODE'
+  payload: {
+    workMode: 'queue' | 'do'
+  }
+}
+
 export type Action =
   | EditUserSettings
   | HydrateUserSettings
@@ -136,6 +145,7 @@ export type Action =
   | SetActivePage
   | AddMessage
   | DeleteMessage
+  | UpdateworkMode
 
 const reducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -172,6 +182,10 @@ const reducer = (state: State, action: Action): State => {
     }
     case 'DELETE_MESSAGE': {
       return { ...state, message: null }
+    }
+    case 'UPDATE_WORK_MODE': {
+      const { workMode } = action.payload
+      return { ...state, workMode }
     }
     default:
       throw new Error('Unexpected action')
