@@ -1,10 +1,7 @@
-import { type ChangeEvent, useState, useCallback, useContext, useEffect } from 'react'
+import { type ChangeEvent, useState, useCallback, useContext } from 'react'
 import { Box, Card, IconButton, TextField, Tooltip, Typography, css } from '@mui/material'
-import ToggleButton from '@mui/material/ToggleButton'
 import EditIcon from '@mui/icons-material/Edit'
 import CloseIcon from '@mui/icons-material/CloseOutlined'
-import { ChevronRight } from '@mui/icons-material'
-import TimerIcon from '@mui/icons-material/Timer'
 
 import database from 'database'
 import { ETaskStatus } from 'types'
@@ -25,14 +22,7 @@ export interface Entry {
 
 const QueueItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTitle, projectTitle }: Entry) => {
   const { dispatch } = useContext(context)
-  const [showDetails, setShowDetails] = useState(false)
   const [details, setDetails] = useState(initialDetails ?? '') // Undo doesn't work if synced directly to DB. Might be a more elegant solution, but for now, this works.
-
-  const handleStartTimer = () => {
-    dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.TIMER_MODAL, taskId } })
-  }
-
-  const toggleShowDetails = useCallback(() => { setShowDetails(prev => !prev) }, [])
 
   const handleStatusChange = useCallback(async (
     status: ETaskStatus
@@ -44,14 +34,8 @@ const QueueItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTi
       const lastTodoListItem = await database.todoListItems.orderBy('sortOrder').reverse().first()
       const sortOrder = lastTodoListItem?.sortOrder ? lastTodoListItem?.sortOrder + 1 : 0
       await database.todoListItems.where('id').equals(id).modify({ sortOrder })
-
-      setShowDetails(false)
     }
   }, [taskId, id])
-
-  useEffect(() => {
-    if (initialDetails && initialDetails.length > 0) setShowDetails(true)
-  }, [initialDetails])
 
   const handleDetailsChange = useCallback(async (
     event: ChangeEvent<HTMLInputElement>
@@ -70,7 +54,7 @@ const QueueItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTi
 
   return (
     <Card css={wrapperCSS}>
-      <Box css={headerCSS(showDetails)}>
+      <Box css={headerCSS}>
         <Box css={leftHeaderCSS}>
           <Box>
             <TaskStatusSelector handleStatusChangeCallback={handleStatusChange} taskStatus={taskStatus} showLabel={false} />
@@ -81,23 +65,6 @@ const QueueItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTi
           </Box>
         </Box>
         <Box css={rightHeaderCSS}>
-          <ToggleButton
-            size='small'
-            value="text"
-            onChange={toggleShowDetails}
-            css={{ marginRight: '0.5rem', backgroundColor: 'css={css`background-color: var(--mui-palette-background-paper)' }}
-          >
-            <Tooltip title="Show details" >
-              <ChevronRight fontSize="small" css={{ transform: `rotate(${showDetails ? '90deg' : '0deg'})` }} />
-            </Tooltip>
-          </ToggleButton>
-
-          <Tooltip title="Start focus timer">
-            <IconButton onClick={handleStartTimer} css={{ marginLeft: '0.5rem' }}>
-              <TimerIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-
           <Tooltip title="Edit task">
             <IconButton onClick={handleEdit} css={{ marginLeft: '0.5rem' }}
             >
@@ -113,7 +80,7 @@ const QueueItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTi
 
         </Box>
       </Box>
-      {showDetails && <TextField css={detailsCSS} fullWidth multiline value={details} onChange={handleDetailsChange} />}
+      <TextField css={detailsCSS} placeholder='Details' fullWidth multiline value={details} onChange={handleDetailsChange} />
     </Card >
   )
 }
@@ -125,11 +92,11 @@ const rightHeaderCSS = css`
   flex-shrink: 0;
 `
 
-const headerCSS = (showDetails: boolean) => css`
+const headerCSS = css`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: ${showDetails ? '0.5rem' : '0'};
+  margin-bottom: 0.5rem;
 `
 
 const detailsCSS = css`

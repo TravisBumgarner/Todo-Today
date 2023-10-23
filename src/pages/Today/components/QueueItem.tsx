@@ -4,7 +4,6 @@ import ToggleButton from '@mui/material/ToggleButton'
 import EditIcon from '@mui/icons-material/Edit'
 import CloseIcon from '@mui/icons-material/CloseOutlined'
 import { ChevronRight } from '@mui/icons-material'
-import TimerIcon from '@mui/icons-material/Timer'
 
 import database from 'database'
 import { ETaskStatus } from 'types'
@@ -28,10 +27,6 @@ const QueueItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTi
   const [showDetails, setShowDetails] = useState(false)
   const [details, setDetails] = useState(initialDetails ?? '') // Undo doesn't work if synced directly to DB. Might be a more elegant solution, but for now, this works.
 
-  const handleStartTimer = () => {
-    dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.TIMER_MODAL, taskId } })
-  }
-
   const toggleShowDetails = useCallback(() => { setShowDetails(prev => !prev) }, [])
 
   const handleStatusChange = useCallback(async (
@@ -48,10 +43,6 @@ const QueueItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTi
       setShowDetails(false)
     }
   }, [taskId, id])
-
-  useEffect(() => {
-    if (initialDetails && initialDetails.length > 0) setShowDetails(true)
-  }, [initialDetails])
 
   const handleDetailsChange = useCallback(async (
     event: ChangeEvent<HTMLInputElement>
@@ -92,12 +83,6 @@ const QueueItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTi
             </Tooltip>
           </ToggleButton>
 
-          <Tooltip title="Start focus timer">
-            <IconButton onClick={handleStartTimer} css={{ marginLeft: '0.5rem' }}>
-              <TimerIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-
           <Tooltip title="Edit task">
             <IconButton onClick={handleEdit} css={{ marginLeft: '0.5rem' }}
             >
@@ -113,7 +98,7 @@ const QueueItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTi
 
         </Box>
       </Box>
-      {showDetails && <TextField css={detailsCSS} fullWidth multiline value={details} onChange={handleDetailsChange} />}
+      {showDetails && <TextField placeholder="Details" css={detailsCSS} fullWidth multiline value={details} onChange={handleDetailsChange} />}
     </Card >
   )
 }

@@ -1,48 +1,15 @@
-import { useState, useEffect, type ChangeEvent, useCallback, useContext } from 'react'
-import { Button, TextField, Typography, css } from '@mui/material'
+import { useState, useEffect, useCallback, useContext } from 'react'
+import { Box, Button, TextField, Typography, css } from '@mui/material'
 
-import Modal from './Modal'
 import { ButtonWrapper, Divider } from 'sharedComponents'
-import { useLiveQuery } from 'dexie-react-hooks'
-import database from 'database'
 import { sendAsyncIPCMessage } from 'utilities'
 import { EAsyncMessageIPCFromRenderer } from 'shared/types'
-import { ETaskStatus, type TTask } from 'types'
 import { context } from 'Context'
 
 const CUSTOM_TIMER_DEFAULT = 10
 
-const TimerModal = ({ taskId }: { taskId: string }) => {
+const Timer = () => {
   const { dispatch } = useContext(context)
-
-  const [details, setDetails] = useState('') // Undo doesn't work if synced directly to DB. Might be a more elegant solution, but for now, this works.
-  const [task, setTask] = useState<TTask | null>(null)
-  useLiveQuery(
-    async () => {
-      const task = await database.tasks.where('id').equals(taskId).first()
-      if (!task) {
-        setTask({
-          title: 'Unable to find task',
-          status: ETaskStatus.CANCELED,
-          id: '',
-          projectId: '',
-          details: ''
-        })
-        return
-      }
-
-      setTask(task)
-      setDetails(task.details ?? '')
-    })
-
-  const handleDetailsChange = useCallback(async (
-    event: ChangeEvent<HTMLInputElement>
-  ) => {
-    if (!task) return
-
-    void database.tasks.where('id').equals(task.id).modify({ details: event.target.value })
-    setDetails(event.target.value)
-  }, [task])
 
   const [minutes, setMinutes] = useState(CUSTOM_TIMER_DEFAULT)
   const [seconds, setSeconds] = useState(0)
@@ -107,12 +74,7 @@ const TimerModal = ({ taskId }: { taskId: string }) => {
   }, [isComplete])
 
   return (
-    <Modal
-      title={`Timer for ${task?.title}`}
-      showModal={true}
-      disableEscapeKeyDown
-      disableBackdropClick
-    >
+    <Box css={wrapperCSS}>
       {
         isBeingSetup
           ? (
@@ -147,29 +109,25 @@ const TimerModal = ({ taskId }: { taskId: string }) => {
                     : (<Button fullWidth variant='contained' onClick={startTimer}>Start</Button>)
                 }
               </ButtonWrapper>
-              <Divider />
-              <TextField
-                multiline
-                fullWidth
-                label="Task Details"
-                name="details"
-                value={details}
-                margin='normal'
-                onChange={handleDetailsChange}
-              />
               <ButtonWrapper>
                 <Button fullWidth variant='contained' color="secondary" onClick={closeTimer}>Done</Button>
               </ButtonWrapper>
             </>)
       }
 
-    </Modal >
+    </Box >
   )
 }
+
+const wrapperCSS = css`
+  border: var(--mui-palette-primary-main) solid 3px;
+  border-radius: 1rem;
+  padding: 1rem;
+`
 
 const timerCSS = css`
   font-size: 3rem;
   text-align: center;
 `
 
-export default TimerModal
+export default Timer

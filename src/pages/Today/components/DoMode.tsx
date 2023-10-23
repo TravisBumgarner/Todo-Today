@@ -8,9 +8,7 @@ import { context } from 'Context'
 import DoItem, { type Entry } from './DoItem'
 import { TASK_STATUS_IS_ACTIVE } from 'utilities'
 import { pageCSS } from 'theme'
-import { HEADER_HEIGHT } from '../../../components/Header'
-
-const MENU_ITEMS_HEIGHT = 36
+import Timer from './Timer'
 
 const EmptyTodoList = () => {
   return (
@@ -65,13 +63,13 @@ const TodoList = () => {
         {selectedDateActiveEntriesFiltered.length === 0 && <EmptyTodoList />}
         {selectedDateActiveEntriesFiltered.length > 0 && selectedDateActiveEntriesFiltered}
       </Box >
+      <Timer />
     </Box >
   )
 }
 
 const todolistItemsWrapperCSS = css`
   overflow: auto;
-  height: calc(100vh - ${MENU_ITEMS_HEIGHT}px - ${HEADER_HEIGHT}px);
 `
 
 const emptyTodoListCSS = css`
