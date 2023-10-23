@@ -1,9 +1,9 @@
-import TodoListItems from './TodoListItem'
-import TodoList from './TodoList'
+import QueueMode from './QueueMode'
+import DoMode from './DoMode'
 import Successes from '../../Successes'
 
 export {
-  TodoListItems,
-  TodoList,
+  QueueMode,
+  DoMode,
   Successes
 }
