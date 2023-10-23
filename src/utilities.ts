@@ -78,6 +78,7 @@ export interface TLocalStorage {
   hasDoneWarmStart: boolean
   colorTheme: EColorTheme
   backupInterval: EBackupInterval
+  concurrentTodoListItems: number
 }
 
 const getLocalStorage = (key: keyof TLocalStorage) => {

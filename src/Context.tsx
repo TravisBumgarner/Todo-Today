@@ -23,6 +23,7 @@ export interface State {
     backupInterval: EBackupInterval
     backupDir: string
     lastBackup: string
+    concurrentTodoListItems: number
   }
   activeModal: ActiveModal | null
   selectedDate: TDateISODate
@@ -36,7 +37,8 @@ const EMPTY_STATE: State = {
     colorTheme: EColorTheme.BEACH,
     backupInterval: EBackupInterval.OFF,
     backupDir: '',
-    lastBackup: ''
+    lastBackup: '',
+    concurrentTodoListItems: 1
   },
   activeModal: null,
   selectedDate: formatDateKeyLookup(moment()),
@@ -75,7 +77,7 @@ interface EditUserSettings {
   type: 'EDIT_USER_SETTING'
   payload: {
     key: keyof State['settings']
-    value: string
+    value: string | number
   }
 }
 
