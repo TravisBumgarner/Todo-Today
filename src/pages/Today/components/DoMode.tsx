@@ -32,7 +32,7 @@ const TodoList = () => {
         .sortBy('sortOrder')
 
       const entries = await Promise.all(todoListItems.map(async todoListItem => {
-        const task = await database.tasks.where('id').equals(todoListItem.id).first() as TTask
+        const task = await database.tasks.where('id').equals(todoListItem.taskId).first() as TTask
         const project = await database.projects.where('id').equals(task.projectId).first() as TProject
 
         return {
