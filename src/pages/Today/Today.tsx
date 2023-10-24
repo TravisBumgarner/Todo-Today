@@ -18,7 +18,7 @@ const Today = () => {
         checked={workMode === 'do'}
         onChange={handleWorkModeChange}
         inputProps={{ 'aria-label': 'controlled' }}
-      />} label={workMode === 'do' ? 'Do Mode' : 'Queue Mode'} />
+      />} label={workMode === 'do' ? 'Focus Mode' : 'Queue Mode'} />
       {workMode === 'do' ? <DoMode /> : <QueueMode />}
     </Box>
   )

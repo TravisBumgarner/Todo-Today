@@ -9,6 +9,7 @@ import DoItem, { type Entry } from './DoItem'
 import { TASK_STATUS_IS_ACTIVE } from 'utilities'
 import { pageCSS } from 'theme'
 import Timer from './Timer'
+import DeclutterYourMind from './DeclutterYourMind'
 
 const EmptyTodoList = () => {
   return (
@@ -64,6 +65,7 @@ const TodoList = () => {
         {selectedDateActiveEntriesFiltered.length === 0 && <EmptyTodoList />}
         {selectedDateActiveEntriesFiltered.length > 0 && selectedDateActiveEntriesFiltered}
       </Box >
+      <DeclutterYourMind />
     </Box >
   )
 }
