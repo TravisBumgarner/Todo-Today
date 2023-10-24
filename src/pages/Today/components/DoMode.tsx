@@ -59,11 +59,11 @@ const TodoList = () => {
 
   return (
     <Box css={pageCSS}>
+      <Timer />
       <Box css={todolistItemsWrapperCSS}>
         {selectedDateActiveEntriesFiltered.length === 0 && <EmptyTodoList />}
         {selectedDateActiveEntriesFiltered.length > 0 && selectedDateActiveEntriesFiltered}
       </Box >
-      <Timer />
     </Box >
   )
 }

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useContext } from 'react'
-import { Box, Button, TextField, Typography, css } from '@mui/material'
+import { Box, Button, InputAdornment, TextField, Typography, css } from '@mui/material'
 
 import { ButtonWrapper, Divider } from 'sharedComponents'
 import { sendAsyncIPCMessage } from 'utilities'
@@ -63,10 +63,6 @@ const Timer = () => {
     setMinutes(value)
   }
 
-  const closeTimer = useCallback(() => {
-    dispatch({ type: 'CLEAR_ACTIVE_MODAL' })
-  }, [dispatch])
-
   useEffect(() => {
     if (!isComplete) return
 
@@ -77,57 +73,72 @@ const Timer = () => {
     <Box css={wrapperCSS}>
       {
         isBeingSetup
-          ? (
-            <>
-              <Typography variant='body1'>How long do you want to work?</Typography>
-              <ButtonWrapper isHorizontal>
-                <Button fullWidth variant='contained' onClick={() => { setMinutes(25); setIsBeingSetup(false) }}>25 minutes</Button>
-                <Button fullWidth variant='contained' onClick={() => { setMinutes(50); setIsBeingSetup(false) }}>50 minutes</Button>
-              </ButtonWrapper>
-              <Divider text="Or" />
+          ? (<>
+            <Typography variant='body1'>Set a focus timer</Typography>
+            <Box css={setupWrapperCSS}>
+              <Button variant='contained' onClick={() => { setMinutes(25); setIsBeingSetup(false) }}>25 minutes</Button>
+              <Button variant='contained' onClick={() => { setMinutes(50); setIsBeingSetup(false) }}>50 minutes</Button>
+              <Typography variant='body1'>Or</Typography>
               <TextField
-                label="Set a Custom Timer"
+                placeholder="Set a Custom Timer"
                 type="number"
                 value={minutes}
                 onChange={handleMinutesChange}
-                fullWidth
+                size="small"
+                css={css`width: 120px;`}
+                InputProps={{
+                  endAdornment: <InputAdornment position="end">min</InputAdornment>
+                }}
               />
-              <ButtonWrapper>
-                <Button fullWidth variant='contained' onClick={() => { setIsBeingSetup(false) }}> Submit</Button>
-              </ButtonWrapper>
-            </>)
+              <Button variant='contained' onClick={() => { setIsBeingSetup(false) }}> Submit</Button>
+            </Box>
+          </>)
           : (
-            <>
+            <Box css={progressWrapper}>
+              <Button color="error" onClick={resetTimer}>New Timer</Button>
               <Typography css={timerCSS} variant='body1'>
                 {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
               </Typography>
-              <ButtonWrapper isHorizontal>
-                <Button fullWidth variant='contained' color="error" onClick={resetTimer}>Reset</Button>
-                {
-                  isRunning
-                    ? (<Button fullWidth variant='contained' onClick={pauseTimer}>Pause</Button>)
-                    : (<Button fullWidth variant='contained' onClick={startTimer}>Start</Button>)
-                }
-              </ButtonWrapper>
-              <ButtonWrapper>
-                <Button fullWidth variant='contained' color="secondary" onClick={closeTimer}>Done</Button>
-              </ButtonWrapper>
-            </>)
+              <Button css={css`width:75px`} variant='contained' onClick={isRunning ? pauseTimer : startTimer}>{isRunning ? 'Pause' : 'Start'}</Button>
+            </Box>)
       }
 
     </Box >
   )
 }
 
+const setupWrapperCSS = css`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+
+  > * {
+    margin-right: 0.5rem;
+  }
+`
+
+const progressWrapper = css`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  
+  > * {
+    margin-right: 0.5rem;
+  }
+`
+
 const wrapperCSS = css`
-  border: var(--mui-palette-primary-main) solid 3px;
   border-radius: 1rem;
-  padding: 1rem;
+  padding: 1rem 0;
+  height: 100px;
 `
 
 const timerCSS = css`
   font-size: 3rem;
   text-align: center;
+  width: 200px;
 `
 
 export default Timer
