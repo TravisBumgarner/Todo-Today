@@ -45,7 +45,7 @@ const EMPTY_STATE: State = {
   restoreInProgress: false,
   activePage: EActivePage.Home,
   message: null,
-  workMode: 'do'
+  workMode: 'queue'
 
 }
 const initialSetup = (backupDir: string) => {
