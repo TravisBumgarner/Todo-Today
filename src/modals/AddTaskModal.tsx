@@ -10,7 +10,7 @@ import { type TProject, ETaskStatus, EProjectStatus, type TTask } from 'types'
 import database from 'database'
 import { context } from 'Context'
 import { ButtonWrapper, TaskStatusSelector } from 'sharedComponents'
-import { sortStrings } from 'utilities'
+import { getNextSortOrderValue, sortStrings } from 'utilities'
 
 const CREATE_NEW_PROJECT_DROPDOWN_ITEM = 'create-new-project'
 
@@ -60,11 +60,12 @@ const AddTaskModal = () => {
     await database.tasks.add(newTask)
 
     if (addToSelectedDate === 'yes') {
+      const nextSortOrder = await getNextSortOrderValue(state.selectedDate)
       await database.todoListItems.add({
         taskId,
         id: taskId,
         todoListDate: state.selectedDate,
-        sortOrder: -1 // Prepend to list
+        sortOrder: nextSortOrder
       })
     }
     dispatch({ type: 'CLEAR_ACTIVE_MODAL' })
