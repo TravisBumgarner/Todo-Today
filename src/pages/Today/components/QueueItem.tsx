@@ -6,7 +6,7 @@ import CloseIcon from '@mui/icons-material/CloseOutlined'
 import { ChevronRight } from '@mui/icons-material'
 
 import database from 'database'
-import { ETaskStatus } from 'types'
+import { type ETaskStatus } from 'types'
 import { ModalID } from 'modals'
 import { context } from 'Context'
 import { TaskStatusSelector } from 'sharedComponents'
@@ -34,15 +34,7 @@ const QueueItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTi
   ) => {
     if (status === null) return
     await database.tasks.where('id').equals(taskId).modify({ status })
-
-    if (status === ETaskStatus.COMPLETED || status === ETaskStatus.CANCELED) {
-      const lastTodoListItem = await database.todoListItems.orderBy('sortOrder').reverse().first()
-      const sortOrder = lastTodoListItem?.sortOrder ? lastTodoListItem?.sortOrder + 1 : 0
-      await database.todoListItems.where('id').equals(id).modify({ sortOrder })
-
-      setShowDetails(false)
-    }
-  }, [taskId, id])
+  }, [taskId])
 
   const handleDetailsChange = useCallback(async (
     event: ChangeEvent<HTMLInputElement>

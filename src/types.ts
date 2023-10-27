@@ -40,7 +40,7 @@ export interface TTask {
 
 export interface TTodoListItem {
   taskId: string
-  todoListDate: string
+  todoListDate: TDateISODate
   id: string
   // details?: string // Deprecated, get data from TTask.
   sortOrder: number

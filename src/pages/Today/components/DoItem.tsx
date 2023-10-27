@@ -1,13 +1,14 @@
 import { type ChangeEvent, useState, useCallback, useContext } from 'react'
-import { Box, Card, IconButton, TextField, Tooltip, Typography, css } from '@mui/material'
+import { Box, Button, ButtonGroup, IconButton, Stack, TextField, Tooltip, Typography, css } from '@mui/material'
 import EditIcon from '@mui/icons-material/Edit'
-import CloseIcon from '@mui/icons-material/CloseOutlined'
+// import CloseIcon from '@mui/icons-material/CloseOutlined'
 
 import database from 'database'
-import { ETaskStatus } from 'types'
+import { ETaskStatus, type TDateISODate } from 'types'
 import { ModalID } from 'modals'
 import { context } from 'Context'
-import { TaskStatusSelector } from 'sharedComponents'
+import { Icons } from 'sharedComponents'
+import { getNextSortOrderValue, taskStatusIcon } from 'utilities'
 
 export interface Entry {
   id: string
@@ -18,9 +19,10 @@ export interface Entry {
   taskStatus: ETaskStatus
   projectTitle: string
   taskDetails?: string
+  selectedDate: TDateISODate
 }
 
-const QueueItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTitle, projectTitle }: Entry) => {
+const QueueItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTitle, projectTitle, selectedDate }: Entry) => {
   const { dispatch } = useContext(context)
   const [details, setDetails] = useState(initialDetails ?? '') // Undo doesn't work if synced directly to DB. Might be a more elegant solution, but for now, this works.
 
@@ -28,14 +30,21 @@ const QueueItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTi
     status: ETaskStatus
   ) => {
     if (status === null) return
-    await database.tasks.where('id').equals(taskId).modify({ status })
+    const nextSorterOrder = await getNextSortOrderValue(selectedDate)
+    await database.tasks.where('id').equals(taskId).modify({ status, sortOrder: nextSorterOrder })
+  }, [taskId, selectedDate])
 
-    if (status === ETaskStatus.COMPLETED || status === ETaskStatus.CANCELED) {
-      const lastTodoListItem = await database.todoListItems.orderBy('sortOrder').reverse().first()
-      const sortOrder = lastTodoListItem?.sortOrder ? lastTodoListItem?.sortOrder + 1 : 0
-      await database.todoListItems.where('id').equals(id).modify({ sortOrder })
-    }
-  }, [taskId, id])
+  const markCompleted = useCallback(() => {
+    void handleStatusChange(ETaskStatus.COMPLETED)
+  }, [handleStatusChange])
+
+  const markCanceled = useCallback(() => {
+    void handleStatusChange(ETaskStatus.CANCELED)
+  }, [handleStatusChange])
+
+  const markBlocked = useCallback(() => {
+    void handleStatusChange(ETaskStatus.BLOCKED)
+  }, [handleStatusChange])
 
   const handleDetailsChange = useCallback(async (
     event: ChangeEvent<HTMLInputElement>
@@ -44,25 +53,23 @@ const QueueItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTi
     setDetails(event.target.value)
   }, [taskId])
 
-  const handleRemoveFromToday = useCallback(async () => {
-    await database.todoListItems.where({ id }).delete()
-  }, [id])
+  // const handleRemoveFromToday = useCallback(async () => {
+  //   await database.todoListItems.where({ id }).delete()
+  // }, [id])
 
   const handleEdit = useCallback(() => {
     dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.EDIT_TASK_MODAL, taskId } })
   }, [dispatch, taskId])
 
   return (
-    <Card css={wrapperCSS}>
+    <Box css={wrapperCSS}>
       <Box css={headerCSS}>
         <Box css={leftHeaderCSS}>
           <Box>
-            <TaskStatusSelector handleStatusChangeCallback={handleStatusChange} taskStatus={taskStatus} showLabel={false} />
-          </Box>
-          <Box css={css`margin-left: 1rem`}>
             <Typography css={headerTextCSS} variant="h2">{taskTitle}</Typography>
             <Typography variant="body1">{projectTitle}</Typography>
           </Box>
+          <Typography css={css`margin-left: 3rem;`}>Current Status</Typography>{taskStatusIcon(taskStatus)}
         </Box>
         <Box css={rightHeaderCSS}>
           <Tooltip title="Edit task">
@@ -72,21 +79,32 @@ const QueueItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTi
             </IconButton>
           </Tooltip>
 
-          <Tooltip title="Remove from today">
+          {/* <Tooltip title="Remove from today">
             <IconButton onClick={handleRemoveFromToday} css={{ marginLeft: '0.5rem' }}>
               <CloseIcon fontSize="small" />
             </IconButton>
-          </Tooltip>
+          </Tooltip> */}
 
         </Box>
       </Box>
       <TextField css={detailsCSS} placeholder='Details' fullWidth multiline value={details} onChange={handleDetailsChange} />
-    </Card >
+      <Box>
+        <Stack direction="row" css={css`align-items: center; display: flex; margin-top: 1rem; > * {margin-right: 0.5rem;}`}>
+          <Typography>Mark as</Typography>
+          <ButtonGroup variant="contained">
+            <Button startIcon={<Icons.CanceledIcon />} onClick={markCanceled}>Canceled</Button>
+            <Button startIcon={<Icons.BlockedIcon />} onClick={markBlocked}>Blocked</Button>
+            <Button startIcon={<Icons.CompletedIcon />} onClick={markCompleted} >Completed</Button>
+          </ButtonGroup>
+          <Typography variant='body1'>Or</Typography>
+          <Button variant='contained' onClick={markCompleted}>Skip for now</Button>
+        </Stack>
+      </Box>
+    </Box >
   )
 }
 
 const rightHeaderCSS = css`
-  margin-left: 1rem;
   display: flex;
   align-items: center;
   flex-shrink: 0;
@@ -100,7 +118,6 @@ const headerCSS = css`
 `
 
 const detailsCSS = css`
-  background: var(--mui-palette-background-paper);
 `
 
 const headerTextCSS = css`
@@ -116,10 +133,11 @@ const leftHeaderCSS = css`
 export const TODO_LIST_ITEM_MARGIN = '0.5rem 0 0.5rem 0'
 
 const wrapperCSS = css`
-background: var(--mui-palette-background-paper);
-border-radius: 0.5rem;
-padding: 0.5rem;
-margin: ${TODO_LIST_ITEM_MARGIN};
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  margin: ${TODO_LIST_ITEM_MARGIN};
+  border: 2px solid var(--mui-palette-primary-main);
+  border-radius: 1rem;
 `
 
 export default QueueItem

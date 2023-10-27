@@ -1,41 +1,7 @@
 import { Box, FormControl, IconButton, InputLabel, ListItemIcon, ListItemText, Menu, MenuItem, Select, SvgIcon, Tooltip, css } from '@mui/material'
 import { useCallback, useState } from 'react'
-import { Icons } from 'sharedComponents'
 import { ETaskStatus } from 'types'
-
-import { taskStatusLookup } from 'utilities'
-const colorStatus: Record<ETaskStatus, 'secondary' | 'primary' | 'warning' | 'error'> = {
-  [ETaskStatus.NEW]: 'secondary',
-  [ETaskStatus.IN_PROGRESS]: 'secondary',
-  [ETaskStatus.COMPLETED]: 'secondary',
-  [ETaskStatus.BLOCKED]: 'warning',
-  [ETaskStatus.CANCELED]: 'error'
-} as const
-
-const taskStatusIcon = (taskStatus: ETaskStatus) => {
-  switch (taskStatus) {
-    case ETaskStatus.CANCELED:
-      return (
-        <Icons.ThreeThirdsCircle css={iconCSS(colorStatus[ETaskStatus.CANCELED])} />
-      )
-    case ETaskStatus.BLOCKED:
-      return (
-        <Icons.ThreeThirdsCircle css={iconCSS(colorStatus[ETaskStatus.BLOCKED])} />
-      )
-    case ETaskStatus.NEW:
-      return (
-        <Icons.OneThirdsCircle css={iconCSS(colorStatus[ETaskStatus.NEW])} />
-      )
-    case ETaskStatus.IN_PROGRESS:
-      return (
-        <Icons.TwoThirdsCircle css={iconCSS(colorStatus[ETaskStatus.IN_PROGRESS])} />
-      )
-    case ETaskStatus.COMPLETED:
-      return (
-        <Icons.ThreeThirdsCircle css={iconCSS(colorStatus[ETaskStatus.COMPLETED])} />
-      )
-  }
-}
+import { taskStatusLookup, taskStatusIcon } from 'utilities'
 
 const TaskDropdown = ({ taskStatus, handleStatusChangeCallback }: Props) => {
   const [anchorEl, setAnchorEl] = useState(null)
@@ -133,9 +99,5 @@ align-items: center;
   margin-right: 0.5rem;
  }
 `
-
-const iconCSS = (color: string) => css`
-  fill: var(--mui-palette-${color}-main)
-  `
 
 export default TaskStatusSelector

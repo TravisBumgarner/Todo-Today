@@ -22,7 +22,7 @@ export default defineConfig(({ command }) => {
         types: path.resolve(__dirname, 'src/types.ts'),
         theme: path.resolve(__dirname, 'src/theme.tsx'),
         colors: path.resolve(__dirname, 'src/colors.tsx'),
-        utilities: path.resolve(__dirname, 'src/utilities.ts'),
+        utilities: path.resolve(__dirname, 'src/utilities.tsx'),
         Context: path.resolve(__dirname, 'src/Context.tsx'),
         database: path.resolve(__dirname, 'src/database.ts'),
         shared: path.resolve(__dirname, 'shared/'),

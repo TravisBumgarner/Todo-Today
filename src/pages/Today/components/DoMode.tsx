@@ -40,7 +40,8 @@ const TodoList = () => {
           taskTitle: task.title,
           taskStatus: task.status,
           projectTitle: project.title,
-          taskDetails: task.details
+          taskDetails: task.details,
+          selectedDate: todoListItem.todoListDate
         }
       }))
 

@@ -1,6 +1,6 @@
 import { createSvgIcon } from '@mui/material'
 
-export const OneThirdsCircle = createSvgIcon(
+const OneThirdsCircle = createSvgIcon(
   <svg
     viewBox="0 0 248 248"
     xmlns="http://www.w3.org/2000/svg"
@@ -39,3 +39,9 @@ export const ThreeThirdsCircle = createSvgIcon(
   </svg>,
   'ThreeThirdsCircle'
 )
+
+export const CanceledIcon = () => <ThreeThirdsCircle css={{ fill: 'var(--mui-palette-error-main)' }} />
+export const BlockedIcon = () => <OneThirdsCircle css={{ fill: 'var(--mui-palette-warning-main)' }} />
+export const CompletedIcon = () => <ThreeThirdsCircle css={{ fill: 'var(--mui-palette-secondary-main)' }} />
+export const InProgressIcon = () => <TwoThirdsCircle css={{ fill: 'var(--mui-palette-secondary-main)' }} />
+export const NewIcon = () => <OneThirdsCircle css={{ fill: 'var(--mui-palette-secondary-main)' }} />
