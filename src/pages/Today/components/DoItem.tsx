@@ -109,7 +109,7 @@ const QueueItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTi
             <Button startIcon={<Icons.CompletedIcon />} onClick={markCompleted} >Completed</Button>
           </ButtonGroup>
           <Typography variant='body1'>Or</Typography>
-          <Button variant='contained' onClick={markSkipped}>Skip for now</Button>
+          <Button variant='contained' onClick={markSkipped}>Skip</Button>
         </Stack>
       </Box>
     </Box >
