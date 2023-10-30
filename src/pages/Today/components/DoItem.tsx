@@ -4,7 +4,7 @@ import EditIcon from '@mui/icons-material/Edit'
 // import CloseIcon from '@mui/icons-material/CloseOutlined'
 
 import database from 'database'
-import { ETaskStatus, type TDateISODate } from 'types'
+import { ETaskStatus, type TTask, type TDateISODate, type TTodoListItem } from 'types'
 import { ModalID } from 'modals'
 import { context } from 'Context'
 import { Icons } from 'sharedComponents'
@@ -30,9 +30,16 @@ const QueueItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTi
     status: ETaskStatus
   ) => {
     if (status === null) return
+    const taskDTO: Partial<TTask> = { status }
+    await database.tasks.where('id').equals(taskId).modify(taskDTO)
+  }, [taskId])
+
+  const handleSortOrderChange = useCallback(async (
+  ) => {
     const nextSorterOrder = await getNextSortOrderValue(selectedDate)
-    await database.tasks.where('id').equals(taskId).modify({ status, sortOrder: nextSorterOrder })
-  }, [taskId, selectedDate])
+    const todoListItemDTO: Partial<TTodoListItem> = { sortOrder: nextSorterOrder }
+    await database.todoListItems.where('id').equals(id).modify(todoListItemDTO)
+  }, [selectedDate, id])
 
   const markCompleted = useCallback(() => {
     void handleStatusChange(ETaskStatus.COMPLETED)
@@ -43,8 +50,13 @@ const QueueItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTi
   }, [handleStatusChange])
 
   const markBlocked = useCallback(() => {
+    void handleSortOrderChange()
     void handleStatusChange(ETaskStatus.BLOCKED)
-  }, [handleStatusChange])
+  }, [handleStatusChange, handleSortOrderChange])
+
+  const markSkipped = useCallback(() => {
+    void handleSortOrderChange()
+  }, [handleSortOrderChange])
 
   const handleDetailsChange = useCallback(async (
     event: ChangeEvent<HTMLInputElement>
@@ -97,7 +109,7 @@ const QueueItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTi
             <Button startIcon={<Icons.CompletedIcon />} onClick={markCompleted} >Completed</Button>
           </ButtonGroup>
           <Typography variant='body1'>Or</Typography>
-          <Button variant='contained' onClick={markCompleted}>Skip for now</Button>
+          <Button variant='contained' onClick={markSkipped}>Skip for now</Button>
         </Stack>
       </Box>
     </Box >
