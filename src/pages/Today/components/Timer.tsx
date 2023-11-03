@@ -42,12 +42,12 @@ const Timer = () => {
     }
   }, [isRunning, minutes, seconds])
 
-  const startTimer = () => {
-    setIsRunning(true)
-  }
-
   const pauseTimer = () => {
     setIsRunning(false)
+  }
+
+  const resumeTimer = () => {
+    setIsRunning(true)
   }
 
   const resetTimer = () => {
@@ -63,6 +63,19 @@ const Timer = () => {
     setMinutes(value)
   }
 
+  const startTimer = useCallback((duration?: number) => {
+    if (duration) {
+      // If not duration, use duration set by input
+      setMinutes(duration)
+    }
+    setIsBeingSetup(false)
+    setIsRunning(true)
+  }, [])
+
+  const startInputTimer = useCallback(() => { startTimer() }, [startTimer])
+  const start25Timer = useCallback(() => { startTimer(25) }, [startTimer])
+  const start50Timer = useCallback(() => { startTimer(50) }, [startTimer])
+
   useEffect(() => {
     if (!isComplete) return
 
@@ -76,8 +89,8 @@ const Timer = () => {
           ? (<>
             <Typography variant='body1'>Set a focus timer</Typography>
             <Box css={setupWrapperCSS}>
-              <Button variant='contained' onClick={() => { setMinutes(25); setIsBeingSetup(false) }}>25 minutes</Button>
-              <Button variant='contained' onClick={() => { setMinutes(50); setIsBeingSetup(false) }}>50 minutes</Button>
+              <Button variant='contained' onClick={start25Timer}>25 minutes</Button>
+              <Button variant='contained' onClick={start50Timer}>50 minutes</Button>
               <Typography variant='body1'>Or</Typography>
               <TextField
                 placeholder="Set a Custom Timer"
@@ -90,7 +103,7 @@ const Timer = () => {
                   endAdornment: <InputAdornment position="end">min</InputAdornment>
                 }}
               />
-              <Button variant='contained' onClick={() => { setIsBeingSetup(false) }}> Submit</Button>
+              <Button variant='contained' onClick={startInputTimer}> Submit</Button>
             </Box>
           </>)
           : (
@@ -99,7 +112,7 @@ const Timer = () => {
               <Typography css={timerCSS} variant='body1'>
                 {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
               </Typography>
-              <Button css={css`width:75px`} variant='contained' onClick={isRunning ? pauseTimer : startTimer}>{isRunning ? 'Pause' : 'Start'}</Button>
+              <Button css={css`width:75px`} variant='contained' onClick={isRunning ? pauseTimer : resumeTimer}>{isRunning ? 'Pause' : 'Start'}</Button>
             </Box>)
       }
 
