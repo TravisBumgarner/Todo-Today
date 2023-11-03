@@ -54,6 +54,11 @@ const QueueItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTi
     void handleStatusChange(ETaskStatus.BLOCKED)
   }, [handleStatusChange, handleSortOrderChange])
 
+  const markQueued = useCallback(() => {
+    void handleSortOrderChange()
+    void handleStatusChange(ETaskStatus.NEW)
+  }, [handleStatusChange, handleSortOrderChange])
+
   const markSkipped = useCallback(() => {
     void handleSortOrderChange()
   }, [handleSortOrderChange])
@@ -102,14 +107,14 @@ const QueueItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTi
       <TextField css={detailsCSS} placeholder='Details' fullWidth multiline value={details} onChange={handleDetailsChange} />
       <Box>
         <Stack direction="row" css={css`align-items: center; display: flex; margin-top: 1rem; > * {margin-right: 0.5rem;}`}>
-          <Typography>Mark as</Typography>
-          <ButtonGroup variant="contained">
-            <Button startIcon={<Icons.CanceledIcon />} onClick={markCanceled}>Canceled</Button>
-            <Button startIcon={<Icons.BlockedIcon />} onClick={markBlocked}>Blocked</Button>
-            <Button startIcon={<Icons.CompletedIcon />} onClick={markCompleted} >Completed</Button>
+          <ButtonGroup variant='contained'>
+            {/* <Button startIcon={<Icons.NewIcon />} onClick={markQueued}>Back to Queue</Button> */}
+            <Button startIcon={<Icons.BlockedIcon />} onClick={markBlocked}>Pause Task</Button>
+            <Button startIcon={<Icons.CanceledIcon />} onClick={markCanceled}>Cancel Task</Button>
+            <Button startIcon={<Icons.CompletedIcon />} onClick={markCompleted} >Complete Task</Button>
           </ButtonGroup>
           <Typography variant='body1'>Or</Typography>
-          <Button variant='contained' onClick={markSkipped}>Skip</Button>
+          <Button variant='contained' onClick={markSkipped}>Work on task later</Button>
         </Stack>
       </Box>
     </Box >

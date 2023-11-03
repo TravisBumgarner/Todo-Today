@@ -28,8 +28,8 @@ export const TASK_STATUS_IS_ACTIVE: Record<ETaskStatus, boolean> = {
 const taskStatusLookup: Record<ETaskStatus, string> = {
   [ETaskStatus.CANCELED]: 'Canceled',
   [ETaskStatus.COMPLETED]: 'Completed',
-  [ETaskStatus.IN_PROGRESS]: 'Queued',
-  [ETaskStatus.NEW]: 'New',
+  [ETaskStatus.IN_PROGRESS]: 'In Progress',
+  [ETaskStatus.NEW]: 'Queued',
   [ETaskStatus.BLOCKED]: 'Blocked'
 }
 
