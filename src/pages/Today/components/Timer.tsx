@@ -4,24 +4,43 @@ import { Box, Button, InputAdornment, TextField, Typography, css } from '@mui/ma
 import { sendAsyncIPCMessage } from 'utilities'
 import { EAsyncMessageIPCFromRenderer } from 'shared/types'
 
-const CUSTOM_TIMER_DEFAULT = 10
+const CUSTOM_TIMER_DEFAULT = 5
+
+enum Status {
+  Setup = 'Setup',
+  Running = 'Running',
+  Paused = 'Paused',
+  Complete = 'Complete',
+}
+
+enum CountdownType {
+  Work = 'Work',
+  Break = 'Break',
+}
 
 const Timer = () => {
-  const [minutes, setMinutes] = useState(CUSTOM_TIMER_DEFAULT)
-  const [seconds, setSeconds] = useState(0)
+  const [minutes, setMinutes] = useState(0)
+  const [seconds, setSeconds] = useState(CUSTOM_TIMER_DEFAULT)
 
-  const [isBeingSetup, setIsBeingSetup] = useState(true)
-  const [isRunning, setIsRunning] = useState(false)
-  const [isComplete, setIsComplete] = useState(false)
+  const [status, setStatus] = useState<Status>(Status.Setup)
+  const [countdownType, setCountdownType] = useState<CountdownType>(CountdownType.Work)
 
   useEffect(() => {
     let timer: NodeJS.Timeout
 
-    if (isRunning) {
+    if (status === Status.Running) {
       timer = setInterval(() => {
         if (seconds === 0) {
           if (minutes === 0) {
-            setIsComplete(true)
+            setStatus(Status.Setup)
+            setCountdownType(countdownType === CountdownType.Work ? CountdownType.Break : CountdownType.Work)
+            sendAsyncIPCMessage({
+              type: EAsyncMessageIPCFromRenderer.CreateNotification,
+              body: {
+                title: 'Timer done',
+                body: countdownType === CountdownType.Work ? 'Time for a break' : 'Time to get back to work'
+              }
+            })
             clearInterval(timer)
           } else {
             setMinutes(minutes - 1)
@@ -36,22 +55,20 @@ const Timer = () => {
     return () => {
       clearInterval(timer)
     }
-  }, [isRunning, minutes, seconds])
+  }, [status, minutes, seconds, countdownType])
 
   const pauseTimer = () => {
-    setIsRunning(false)
+    setStatus(Status.Paused)
   }
 
   const resumeTimer = () => {
-    setIsRunning(true)
+    setStatus(Status.Running)
   }
 
   const resetTimer = () => {
-    setIsRunning(false)
-    setIsBeingSetup(true)
-    setIsComplete(false)
-    setMinutes(CUSTOM_TIMER_DEFAULT)
-    setSeconds(0)
+    setStatus(Status.Setup)
+    setMinutes(0)
+    setSeconds(CUSTOM_TIMER_DEFAULT)
   }
 
   const handleMinutesChange = (e: any) => {
@@ -59,59 +76,110 @@ const Timer = () => {
     setMinutes(value)
   }
 
-  const startTimer = useCallback((duration?: number) => {
+  const startTimer = useCallback((countdownType: CountdownType, duration?: number) => {
     if (duration) {
       // If not duration, use duration set by input
-      setMinutes(duration)
+      setSeconds(duration)
+    } else {
+      setSeconds(CUSTOM_TIMER_DEFAULT)
     }
-    setIsBeingSetup(false)
-    setIsRunning(true)
+    setCountdownType(countdownType)
+    setStatus(Status.Running)
   }, [])
 
-  const startInputTimer = useCallback(() => { startTimer() }, [startTimer])
-  const start25Timer = useCallback(() => { startTimer(25) }, [startTimer])
-  const start50Timer = useCallback(() => { startTimer(50) }, [startTimer])
+  // This feels a bit repetitive.
+  const startBreakInputTimer = useCallback(() => { startTimer(CountdownType.Break) }, [startTimer])
+  const startBreak5Timer = useCallback(() => { startTimer(CountdownType.Break, 5) }, [startTimer])
+  const startBreak10Timer = useCallback(() => { startTimer(CountdownType.Break, 10) }, [startTimer])
 
-  useEffect(() => {
-    if (!isComplete) return
+  const startWorkInputTimer = useCallback(() => { startTimer(CountdownType.Work) }, [startTimer])
+  const startWork25Timer = useCallback(() => { startTimer(CountdownType.Work, 25) }, [startTimer])
+  const startWork50Timer = useCallback(() => { startTimer(CountdownType.Work, 50) }, [startTimer])
 
-    sendAsyncIPCMessage({ type: EAsyncMessageIPCFromRenderer.CreateNotification, body: { title: 'Timer done', body: 'Time for a break' } })
-  }, [isComplete])
+  console.log(status, countdownType)
 
-  if (isBeingSetup) {
+  if (status === Status.Setup && countdownType === CountdownType.Work) {
     return (
-      <Box css={wrapperCSS}>
-        <Typography variant='body1'>Set a focus timer</Typography>
-        <Box css={setupWrapperCSS}>
-          <Button variant='contained' onClick={start25Timer}>25 minutes</Button>
-          <Button variant='contained' onClick={start50Timer}>50 minutes</Button>
-          <Typography variant='body1'>Or</Typography>
-          <TextField
-            placeholder="Set a Custom Timer"
-            type="number"
-            value={minutes}
-            onChange={handleMinutesChange}
-            size="small"
-            css={css`width: 120px;`}
-            InputProps={{
-              endAdornment: <InputAdornment position="end">min</InputAdornment>
-            }}
-          />
-          <Button variant='contained' onClick={startInputTimer}> Submit</Button>
+      <Box css={componentWrapperCSS}>
+        <Typography variant='h1'>Focus Time</Typography>
+        <Box css={wrapperCSS}>
+          <Box css={setupWrapperCSS}>
+            <Button variant='contained' onClick={startWork25Timer}>25 minutes</Button>
+            <Button variant='contained' onClick={startWork50Timer}>50 minutes</Button>
+            <Typography variant='body1'>Or</Typography>
+            <TextField
+              placeholder="Set a Custom Timer"
+              type="number"
+              value={minutes}
+              onChange={handleMinutesChange}
+              size="small"
+              css={css`width: 120px;`}
+              InputProps={{
+                endAdornment: <InputAdornment position="end">min</InputAdornment>
+              }}
+            />
+            <Button variant='contained' onClick={startWorkInputTimer}> Submit</Button>
+          </Box>
         </Box>
       </Box>
     )
   }
 
-  if (!isBeingSetup) {
+  if (status === Status.Setup && countdownType === CountdownType.Break) {
     return (
-      <Box css={wrapperCSS}>
-        <Box css={progressWrapper}>
-          <Button color="error" onClick={resetTimer}>New Timer</Button>
-          <Typography css={timerCSS} variant='body1'>
-            {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
-          </Typography>
-          <Button css={css`width:75px`} variant='contained' onClick={isRunning ? pauseTimer : resumeTimer}>{isRunning ? 'Pause' : 'Start'}</Button>
+      <Box css={componentWrapperCSS}>
+        <Typography variant='h1'>Break Time</Typography>
+        <Box css={wrapperCSS}>
+          <Box css={setupWrapperCSS}>
+            <Button variant='contained' onClick={startBreak5Timer}>5 minutes</Button>
+            <Button variant='contained' onClick={startBreak10Timer}>10 minutes</Button>
+            <Typography variant='body1'>Or</Typography>
+            <TextField
+              placeholder="Set a Custom Timer"
+              type="number"
+              value={minutes}
+              onChange={handleMinutesChange}
+              size="small"
+              css={css`width: 120px;`}
+              InputProps={{
+                endAdornment: <InputAdornment position="end">min</InputAdornment>
+              }}
+            />
+            <Button variant='contained' onClick={startBreakInputTimer}> Submit</Button>
+          </Box>
+        </Box>
+      </Box>
+    )
+  }
+
+  if (status === Status.Running) {
+    return (
+      <Box css={componentWrapperCSS}>
+        <Typography variant='h1'>{countdownType === CountdownType.Break ? 'Break Time' : 'Focus Time'}</Typography>
+        <Box css={wrapperCSS}>
+          <Box css={progressWrapper}>
+            <Button color="error" onClick={resetTimer}>New Timer</Button>
+            <Typography css={timerCSS} variant='body1'>
+              {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
+            </Typography>
+            <Button css={css`width:75px`} variant='contained' onClick={pauseTimer}>Pause</Button>
+          </Box>
+        </Box>
+      </Box>
+    )
+  }
+
+  if (status === Status.Paused) {
+    return (
+      <Box css={componentWrapperCSS}>
+        <Box css={wrapperCSS}>
+          <Box css={progressWrapper}>
+            <Button color="error" onClick={resetTimer}>New Timer</Button>
+            <Typography css={timerCSS} variant='body1'>
+              {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
+            </Typography>
+            <Button css={css`width:75px`} variant='contained' onClick={resumeTimer}>Resume</Button>
+          </Box>
         </Box>
       </Box>
     )
@@ -125,6 +193,7 @@ const setupWrapperCSS = css`
   justify-content: flex-start;
 
   > * {
+    margin-left: 0.5rem;
     margin-right: 0.5rem;
   }
 `
@@ -136,14 +205,27 @@ const progressWrapper = css`
   justify-content: center;
   
   > * {
+    margin-left: 0.5rem;
     margin-right: 0.5rem;
   }
 `
 
-const wrapperCSS = css`
-  border-radius: 1rem;
-  padding: 1rem 0;
+const componentWrapperCSS = css`
   height: 100px;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+`
+
+const wrapperCSS = css`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  & > * {
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+  }
 `
 
 const timerCSS = css`
