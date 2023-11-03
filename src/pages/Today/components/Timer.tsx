@@ -1,16 +1,12 @@
-import { useState, useEffect, useCallback, useContext } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Box, Button, InputAdornment, TextField, Typography, css } from '@mui/material'
 
-import { ButtonWrapper, Divider } from 'sharedComponents'
 import { sendAsyncIPCMessage } from 'utilities'
 import { EAsyncMessageIPCFromRenderer } from 'shared/types'
-import { context } from 'Context'
 
 const CUSTOM_TIMER_DEFAULT = 10
 
 const Timer = () => {
-  const { dispatch } = useContext(context)
-
   const [minutes, setMinutes] = useState(CUSTOM_TIMER_DEFAULT)
   const [seconds, setSeconds] = useState(0)
 
@@ -82,42 +78,44 @@ const Timer = () => {
     sendAsyncIPCMessage({ type: EAsyncMessageIPCFromRenderer.CreateNotification, body: { title: 'Timer done', body: 'Time for a break' } })
   }, [isComplete])
 
-  return (
-    <Box css={wrapperCSS}>
-      {
-        isBeingSetup
-          ? (<>
-            <Typography variant='body1'>Set a focus timer</Typography>
-            <Box css={setupWrapperCSS}>
-              <Button variant='contained' onClick={start25Timer}>25 minutes</Button>
-              <Button variant='contained' onClick={start50Timer}>50 minutes</Button>
-              <Typography variant='body1'>Or</Typography>
-              <TextField
-                placeholder="Set a Custom Timer"
-                type="number"
-                value={minutes}
-                onChange={handleMinutesChange}
-                size="small"
-                css={css`width: 120px;`}
-                InputProps={{
-                  endAdornment: <InputAdornment position="end">min</InputAdornment>
-                }}
-              />
-              <Button variant='contained' onClick={startInputTimer}> Submit</Button>
-            </Box>
-          </>)
-          : (
-            <Box css={progressWrapper}>
-              <Button color="error" onClick={resetTimer}>New Timer</Button>
-              <Typography css={timerCSS} variant='body1'>
-                {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
-              </Typography>
-              <Button css={css`width:75px`} variant='contained' onClick={isRunning ? pauseTimer : resumeTimer}>{isRunning ? 'Pause' : 'Start'}</Button>
-            </Box>)
-      }
+  if (isBeingSetup) {
+    return (
+      <Box css={wrapperCSS}>
+        <Typography variant='body1'>Set a focus timer</Typography>
+        <Box css={setupWrapperCSS}>
+          <Button variant='contained' onClick={start25Timer}>25 minutes</Button>
+          <Button variant='contained' onClick={start50Timer}>50 minutes</Button>
+          <Typography variant='body1'>Or</Typography>
+          <TextField
+            placeholder="Set a Custom Timer"
+            type="number"
+            value={minutes}
+            onChange={handleMinutesChange}
+            size="small"
+            css={css`width: 120px;`}
+            InputProps={{
+              endAdornment: <InputAdornment position="end">min</InputAdornment>
+            }}
+          />
+          <Button variant='contained' onClick={startInputTimer}> Submit</Button>
+        </Box>
+      </Box>
+    )
+  }
 
-    </Box >
-  )
+  if (!isBeingSetup) {
+    return (
+      <Box css={wrapperCSS}>
+        <Box css={progressWrapper}>
+          <Button color="error" onClick={resetTimer}>New Timer</Button>
+          <Typography css={timerCSS} variant='body1'>
+            {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
+          </Typography>
+          <Button css={css`width:75px`} variant='contained' onClick={isRunning ? pauseTimer : resumeTimer}>{isRunning ? 'Pause' : 'Start'}</Button>
+        </Box>
+      </Box>
+    )
+  }
 }
 
 const setupWrapperCSS = css`
