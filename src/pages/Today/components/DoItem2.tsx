@@ -13,10 +13,7 @@ import { TaskStatusSelector } from 'sharedComponents'
 
 const QueueItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTitle, projectTitle }: Entry) => {
   const { dispatch } = useContext(context)
-  const [showDetails, setShowDetails] = useState(false)
   const [details, setDetails] = useState(initialDetails ?? '') // Undo doesn't work if synced directly to DB. Might be a more elegant solution, but for now, this works.
-
-  const toggleShowDetails = useCallback(() => { setShowDetails(prev => !prev) }, [])
 
   const handleStatusChange = useCallback(async (
     status: ETaskStatus
@@ -42,7 +39,7 @@ const QueueItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTi
 
   return (
     <Card css={wrapperCSS}>
-      <Box css={headerCSS(showDetails)}>
+      <Box css={headerCSS}>
         <Box css={leftHeaderCSS}>
           <Box>
             <TaskStatusSelector handleStatusChangeCallback={handleStatusChange} taskStatus={taskStatus} showLabel={false} />
@@ -53,17 +50,6 @@ const QueueItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTi
           </Box>
         </Box>
         <Box css={rightHeaderCSS}>
-          <ToggleButton
-            size='small'
-            value="text"
-            onChange={toggleShowDetails}
-            css={{ marginRight: '0.5rem', backgroundColor: 'css={css`background-color: var(--mui-palette-background-paper)' }}
-          >
-            <Tooltip title="Show details" >
-              <ChevronRight fontSize="small" css={{ transform: `rotate(${showDetails ? '90deg' : '0deg'})` }} />
-            </Tooltip>
-          </ToggleButton>
-
           <Tooltip title="Edit task">
             <IconButton onClick={handleEdit} css={{ marginLeft: '0.5rem' }}
             >
@@ -79,7 +65,7 @@ const QueueItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTi
 
         </Box>
       </Box>
-      {showDetails && <TextField placeholder="Task Notes" css={detailsCSS} fullWidth multiline value={details} onChange={handleDetailsChange} />}
+      <TextField rows={5} placeholder="Task Notes" css={detailsCSS} fullWidth multiline value={details} onChange={handleDetailsChange} />
     </Card >
   )
 }
@@ -91,11 +77,11 @@ const rightHeaderCSS = css`
   flex-shrink: 0;
 `
 
-const headerCSS = (showDetails: boolean) => css`
+const headerCSS = css`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: ${showDetails ? '0.5rem' : '0'};
+  margin-bottom: 0.5rem;
 `
 
 const detailsCSS = css`

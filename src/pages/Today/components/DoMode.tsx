@@ -2,12 +2,12 @@ import { useCallback, useContext, useMemo, useState } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { Box, Button, ButtonGroup, Typography, css } from '@mui/material'
 
-import DoItem from './DoItem'
+import DoItem from './DoItem2'
 import database from 'database'
-import { type TProject, type TTask, type Entry } from 'types'
+import { type TProject, type TTask, type TTodoListItem, type ETaskStatus, type TDateISODate } from 'types'
 import { context } from 'Context'
 import { ModalID } from 'modals'
-import { TASK_STATUS_IS_ACTIVE } from 'utilities'
+import { TASK_STATUS_IS_ACTIVE, getNextSortOrderValue } from 'utilities'
 import { pageCSS } from 'theme'
 import { HEADER_HEIGHT } from '../../../components/Header'
 import { emptyTodoListCSS } from './sharedCSS'
@@ -24,9 +24,22 @@ const EmptyTodoList = () => {
   )
 }
 
+interface DoModeEntry {
+  id: string
+  taskId: string
+  todoListDate: string
+  sortOrder: number
+  taskTitle: string
+  taskStatus: ETaskStatus
+  projectTitle: string
+  taskDetails?: string
+  selectedDate: TDateISODate
+  todoListItemId: string
+}
+
 const TodoList = () => {
   const { state: { selectedDate, restoreInProgress, settings: { concurrentTodoListItems } }, dispatch } = useContext(context)
-  const [selectedDateActiveEntries, setSelectedDateActiveEntries] = useState<Entry[]>([])
+  const [selectedDateActiveEntries, setSelectedDateActiveEntries] = useState<DoModeEntry[]>([])
 
   useLiveQuery(
     async () => {
@@ -45,7 +58,8 @@ const TodoList = () => {
           taskStatus: task.status,
           projectTitle: project.title,
           taskDetails: task.details,
-          selectedDate: todoListItem.todoListDate
+          selectedDate: todoListItem.todoListDate,
+          todoListItemId: todoListItem.id
         }
       }))
 
@@ -61,6 +75,14 @@ const TodoList = () => {
   const selectedDateActiveEntriesFiltered = useMemo(() => {
     return selectedDateActiveEntries.filter((_, index) => index < concurrentTodoListItems).map((it) => (<DoItem key={it.id} {...it} />))
   }, [selectedDateActiveEntries, concurrentTodoListItems])
+
+  const handleNextTaskChange = useCallback(async (
+  ) => {
+    const nextSorterOrder = await getNextSortOrderValue(selectedDate)
+    console.log('next sort', nextSorterOrder)
+    const todoListItemDTO: Partial<TTodoListItem> = { sortOrder: nextSorterOrder }
+    await database.todoListItems.where('id').equals(selectedDateActiveEntries[0].todoListItemId).modify(todoListItemDTO)
+  }, [selectedDate, selectedDateActiveEntries])
 
   if (restoreInProgress) {
     return null
@@ -78,12 +100,17 @@ const TodoList = () => {
           </Button>
           <Button
             variant='contained'
+            onClick={handleNextTaskChange}
           >
-            Start timer
+            Skip Task
           </Button>
         </ButtonGroup>
         <ButtonGroup>
-          <Button variant='contained'>??</Button>
+          <Button
+            variant='contained'
+          >
+            Start timer
+          </Button>
         </ButtonGroup>
       </Box>
       <Box css={todolistItemsWrapperCSS}>

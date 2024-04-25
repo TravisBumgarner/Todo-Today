@@ -109,8 +109,11 @@ const sendSyncIPCMessage = async <T extends SyncMessageIPCFromRenderer>(
 }
 
 export const getNextSortOrderValue = async (selectedDate: TDateISODate): Promise<number> => {
+  console.log('selectedDate', selectedDate)
   const todoListItems = await database.todoListItems.where('todoListDate').equals(selectedDate).toArray()
+  console.log('todoListItems', JSON.stringify(todoListItems))
   const lastTodoListItem = todoListItems.sort((a, b) => a.sortOrder - b.sortOrder).pop()
+  console.log('last', lastTodoListItem)
   return lastTodoListItem?.sortOrder ? lastTodoListItem?.sortOrder + 1 : 0
 }
 
