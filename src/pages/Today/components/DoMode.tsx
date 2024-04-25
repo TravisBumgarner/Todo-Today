@@ -1,29 +1,33 @@
-import { useContext, useMemo, useState } from 'react'
+import { useCallback, useContext, useMemo, useState } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
-import { Box, Typography, css } from '@mui/material'
+import { Box, Button, ButtonGroup, Typography, css } from '@mui/material'
 
-import database from 'database'
-import { type Entry, type TProject, type TTask } from 'types'
-import { context } from 'Context'
 import DoItem from './DoItem'
+import database from 'database'
+import { type TProject, type TTask, type Entry } from 'types'
+import { context } from 'Context'
+import { ModalID } from 'modals'
 import { TASK_STATUS_IS_ACTIVE } from 'utilities'
 import { pageCSS } from 'theme'
-import Timer from './Timer'
-import DeclutterYourMind from './DeclutterYourMind'
+import { HEADER_HEIGHT } from '../../../components/Header'
+import { emptyTodoListCSS } from './sharedCSS'
+
+const MENU_ITEMS_HEIGHT = 36
 
 const EmptyTodoList = () => {
   return (
     <Box css={emptyTodoListCSS}>
-      <Typography css={css`margin-bottom: 1rem`} variant='h2'>Empty State?</Typography>
+      <Box>
+        <Typography variant='h2'>Switch to queue mode to pick tasks</Typography>
+      </Box>
     </Box>
   )
 }
 
 const TodoList = () => {
-  const { state: { selectedDate, restoreInProgress, settings: { concurrentTodoListItems } } } = useContext(context)
+  const { state: { selectedDate, restoreInProgress, settings: { concurrentTodoListItems } }, dispatch } = useContext(context)
   const [selectedDateActiveEntries, setSelectedDateActiveEntries] = useState<Entry[]>([])
 
-  // Todo might need a new home for this query. Maybe Todo.tsx/
   useLiveQuery(
     async () => {
       const todoListItems = await database.todoListItems
@@ -50,8 +54,11 @@ const TodoList = () => {
     [selectedDate]
   )
 
+  const showAddNewTaskModal = useCallback(() => {
+    dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.ADD_TASK_MODAL } })
+  }, [dispatch])
+
   const selectedDateActiveEntriesFiltered = useMemo(() => {
-    console.log(concurrentTodoListItems)
     return selectedDateActiveEntries.filter((_, index) => index < concurrentTodoListItems).map((it) => (<DoItem key={it.id} {...it} />))
   }, [selectedDateActiveEntries, concurrentTodoListItems])
 
@@ -61,26 +68,35 @@ const TodoList = () => {
 
   return (
     <Box css={pageCSS}>
-      <Timer />
+      <Box css={{ display: 'flex', justifyContent: 'space-between', height: `${MENU_ITEMS_HEIGHT}px` }}>
+        <ButtonGroup>
+          <Button
+            variant='contained'
+            onClick={showAddNewTaskModal}
+          >
+            Add New Task
+          </Button>
+          <Button
+            variant='contained'
+          >
+            Start timer
+          </Button>
+        </ButtonGroup>
+        <ButtonGroup>
+          <Button variant='contained'>??</Button>
+        </ButtonGroup>
+      </Box>
       <Box css={todolistItemsWrapperCSS}>
-        {selectedDateActiveEntriesFiltered.length === 0 && <EmptyTodoList />}
-        {selectedDateActiveEntriesFiltered.length > 0 && selectedDateActiveEntriesFiltered}
+        {selectedDateActiveEntries.length === 0 && <EmptyTodoList />}
+        {selectedDateActiveEntries.length > 0 && selectedDateActiveEntriesFiltered}
       </Box >
-      <DeclutterYourMind />
     </Box >
   )
 }
 
 const todolistItemsWrapperCSS = css`
   overflow: auto;
-`
-
-const emptyTodoListCSS = css`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  height: 100%;
+  height: calc(100vh - ${MENU_ITEMS_HEIGHT}px - ${HEADER_HEIGHT}px);
 `
 
 export default TodoList
