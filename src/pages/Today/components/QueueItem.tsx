@@ -1,18 +1,17 @@
-import { type ChangeEvent, useState, useCallback, useContext, useEffect } from 'react'
+import { type ChangeEvent, useState, useCallback, useContext } from 'react'
 import { Box, Card, IconButton, TextField, Tooltip, Typography, css } from '@mui/material'
 import ToggleButton from '@mui/material/ToggleButton'
 import EditIcon from '@mui/icons-material/Edit'
 import CloseIcon from '@mui/icons-material/CloseOutlined'
 import { ChevronRight } from '@mui/icons-material'
-import TimerIcon from '@mui/icons-material/Timer'
 
 import database from 'database'
-import { ETaskStatus } from 'types'
+import { type ETaskStatus } from 'types'
 import { ModalID } from 'modals'
 import { context } from 'Context'
 import { TaskStatusSelector } from 'sharedComponents'
 
-export interface Entry {
+export interface QueueItemEntry {
   id: string
   taskId: string
   todoListDate: string
@@ -23,14 +22,10 @@ export interface Entry {
   taskDetails?: string
 }
 
-const TodoListItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTitle, projectTitle }: Entry) => {
+const QueueItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTitle, projectTitle }: QueueItemEntry) => {
   const { dispatch } = useContext(context)
   const [showDetails, setShowDetails] = useState(false)
   const [details, setDetails] = useState(initialDetails ?? '') // Undo doesn't work if synced directly to DB. Might be a more elegant solution, but for now, this works.
-
-  const handleStartTimer = () => {
-    dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.TIMER_MODAL, taskId } })
-  }
 
   const toggleShowDetails = useCallback(() => { setShowDetails(prev => !prev) }, [])
 
@@ -39,19 +34,7 @@ const TodoListItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, tas
   ) => {
     if (status === null) return
     await database.tasks.where('id').equals(taskId).modify({ status })
-
-    if (status === ETaskStatus.COMPLETED || status === ETaskStatus.CANCELED) {
-      const lastTodoListItem = await database.todoListItems.orderBy('sortOrder').reverse().first()
-      const sortOrder = lastTodoListItem?.sortOrder ? lastTodoListItem?.sortOrder + 1 : 0
-      await database.todoListItems.where('id').equals(id).modify({ sortOrder })
-
-      setShowDetails(false)
-    }
-  }, [taskId, id])
-
-  useEffect(() => {
-    if (initialDetails && initialDetails.length > 0) setShowDetails(true)
-  }, [initialDetails])
+  }, [taskId])
 
   const handleDetailsChange = useCallback(async (
     event: ChangeEvent<HTMLInputElement>
@@ -92,12 +75,6 @@ const TodoListItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, tas
             </Tooltip>
           </ToggleButton>
 
-          <Tooltip title="Start focus timer">
-            <IconButton onClick={handleStartTimer} css={{ marginLeft: '0.5rem' }}>
-              <TimerIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-
           <Tooltip title="Edit task">
             <IconButton onClick={handleEdit} css={{ marginLeft: '0.5rem' }}
             >
@@ -113,7 +90,7 @@ const TodoListItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, tas
 
         </Box>
       </Box>
-      {showDetails && <TextField css={detailsCSS} fullWidth multiline value={details} onChange={handleDetailsChange} />}
+      {showDetails && <TextField placeholder="Task Notes" css={detailsCSS} fullWidth multiline value={details} onChange={handleDetailsChange} />}
     </Card >
   )
 }
@@ -155,4 +132,4 @@ padding: 0.5rem;
 margin: ${TODO_LIST_ITEM_MARGIN};
 `
 
-export default TodoListItem
+export default QueueItem

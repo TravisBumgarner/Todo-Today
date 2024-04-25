@@ -11,7 +11,7 @@ import { type TProject, EProjectStatus, type TTask, ETaskStatus } from 'types'
 import database from 'database'
 import { context } from 'Context'
 import { ModalID } from './RenderModal'
-import { sortStrings } from 'utilities'
+import { getNextSortOrderValue, sortStrings } from 'utilities'
 
 interface TaskProps {
   task: TTask
@@ -22,11 +22,13 @@ const Task = ({ task, isSelected }: TaskProps) => {
   const { state } = useContext(context)
 
   const handleSelect = async () => {
+    const nextSortOrder = await getNextSortOrderValue(state.selectedDate)
+
     await database.todoListItems.add({
       taskId: task.id,
       id: uuid4(),
       todoListDate: state.selectedDate,
-      sortOrder: -1
+      sortOrder: nextSortOrder
     })
   }
 

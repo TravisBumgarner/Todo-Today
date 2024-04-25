@@ -23,7 +23,7 @@
       "types": ["src/types.ts"],
       "theme": ["src/theme.tsx"],
       "colors": ["src/colors.tsx"],
-      "utilities": ["src/utilities.ts"],
+      "utilities": ["src/utilities.tsx"],
       "Context": ["src/Context.tsx"],
       "database": ["src/database.ts"]
     },

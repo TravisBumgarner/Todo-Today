@@ -10,11 +10,12 @@ import moment from 'moment'
 import database from 'database'
 import { DATE_ISO_DATE_MOMENT_STRING, ETaskStatus, type TProject, type TTask, type TTodoListItem } from 'types'
 import { context } from 'Context'
-import TodoListItem, { TODO_LIST_ITEM_MARGIN, type Entry } from './TodoListItem'
+import QueueItem, { type QueueItemEntry, TODO_LIST_ITEM_MARGIN } from './QueueItem'
 import { ModalID } from 'modals'
 import { TASK_STATUS_IS_ACTIVE, formatDateDisplayString, formatDateKeyLookup } from 'utilities'
 import { pageCSS } from 'theme'
 import { HEADER_HEIGHT } from '../../../components/Header'
+import { emptyTodoListCSS } from './sharedCSS'
 
 const reorder = (list: any[], startIndex: number, endIndex: number) => {
   const result = Array.from(list)
@@ -90,35 +91,37 @@ const EmptyTodoList = () => {
 
   return (
     <Box css={emptyTodoListCSS}>
-      <Typography css={css`margin-bottom: 1rem`} variant='h2'>What will you do today?</Typography>
-      <ButtonGroup>
-        <Button
-          variant='contained'
-          onClick={getPreviousDatesTasks}
-        >
-          Copy Previous Day
-        </Button>
-        <Button
-          variant='contained'
-          onClick={showManagementModal}
-        >
-          Select Tasks
-        </Button>
-        <Button
-          variant='contained'
-          onClick={showAddNewTaskModal}
-        >
-          Add New Task
-        </Button>
-      </ButtonGroup>
+      <Box>
+        <Typography css={css`margin-bottom: 1rem`} variant='h2'>What will you do today?</Typography>
+        <ButtonGroup>
+          <Button
+            variant='contained'
+            onClick={getPreviousDatesTasks}
+          >
+            Copy Previous Day
+          </Button>
+          <Button
+            variant='contained'
+            onClick={showManagementModal}
+          >
+            Select Tasks
+          </Button>
+          <Button
+            variant='contained'
+            onClick={showAddNewTaskModal}
+          >
+            Add New Task
+          </Button>
+        </ButtonGroup>
+      </Box>
     </Box>
   )
 }
 
 const TodoList = () => {
   const { state: { selectedDate, restoreInProgress }, dispatch } = useContext(context)
-  const [selectedDateActiveEntries, setSelectedDateActiveEntries] = useState<Entry[]>([])
-  const [selectedDateInactiveEntries, setSelectedDateInactiveEntries] = useState<Entry[]>([])
+  const [selectedDateActiveEntries, setSelectedDateActiveEntries] = useState<QueueItemEntry[]>([])
+  const [selectedDateInactiveEntries, setSelectedDateInactiveEntries] = useState<QueueItemEntry[]>([])
   const [showArchive, setShowArchive] = useState(false)
 
   useLiveQuery(
@@ -129,7 +132,7 @@ const TodoList = () => {
         .sortBy('sortOrder')
 
       const entries = await Promise.all(todoListItems.map(async todoListItem => {
-        const task = await database.tasks.where('id').equals(todoListItem.id).first() as TTask
+        const task = await database.tasks.where('id').equals(todoListItem.taskId).first() as TTask
         const project = await database.projects.where('id').equals(task.projectId).first() as TProject
 
         return {
@@ -201,16 +204,16 @@ const TodoList = () => {
       <Box css={{ display: 'flex', justifyContent: 'space-between', height: `${MENU_ITEMS_HEIGHT}px` }}>
         <ButtonGroup>
           <Button
-            onClick={showManagementModal}
-            variant='contained'
-          >
-            Select Tasks
-          </Button>
-          <Button
             variant='contained'
             onClick={showAddNewTaskModal}
           >
             Add New Task
+          </Button>
+          <Button
+            onClick={showManagementModal}
+            variant='contained'
+          >
+            Select Tasks
           </Button>
         </ButtonGroup>
         <ButtonGroup>
@@ -243,7 +246,7 @@ const TodoList = () => {
                           {...provided.dragHandleProps}
                           style={dragItemCSS(snapshot.isDraggingOver, provided.draggableProps.style)}
                         >
-                          <TodoListItem {...it}
+                          <QueueItem {...it}
                           />
                         </div>
                       )}
@@ -271,7 +274,7 @@ const TodoList = () => {
                 </Tooltip>
               </ToggleButton>
             </Stack>
-            {showArchive && selectedDateInactiveEntries.map((it) => <TodoListItem key={it.id} {...it} />)}
+            {showArchive && selectedDateInactiveEntries.map((it) => <QueueItem key={it.id} {...it} />)}
           </>
         )}
       </Box >
@@ -307,14 +310,6 @@ const todayButtonCSS = css`
       :hover:before {
         content:"Go to Today";
   }
-      `
-
-const emptyTodoListCSS = css`
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      height: 100%;
       `
 
 export default TodoList

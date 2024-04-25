@@ -89,6 +89,10 @@ const Settings = () => {
     dispatch({ type: 'EDIT_USER_SETTING', payload: { key: 'backupInterval', value: event.target.value } })
   }, [dispatch])
 
+  const handleConcurrentTodoListItemsChange = useCallback((event: SelectChangeEvent<number>) => {
+    dispatch({ type: 'EDIT_USER_SETTING', payload: { key: 'concurrentTodoListItems', value: event.target.value } })
+  }, [dispatch])
+
   const restore = useCallback((restoreFile: File | null) => {
     dispatch({ type: 'RESTORE_STARTED' })
     if (restoreFile) {
@@ -154,6 +158,34 @@ const Settings = () => {
       title="Settings"
       showModal={true}
     >
+      <Box css={sectionWrapperCSS}>
+        <Box css={sectionHeaderWrapperCSS}>
+          <Typography variant="h3">Todo List</Typography>
+          <HtmlTooltip title={
+            <>
+              <Typography variant="body2"><Box component="span" fontWeight={700}>Concurrent Tasks</Box> - How many tasks to show at once when doing focused work.</Typography>
+            </>
+          }>
+            <HelpOutlineIcon color="primary" fontSize='small' />
+          </HtmlTooltip>
+        </Box>
+        <FormControl fullWidth margin='normal'>
+          <InputLabel id="setting-modal-concurrent-tasks">Concurrent Tasks</InputLabel>
+          <Select
+            fullWidth
+            labelId="setting-modal-concurrent-tasks"
+            type="number"
+            value={state.settings.concurrentTodoListItems}
+            label="Concurrent Tasks"
+            onChange={handleConcurrentTodoListItemsChange}
+          >
+            <MenuItem value={1}>1</MenuItem>
+            <MenuItem value={2}>2</MenuItem>
+            <MenuItem value={3}>3</MenuItem>
+          </Select>
+        </FormControl>
+      </Box>
+
       <Box css={sectionWrapperCSS}>
         <Typography variant="h3">Theme</Typography>
         <FormControl fullWidth margin='normal'>

@@ -1,6 +1,8 @@
 import moment from 'moment'
 import { ipcRenderer } from 'electron'
+import { Icons } from 'sharedComponents'
 
+import database from 'database'
 import { EProjectStatus, type TDateISODate, ETaskStatus, EColorTheme, EBackupInterval, DATE_ISO_DATE_MOMENT_STRING } from './types'
 import { ESyncMessageIPCFromRenderer, type SyncMessageIPCFromRenderer, type AppStartIPCFromMain, type AsyncMessageIPCFromRenderer } from 'shared/types'
 
@@ -27,7 +29,7 @@ const taskStatusLookup: Record<ETaskStatus, string> = {
   [ETaskStatus.CANCELED]: 'Canceled',
   [ETaskStatus.COMPLETED]: 'Completed',
   [ETaskStatus.IN_PROGRESS]: 'In Progress',
-  [ETaskStatus.NEW]: 'New',
+  [ETaskStatus.NEW]: 'Queued',
   [ETaskStatus.BLOCKED]: 'Blocked'
 }
 
@@ -78,6 +80,7 @@ export interface TLocalStorage {
   hasDoneWarmStart: boolean
   colorTheme: EColorTheme
   backupInterval: EBackupInterval
+  concurrentTodoListItems: number
 }
 
 const getLocalStorage = (key: keyof TLocalStorage) => {
@@ -105,11 +108,45 @@ const sendSyncIPCMessage = async <T extends SyncMessageIPCFromRenderer>(
   }
 }
 
+export const getNextSortOrderValue = async (selectedDate: TDateISODate): Promise<number> => {
+  console.log('selectedDate', selectedDate)
+  const todoListItems = await database.todoListItems.where('todoListDate').equals(selectedDate).toArray()
+  console.log('todoListItems', JSON.stringify(todoListItems))
+  const lastTodoListItem = todoListItems.sort((a, b) => a.sortOrder - b.sortOrder).pop()
+  console.log('last', lastTodoListItem)
+  return lastTodoListItem?.sortOrder ? lastTodoListItem?.sortOrder + 1 : 0
+}
+
 const sendAsyncIPCMessage = <T extends AsyncMessageIPCFromRenderer>(
   message: T
 ) => {
   // Responses end up in useIPCRendererEffect.ts
   ipcRenderer.send(message.type, message.body)
+}
+
+const taskStatusIcon = (taskStatus: ETaskStatus) => {
+  switch (taskStatus) {
+    case ETaskStatus.CANCELED:
+      return (
+        <Icons.CanceledIcon />
+      )
+    case ETaskStatus.BLOCKED:
+      return (
+        <Icons.BlockedIcon />
+      )
+    case ETaskStatus.NEW:
+      return (
+        <Icons.NewIcon />
+      )
+    case ETaskStatus.IN_PROGRESS:
+      return (
+        <Icons.InProgressIcon />
+      )
+    case ETaskStatus.COMPLETED:
+      return (
+        <Icons.CompletedIcon />
+      )
+  }
 }
 
 export {
@@ -125,5 +162,6 @@ export {
   getLocalStorage,
   setLocalStorage,
   sendSyncIPCMessage,
-  sendAsyncIPCMessage
+  sendAsyncIPCMessage,
+  taskStatusIcon
 }
