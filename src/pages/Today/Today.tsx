@@ -1,7 +1,7 @@
 import { Box, FormControlLabel, Switch } from '@mui/material'
 import { useContext } from 'react'
 
-import { QueueMode, DoMode } from './components'
+import { QueueMode, DoMode2 } from './components'
 import { pageCSS } from 'theme'
 import { context } from 'Context'
 
@@ -19,7 +19,7 @@ const Today = () => {
         onChange={handleWorkModeChange}
         inputProps={{ 'aria-label': 'controlled' }}
       />} label={workMode === 'do' ? 'Focus Mode' : 'Queue Mode'} />
-      {workMode === 'do' ? <DoMode /> : <QueueMode />}
+      {workMode === 'do' ? <DoMode2 /> : <QueueMode />}
     </Box>
   )
 }
