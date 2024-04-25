@@ -70,3 +70,15 @@ export enum EActivePage {
   History = 'History',
   Successes = 'Successes',
 }
+
+export interface Entry {
+  id: string
+  taskId: string
+  todoListDate: string
+  sortOrder: number
+  taskTitle: string
+  taskStatus: ETaskStatus
+  projectTitle: string
+  taskDetails?: string
+  selectedDate: TDateISODate
+}

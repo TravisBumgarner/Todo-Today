@@ -4,23 +4,11 @@ import EditIcon from '@mui/icons-material/Edit'
 // import CloseIcon from '@mui/icons-material/CloseOutlined'
 
 import database from 'database'
-import { ETaskStatus, type TTask, type TDateISODate, type TTodoListItem } from 'types'
+import { ETaskStatus, type TTask, type Entry, type TTodoListItem } from 'types'
 import { ModalID } from 'modals'
 import { context } from 'Context'
 import { Icons } from 'sharedComponents'
 import { getNextSortOrderValue, taskStatusIcon } from 'utilities'
-
-export interface Entry {
-  id: string
-  taskId: string
-  todoListDate: string
-  sortOrder: number
-  taskTitle: string
-  taskStatus: ETaskStatus
-  projectTitle: string
-  taskDetails?: string
-  selectedDate: TDateISODate
-}
 
 const QueueItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTitle, projectTitle, selectedDate }: Entry) => {
   const { dispatch } = useContext(context)
@@ -52,11 +40,6 @@ const QueueItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTi
   const markBlocked = useCallback(() => {
     void handleSortOrderChange()
     void handleStatusChange(ETaskStatus.BLOCKED)
-  }, [handleStatusChange, handleSortOrderChange])
-
-  const markQueued = useCallback(() => {
-    void handleSortOrderChange()
-    void handleStatusChange(ETaskStatus.NEW)
   }, [handleStatusChange, handleSortOrderChange])
 
   const markSkipped = useCallback(() => {

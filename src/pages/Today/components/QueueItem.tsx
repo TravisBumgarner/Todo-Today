@@ -1,4 +1,4 @@
-import { type ChangeEvent, useState, useCallback, useContext, useEffect } from 'react'
+import { type ChangeEvent, useState, useCallback, useContext } from 'react'
 import { Box, Card, IconButton, TextField, Tooltip, Typography, css } from '@mui/material'
 import ToggleButton from '@mui/material/ToggleButton'
 import EditIcon from '@mui/icons-material/Edit'
@@ -6,21 +6,10 @@ import CloseIcon from '@mui/icons-material/CloseOutlined'
 import { ChevronRight } from '@mui/icons-material'
 
 import database from 'database'
-import { type ETaskStatus } from 'types'
+import { type ETaskStatus, type Entry } from 'types'
 import { ModalID } from 'modals'
 import { context } from 'Context'
 import { TaskStatusSelector } from 'sharedComponents'
-
-export interface Entry {
-  id: string
-  taskId: string
-  todoListDate: string
-  sortOrder: number
-  taskTitle: string
-  taskStatus: ETaskStatus
-  projectTitle: string
-  taskDetails?: string
-}
 
 const QueueItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTitle, projectTitle }: Entry) => {
   const { dispatch } = useContext(context)
