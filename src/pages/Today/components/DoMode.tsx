@@ -89,7 +89,7 @@ const TodoList = () => {
             variant='contained'
             onClick={handleNextTaskChange}
           >
-            Skip Task
+            Skip Current Task
           </Button>
         </ButtonGroup>
         <ButtonGroup>
