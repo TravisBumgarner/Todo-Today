@@ -2,7 +2,7 @@ import { useCallback, useContext, useMemo, useState } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { Box, Button, ButtonGroup, Typography, css } from '@mui/material'
 
-import DoItem from './DoItem2'
+import DoItem from './DoItem'
 import database from 'database'
 import { type TProject, type TTask, type TTodoListItem, type ETaskStatus, type TDateISODate } from 'types'
 import { context } from 'Context'

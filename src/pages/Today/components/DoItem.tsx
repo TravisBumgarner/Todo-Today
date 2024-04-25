@@ -1,16 +1,15 @@
 import { type ChangeEvent, useState, useCallback, useContext } from 'react'
-import { Box, Button, ButtonGroup, IconButton, Stack, TextField, Tooltip, Typography, css } from '@mui/material'
+import { Box, Card, IconButton, TextField, Tooltip, Typography, css } from '@mui/material'
 import EditIcon from '@mui/icons-material/Edit'
-// import CloseIcon from '@mui/icons-material/CloseOutlined'
+import CloseIcon from '@mui/icons-material/CloseOutlined'
 
 import database from 'database'
-import { ETaskStatus, type TTask, type Entry, type TTodoListItem } from 'types'
+import { type ETaskStatus, type Entry } from 'types'
 import { ModalID } from 'modals'
 import { context } from 'Context'
-import { Icons } from 'sharedComponents'
-import { getNextSortOrderValue, taskStatusIcon } from 'utilities'
+import { TaskStatusSelector } from 'sharedComponents'
 
-const QueueItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTitle, projectTitle, selectedDate }: Entry) => {
+const QueueItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTitle, projectTitle }: Entry) => {
   const { dispatch } = useContext(context)
   const [details, setDetails] = useState(initialDetails ?? '') // Undo doesn't work if synced directly to DB. Might be a more elegant solution, but for now, this works.
 
@@ -18,33 +17,8 @@ const QueueItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTi
     status: ETaskStatus
   ) => {
     if (status === null) return
-    const taskDTO: Partial<TTask> = { status }
-    await database.tasks.where('id').equals(taskId).modify(taskDTO)
+    await database.tasks.where('id').equals(taskId).modify({ status })
   }, [taskId])
-
-  const handleSortOrderChange = useCallback(async (
-  ) => {
-    const nextSorterOrder = await getNextSortOrderValue(selectedDate)
-    const todoListItemDTO: Partial<TTodoListItem> = { sortOrder: nextSorterOrder }
-    await database.todoListItems.where('id').equals(id).modify(todoListItemDTO)
-  }, [selectedDate, id])
-
-  const markCompleted = useCallback(() => {
-    void handleStatusChange(ETaskStatus.COMPLETED)
-  }, [handleStatusChange])
-
-  const markCanceled = useCallback(() => {
-    void handleStatusChange(ETaskStatus.CANCELED)
-  }, [handleStatusChange])
-
-  const markBlocked = useCallback(() => {
-    void handleSortOrderChange()
-    void handleStatusChange(ETaskStatus.BLOCKED)
-  }, [handleStatusChange, handleSortOrderChange])
-
-  const markSkipped = useCallback(() => {
-    void handleSortOrderChange()
-  }, [handleSortOrderChange])
 
   const handleDetailsChange = useCallback(async (
     event: ChangeEvent<HTMLInputElement>
@@ -53,23 +27,25 @@ const QueueItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTi
     setDetails(event.target.value)
   }, [taskId])
 
-  // const handleRemoveFromToday = useCallback(async () => {
-  //   await database.todoListItems.where({ id }).delete()
-  // }, [id])
+  const handleRemoveFromToday = useCallback(async () => {
+    await database.todoListItems.where({ id }).delete()
+  }, [id])
 
   const handleEdit = useCallback(() => {
     dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.EDIT_TASK_MODAL, taskId } })
   }, [dispatch, taskId])
 
   return (
-    <Box css={wrapperCSS}>
+    <Card css={wrapperCSS}>
       <Box css={headerCSS}>
         <Box css={leftHeaderCSS}>
           <Box>
+            <TaskStatusSelector handleStatusChangeCallback={handleStatusChange} taskStatus={taskStatus} showLabel={false} />
+          </Box>
+          <Box css={css`margin-left: 1rem`}>
             <Typography css={headerTextCSS} variant="h2">{taskTitle}</Typography>
             <Typography variant="body1">{projectTitle}</Typography>
           </Box>
-          <Typography css={css`margin-left: 3rem;`}>Current Status</Typography>{taskStatusIcon(taskStatus)}
         </Box>
         <Box css={rightHeaderCSS}>
           <Tooltip title="Edit task">
@@ -79,32 +55,21 @@ const QueueItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTi
             </IconButton>
           </Tooltip>
 
-          {/* <Tooltip title="Remove from today">
+          <Tooltip title="Remove from today">
             <IconButton onClick={handleRemoveFromToday} css={{ marginLeft: '0.5rem' }}>
               <CloseIcon fontSize="small" />
             </IconButton>
-          </Tooltip> */}
+          </Tooltip>
 
         </Box>
       </Box>
-      <TextField css={detailsCSS} placeholder='Details' fullWidth multiline value={details} onChange={handleDetailsChange} />
-      <Box>
-        <Stack direction="row" css={css`align-items: center; display: flex; margin-top: 1rem; > * {margin-right: 0.5rem;}`}>
-          <ButtonGroup variant='contained'>
-            {/* <Button startIcon={<Icons.NewIcon />} onClick={markQueued}>Back to Queue</Button> */}
-            <Button startIcon={<Icons.BlockedIcon />} onClick={markBlocked}>Pause Task</Button>
-            <Button startIcon={<Icons.CanceledIcon />} onClick={markCanceled}>Cancel Task</Button>
-            <Button startIcon={<Icons.CompletedIcon />} onClick={markCompleted} >Complete Task</Button>
-          </ButtonGroup>
-          <Typography variant='body1'>Or</Typography>
-          <Button variant='contained' onClick={markSkipped}>Work on task later</Button>
-        </Stack>
-      </Box>
-    </Box >
+      <TextField rows={5} placeholder="Task Notes" css={detailsCSS} fullWidth multiline value={details} onChange={handleDetailsChange} />
+    </Card >
   )
 }
 
 const rightHeaderCSS = css`
+  margin-left: 1rem;
   display: flex;
   align-items: center;
   flex-shrink: 0;
@@ -118,6 +83,7 @@ const headerCSS = css`
 `
 
 const detailsCSS = css`
+  background: var(--mui-palette-background-paper);
 `
 
 const headerTextCSS = css`
@@ -133,11 +99,10 @@ const leftHeaderCSS = css`
 export const TODO_LIST_ITEM_MARGIN = '0.5rem 0 0.5rem 0'
 
 const wrapperCSS = css`
-  border-radius: 0.5rem;
-  padding: 0.5rem;
-  margin: ${TODO_LIST_ITEM_MARGIN};
-  border: 2px solid var(--mui-palette-primary-main);
-  border-radius: 1rem;
+background: var(--mui-palette-background-paper);
+border-radius: 0.5rem;
+padding: 0.5rem;
+margin: ${TODO_LIST_ITEM_MARGIN};
 `
 
 export default QueueItem
