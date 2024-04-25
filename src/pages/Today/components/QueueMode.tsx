@@ -8,9 +8,9 @@ import _ from 'lodash'
 import moment from 'moment'
 
 import database from 'database'
-import { DATE_ISO_DATE_MOMENT_STRING, ETaskStatus, type TProject, type TTask, type TTodoListItem, type Entry } from 'types'
+import { DATE_ISO_DATE_MOMENT_STRING, ETaskStatus, type TProject, type TTask, type TTodoListItem } from 'types'
 import { context } from 'Context'
-import QueueItem, { TODO_LIST_ITEM_MARGIN } from './QueueItem'
+import QueueItem, { type QueueItemEntry, TODO_LIST_ITEM_MARGIN } from './QueueItem'
 import { ModalID } from 'modals'
 import { TASK_STATUS_IS_ACTIVE, formatDateDisplayString, formatDateKeyLookup } from 'utilities'
 import { pageCSS } from 'theme'
@@ -120,8 +120,8 @@ const EmptyTodoList = () => {
 
 const TodoList = () => {
   const { state: { selectedDate, restoreInProgress }, dispatch } = useContext(context)
-  const [selectedDateActiveEntries, setSelectedDateActiveEntries] = useState<Entry[]>([])
-  const [selectedDateInactiveEntries, setSelectedDateInactiveEntries] = useState<Entry[]>([])
+  const [selectedDateActiveEntries, setSelectedDateActiveEntries] = useState<QueueItemEntry[]>([])
+  const [selectedDateInactiveEntries, setSelectedDateInactiveEntries] = useState<QueueItemEntry[]>([])
   const [showArchive, setShowArchive] = useState(false)
 
   useLiveQuery(
@@ -140,8 +140,7 @@ const TodoList = () => {
           taskTitle: task.title,
           taskStatus: task.status,
           projectTitle: project.title,
-          taskDetails: task.details,
-          selectedDate
+          taskDetails: task.details
         }
       }))
 

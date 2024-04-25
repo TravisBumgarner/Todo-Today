@@ -2,9 +2,9 @@ import { useCallback, useContext, useMemo, useState } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { Box, Button, ButtonGroup, Typography, css } from '@mui/material'
 
-import DoItem from './DoItem'
+import DoItem, { type DoModeEntry } from './DoItem'
 import database from 'database'
-import { type TProject, type TTask, type TTodoListItem, type ETaskStatus, type TDateISODate } from 'types'
+import { type TProject, type TTask, type TTodoListItem } from 'types'
 import { context } from 'Context'
 import { ModalID } from 'modals'
 import { TASK_STATUS_IS_ACTIVE, getNextSortOrderValue } from 'utilities'
@@ -22,19 +22,6 @@ const EmptyTodoList = () => {
       </Box>
     </Box>
   )
-}
-
-interface DoModeEntry {
-  id: string
-  taskId: string
-  todoListDate: string
-  sortOrder: number
-  taskTitle: string
-  taskStatus: ETaskStatus
-  projectTitle: string
-  taskDetails?: string
-  selectedDate: TDateISODate
-  todoListItemId: string
 }
 
 const TodoList = () => {

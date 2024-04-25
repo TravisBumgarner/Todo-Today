@@ -4,12 +4,25 @@ import EditIcon from '@mui/icons-material/Edit'
 import CloseIcon from '@mui/icons-material/CloseOutlined'
 
 import database from 'database'
-import { type ETaskStatus, type Entry } from 'types'
+import { type TDateISODate, type ETaskStatus } from 'types'
 import { ModalID } from 'modals'
 import { context } from 'Context'
 import { TaskStatusSelector } from 'sharedComponents'
 
-const QueueItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTitle, projectTitle }: Entry) => {
+export interface DoModeEntry {
+  id: string
+  taskId: string
+  todoListDate: string
+  sortOrder: number
+  taskTitle: string
+  taskStatus: ETaskStatus
+  projectTitle: string
+  taskDetails?: string
+  selectedDate: TDateISODate
+  todoListItemId: string
+}
+
+const QueueItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTitle, projectTitle }: DoModeEntry) => {
   const { dispatch } = useContext(context)
   const [details, setDetails] = useState(initialDetails ?? '') // Undo doesn't work if synced directly to DB. Might be a more elegant solution, but for now, this works.
 
