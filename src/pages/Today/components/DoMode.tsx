@@ -11,6 +11,7 @@ import { TASK_STATUS_IS_ACTIVE, getNextSortOrderValue } from 'utilities'
 import { pageCSS } from 'theme'
 import { HEADER_HEIGHT } from '../../../components/Header'
 import { emptyTodoListCSS } from './sharedCSS'
+import Timer from './Timer'
 
 const MENU_ITEMS_HEIGHT = 36
 
@@ -93,6 +94,7 @@ const TodoList = () => {
           </Button>
         </ButtonGroup>
         <ButtonGroup>
+          <Timer />
           <Button
             variant='contained'
           >

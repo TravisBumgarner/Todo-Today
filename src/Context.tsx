@@ -210,7 +210,7 @@ const ResultsContext = ({ children }: { children: any }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const { backupDir } = await sendSyncIPCMessage({ type: ESyncMessageIPCFromRenderer.AppStart })
+      const { backupDir } = await sendSyncIPCMessage({ type: ESyncMessageIPCFromRenderer.AppStart, body: null })
       if (getLocalStorage(HAS_DONE_WARM_START) !== TRUE) {
         initialSetup(backupDir)
       } else {

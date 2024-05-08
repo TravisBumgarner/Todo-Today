@@ -1,13 +1,13 @@
 export enum EAsyncMessageIPCFromRenderer {
-  CreateNotification = 'create_notification',
-  CreateBackup = 'create_backup',
-  RestartApp = 'restart_app'
+  CreateNotification = 'create-notification',
+  CreateBackup = 'create-backup',
+  RestartApp = 'restart-app',
 }
 
 export enum EAsyncMessageIPCFromMain {
-  BackupCompleted = 'backup_completed',
-  UpdateAvailable = 'update_available',
-  UpdateDownloaded = 'update_downloaded'
+  BackupCompleted = 'backup-completed',
+  UpdateAvailable = 'update-available',
+  UpdateDownloaded = 'update-downloaded'
 }
 
 export interface AsyncNotificationIPCFromRenderer {

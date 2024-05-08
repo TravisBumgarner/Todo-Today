@@ -9,8 +9,9 @@ import moment from 'moment'
 import { update } from './update'
 import menu from './menu'
 import { isDev, isDebugProduction } from './config'
-import { type AsyncBackupIPCFromRenderer, ESyncMessageIPCFromRenderer, type AsyncNotificationIPCFromRenderer, type AsyncBackupIPCFromMain, type AppStartIPCFromMain, EAsyncMessageIPCFromRenderer, EAsyncMessageIPCFromMain } from '../../shared/types'
+import { type AsyncBackupIPCFromRenderer, ESyncMessageIPCFromRenderer, type AsyncNotificationIPCFromRenderer, type AsyncBackupIPCFromMain, type AppStartIPCFromMain, EAsyncMessageIPCFromRenderer, EAsyncMessageIPCFromMain, type StartTimerIPCFromRenderer } from '../../shared/types'
 import { DATE_BACKUP_DATE } from '../../shared/utilities'
+import Timer from './timer'
 
 Menu.setApplicationMenu(menu)
 
@@ -122,6 +123,8 @@ app.on('activate', () => {
   }
 })
 
+let timer: Timer
+
 // New window example arg: new windows url
 ipcMain.handle('open-win', (_, arg) => {
   const childWindow = new BrowserWindow({
@@ -143,6 +146,16 @@ const BACKUPS_DIR = resolve(app.getPath('documents'), app.name, 'backups')
 if (!existsSync(BACKUPS_DIR)) {
   mkdirSync(BACKUPS_DIR, { recursive: true })
 }
+
+ipcMain.handle(ESyncMessageIPCFromRenderer.StartTimer, async (_, arg: StartTimerIPCFromRenderer['body']) => {
+  timer = new Timer()
+  timer.start(arg.duration)
+})
+
+ipcMain.handle(ESyncMessageIPCFromRenderer.StopTimer, async () => {
+  const end = timer.stop()
+  console.log(end)
+})
 
 ipcMain.handle(ESyncMessageIPCFromRenderer.AppStart, async (): Promise<AppStartIPCFromMain['body']> => {
   return {

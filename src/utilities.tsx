@@ -4,7 +4,7 @@ import { Icons } from 'sharedComponents'
 
 import database from 'database'
 import { EProjectStatus, type TDateISODate, ETaskStatus, EColorTheme, EBackupInterval, DATE_ISO_DATE_MOMENT_STRING } from './types'
-import { ESyncMessageIPCFromRenderer, type SyncMessageIPCFromRenderer, type AppStartIPCFromMain, type AsyncMessageIPCFromRenderer } from 'shared/types'
+import { type ESyncMessageIPCFromRenderer, type SyncMessageIPCFromRenderer, type AppStartIPCFromMain, type AsyncMessageIPCFromRenderer, type StartTimerIPCFromMain, type StopTimerIPCFromMain } from 'shared/types'
 
 const projectStatusLookup: Record<EProjectStatus, string> = {
   [EProjectStatus.INACTIVE]: 'Inactive',
@@ -94,18 +94,17 @@ const setLocalStorage = <T extends TLocalStorage>(key: keyof T, value: T[keyof T
 
 interface MessageReturnTypeMap {
   [ESyncMessageIPCFromRenderer.AppStart]: AppStartIPCFromMain['body']
+  [ESyncMessageIPCFromRenderer.StartTimer]: StartTimerIPCFromMain['body']
+  [ESyncMessageIPCFromRenderer.StopTimer]: StopTimerIPCFromMain['body']
 }
 
 const sendSyncIPCMessage = async <T extends SyncMessageIPCFromRenderer>(
   message: T
 ): Promise<MessageReturnTypeMap[T['type']]> => {
-  switch (message.type) {
-    case ESyncMessageIPCFromRenderer.AppStart: {
-      return (await ipcRenderer.invoke(
-        message.type
-      )) as MessageReturnTypeMap[T['type']]
-    }
-  }
+  return (await ipcRenderer.invoke(
+    message.type,
+    message.body
+  )) as MessageReturnTypeMap[T['type']]
 }
 
 export const getNextSortOrderValue = async (selectedDate: TDateISODate): Promise<number> => {

@@ -31,7 +31,8 @@
     "@typescript-eslint/no-non-null-assertion": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "import/no-unresolved": "error",
-    "@typescript-eslint/indent": "off"
+    "@typescript-eslint/indent": "off",
+    "@typescript-eslint/space-before-function-paren": "off"
   },
   "settings": {
     "react": {
