@@ -11,6 +11,7 @@ import { TASK_STATUS_IS_ACTIVE, getNextSortOrderValue } from 'utilities'
 import { pageCSS } from 'theme'
 import { HEADER_HEIGHT } from '../../../components/Header'
 import { emptyTodoListCSS } from './sharedCSS'
+import Timer from './Timer'
 
 const MENU_ITEMS_HEIGHT = 36
 
@@ -92,13 +93,7 @@ const TodoList = () => {
             Skip Current Task
           </Button>
         </ButtonGroup>
-        <ButtonGroup>
-          <Button
-            variant='contained'
-          >
-            Start timer
-          </Button>
-        </ButtonGroup>
+        <Timer />
       </Box>
       <Box css={todolistItemsWrapperCSS}>
         {selectedDateActiveEntries.length === 0 && <EmptyTodoList />}

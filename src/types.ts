@@ -70,4 +70,3 @@ export enum EActivePage {
   History = 'History',
   Successes = 'Successes',
 }
-

@@ -3,7 +3,7 @@ import moment from 'moment'
 
 import { EColorTheme, EBackupInterval, type TSettings, type TDateISODate, EActivePage } from 'types'
 import { formatDateKeyLookup, getLocalStorage, sendSyncIPCMessage, setLocalStorage } from 'utilities'
-import { ESyncMessageIPCFromRenderer } from 'shared/types'
+import { ESyncMessageIPC } from 'shared/types'
 import { type ActiveModal } from './modals/RenderModal'
 
 const HAS_DONE_WARM_START = 'hasDoneWarmStart'
@@ -30,6 +30,7 @@ export interface State {
   restoreInProgress: boolean
   activePage: EActivePage
   workMode: 'queue' | 'do'
+  timerDuration: number
 }
 
 const EMPTY_STATE: State = {
@@ -45,7 +46,8 @@ const EMPTY_STATE: State = {
   restoreInProgress: false,
   activePage: EActivePage.Home,
   message: null,
-  workMode: 'queue'
+  workMode: 'queue',
+  timerDuration: 0
 
 }
 const initialSetup = (backupDir: string) => {
@@ -136,6 +138,13 @@ interface UpdateworkMode {
   }
 }
 
+interface UpdateTimer {
+  type: 'UPDATE_TIMER'
+  payload: {
+    timerDuration: number
+  }
+}
+
 export type Action =
   | EditUserSettings
   | HydrateUserSettings
@@ -148,6 +157,7 @@ export type Action =
   | AddMessage
   | DeleteMessage
   | UpdateworkMode
+  | UpdateTimer
 
 const reducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -189,6 +199,10 @@ const reducer = (state: State, action: Action): State => {
       const { workMode } = action.payload
       return { ...state, workMode }
     }
+    case 'UPDATE_TIMER': {
+      const { timerDuration } = action.payload
+      return { ...state, timerDuration }
+    }
     default:
       throw new Error('Unexpected action')
   }
@@ -210,7 +224,7 @@ const ResultsContext = ({ children }: { children: any }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const { backupDir } = await sendSyncIPCMessage({ type: ESyncMessageIPCFromRenderer.AppStart })
+      const { backupDir } = await sendSyncIPCMessage({ type: ESyncMessageIPC.AppStart, body: null })
       if (getLocalStorage(HAS_DONE_WARM_START) !== TRUE) {
         initialSetup(backupDir)
       } else {

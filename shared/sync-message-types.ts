@@ -1,17 +1,14 @@
-export enum ESyncMessageIPCFromRenderer {
-  AppStart = 'app-start',
-}
-
-export enum ESyncMessageIPCFromMain {
+export enum ESyncMessageIPC {
   AppStart = 'app-start',
 }
 
 export interface AppStartIPCFromRenderer {
-  type: ESyncMessageIPCFromRenderer.AppStart
+  type: ESyncMessageIPC.AppStart
+  body: null
 }
 
 export interface AppStartIPCFromMain {
-  type: ESyncMessageIPCFromRenderer.AppStart
+  type: ESyncMessageIPC.AppStart
   body: {
     backupDir: string
   }
