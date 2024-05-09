@@ -1,11 +1,11 @@
-import { useCallback, useContext, useEffect, useState } from 'react'
 import { Box, Button, IconButton, Tooltip, Typography, css } from '@mui/material'
+import { useCallback, useContext, useEffect, useState } from 'react'
 
-import { sendAsyncIPCMessage } from 'utilities'
-import { EAsyncMessageIPCFromRenderer } from 'shared/async-message-types'
+import { Close, Pause, PlayArrow } from '@mui/icons-material'
 import { context } from 'Context'
 import { ModalID } from 'modals'
-import { Close, Pause, PlayArrow } from '@mui/icons-material'
+import { EAsyncMessageIPCFromRenderer } from 'shared/async-message-types'
+import { sendAsyncIPCMessage } from 'utilities'
 
 const formatDuration = (duration: number) => {
   const minutes = Math.floor(duration / 60)

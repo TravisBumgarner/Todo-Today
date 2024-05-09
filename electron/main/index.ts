@@ -1,17 +1,17 @@
-import { Menu, app, BrowserWindow, shell, ipcMain, Notification } from 'electron'
+import { BrowserWindow, Menu, Notification, app, ipcMain, shell } from 'electron'
+import log from 'electron-log'
+import { autoUpdater } from 'electron-updater'
+import moment from 'moment'
+import { existsSync, mkdirSync, writeFileSync } from 'node:fs'
 import { release } from 'node:os'
 import { join, resolve } from 'node:path'
-import { writeFileSync, existsSync, mkdirSync } from 'node:fs'
-import { autoUpdater } from 'electron-updater'
-import log from 'electron-log'
-import moment from 'moment'
 
-import { update } from './update'
-import menu from './menu'
-import { isDev, isDebugProduction } from './config'
-import { type AsyncBackupIPCFromRenderer, type AsyncNotificationIPCFromRenderer, type AsyncBackupIPCFromMain, type AppStartIPCFromMain, EAsyncMessageIPCFromRenderer, EAsyncMessageIPCFromMain, type AsyncStartTimerIPCFromRenderer, ESyncMessageIPC } from '../../shared/types'
+import { EAsyncMessageIPCFromMain, EAsyncMessageIPCFromRenderer, ESyncMessageIPC, type AppStartIPCFromMain, type AsyncBackupIPCFromMain, type AsyncBackupIPCFromRenderer, type AsyncNotificationIPCFromRenderer, type AsyncStartTimerIPCFromRenderer } from '../../shared/types'
 import { DATE_BACKUP_DATE } from '../../shared/utilities'
+import { isDebugProduction, isDev } from './config'
+import menu from './menu'
 import Timer from './timer'
+import { update } from './update'
 
 Menu.setApplicationMenu(menu)
 

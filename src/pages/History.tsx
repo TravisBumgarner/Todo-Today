@@ -1,16 +1,16 @@
-import { useLiveQuery } from 'dexie-react-hooks'
-import { useState, useCallback, useMemo, useContext, useEffect } from 'react'
-import { Box, Card, IconButton, ToggleButton, Tooltip, Typography, css } from '@mui/material'
-import EditIcon from '@mui/icons-material/Edit'
 import { ChevronRight } from '@mui/icons-material'
 import DeleteIcon from '@mui/icons-material/Delete'
+import EditIcon from '@mui/icons-material/Edit'
+import { Box, Card, IconButton, ToggleButton, Tooltip, Typography, css } from '@mui/material'
+import { useLiveQuery } from 'dexie-react-hooks'
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 
-import { EmptyStateDisplay } from 'sharedComponents'
+import { context } from 'Context'
 import database from 'database'
+import { ModalID } from 'modals'
+import { EmptyStateDisplay } from 'sharedComponents'
 import { pageCSS } from 'theme'
 import { type TProject, type TTask } from 'types'
-import { context } from 'Context'
-import { ModalID } from 'modals'
 import { projectStatusLookup, sortStrings } from 'utilities'
 
 interface TaskProps {

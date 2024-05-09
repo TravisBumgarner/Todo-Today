@@ -1,15 +1,11 @@
+import ButtonWrapper from './ButtonWrapper'
+import Divider from './Divider'
 import EmptyStateDisplay from './EmptyStateDisplay'
 import HtmlTooltip from './HtmlTooltip'
-import ButtonWrapper from './ButtonWrapper'
 import * as Icons from './Icon'
-import Divider from './Divider'
 import TaskStatusSelector from './TaskStatusSelector'
 
 export {
-  EmptyStateDisplay,
-  HtmlTooltip,
-  ButtonWrapper,
-  Icons,
-  Divider,
-  TaskStatusSelector
+  ButtonWrapper, Divider, EmptyStateDisplay,
+  HtmlTooltip, Icons, TaskStatusSelector
 }

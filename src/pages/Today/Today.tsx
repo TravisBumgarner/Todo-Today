@@ -1,9 +1,9 @@
 import { Box, FormControlLabel, Switch } from '@mui/material'
 import { useContext } from 'react'
 
-import { QueueMode, DoMode } from './components'
-import { pageCSS } from 'theme'
 import { context } from 'Context'
+import { pageCSS } from 'theme'
+import { DoMode, QueueMode } from './components'
 
 const Today = () => {
   const { state: { workMode }, dispatch } = useContext(context)

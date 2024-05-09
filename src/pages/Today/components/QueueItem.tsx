@@ -1,15 +1,15 @@
-import { type ChangeEvent, useState, useCallback, useContext } from 'react'
+import { ChevronRight } from '@mui/icons-material'
+import CloseIcon from '@mui/icons-material/CloseOutlined'
+import EditIcon from '@mui/icons-material/Edit'
 import { Box, Card, IconButton, TextField, Tooltip, Typography, css } from '@mui/material'
 import ToggleButton from '@mui/material/ToggleButton'
-import EditIcon from '@mui/icons-material/Edit'
-import CloseIcon from '@mui/icons-material/CloseOutlined'
-import { ChevronRight } from '@mui/icons-material'
+import { useCallback, useContext, useState, type ChangeEvent } from 'react'
 
-import database from 'database'
-import { type ETaskStatus } from 'types'
-import { ModalID } from 'modals'
 import { context } from 'Context'
+import database from 'database'
+import { ModalID } from 'modals'
 import { TaskStatusSelector } from 'sharedComponents'
+import { type ETaskStatus } from 'types'
 
 export interface QueueItemEntry {
   id: string

@@ -1,7 +1,7 @@
 import { Box, FormControl, IconButton, InputLabel, ListItemIcon, ListItemText, Menu, MenuItem, Select, SvgIcon, Tooltip, css } from '@mui/material'
 import { useCallback, useState } from 'react'
 import { ETaskStatus } from 'types'
-import { taskStatusLookup, taskStatusIcon } from 'utilities'
+import { taskStatusIcon, taskStatusLookup } from 'utilities'
 
 const TaskDropdown = ({ taskStatus, handleStatusChangeCallback }: Props) => {
   const [anchorEl, setAnchorEl] = useState(null)

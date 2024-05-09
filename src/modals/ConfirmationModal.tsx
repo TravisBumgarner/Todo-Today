@@ -1,10 +1,10 @@
-import { useCallback, useContext } from 'react'
 import { Button, Typography } from '@mui/material'
+import { useCallback, useContext } from 'react'
 
-import Modal from './Modal'
 import { context } from 'Context'
-import { type ModalID } from './RenderModal'
 import { ButtonWrapper } from 'sharedComponents'
+import Modal from './Modal'
+import { type ModalID } from './RenderModal'
 
 export interface ConfirmationModalProps {
   id: ModalID
@@ -14,7 +14,7 @@ export interface ConfirmationModalProps {
   cancelCallback?: () => void
 }
 
-const ConfirmationModal = ({ id, title, body, confirmationCallback, cancelCallback }: ConfirmationModalProps) => {
+const ConfirmationModal = ({ title, body, confirmationCallback }: ConfirmationModalProps) => {
   const { dispatch } = useContext(context)
 
   const handleCancel = useCallback(() => {

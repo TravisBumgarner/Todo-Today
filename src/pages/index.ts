@@ -1,13 +1,9 @@
-import TodoList from './Today/Today'
-import History from './History'
-import Error from './Error'
-import Successes from './Successes'
 import Settings from '../modals/Settings'
+import Error from './Error'
+import History from './History'
+import Successes from './Successes'
+import TodoList from './Today/Today'
 
 export {
-  TodoList,
-  History,
-  Error,
-  Successes,
-  Settings
+  Error, History, Settings, Successes, TodoList
 }
