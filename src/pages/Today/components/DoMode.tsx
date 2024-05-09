@@ -60,6 +60,10 @@ const TodoList = () => {
     dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.ADD_TASK_MODAL } })
   }, [dispatch])
 
+  const showTimerSetupModal = useCallback(() => {
+    dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.TIMER_SETUP_MODAL } })
+  }, [dispatch])
+
   const selectedDateActiveEntriesFiltered = useMemo(() => {
     return selectedDateActiveEntries.filter((_, index) => index < concurrentTodoListItems).map((it) => (<DoItem key={it.id} {...it} />))
   }, [selectedDateActiveEntries, concurrentTodoListItems])
@@ -97,8 +101,9 @@ const TodoList = () => {
           <Timer />
           <Button
             variant='contained'
+            onClick={showTimerSetupModal}
           >
-            Start timer
+            Add a Timer
           </Button>
         </ButtonGroup>
       </Box>

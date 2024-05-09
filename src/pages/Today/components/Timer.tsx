@@ -8,10 +8,6 @@ import { context } from 'Context'
 const Timer = () => {
   const { state: { timerDuration } } = useContext(context)
 
-  const handleStart = useCallback(async () => {
-    sendAsyncIPCMessage({ type: EAsyncMessageIPCFromRenderer.StartTimer, body: { duration: 60 } })
-  }, [])
-
   const handleStop = useCallback(async () => {
     sendAsyncIPCMessage({ type: EAsyncMessageIPCFromRenderer.StopTimer, body: null })
   }, [])
@@ -31,7 +27,6 @@ const Timer = () => {
   return (
     < Box >
       <Typography>{timerDuration}</Typography>
-      <Button onClick={handleStart}>Start</Button>
       <Button onClick={handleStop}>Stop</Button>
       <Button onClick={handlePause}>Pause</Button>
       <Button onClick={handleReset}>Reset</Button>
