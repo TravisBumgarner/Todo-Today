@@ -1,4 +1,4 @@
-import { type ThemeOptions, css, experimental_extendTheme as extendTheme } from '@mui/material/styles'
+import { css, experimental_extendTheme as extendTheme, type ThemeOptions } from '@mui/material/styles'
 import _ from 'lodash'
 
 const baseThemeOptions: ThemeOptions = {

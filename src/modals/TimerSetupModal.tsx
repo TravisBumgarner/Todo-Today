@@ -1,11 +1,11 @@
-import { useState, useCallback, useContext } from 'react'
 import { Box, Button, InputLabel, ToggleButton, ToggleButtonGroup } from '@mui/material'
+import { useCallback, useContext, useState } from 'react'
 
-import Modal from './Modal'
-import { ButtonWrapper } from 'sharedComponents'
 import { context } from 'Context'
-import { sendAsyncIPCMessage } from 'utilities'
 import { EAsyncMessageIPCFromRenderer } from 'shared/async-message-types'
+import { ButtonWrapper } from 'sharedComponents'
+import { sendAsyncIPCMessage } from 'utilities'
+import Modal from './Modal'
 
 enum EDuration {
   TwentyFive = 'twentyfive',

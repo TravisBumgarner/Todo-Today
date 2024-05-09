@@ -1,4 +1,4 @@
-import { app, Menu, type MenuItemConstructorOptions, shell } from 'electron'
+import { Menu, app, shell, type MenuItemConstructorOptions } from 'electron'
 
 import { isDev, isMac } from './config'
 

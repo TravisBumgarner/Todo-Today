@@ -1,14 +1,14 @@
-import { useCallback, useEffect, useContext, useState } from 'react'
-import moment from 'moment'
 import { Button, FormControl, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material'
 import { useLiveQuery } from 'dexie-react-hooks'
+import moment from 'moment'
+import { useCallback, useContext, useEffect, useState } from 'react'
 
-import Modal from './Modal'
-import { DATE_ISO_DATE_MOMENT_STRING, type TDateISODate, type TProject, type TSuccess } from 'types'
-import database from 'database'
-import { formatDateKeyLookup, sortStrings } from 'utilities'
 import { context } from 'Context'
+import database from 'database'
 import { ButtonWrapper } from 'sharedComponents'
+import { DATE_ISO_DATE_MOMENT_STRING, type TDateISODate, type TProject, type TSuccess } from 'types'
+import { formatDateKeyLookup, sortStrings } from 'utilities'
+import Modal from './Modal'
 
 interface Props {
   successId: string
@@ -116,7 +116,7 @@ const EditSuccessModal = ({ successId }: Props) => {
                 </Button>
               </ButtonWrapper>
             </form>
-            )
+          )
       }
     </Modal>
   )

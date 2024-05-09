@@ -1,13 +1,13 @@
-import { useCallback, useEffect, useState, useContext } from 'react'
 import { Button, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material'
 import { useLiveQuery } from 'dexie-react-hooks'
+import { useCallback, useContext, useEffect, useState } from 'react'
 
-import Modal from './Modal'
-import { type TTask, ETaskStatus } from 'types'
-import database from 'database'
-import { sortStrings } from 'utilities'
 import { context } from 'Context'
+import database from 'database'
 import { ButtonWrapper, TaskStatusSelector } from 'sharedComponents'
+import { ETaskStatus, type TTask } from 'types'
+import { sortStrings } from 'utilities'
+import Modal from './Modal'
 
 interface Props {
   taskId: string

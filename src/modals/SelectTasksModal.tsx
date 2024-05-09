@@ -1,17 +1,17 @@
+import { ChevronRight } from '@mui/icons-material'
+import CheckIcon from '@mui/icons-material/Check'
+import { Box, Button, IconButton, ToggleButton, Tooltip, Typography, css } from '@mui/material'
+import { useLiveQuery } from 'dexie-react-hooks'
 import { useCallback, useContext, useMemo, useState } from 'react'
 import { v4 as uuid4 } from 'uuid'
-import { useLiveQuery } from 'dexie-react-hooks'
-import { Box, Button, IconButton, ToggleButton, Tooltip, Typography, css } from '@mui/material'
-import CheckIcon from '@mui/icons-material/Check'
-import { ChevronRight } from '@mui/icons-material'
 
-import Modal, { MODAL_MAX_HEIGHT } from './Modal'
-import { EmptyStateDisplay } from 'sharedComponents'
-import { type TProject, EProjectStatus, type TTask, ETaskStatus } from 'types'
-import database from 'database'
 import { context } from 'Context'
-import { ModalID } from './RenderModal'
+import database from 'database'
+import { EmptyStateDisplay } from 'sharedComponents'
+import { EProjectStatus, ETaskStatus, type TProject, type TTask } from 'types'
 import { getNextSortOrderValue, sortStrings } from 'utilities'
+import Modal, { MODAL_MAX_HEIGHT } from './Modal'
+import { ModalID } from './RenderModal'
 
 interface TaskProps {
   task: TTask

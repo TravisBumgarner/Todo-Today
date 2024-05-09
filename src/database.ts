@@ -10,7 +10,7 @@ class MySubClassedDexie extends Dexie {
 
   successes!: Table<TSuccess>
 
-  constructor () {
+  constructor() {
     super('todo-today')
     this.version(7).stores({
       projects: 'id, title, status',

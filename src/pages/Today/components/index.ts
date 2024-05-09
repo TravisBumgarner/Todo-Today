@@ -1,7 +1,6 @@
-import QueueMode from './QueueMode'
 import DoMode from './DoMode'
+import QueueMode from './QueueMode'
 
 export {
-  QueueMode,
-  DoMode
+  DoMode, QueueMode
 }

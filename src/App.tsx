@@ -1,15 +1,15 @@
-import { useContext, useEffect, useMemo } from 'react'
-import CssBaseline from '@mui/material/CssBaseline' // https://stackoverflow.com/questions/74542488/react-material-ui-createtheme-default-is-not-a-function
 import { Box, Experimental_CssVarsProvider, css } from '@mui/material'
+import CssBaseline from '@mui/material/CssBaseline'; // https://stackoverflow.com/questions/74542488/react-material-ui-createtheme-default-is-not-a-function
+import { useContext, useEffect, useMemo } from 'react'
 
-import { EColorTheme } from './types'
 import Context, { context } from 'Context'
-import { baseTheme, beachTheme, highContrastTheme, retroFutureTheme, underTheSeaTheme } from 'theme'
-import { Header, Router, Message } from './components'
 import RenderModal from 'modals'
+import { baseTheme, beachTheme, highContrastTheme, retroFutureTheme, underTheSeaTheme } from 'theme'
+import { Header, Message, Router } from './components'
+import { EColorTheme } from './types'
 
-import { setupAutomatedBackup } from './modals/Settings'
 import { useIPCAsyncMessageEffect } from './hooks/useIPCAsyncMessageEffect'
+import { setupAutomatedBackup } from './modals/Settings'
 
 const App = () => {
   const { state, dispatch } = useContext(context)

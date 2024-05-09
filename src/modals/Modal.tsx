@@ -1,8 +1,8 @@
-import { useContext, type FC, useCallback } from 'react'
+import CloseIcon from '@mui/icons-material/CloseOutlined'
+import { IconButton, Tooltip, Typography, css } from '@mui/material'
 import Box from '@mui/material/Box'
 import MUIModal from '@mui/material/Modal'
-import { IconButton, Tooltip, Typography, css } from '@mui/material'
-import CloseIcon from '@mui/icons-material/CloseOutlined'
+import { useCallback, useContext, type FC } from 'react'
 
 import { context } from 'Context'
 

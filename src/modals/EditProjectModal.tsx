@@ -1,12 +1,12 @@
-import { useCallback, useEffect, useState, useContext } from 'react'
 import { Button, FormControl, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material'
+import { useCallback, useContext, useEffect, useState } from 'react'
 
-import { type TProject, EProjectStatus } from 'types'
-import Modal from './Modal'
-import { projectStatusLookup } from 'utilities'
-import database from 'database'
 import { context } from 'Context'
+import database from 'database'
 import { ButtonWrapper } from 'sharedComponents'
+import { EProjectStatus, type TProject } from 'types'
+import { projectStatusLookup } from 'utilities'
+import Modal from './Modal'
 
 interface Props {
   projectId: string
@@ -90,7 +90,7 @@ const EditProjectModal = ({ projectId }: Props) => {
                 </Button>
               </ButtonWrapper>
             </form>
-            )
+          )
       }
 
     </Modal>

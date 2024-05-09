@@ -1,7 +1,7 @@
+import '@fontsource/comfortaa'
 import { Component, StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App'
-import '@fontsource/comfortaa'
 import './global-style.css'
 
 class ErrorBoundary extends Component<{ children: any }, { hasError: boolean, error: string }> {

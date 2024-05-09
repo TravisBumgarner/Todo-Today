@@ -1,14 +1,14 @@
-import { useCallback, useState, useContext } from 'react'
-import { v4 as uuid4 } from 'uuid'
 import { Button, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material'
 import { useLiveQuery } from 'dexie-react-hooks'
+import { useCallback, useContext, useState } from 'react'
+import { v4 as uuid4 } from 'uuid'
 
-import Modal from './Modal'
-import { type TProject } from 'types'
-import database from 'database'
 import { context } from 'Context'
+import database from 'database'
 import { ButtonWrapper } from 'sharedComponents'
+import { type TProject } from 'types'
 import { sortStrings } from 'utilities'
+import Modal from './Modal'
 
 const AddSuccessModal = () => {
   const { state, dispatch } = useContext(context)

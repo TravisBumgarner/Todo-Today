@@ -1,14 +1,14 @@
-import { useCallback, useContext, useMemo, useState } from 'react'
-import { Button, Box, Card, Typography, css, Tooltip, IconButton } from '@mui/material'
-import { useLiveQuery } from 'dexie-react-hooks'
 import EditIcon from '@mui/icons-material/Edit'
+import { Box, Button, Card, IconButton, Tooltip, Typography, css } from '@mui/material'
+import { useLiveQuery } from 'dexie-react-hooks'
+import { useCallback, useContext, useMemo, useState } from 'react'
 
-import { ModalID } from 'modals'
 import { context } from 'Context'
 import database from 'database'
+import { ModalID } from 'modals'
 import { EmptyStateDisplay } from 'sharedComponents'
-import { type TSuccess, type TProject } from 'types'
 import { pageCSS } from 'theme'
+import { type TProject, type TSuccess } from 'types'
 
 interface SuccessProps {
   description: string

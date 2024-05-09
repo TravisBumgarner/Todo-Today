@@ -1,23 +1,23 @@
-import { useState, useContext, useCallback } from 'react'
-import moment from 'moment'
-import { Box, Button, FormControl, InputLabel, MenuItem, Select, type SelectChangeEvent, Typography, css } from '@mui/material'
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
+import { Box, Button, FormControl, InputLabel, MenuItem, Select, Typography, css, type SelectChangeEvent } from '@mui/material'
+import moment from 'moment'
+import { useCallback, useContext, useState } from 'react'
 import { HtmlTooltip } from 'sharedComponents'
 
-import {
-  sendAsyncIPCMessage,
-  colorThemeOptionLabels,
-  saveFile,
-  setLocalStorage,
-  backupIntervalLookup
-} from 'utilities'
-import database from 'database'
-import { EColorTheme, EBackupInterval } from 'types'
-import Modal from './Modal'
 import { context } from 'Context'
-import { ModalID } from './RenderModal'
+import database from 'database'
 import { EAsyncMessageIPCFromRenderer } from 'shared/types'
 import { DATE_BACKUP_DATE } from 'shared/utilities'
+import { EBackupInterval, EColorTheme } from 'types'
+import {
+  backupIntervalLookup,
+  colorThemeOptionLabels,
+  saveFile,
+  sendAsyncIPCMessage,
+  setLocalStorage
+} from 'utilities'
+import Modal from './Modal'
+import { ModalID } from './RenderModal'
 
 const copyIndexedDBToObject = async () => {
   const data = {

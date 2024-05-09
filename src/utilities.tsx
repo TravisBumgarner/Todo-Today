@@ -1,10 +1,10 @@
-import moment from 'moment'
 import { ipcRenderer } from 'electron'
+import moment from 'moment'
 import { Icons } from 'sharedComponents'
 
 import database from 'database'
-import { EProjectStatus, type TDateISODate, ETaskStatus, EColorTheme, EBackupInterval, DATE_ISO_DATE_MOMENT_STRING } from './types'
-import { type SyncMessageIPCFromRenderer, type AppStartIPCFromMain, type AsyncMessageIPCFromRenderer, type ESyncMessageIPC } from 'shared/types'
+import { type AppStartIPCFromMain, type AsyncMessageIPCFromRenderer, type ESyncMessageIPC, type SyncMessageIPCFromRenderer } from 'shared/types'
+import { DATE_ISO_DATE_MOMENT_STRING, EBackupInterval, EColorTheme, EProjectStatus, ETaskStatus, type TDateISODate } from './types'
 
 const projectStatusLookup: Record<EProjectStatus, string> = {
   [EProjectStatus.INACTIVE]: 'Inactive',
@@ -144,18 +144,7 @@ const taskStatusIcon = (taskStatus: ETaskStatus) => {
 }
 
 export {
-  projectStatusLookup,
-  taskStatusLookup,
-  formatDateDisplayString,
+  backupIntervalLookup, colorThemeOptionLabels, formatDateDisplayString,
   formatDateKeyLookup,
-  formatDurationDisplayString,
-  colorThemeOptionLabels,
-  backupIntervalLookup,
-  sumArray,
-  saveFile,
-  getLocalStorage,
-  setLocalStorage,
-  sendSyncIPCMessage,
-  sendAsyncIPCMessage,
-  taskStatusIcon
+  formatDurationDisplayString, getLocalStorage, projectStatusLookup, saveFile, sendAsyncIPCMessage, sendSyncIPCMessage, setLocalStorage, sumArray, taskStatusIcon, taskStatusLookup
 }
