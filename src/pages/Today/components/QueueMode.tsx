@@ -13,6 +13,7 @@ import { ModalID } from 'modals'
 import { globalButtonsWrapperCSS, globalContentWrapperCSS } from 'theme'
 import { DATE_ISO_DATE_MOMENT_STRING, ETaskStatus, type TProject, type TTask, type TTodoListItem } from 'types'
 import { TASK_STATUS_IS_ACTIVE, formatDateDisplayString, formatDateKeyLookup } from 'utilities'
+import ModeToggle from './ModeToggle'
 import QueueItem, { type QueueItemEntry } from './QueueItem'
 import { emptyTodoListCSS } from './sharedCSS'
 
@@ -199,26 +200,30 @@ const TodoList = () => {
   return (
     <>
       <Box css={globalButtonsWrapperCSS}>
-        <ButtonGroup>
-          <Button
-            variant='contained'
-            onClick={showAddNewTaskModal}
-          >
-            Add New Task
-          </Button>
-          <Button
-            onClick={showManagementModal}
-            variant='contained'
-          >
-            Select Tasks
-          </Button>
-        </ButtonGroup>
+        <Box>
+          <ModeToggle />
+          <ButtonGroup>
+            <Button
+              variant='contained'
+              onClick={showAddNewTaskModal}
+            >
+              Add New Task
+            </Button>
+            <Button
+              onClick={showManagementModal}
+              variant='contained'
+            >
+              Select Tasks
+            </Button>
+          </ButtonGroup>
+        </Box>
         <ButtonGroup>
           <Button variant='contained' onClick={setPreviousDate}>&lt;</Button>
           <Button variant='contained' css={todayButtonCSS} onClick={getToday}><span>{formatDateDisplayString(selectedDate)}</span></Button>
           <Button variant='contained' onClick={getNextDate}>&gt;</Button>
         </ButtonGroup>
       </Box>
+
       <Box css={globalContentWrapperCSS}>
         {selectedDateActiveEntries.length === 0 && selectedDateInactiveEntries.length === 0 && <EmptyTodoList />}
         {selectedDateActiveEntries.length > 0 && (

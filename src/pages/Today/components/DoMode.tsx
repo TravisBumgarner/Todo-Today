@@ -9,6 +9,7 @@ import { globalButtonsWrapperCSS, globalContentWrapperCSS } from 'theme'
 import { type TProject, type TTask, type TTodoListItem } from 'types'
 import { TASK_STATUS_IS_ACTIVE, getNextSortOrderValue } from 'utilities'
 import DoItem, { type DoModeEntry } from './DoItem'
+import ModeToggle from './ModeToggle'
 import Timer from './Timer'
 import { emptyTodoListCSS } from './sharedCSS'
 
@@ -76,20 +77,24 @@ const TodoList = () => {
   return (
     <>
       <Box css={globalButtonsWrapperCSS}>
-        <ButtonGroup>
-          <Button
-            variant='contained'
-            onClick={showAddNewTaskModal}
-          >
-            Add New Task
-          </Button>
-          <Button
-            variant='contained'
-            onClick={handleNextTaskChange}
-          >
-            Skip Current Task
-          </Button>
-        </ButtonGroup>
+        <Box>
+
+          <ModeToggle />
+          <ButtonGroup>
+            <Button
+              variant='contained'
+              onClick={showAddNewTaskModal}
+            >
+              Add New Task
+            </Button>
+            <Button
+              variant='contained'
+              onClick={handleNextTaskChange}
+            >
+              Skip Current Task
+            </Button>
+          </ButtonGroup>
+        </Box>
         <Timer />
       </Box>
       <Box css={globalContentWrapperCSS}>
