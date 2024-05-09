@@ -113,6 +113,7 @@ const wrapperCSS = css`
 background: var(--mui-palette-background-paper);
 border-radius: 0.5rem;
 padding: 0.5rem;
+margin-bottom: 0.5rem;
 `
 
 export default QueueItem
