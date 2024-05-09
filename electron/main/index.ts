@@ -60,6 +60,7 @@ async function createWindow() {
   win = new BrowserWindow({
     width: 800,
     height: 600,
+    minWidth: 700,
     x: 0,
     y: 0,
     title: isDev ? 'DEV MODE' : 'Todo Today',

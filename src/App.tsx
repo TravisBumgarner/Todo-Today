@@ -1,5 +1,6 @@
-import { Box, Experimental_CssVarsProvider, css } from '@mui/material'
 import CssBaseline from '@mui/material/CssBaseline'; // https://stackoverflow.com/questions/74542488/react-material-ui-createtheme-default-is-not-a-function
+
+import { Box, Experimental_CssVarsProvider, css } from '@mui/material'
 import { useContext, useEffect, useMemo } from 'react'
 
 import Context, { context } from 'Context'

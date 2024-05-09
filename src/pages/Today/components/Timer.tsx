@@ -55,7 +55,7 @@ const Timer = () => {
 
   if (status === ETimerStatus.Setup) {
     return (
-      <Box css={wrapperCSS}>
+      <Box>
         <Button
           variant='contained'
           onClick={showTimerSetupModal}
@@ -66,47 +66,34 @@ const Timer = () => {
     )
   }
 
-  if (status === ETimerStatus.Running) {
-    return (
-      <Box css={wrapperCSS}>
-        <Typography css={typographyCSS}>{formatDuration(timerDuration)}</Typography>
-        <IconButton color="primary" onClick={handlePause} >
-          <Tooltip title="Pause Timer">
-            <Pause />
-          </Tooltip>
-        </IconButton>
-      </Box>
-    )
-  }
-
-  if (status === ETimerStatus.Paused) {
-    return (
-      <Box css={wrapperCSS}>
-        <Typography css={typographyCSS}>{formatDuration(timerDuration)}</Typography>
-        <IconButton color="primary" onClick={handleResume} >
-          <Tooltip title="Resume Timer">
-            <PlayArrow />
-          </Tooltip>
-        </IconButton>
-        <IconButton color="primary" onClick={handleReset}>
-          <Tooltip title="Cancel Timer">
-            <Close />
-          </Tooltip>
-        </IconButton>
-      </Box>
-    )
-  }
+  return (
+    <Box css={wrapperCSS}>
+      <IconButton color="primary" onClick={handleReset}>
+        <Tooltip title="Cancel Timer">
+          <Close />
+        </Tooltip>
+      </IconButton>
+      <Typography css={typographyCSS}>{formatDuration(timerDuration)}</Typography>
+      <IconButton color="primary" onClick={status === ETimerStatus.Paused ? handleResume : handlePause} >
+        <Tooltip title={status === ETimerStatus.Paused ? 'Resume Timer' : 'Pause Timer'} >
+          {status === ETimerStatus.Paused ? <PlayArrow /> : <Pause />}
+        </Tooltip>
+      </IconButton>
+    </Box>
+  )
 }
 
 const typographyCSS = css`
   width: 50px;
+  text-align: center;
+  position: relative;
+  top: 1px;
 `
 
 const wrapperCSS = css`
   width: 130px;
   display: flex;
   flex-direction: row;
-  justify-content: left;
   align-items: center;
 `
 
