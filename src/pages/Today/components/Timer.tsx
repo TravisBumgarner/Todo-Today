@@ -1,24 +1,41 @@
-import { useState, useCallback } from 'react'
-import { Box, Button } from '@mui/material'
+import { useCallback, useContext } from 'react'
+import { Box, Button, Typography } from '@mui/material'
 
-import { sendSyncIPCMessage } from 'utilities'
-import { ESyncMessageIPCFromRenderer } from 'shared/types'
+import { sendAsyncIPCMessage } from 'utilities'
+import { EAsyncMessageIPCFromRenderer } from 'shared/async-message-types'
+import { context } from 'Context'
 
 const Timer = () => {
-  const [duration] = useState<number>(60)
+  const { state: { timerDuration } } = useContext(context)
 
   const handleStart = useCallback(async () => {
-    await sendSyncIPCMessage({ type: ESyncMessageIPCFromRenderer.StartTimer, body: { duration } })
-  }, [duration])
+    sendAsyncIPCMessage({ type: EAsyncMessageIPCFromRenderer.StartTimer, body: { duration: 60 } })
+  }, [])
 
   const handleStop = useCallback(async () => {
-    await sendSyncIPCMessage({ type: ESyncMessageIPCFromRenderer.StopTimer, body: null })
+    sendAsyncIPCMessage({ type: EAsyncMessageIPCFromRenderer.StopTimer, body: null })
+  }, [])
+
+  const handlePause = useCallback(async () => {
+    sendAsyncIPCMessage({ type: EAsyncMessageIPCFromRenderer.PauseTimer, body: null })
+  }, [])
+
+  const handleReset = useCallback(async () => {
+    sendAsyncIPCMessage({ type: EAsyncMessageIPCFromRenderer.ResetTimer, body: null })
+  }, [])
+
+  const handleResume = useCallback(async () => {
+    sendAsyncIPCMessage({ type: EAsyncMessageIPCFromRenderer.ResumeTimer, body: null })
   }, [])
 
   return (
     < Box >
+      <Typography>{timerDuration}</Typography>
       <Button onClick={handleStart}>Start</Button>
       <Button onClick={handleStop}>Stop</Button>
+      <Button onClick={handlePause}>Pause</Button>
+      <Button onClick={handleReset}>Reset</Button>
+      <Button onClick={handleResume}>Resume</Button>
     </Box >
 
   )

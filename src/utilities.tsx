@@ -4,7 +4,7 @@ import { Icons } from 'sharedComponents'
 
 import database from 'database'
 import { EProjectStatus, type TDateISODate, ETaskStatus, EColorTheme, EBackupInterval, DATE_ISO_DATE_MOMENT_STRING } from './types'
-import { type ESyncMessageIPCFromRenderer, type SyncMessageIPCFromRenderer, type AppStartIPCFromMain, type AsyncMessageIPCFromRenderer, type StartTimerIPCFromMain, type StopTimerIPCFromMain } from 'shared/types'
+import { type SyncMessageIPCFromRenderer, type AppStartIPCFromMain, type AsyncMessageIPCFromRenderer, type ESyncMessageIPC, type ResumeTimerIPCFromMain } from 'shared/types'
 
 const projectStatusLookup: Record<EProjectStatus, string> = {
   [EProjectStatus.INACTIVE]: 'Inactive',
@@ -93,9 +93,8 @@ const setLocalStorage = <T extends TLocalStorage>(key: keyof T, value: T[keyof T
 }
 
 interface MessageReturnTypeMap {
-  [ESyncMessageIPCFromRenderer.AppStart]: AppStartIPCFromMain['body']
-  [ESyncMessageIPCFromRenderer.StartTimer]: StartTimerIPCFromMain['body']
-  [ESyncMessageIPCFromRenderer.StopTimer]: StopTimerIPCFromMain['body']
+  [ESyncMessageIPC.AppStart]: AppStartIPCFromMain['body']
+  [ESyncMessageIPC.ResumeTimer]: ResumeTimerIPCFromMain['body']
 }
 
 const sendSyncIPCMessage = async <T extends SyncMessageIPCFromRenderer>(
@@ -108,11 +107,8 @@ const sendSyncIPCMessage = async <T extends SyncMessageIPCFromRenderer>(
 }
 
 export const getNextSortOrderValue = async (selectedDate: TDateISODate): Promise<number> => {
-  console.log('selectedDate', selectedDate)
   const todoListItems = await database.todoListItems.where('todoListDate').equals(selectedDate).toArray()
-  console.log('todoListItems', JSON.stringify(todoListItems))
   const lastTodoListItem = todoListItems.sort((a, b) => a.sortOrder - b.sortOrder).pop()
-  console.log('last', lastTodoListItem)
   return lastTodoListItem?.sortOrder ? lastTodoListItem?.sortOrder + 1 : 0
 }
 

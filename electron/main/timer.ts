@@ -2,17 +2,29 @@ import { Notification } from 'electron'
 
 class Timer {
   private countdown: NodeJS.Timeout | null = null
-  private timeLeft: number = 0
+  public timerDuration: number = 0
+  private initialTime: number = 0
+  private isPaused: boolean = false
+  private readonly tickCallback: (tick: number) => void
+
+  constructor(callback: (timerDuration: number) => void) {
+    this.tickCallback = callback
+  }
 
   start(timeInSeconds: number) {
-    this.timeLeft = timeInSeconds
+    this.timerDuration = timeInSeconds
+    this.initialTime = timeInSeconds
 
     this.countdown = setInterval(() => {
-      this.timeLeft--
+      if (!this.isPaused) {
+        this.timerDuration--
+        this.tickCallback(this.timerDuration)
+        console.log('I calle')
 
-      if (this.timeLeft <= 0) {
-        this.stop()
-        new Notification({ title: 'Timer', body: 'Time is up!' }).show()
+        if (this.timerDuration <= 0) {
+          this.stop()
+          new Notification({ title: 'Timer', body: 'Time is up!' }).show()
+        }
       }
     }, 1000)
   }
@@ -21,8 +33,21 @@ class Timer {
     if (this.countdown) {
       clearInterval(this.countdown)
       this.countdown = null
-      return this.timeLeft
+      return this.timerDuration
     }
+  }
+
+  pause() {
+    this.isPaused = true
+  }
+
+  resume() {
+    this.isPaused = false
+  }
+
+  restart() {
+    this.stop()
+    this.start(this.initialTime)
   }
 }
 
