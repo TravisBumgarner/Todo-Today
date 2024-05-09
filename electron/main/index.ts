@@ -9,7 +9,7 @@ import moment from 'moment'
 import { update } from './update'
 import menu from './menu'
 import { isDev, isDebugProduction } from './config'
-import { type AsyncBackupIPCFromRenderer, type AsyncNotificationIPCFromRenderer, type AsyncBackupIPCFromMain, type AppStartIPCFromMain, EAsyncMessageIPCFromRenderer, EAsyncMessageIPCFromMain, type AsyncStartTimerIPCFromRenderer, type AsyncStopTimerFromIPCRenderer, ESyncMessageIPC } from '../../shared/types'
+import { type AsyncBackupIPCFromRenderer, type AsyncNotificationIPCFromRenderer, type AsyncBackupIPCFromMain, type AppStartIPCFromMain, EAsyncMessageIPCFromRenderer, EAsyncMessageIPCFromMain, type AsyncStartTimerIPCFromRenderer, ESyncMessageIPC } from '../../shared/types'
 import { DATE_BACKUP_DATE } from '../../shared/utilities'
 import Timer from './timer'
 
@@ -158,17 +158,12 @@ ipcMain.on(EAsyncMessageIPCFromRenderer.StartTimer, async (_, arg: AsyncStartTim
   timer.start(arg.duration)
 })
 
-ipcMain.on(EAsyncMessageIPCFromRenderer.StopTimer, async (_, arg: AsyncStopTimerFromIPCRenderer['body']) => {
-  const result = timer.stop()
-  console.log(result)
-})
-
 ipcMain.on(EAsyncMessageIPCFromRenderer.PauseTimer, async () => {
   timer.pause()
 })
 
 ipcMain.on(EAsyncMessageIPCFromRenderer.ResetTimer, async () => {
-  timer.restart()
+  timer.reset()
 })
 
 ipcMain.on(EAsyncMessageIPCFromRenderer.ResumeTimer, async () => {

@@ -19,22 +19,13 @@ class Timer {
       if (!this.isPaused) {
         this.timerDuration--
         this.tickCallback(this.timerDuration)
-        console.log('I calle')
 
         if (this.timerDuration <= 0) {
-          this.stop()
+          this.reset()
           new Notification({ title: 'Timer', body: 'Time is up!' }).show()
         }
       }
     }, 1000)
-  }
-
-  stop() {
-    if (this.countdown) {
-      clearInterval(this.countdown)
-      this.countdown = null
-      return this.timerDuration
-    }
   }
 
   pause() {
@@ -45,9 +36,14 @@ class Timer {
     this.isPaused = false
   }
 
-  restart() {
-    this.stop()
-    this.start(this.initialTime)
+  reset() {
+    if (this.countdown) {
+      clearInterval(this.countdown)
+      this.tickCallback(0)
+      this.countdown = null
+      this.timerDuration = this.initialTime
+      return this.timerDuration
+    }
   }
 }
 

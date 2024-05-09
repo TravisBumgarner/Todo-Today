@@ -3,7 +3,6 @@ export enum EAsyncMessageIPCFromRenderer {
   CreateBackup = 'create-backup',
   RestartApp = 'restart-app',
   StartTimer = 'start-timer',
-  StopTimer = 'stop-timer',
   ResetTimer = 'reset-timer',
   PauseTimer = 'pause-timer',
   ResumeTimer = 'resume-timer'
@@ -37,11 +36,6 @@ export interface AsyncStartTimerIPCFromRenderer {
   body: {
     duration: number
   }
-}
-
-export interface AsyncStopTimerFromIPCRenderer {
-  type: EAsyncMessageIPCFromRenderer.StopTimer
-  body: null
 }
 
 export interface AsyncRestartAppIPCFromRenderer {
@@ -85,7 +79,6 @@ export type AsyncMessageIPCFromRenderer =
   | AsyncNotificationIPCFromRenderer
   | AsyncBackupIPCFromRenderer
   | AsyncStartTimerIPCFromRenderer
-  | AsyncStopTimerFromIPCRenderer
   | AsyncRestartAppIPCFromRenderer
   | AsyncResetTimerIPCFromRenderer
   | AsyncPauseTimerIPCFromRenderer
