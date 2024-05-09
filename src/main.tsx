@@ -5,7 +5,7 @@ import '@fontsource/comfortaa'
 import './global-style.css'
 
 class ErrorBoundary extends Component<{ children: any }, { hasError: boolean, error: string }> {
-  constructor (props: any) {
+  constructor(props: any) {
     super(props)
     this.state = {
       hasError: false,
@@ -13,15 +13,15 @@ class ErrorBoundary extends Component<{ children: any }, { hasError: boolean, er
     }
   }
 
-  static getDerivedStateFromError () {
+  static getDerivedStateFromError() {
     return { hasError: true }
   }
 
-  componentDidCatch (error: Error, errorInfo: unknown) {
+  componentDidCatch(error: Error, errorInfo: unknown) {
     this.setState({ error: `${JSON.stringify(error.message)}\n${JSON.stringify(errorInfo)} ` })
   }
 
-  render () {
+  render() {
     if (this.state.hasError) {
       return (
         <>

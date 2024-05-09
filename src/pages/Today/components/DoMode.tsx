@@ -1,17 +1,17 @@
-import { useCallback, useContext, useMemo, useState } from 'react'
-import { useLiveQuery } from 'dexie-react-hooks'
 import { Box, Button, ButtonGroup, Typography, css } from '@mui/material'
+import { useLiveQuery } from 'dexie-react-hooks'
+import { useCallback, useContext, useMemo, useState } from 'react'
 
-import DoItem, { type DoModeEntry } from './DoItem'
-import database from 'database'
-import { type TProject, type TTask, type TTodoListItem } from 'types'
 import { context } from 'Context'
+import database from 'database'
 import { ModalID } from 'modals'
-import { TASK_STATUS_IS_ACTIVE, getNextSortOrderValue } from 'utilities'
 import { pageCSS } from 'theme'
+import { type TProject, type TTask, type TTodoListItem } from 'types'
+import { TASK_STATUS_IS_ACTIVE, getNextSortOrderValue } from 'utilities'
 import { HEADER_HEIGHT } from '../../../components/Header'
-import { emptyTodoListCSS } from './sharedCSS'
+import DoItem, { type DoModeEntry } from './DoItem'
 import Timer from './Timer'
+import { emptyTodoListCSS } from './sharedCSS'
 
 const MENU_ITEMS_HEIGHT = 36
 

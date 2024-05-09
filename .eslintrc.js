@@ -1,4 +1,4 @@
-{
+module.exports = {
   "env": {
     "browser": true,
     "es6": true,
@@ -17,9 +17,15 @@
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "project": ["tsconfig.json"]
+    "project": [
+      "tsconfig.json"
+    ]
   },
-  "plugins": ["import", "react"],
+  "plugins": [
+    "import",
+    "react",
+    "unused-imports"
+  ],
   "rules": {
     "@typescript-eslint/restrict-template-expressions": "off",
     "@typescript-eslint/explicit-function-return-type": "off",
@@ -32,14 +38,26 @@
     "@typescript-eslint/no-explicit-any": "off",
     "import/no-unresolved": "error",
     "@typescript-eslint/indent": "off",
-    "@typescript-eslint/space-before-function-paren": "off"
+    "@typescript-eslint/space-before-function-paren": "off",
+    "unused-imports/no-unused-vars": [
+      "warn",
+      {
+        "vars": "all",
+        "varsIgnorePattern": "^_",
+        "args": "after-used",
+        "argsIgnorePattern": "^_",
+      },
+    ]
   },
   "settings": {
     "react": {
       "version": "detect"
     },
     "import/parsers": {
-      "@typescript-eslint/parser": [".ts", ".tsx"]
+      "@typescript-eslint/parser": [
+        ".ts",
+        ".tsx"
+      ]
     },
     "import/resolver": {
       "typescript": {
