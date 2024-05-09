@@ -1,10 +1,18 @@
 import { useCallback, useContext, useEffect, useState } from 'react'
-import { Box, Button, Typography } from '@mui/material'
+import { Box, Button, IconButton, Tooltip, Typography, css } from '@mui/material'
 
 import { sendAsyncIPCMessage } from 'utilities'
 import { EAsyncMessageIPCFromRenderer } from 'shared/async-message-types'
 import { context } from 'Context'
 import { ModalID } from 'modals'
+import { Close, Pause, PlayArrow } from '@mui/icons-material'
+
+const formatDuration = (duration: number) => {
+  const minutes = Math.floor(duration / 60)
+  const seconds = duration % 60
+
+  return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`
+}
 
 enum ETimerStatus {
   Setup = 'setup',
@@ -46,27 +54,60 @@ const Timer = () => {
   }, [dispatch])
 
   if (status === ETimerStatus.Setup) {
-    return (<Button
-      variant='contained'
-      onClick={showTimerSetupModal}
-    >
-      Add a Timer
-    </Button>)
+    return (
+      <Box css={wrapperCSS}>
+        <Button
+          variant='contained'
+          onClick={showTimerSetupModal}
+        >
+          Add Timer
+        </Button>
+      </Box>
+    )
   }
 
   if (status === ETimerStatus.Running) {
-    return <Box><Typography>{timerDuration}</Typography><Button onClick={handlePause}>Pause</Button></Box>
+    return (
+      <Box css={wrapperCSS}>
+        <Typography css={typographyCSS}>{formatDuration(timerDuration)}</Typography>
+        <IconButton color="primary" onClick={handlePause} >
+          <Tooltip title="Pause Timer">
+            <Pause />
+          </Tooltip>
+        </IconButton>
+      </Box>
+    )
   }
 
   if (status === ETimerStatus.Paused) {
     return (
-      <Box>
-        <Typography>{timerDuration}</Typography>
-        <Button onClick={handleReset}>Reset</Button>
-        <Button onClick={handleResume}>Resume</Button>
+      <Box css={wrapperCSS}>
+        <Typography css={typographyCSS}>{formatDuration(timerDuration)}</Typography>
+        <IconButton color="primary" onClick={handleResume} >
+          <Tooltip title="Resume Timer">
+            <PlayArrow />
+          </Tooltip>
+        </IconButton>
+        <IconButton color="primary" onClick={handleReset}>
+          <Tooltip title="Cancel Timer">
+            <Close />
+          </Tooltip>
+        </IconButton>
       </Box>
     )
   }
 }
+
+const typographyCSS = css`
+  width: 50px;
+`
+
+const wrapperCSS = css`
+  width: 130px;
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  align-items: center;
+`
 
 export default Timer

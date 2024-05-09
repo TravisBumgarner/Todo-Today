@@ -23,7 +23,10 @@ const TimerSetupModal = () => {
 
   const startTimer = useCallback(() => {
     sendAsyncIPCMessage({ type: EAsyncMessageIPCFromRenderer.StartTimer, body: { duration: durationLookup[duration] } })
-    dispatch({ type: 'CLEAR_ACTIVE_MODAL' })
+    // Give some time for round trip message to go out.
+    setTimeout(() => {
+      dispatch({ type: 'CLEAR_ACTIVE_MODAL' })
+    }, 200)
   }, [duration, dispatch])
 
   const handleCancel = useCallback(() => {
