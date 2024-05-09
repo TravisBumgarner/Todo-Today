@@ -1,6 +1,5 @@
 export enum ESyncMessageIPC {
   AppStart = 'app-start',
-  ResumeTimer = 'resume-timer',
 }
 
 export interface AppStartIPCFromRenderer {
@@ -15,18 +14,5 @@ export interface AppStartIPCFromMain {
   }
 }
 
-export interface ResumeTimerIPCFromRenderer {
-  type: ESyncMessageIPC.ResumeTimer
-  body: null
-}
-
-export interface ResumeTimerIPCFromMain {
-  type: ESyncMessageIPC.ResumeTimer
-  body: {
-    timerDuration: number
-  }
-}
-
 export type SyncMessageIPCFromRenderer =
   | AppStartIPCFromRenderer
-  | ResumeTimerIPCFromRenderer

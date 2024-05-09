@@ -4,7 +4,7 @@ import { Icons } from 'sharedComponents'
 
 import database from 'database'
 import { EProjectStatus, type TDateISODate, ETaskStatus, EColorTheme, EBackupInterval, DATE_ISO_DATE_MOMENT_STRING } from './types'
-import { type SyncMessageIPCFromRenderer, type AppStartIPCFromMain, type AsyncMessageIPCFromRenderer, type ESyncMessageIPC, type ResumeTimerIPCFromMain } from 'shared/types'
+import { type SyncMessageIPCFromRenderer, type AppStartIPCFromMain, type AsyncMessageIPCFromRenderer, type ESyncMessageIPC } from 'shared/types'
 
 const projectStatusLookup: Record<EProjectStatus, string> = {
   [EProjectStatus.INACTIVE]: 'Inactive',
@@ -94,7 +94,6 @@ const setLocalStorage = <T extends TLocalStorage>(key: keyof T, value: T[keyof T
 
 interface MessageReturnTypeMap {
   [ESyncMessageIPC.AppStart]: AppStartIPCFromMain['body']
-  [ESyncMessageIPC.ResumeTimer]: ResumeTimerIPCFromMain['body']
 }
 
 const sendSyncIPCMessage = async <T extends SyncMessageIPCFromRenderer>(
