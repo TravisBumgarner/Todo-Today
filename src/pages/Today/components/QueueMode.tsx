@@ -10,11 +10,11 @@ import { v4 as uuid4 } from 'uuid'
 import { context } from 'Context'
 import database from 'database'
 import { ModalID } from 'modals'
-import { pageCSS } from 'theme'
+import { globalButtonsWrapperCSS, globalContentWrapperCSS } from 'theme'
 import { DATE_ISO_DATE_MOMENT_STRING, ETaskStatus, type TProject, type TTask, type TTodoListItem } from 'types'
 import { TASK_STATUS_IS_ACTIVE, formatDateDisplayString, formatDateKeyLookup } from 'utilities'
-import { HEADER_HEIGHT } from '../../../components/Header'
-import QueueItem, { TODO_LIST_ITEM_MARGIN, type QueueItemEntry } from './QueueItem'
+import ModeToggle from './ModeToggle'
+import QueueItem, { type QueueItemEntry } from './QueueItem'
 import { emptyTodoListCSS } from './sharedCSS'
 
 const reorder = (list: any[], startIndex: number, endIndex: number) => {
@@ -24,8 +24,6 @@ const reorder = (list: any[], startIndex: number, endIndex: number) => {
 
   return result
 }
-
-const MENU_ITEMS_HEIGHT = 36
 
 const EmptyTodoList = () => {
   const { state: { selectedDate }, dispatch } = useContext(context)
@@ -200,29 +198,33 @@ const TodoList = () => {
   }
 
   return (
-    <Box css={pageCSS}>
-      <Box css={{ display: 'flex', justifyContent: 'space-between', height: `${MENU_ITEMS_HEIGHT}px` }}>
-        <ButtonGroup>
-          <Button
-            variant='contained'
-            onClick={showAddNewTaskModal}
-          >
-            Add New Task
-          </Button>
-          <Button
-            onClick={showManagementModal}
-            variant='contained'
-          >
-            Select Tasks
-          </Button>
-        </ButtonGroup>
+    <>
+      <Box css={globalButtonsWrapperCSS}>
+        <Box>
+          <ModeToggle />
+          <ButtonGroup>
+            <Button
+              variant='contained'
+              onClick={showAddNewTaskModal}
+            >
+              Add New Task
+            </Button>
+            <Button
+              onClick={showManagementModal}
+              variant='contained'
+            >
+              Select Tasks
+            </Button>
+          </ButtonGroup>
+        </Box>
         <ButtonGroup>
           <Button variant='contained' onClick={setPreviousDate}>&lt;</Button>
           <Button variant='contained' css={todayButtonCSS} onClick={getToday}><span>{formatDateDisplayString(selectedDate)}</span></Button>
           <Button variant='contained' onClick={getNextDate}>&gt;</Button>
         </ButtonGroup>
       </Box>
-      <Box css={todolistItemsWrapperCSS}>
+
+      <Box css={globalContentWrapperCSS}>
         {selectedDateActiveEntries.length === 0 && selectedDateInactiveEntries.length === 0 && <EmptyTodoList />}
         {selectedDateActiveEntries.length > 0 && (
           <DragDropContext onDragEnd={onDragEnd}>
@@ -231,7 +233,6 @@ const TodoList = () => {
                 <div
                   {...provided.droppableProps}
                   ref={provided.innerRef}
-                  style={dragAndDropCSS()}
                 >
                   {selectedDateActiveEntries.map((it, index) => (
                     <Draggable
@@ -278,23 +279,11 @@ const TodoList = () => {
           </>
         )}
       </Box >
-    </Box >
+    </ >
   )
 }
 
-const todolistItemsWrapperCSS = css`
-  overflow: auto;
-  height: calc(100vh - ${MENU_ITEMS_HEIGHT}px - ${HEADER_HEIGHT}px);
-`
-
-const dragAndDropCSS = () => {
-  return ({
-    margin: '0 0 1rem 0'
-  })
-}
-
 const dragItemCSS = (_isDragging: boolean, draggableStyle: any) => ({
-  margin: TODO_LIST_ITEM_MARGIN,
   cursor: 'pointer',
 
   // styles we need to apply on draggables

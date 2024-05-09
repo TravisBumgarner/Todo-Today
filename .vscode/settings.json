@@ -22,7 +22,7 @@
     "editor.defaultFormatter": "dbaeumer.vscode-eslint",
     "editor.codeActionsOnSave": {
       "source.organizeImports": "explicit"
-  }
+    }
   },
   "[typescript]": {
     "editor.defaultFormatter": "vscode.typescript-language-features",

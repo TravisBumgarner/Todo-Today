@@ -170,13 +170,13 @@ const Settings = () => {
           </HtmlTooltip>
         </Box>
         <FormControl fullWidth margin='normal'>
-          <InputLabel id="setting-modal-concurrent-tasks">Concurrent Tasks</InputLabel>
+          <InputLabel id="setting-modal-concurrent-tasks">Do Mode Concurrent Tasks</InputLabel>
           <Select
             fullWidth
             labelId="setting-modal-concurrent-tasks"
             type="number"
             value={state.settings.concurrentTodoListItems}
-            label="Concurrent Tasks"
+            label="Do Mode Concurrent Tasks"
             onChange={handleConcurrentTodoListItemsChange}
           >
             <MenuItem value={1}>1</MenuItem>

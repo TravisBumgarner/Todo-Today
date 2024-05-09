@@ -1,5 +1,6 @@
 import { css, experimental_extendTheme as extendTheme, type ThemeOptions } from '@mui/material/styles'
 import _ from 'lodash'
+import { HEADER_HEIGHT } from './components/Header'
 
 const baseThemeOptions: ThemeOptions = {
   typography: {
@@ -149,9 +150,17 @@ export const highContrastTheme = extendTheme(_.merge(baseThemeOptions, highContr
 export const retroFutureTheme = extendTheme(_.merge(baseThemeOptions, retroFutureThemeOptions))
 export const underTheSeaTheme = extendTheme(_.merge(baseThemeOptions, underTheSeaThemeOptions))
 
-export const pageCSS = css`
-  width:100%;
-  height: 100%;
+export const BUTTONS_WRAPPER_HEIGHT = 36
+
+export const globalButtonsWrapperCSS = css`
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
+  height: ${BUTTONS_WRAPPER_HEIGHT}px;
+  margin-bottom: 1rem;
+`
+
+export const globalContentWrapperCSS = css`
+  overflow: auto;
+  height: calc(100vh - ${BUTTONS_WRAPPER_HEIGHT}px - ${HEADER_HEIGHT}px);
+  margin: 0;
 `
