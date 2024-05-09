@@ -1,5 +1,5 @@
 import EditIcon from '@mui/icons-material/Edit'
-import { Box, Button, Card, IconButton, Tooltip, Typography, css } from '@mui/material'
+import { Box, Button, ButtonGroup, Card, IconButton, Tooltip, Typography, css } from '@mui/material'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { useCallback, useContext, useMemo, useState } from 'react'
 
@@ -7,7 +7,7 @@ import { context } from 'Context'
 import database from 'database'
 import { ModalID } from 'modals'
 import { EmptyStateDisplay } from 'sharedComponents'
-import { pageCSS } from 'theme'
+import { globalButtonsWrapperCSS, globalContentWrapperCSS } from 'theme'
 import { type TProject, type TSuccess } from 'types'
 
 interface SuccessProps {
@@ -101,19 +101,17 @@ const SuccessesPage = () => {
   }, [successItems])
 
   return (
-    <Box css={pageCSS}>
-      <Button css={css`align-self: flex-start;`} variant='contained' key="add" onClick={handleSuccess} >Add Success</Button>
-      <Box css={scrollWrapperCSS}>
+    <>
+      <Box css={globalButtonsWrapperCSS}>
+        <ButtonGroup>
+          <Button css={css`align-self: flex-start;`} variant='contained' key="add" onClick={handleSuccess} >Add Success</Button>
+        </ButtonGroup >
+      </Box>
+      <Box css={globalContentWrapperCSS}>
         {content}
       </Box>
-    </Box >
+    </ >
   )
 }
-
-const scrollWrapperCSS = css`
-    height: 90%;
-    overflow: auto;
-    margin: 1rem 0 3rem 0;
-`
 
 export default SuccessesPage

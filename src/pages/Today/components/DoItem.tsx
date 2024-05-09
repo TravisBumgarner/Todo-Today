@@ -109,13 +109,10 @@ const leftHeaderCSS = css`
   align-items: center;
 `
 
-export const TODO_LIST_ITEM_MARGIN = '0.5rem 0 0.5rem 0'
-
 const wrapperCSS = css`
 background: var(--mui-palette-background-paper);
 border-radius: 0.5rem;
 padding: 0.5rem;
-margin: ${TODO_LIST_ITEM_MARGIN};
 `
 
 export default QueueItem

@@ -9,7 +9,7 @@ import { context } from 'Context'
 import database from 'database'
 import { ModalID } from 'modals'
 import { EmptyStateDisplay } from 'sharedComponents'
-import { pageCSS } from 'theme'
+import { globalButtonsWrapperCSS, globalContentWrapperCSS } from 'theme'
 import { type TProject, type TTask } from 'types'
 import { projectStatusLookup, sortStrings } from 'utilities'
 
@@ -218,18 +218,13 @@ const History = () => {
   }, [projects])
 
   return (
-    <Box css={pageCSS}>
-      <Box css={scrollWrapperCSS}>
+    <>
+      <Box css={globalButtonsWrapperCSS}></Box>
+      <Box css={globalContentWrapperCSS}>
         {content}
       </Box>
-    </Box>
+    </>
   )
 }
-
-const scrollWrapperCSS = css`
-      height: 90%;
-      overflow: auto;
-      margin: 1rem 0 3rem 0;
-      `
 
 export default History
