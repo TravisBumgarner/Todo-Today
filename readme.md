@@ -1,5 +1,11 @@
 # Setup
 
+## Windows
+
+
+
+## Mac
+
 Run bootstrap
 
 # Signing and notarizing

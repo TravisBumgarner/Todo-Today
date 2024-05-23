@@ -20,6 +20,7 @@ const config = {
     "target": "default"
   },
   "win": {
+    "artifactName": "${productName}_${version}.${ext}",
     "target": [
       {
         "target": "nsis",
