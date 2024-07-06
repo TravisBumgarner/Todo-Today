@@ -20,7 +20,7 @@ const template = [
   {
     label: 'File',
     submenu: [
-      { role: 'reload' },
+      ...(!isMac ? [{ role: 'about' }] : []),
       isMac ? { role: 'close' } : { role: 'quit' }
     ]
   },

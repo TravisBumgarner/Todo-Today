@@ -1,6 +1,10 @@
 # Building & Deploying
 
+Note - Cannot deploy Mac from Windows. Can deploy windows from Mac.
+
 ## Windows
+
+Note - Windows build will fail if app is open.
 
 ## Mac
 
