@@ -58,9 +58,10 @@ const url = process.env.VITE_DEV_SERVER_URL
 const indexHtml = join(process.env.DIST, 'index.html')
 async function createWindow() {
   win = new BrowserWindow({
-    width: 800,
-    height: 600,
-    minWidth: 700,
+    width: 840,
+    height: 700,
+    minWidth: 840,
+    minHeight: 700,
     x: 0,
     y: 0,
     title: isDev ? 'DEV MODE' : 'Todo Today',
@@ -77,7 +78,7 @@ async function createWindow() {
 
   if (url) { // electron-vite-vue#298
     await win.loadURL(url)
-    // Open devTool if the app is not` packaged
+    // Open devTool if the app is not packaged
     win.webContents.openDevTools()
   } else {
     if (isDebugProduction) {
