@@ -35,3 +35,4 @@ yarn.lock
 
 utilities/build
 *.env
+.DS_Store

@@ -1,19 +1,22 @@
 import { Menu, app, shell, type MenuItemConstructorOptions } from 'electron'
+import { autoUpdater } from 'electron-updater'
 
-import { isDev, isMac } from './config'
+import { isMac } from './config'
 
 const template = [
   // { role: 'appMenu' }
-  ...(isMac ? [{
-    label: app.name,
-    submenu: [
-      { role: 'about' },
-      { type: 'separator' },
-      { type: 'separator' },
-      { role: 'hide' },
-      { role: 'quit' }
-    ]
-  }] : []),
+  ...(isMac
+    ? [{
+      label: app.name,
+      submenu: [
+        { role: 'about' },
+        { type: 'separator' },
+        { type: 'separator' },
+        { role: 'hide' },
+        { role: 'quit' }
+      ]
+    }]
+    : []),
   {
     label: 'File',
     submenu: [
@@ -54,18 +57,14 @@ const template = [
   {
     label: 'View',
     submenu: [
-
-      ...(isDev
-        ? [
-          { role: 'forceReload' },
-          { role: 'toggleDevTools' }]
-        : []
-      ),
       { role: 'resetZoom' },
       { role: 'zoomIn' },
       { role: 'zoomOut' },
       { type: 'separator' },
-      { role: 'togglefullscreen' }
+      { role: 'togglefullscreen' },
+      { type: 'separator' },
+      { role: 'forceReload' },
+      { role: 'toggleDevTools' }
     ]
   },
   {
@@ -86,11 +85,11 @@ const template = [
     ]
   },
   {
-    role: 'help',
+    label: 'Support',
     submenu: [
       {
-        label: 'Website',
-        click: async () => { await shell.openExternal('http://todo.sillysideprojects.com/') }
+        label: 'Check for Updates',
+        click: async () => await autoUpdater.checkForUpdatesAndNotify()
       },
       {
         label: 'Changelog',
@@ -98,7 +97,11 @@ const template = [
       },
       {
         label: 'Contact',
-        click: async () => { await shell.openExternal('http://todo.sillysideprojects.com/support') }
+        click: async () => { await shell.openExternal('http://todo.sillysideprojects.com/contact') }
+      },
+      {
+        label: 'Website',
+        click: async () => { await shell.openExternal('http://todo.sillysideprojects.com/') }
       }
     ]
   }

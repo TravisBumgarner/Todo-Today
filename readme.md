@@ -1,20 +1,15 @@
-# Setup
+# Building & Deploying
 
 ## Windows
 
-
-
 ## Mac
 
-Run bootstrap
-
-# Signing and notarizing
-
-- https://www.npmjs.com/package/@electron/notarize
-- https://github.com/vercel/hyper/tree/3da89a8797cfedf908bfc118d3776b9a5a051f13
-- https://github.com/electron/notarize#safety-when-using-appleidpassword
-- https://developer.apple.com/documentation/security/notarizing_macos_software_before_distribution/customizing_the_notarization_workflow
-https://medium.com/@johndyer24/creating-and-deploying-an-auto-updating-electron-app-for-mac-and-windows-using-electron-builder-6a3982c0cee6
-
-To check logs
-`xcrun notarytool history --apple-id travis@sillysideprojects.com --team-id 669MM5WVSV`
+0. Set local credentials
+   - `./electron-builder.env`
+   - Get a new token from https://github.com/settings/personal-access-tokens/new
+      - Need fine grained details for releases
+1. Bump version in `package.json`
+2. Update Changelog in Todo-Today-Website repo and deploy website
+3. `yarn run deploy-electron-mac-prod`
+4. Visit https://github.com/TravisBumgarner/Todo-Today-Releases/releases and publish release
+5. Logs for the app can be found in `~/Library/Logs/Todo\ Today/main.log`
