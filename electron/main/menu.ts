@@ -9,16 +9,11 @@ const template = [
     submenu: [
       { role: 'about' },
       { type: 'separator' },
-      // { role: 'services' },
       { type: 'separator' },
       { role: 'hide' },
-      // { role: 'hideOthers' },
-      // { role: 'unhide' },
-      // { type: 'separator' },
       { role: 'quit' }
     ]
   }] : []),
-  // { role: 'fileMenu' }
   {
     label: 'File',
     submenu: [
@@ -26,7 +21,6 @@ const template = [
       isMac ? { role: 'close' } : { role: 'quit' }
     ]
   },
-  // { role: 'editMenu' }
   {
     label: 'Edit',
     submenu: [
@@ -57,7 +51,6 @@ const template = [
         ])
     ]
   },
-  // { role: 'viewMenu' }
   {
     label: 'View',
     submenu: [
@@ -75,7 +68,6 @@ const template = [
       { role: 'togglefullscreen' }
     ]
   },
-  // { role: 'windowMenu' }
   {
     label: 'Window',
     submenu: [
