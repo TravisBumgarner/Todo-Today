@@ -1,6 +1,12 @@
 import AddIcon from '@mui/icons-material/Add'
 import { Box, Button, Drawer, List, ListItem, ListItemText, Typography } from '@mui/material'
-import { useCallback } from 'react'
+import { context } from 'Context'
+import db from 'database'
+import { useLiveQuery } from 'dexie-react-hooks'
+import { ModalID } from 'modals'
+import { useCallback, useContext } from 'react'
+import { type TWorkspace } from 'types'
+import { DEFAULT_WORKSPACE } from 'utilities'
 
 const Workspaces = (
     {
@@ -11,11 +17,20 @@ const Workspaces = (
         isSidebarOpen: boolean
         toggleSidebar: () => void
     }) => {
+    const { dispatch } = useContext(context)
     const handleDrawerClick = useCallback((e: React.MouseEvent) => {
         e.stopPropagation()
         console.log('yolo')
         toggleSidebar()
     }, [toggleSidebar])
+
+    const workspaces = useLiveQuery(async () => {
+        return await db.workspaces.toArray()
+    }, [])
+
+    const createWorkspace = useCallback(() => {
+        dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.ADD_WORKSPACE_MODAL } })
+    }, [dispatch])
 
     return (
         <Box sx={{ display: 'flex' }}>
@@ -32,9 +47,9 @@ const Workspaces = (
                             Workspaces
                         </Typography>
                         <List>
-                            {['Side Projects', 'New Job'].map((text) => (
-                                <ListItem button key={text}>
-                                    <ListItemText primary={text} />
+                            {[{ id: DEFAULT_WORKSPACE, name: 'Todo Today' }, ...(workspaces ?? [{} as TWorkspace])].map(({ id, name }) => (
+                                <ListItem button key={id}>
+                                    <ListItemText primary={name} />
                                 </ListItem>
                             ))}
                         </List>
@@ -44,6 +59,7 @@ const Workspaces = (
                         color="primary"
                         startIcon={<AddIcon />}
                         sx={{ m: 2 }}
+                        onClick={createWorkspace}
                     >
                         Add Workspace
                     </Button>

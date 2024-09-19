@@ -1,22 +1,38 @@
 import Dexie, { type Table } from 'dexie'
-import { type TProject, type TSuccess, type TTask, type TTodoListItem } from 'types'
+import { type TProject, type TSuccess, type TTask, type TTodoListItem, type TWorkspace } from 'types'
+import { DEFAULT_WORKSPACE } from 'utilities'
 
 class MySubClassedDexie extends Dexie {
   projects!: Table<TProject>
-
   tasks!: Table<TTask>
-
   todoListItems!: Table<TTodoListItem>
-
   successes!: Table<TSuccess>
+  workspaces!: Table<TWorkspace>
 
   constructor() {
     super('todo-today')
-    this.version(7).stores({
+    this.version(8).stores({
       projects: 'id, title, status',
       tasks: 'id, projectId, title, status, details',
       todoListItems: 'id, taskId, todoListDate, sortOrder',
       successes: 'id, description, date, projectId'
+    })
+
+    this.version(9).stores({
+      projects: 'id, title, status, createdAt',
+      tasks: 'id, projectId, title, status, details, createdAt',
+      todoListItems: 'id, taskId, todoListDate, sortOrder, createdAt',
+      successes: 'id, description, date, projectId, createdAt',
+      workspaces: 'id, name'
+    }).upgrade(async tx => {
+      return await Promise.all([
+        tx.table('projects').toCollection().modify(project => {
+          project.workspace = DEFAULT_WORKSPACE
+        }),
+        tx.table('successes').toCollection().modify(success => {
+          success.workspace = DEFAULT_WORKSPACE
+        })
+      ])
     })
   }
 }

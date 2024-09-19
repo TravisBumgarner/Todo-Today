@@ -70,3 +70,8 @@ export enum EActivePage {
   History = 'History',
   Successes = 'Successes',
 }
+
+export interface TWorkspace {
+  name: string
+  id: string
+}
