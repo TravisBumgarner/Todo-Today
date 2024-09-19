@@ -1,12 +1,11 @@
 import AddIcon from '@mui/icons-material/Add'
-import { Box, Button, Drawer, List, ListItem, ListItemText, Typography } from '@mui/material'
+import { Backdrop, Box, Button, Drawer, List, ListItem, ListItemText, Typography } from '@mui/material'
 import { context } from 'Context'
 import db from 'database'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { ModalID } from 'modals'
 import { useCallback, useContext } from 'react'
-import { type TWorkspace } from 'types'
-import { DEFAULT_WORKSPACE } from 'utilities'
+import { DEFAULT_WORKSPACE_ID } from 'utilities'
 
 const Workspaces = (
     {
@@ -17,23 +16,26 @@ const Workspaces = (
         isSidebarOpen: boolean
         toggleSidebar: () => void
     }) => {
-    const { dispatch } = useContext(context)
+    const { dispatch, state: { activeWorkspaceId } } = useContext(context)
+
     const handleDrawerClick = useCallback((e: React.MouseEvent) => {
         e.stopPropagation()
-        console.log('yolo')
         toggleSidebar()
     }, [toggleSidebar])
 
     const workspaces = useLiveQuery(async () => {
-        return await db.workspaces.toArray()
-    }, [])
+        const allWorkspaces = await db.workspaces.toArray()
+        return [{ id: DEFAULT_WORKSPACE_ID, name: 'Todo Today' }, ...allWorkspaces].sort((a, b) => a.name.localeCompare(b.name))
+    })
 
     const createWorkspace = useCallback(() => {
         dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.ADD_WORKSPACE_MODAL } })
     }, [dispatch])
 
+    if (workspaces === undefined) return null
+
     return (
-        <Box sx={{ display: 'flex' }}>
+        <Backdrop onClick={toggleSidebar} open={isSidebarOpen} sx={{ display: 'flex' }}>
             <Drawer
                 variant="persistent"
                 anchor="left"
@@ -47,9 +49,15 @@ const Workspaces = (
                             Workspaces
                         </Typography>
                         <List>
-                            {[{ id: DEFAULT_WORKSPACE, name: 'Todo Today' }, ...(workspaces ?? [{} as TWorkspace])].map(({ id, name }) => (
-                                <ListItem button key={id}>
-                                    <ListItemText primary={name} />
+                            {workspaces.map(({ id, name }) => (
+                                <ListItem
+                                    sx={{ bgcolor: activeWorkspaceId === id ? 'background.default' : 'transparent' }}
+                                    color="warning"
+                                    // css={{ backgroundColor: activeWorkspaceId === id ? 'red'  : 'transparent' }}
+                                    onClick={() => { dispatch({ type: 'CHANGE_WORKSPACE', payload: { workspaceId: id } }) }}
+                                    key={id}
+                                >
+                                    <ListItemText color="warning" primary={name} />
                                 </ListItem>
                             ))}
                         </List>
@@ -65,7 +73,7 @@ const Workspaces = (
                     </Button>
                 </Box>
             </Drawer>
-        </Box>
+        </Backdrop>
     )
 }
 

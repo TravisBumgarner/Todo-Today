@@ -3,7 +3,7 @@ import { createContext, useEffect, useReducer, useState, type Dispatch } from 'r
 
 import { ESyncMessageIPC } from 'shared/types'
 import { EActivePage, EBackupInterval, EColorTheme, type TDateISODate, type TSettings } from 'types'
-import { formatDateKeyLookup, getLocalStorage, sendSyncIPCMessage, setLocalStorage } from 'utilities'
+import { DEFAULT_WORKSPACE_ID, formatDateKeyLookup, getLocalStorage, sendSyncIPCMessage, setLocalStorage } from 'utilities'
 import { type ActiveModal } from './modals/RenderModal'
 
 const HAS_DONE_WARM_START = 'hasDoneWarmStart'
@@ -31,6 +31,7 @@ export interface State {
   activePage: EActivePage
   workMode: 'queue' | 'do'
   timerDuration: number
+  activeWorkspaceId: string
 }
 
 const EMPTY_STATE: State = {
@@ -47,7 +48,8 @@ const EMPTY_STATE: State = {
   activePage: EActivePage.Home,
   message: null,
   workMode: 'queue',
-  timerDuration: 0
+  timerDuration: 0,
+  activeWorkspaceId: DEFAULT_WORKSPACE_ID
 
 }
 const initialSetup = (backupDir: string) => {
@@ -114,6 +116,13 @@ interface SetActivePage {
   }
 }
 
+interface ChangeWorkspace {
+  type: 'CHANGE_WORKSPACE'
+  payload: {
+    workspaceId: string
+  }
+}
+
 interface AddMessage {
   type: 'ADD_MESSAGE'
   payload: {
@@ -131,7 +140,7 @@ interface DeleteMessage {
   type: 'DELETE_MESSAGE'
 }
 
-interface UpdateworkMode {
+interface UpdateWorkMode {
   type: 'UPDATE_WORK_MODE'
   payload: {
     workMode: 'queue' | 'do'
@@ -156,8 +165,9 @@ export type Action =
   | SetActivePage
   | AddMessage
   | DeleteMessage
-  | UpdateworkMode
+  | UpdateWorkMode
   | UpdateTimer
+  | ChangeWorkspace
 
 const reducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -202,6 +212,10 @@ const reducer = (state: State, action: Action): State => {
     case 'UPDATE_TIMER': {
       const { timerDuration } = action.payload
       return { ...state, timerDuration }
+    }
+    case 'CHANGE_WORKSPACE': {
+      const { workspaceId } = action.payload
+      return { ...state, activeWorkspaceId: workspaceId }
     }
     default:
       throw new Error('Unexpected action')

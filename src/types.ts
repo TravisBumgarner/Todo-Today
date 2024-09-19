@@ -20,6 +20,7 @@ export interface TSuccess {
   description: string
   date: TDateISODate
   projectId: TProject['id']
+  workspaceId: string
 }
 
 export enum ETaskStatus {

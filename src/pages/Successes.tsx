@@ -63,7 +63,7 @@ const wrapperCSS = css`
 `
 
 const SuccessesPage = () => {
-  const { dispatch } = useContext(context)
+  const { dispatch, state: { activeWorkspaceId } } = useContext(context)
   const [successItems, setSuccessItems] = useState<Array<TSuccess & { projectTitle: string }> | undefined>(undefined)
 
   const handleSuccess = useCallback(() => {
@@ -71,7 +71,7 @@ const SuccessesPage = () => {
   }, [dispatch])
 
   useLiveQuery(async () => {
-    const successes = (await database.successes.toCollection().sortBy('date')).reverse()
+    const successes = (await database.successes.where('workspaceId').equals(activeWorkspaceId).sortBy('date')).reverse()
 
     const result = await Promise.all(successes.map(async (success) => {
       const project = (await database.projects.where({ id: success.projectId }).first()) as TProject
@@ -81,7 +81,7 @@ const SuccessesPage = () => {
       }
     }))
     setSuccessItems(result)
-  }, [])
+  }, [activeWorkspaceId])
 
   const content = useMemo(() => {
     if (!successItems) {

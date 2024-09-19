@@ -7,15 +7,25 @@ import ChecklistIcon from '@mui/icons-material/Checklist'
 import MenuBookIcon from '@mui/icons-material/MenuBook'
 import SettingsIcon from '@mui/icons-material/Settings'
 import { context } from 'Context'
+import db from 'database'
+import { useLiveQuery } from 'dexie-react-hooks'
 import { ModalID } from 'modals'
 import { EActivePage } from 'types'
+import { DEFAULT_WORKSPACE_ID } from 'utilities'
 
 const Title = () => {
-  const { state: { activePage }, dispatch } = useContext(context)
+  const { state: { activePage, activeWorkspaceId }, dispatch } = useContext(context)
+
+  const workspace = useLiveQuery(async () => {
+    const result = await db.workspaces.where('id').equals(activeWorkspaceId).first()
+    return result ?? { name: 'Todo Today', id: DEFAULT_WORKSPACE_ID }
+  }, [activeWorkspaceId])
+
   const header = useMemo(() => {
     switch (activePage) {
       case EActivePage.Home:
-        return 'Todo Today'
+        // This might flicker
+        return workspace?.name ?? 'Todo Today'
       case EActivePage.History:
         return 'History'
       case EActivePage.Successes:
@@ -23,7 +33,7 @@ const Title = () => {
       default:
         return 'Todo Today'
     }
-  }, [activePage])
+  }, [activePage, workspace])
 
   const handleHome = useCallback(() => {
     dispatch({ type: 'SET_ACTIVE_PAGE', payload: { page: EActivePage.Home } })
