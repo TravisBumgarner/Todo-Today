@@ -1,11 +1,11 @@
+import MenuIcon from '@mui/icons-material/Menu'
+import { Box, css, IconButton, Tooltip, Typography } from '@mui/material'
 import { useCallback, useContext, useMemo } from 'react'
-// import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { Typography, Box, IconButton, css, Tooltip } from '@mui/material'
 
-import MenuBookIcon from '@mui/icons-material/MenuBook'
-import ChecklistIcon from '@mui/icons-material/Checklist'
-import SettingsIcon from '@mui/icons-material/Settings'
 import CelebrationIcon from '@mui/icons-material/Celebration'
+import ChecklistIcon from '@mui/icons-material/Checklist'
+import MenuBookIcon from '@mui/icons-material/MenuBook'
+import SettingsIcon from '@mui/icons-material/Settings'
 import { context } from 'Context'
 import { ModalID } from 'modals'
 import { EActivePage } from 'types'
@@ -50,7 +50,7 @@ const Title = () => {
   )
 }
 
-const Header = () => {
+const Header = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
   const { dispatch } = useContext(context)
 
   const handleHome = useCallback(() => {
@@ -71,7 +71,20 @@ const Header = () => {
 
   return (
     <Box css={headerCSS}>
-      <Title />
+      <Box css={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
+        <Tooltip title="Change Workspace">
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            edge="start"
+            onClick={toggleSidebar}
+            sx={{ mr: 2 }}
+          >
+            <MenuIcon />
+          </IconButton>
+        </Tooltip>
+        <Title />
+      </Box>
       <Box css={navigationCSS}>
         <IconButton color="primary"
           onClick={handleHome}
