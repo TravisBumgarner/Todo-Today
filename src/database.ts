@@ -11,7 +11,7 @@ class MySubClassedDexie extends Dexie {
 
   constructor() {
     super('todo-today')
-    this.version(12).stores({
+    this.version(13).stores({
       projects: 'id, title, status, createdAt, workspaceId',
       tasks: 'id, projectId, title, status, details, createdAt',
       todoListItems: 'id, taskId, todoListDate, sortOrder, createdAt, workspaceId',
@@ -20,13 +20,21 @@ class MySubClassedDexie extends Dexie {
     }).upgrade(async tx => {
       return await Promise.all([
         tx.table('projects').toCollection().modify(project => {
-          project.workspace = DEFAULT_WORKSPACE_ID
+          project.workspaceId = DEFAULT_WORKSPACE_ID
         }),
         tx.table('successes').toCollection().modify(success => {
-          success.workspace = DEFAULT_WORKSPACE_ID
-        })
+          success.workspaceId = DEFAULT_WORKSPACE_ID
+        }),
+        this.createDefaultWorkspace()
       ])
     })
+  }
+
+  async createDefaultWorkspace() {
+    const defaultWorkspace = await this.workspaces.get(DEFAULT_WORKSPACE_ID)
+    if (!defaultWorkspace) {
+      await this.workspaces.add({ id: DEFAULT_WORKSPACE_ID, name: 'Todo Today' })
+    }
   }
 }
 

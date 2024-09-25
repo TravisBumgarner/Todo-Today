@@ -1,11 +1,11 @@
 import AddIcon from '@mui/icons-material/Add'
-import { Backdrop, Box, Button, Drawer, List, ListItem, ListItemText, Typography } from '@mui/material'
+import EditIcon from '@mui/icons-material/Edit'
+import { Backdrop, Box, Button, Drawer, IconButton, List, ListItem, ListItemText, Typography } from '@mui/material'
 import { context } from 'Context'
 import db from 'database'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { ModalID } from 'modals'
 import { useCallback, useContext } from 'react'
-import { DEFAULT_WORKSPACE_ID } from 'utilities'
 
 const Workspaces = (
     {
@@ -25,11 +25,15 @@ const Workspaces = (
 
     const workspaces = useLiveQuery(async () => {
         const allWorkspaces = await db.workspaces.toArray()
-        return [{ id: DEFAULT_WORKSPACE_ID, name: 'Todo Today' }, ...allWorkspaces].sort((a, b) => a.name.localeCompare(b.name))
+        return allWorkspaces.sort((a, b) => a.name.localeCompare(b.name))
     })
 
     const createWorkspace = useCallback(() => {
         dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.ADD_WORKSPACE_MODAL } })
+    }, [dispatch])
+
+    const editWorkspace = useCallback((id: string) => {
+        dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.EDIT_WORKSPACE_MODAL, workspaceId: id } })
     }, [dispatch])
 
     if (workspaces === undefined) return null
@@ -52,11 +56,20 @@ const Workspaces = (
                             {workspaces.map(({ id, name }) => (
                                 <ListItem
                                     sx={{ bgcolor: activeWorkspaceId === id ? 'background.default' : 'transparent', cursor: 'pointer' }}
-                                    color="warning"
                                     onClick={() => { dispatch({ type: 'CHANGE_WORKSPACE', payload: { workspaceId: id } }) }}
                                     key={id}
                                 >
-                                    <ListItemText color="warning" primary={name} />
+                                    <ListItemText primary={name} />
+                                    <IconButton
+                                        edge="end"
+                                        aria-label="edit"
+                                        onClick={(e) => {
+                                            e.stopPropagation()
+                                            editWorkspace(id)
+                                        }}
+                                    >
+                                        <EditIcon />
+                                    </IconButton>
                                 </ListItem>
                             ))}
                         </List>

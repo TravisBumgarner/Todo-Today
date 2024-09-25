@@ -24,14 +24,13 @@ const EmptyTodoList = () => {
 }
 
 const TodoList = () => {
-  const { state: { selectedDate, restoreInProgress, settings: { concurrentTodoListItems } }, dispatch } = useContext(context)
+  const { state: { selectedDate, restoreInProgress, activeWorkspaceId, settings: { concurrentTodoListItems } }, dispatch } = useContext(context)
   const [selectedDateActiveEntries, setSelectedDateActiveEntries] = useState<DoModeEntry[]>([])
 
   useLiveQuery(
     async () => {
       const todoListItems = await database.todoListItems
-        .where('todoListDate')
-        .equals(selectedDate)
+        .where({ todoListDate: selectedDate, workspaceId: activeWorkspaceId })
         .sortBy('sortOrder')
 
       const entries = await Promise.all(todoListItems.map(async todoListItem => {

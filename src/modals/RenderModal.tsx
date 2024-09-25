@@ -7,6 +7,7 @@ import ConfirmationModal, { type ConfirmationModalProps } from './ConfirmationMo
 import EditProjectModal from './EditProjectModal'
 import EditSuccessModal from './EditSuccessModal'
 import EditTaskModal from './EditTaskModal'
+import EditWorkspaceModal from './EditWorkspaceModal'
 import SelectTasksModal from './SelectTasksModal'
 import SettingsModal from './Settings'
 import TimerSetupModal from './TimerSetupModal'
@@ -23,6 +24,7 @@ export enum ModalID {
   SETTINGS_MODAL = 'SETTINGS_MODAL',
   CONFIRMATION_MODAL = 'CONFIRMATION_MODAL',
   TIMER_SETUP_MODAL = 'TIMER_SETUP_MODAL',
+  EDIT_WORKSPACE_MODAL = 'EDIT_WORKSPACE_MODAL'
 }
 
 export type ActiveModal =
@@ -37,6 +39,7 @@ export type ActiveModal =
   | { id: ModalID.SETTINGS_MODAL }
   | { id: ModalID.CONFIRMATION_MODAL } & ConfirmationModalProps
   | { id: ModalID.TIMER_SETUP_MODAL }
+  | { id: ModalID.EDIT_WORKSPACE_MODAL, workspaceId: string }
 
 const RenderModal: FC = () => {
   const { state } = useContext(context)
@@ -70,6 +73,8 @@ const RenderModal: FC = () => {
       return <TimerSetupModal />
     case ModalID.ADD_WORKSPACE_MODAL:
       return <AddWorkspaceModal />
+    case ModalID.EDIT_WORKSPACE_MODAL:
+      return <EditWorkspaceModal workspaceId={state.activeModal.workspaceId} />
     default:
       return null
   }

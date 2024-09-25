@@ -81,7 +81,7 @@ const Header = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
 
   return (
     <Box css={headerCSS}>
-      <Box css={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
+      <Box css={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
         <Tooltip title="Change Workspace">
           <IconButton
             color="inherit"
@@ -99,7 +99,7 @@ const Header = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
         <IconButton color="primary"
           onClick={handleHome}
         >
-          <Tooltip title="Todo Today">
+          <Tooltip title="Today">
             <ChecklistIcon />
           </Tooltip>
         </IconButton>
@@ -135,7 +135,7 @@ const Header = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
 const titleCSS = css`
   position: relative;
   cursor: pointer;
-   
+
     h1{
         white-space: nowrap;
         opacity: 0.9;

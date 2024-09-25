@@ -18,6 +18,7 @@ const AddWorkspaceModal = () => {
     }
     await database.workspaces.add(newWorkspace)
     dispatch({ type: 'CLEAR_ACTIVE_MODAL' })
+    dispatch({ type: 'CHANGE_WORKSPACE', payload: { workspaceId: newWorkspace.id } })
   }, [dispatch, name])
 
   const handleCancel = useCallback(() => {
