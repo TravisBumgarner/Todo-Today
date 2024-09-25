@@ -14,7 +14,7 @@ import { EActivePage } from 'types'
 import { DEFAULT_WORKSPACE_ID } from 'utilities'
 
 const Title = () => {
-  const { state: { activePage, activeWorkspaceId }, dispatch } = useContext(context)
+  const { state: { activeWorkspaceId }, dispatch } = useContext(context)
 
   const workspace = useLiveQuery(async () => {
     const result = await db.workspaces.where('id').equals(activeWorkspaceId).first()
@@ -22,18 +22,11 @@ const Title = () => {
   }, [activeWorkspaceId])
 
   const header = useMemo(() => {
-    switch (activePage) {
-      case EActivePage.Home:
-        // This might flicker
-        return workspace?.name ?? 'Todo Today'
-      case EActivePage.History:
-        return 'History'
-      case EActivePage.Successes:
-        return 'Successes'
-      default:
-        return 'Todo Today'
+    if (workspace) {
+      return workspace.name
     }
-  }, [activePage, workspace])
+    return 'Todo Today'
+  }, [workspace])
 
   const handleHome = useCallback(() => {
     dispatch({ type: 'SET_ACTIVE_PAGE', payload: { page: EActivePage.Home } })
@@ -61,7 +54,7 @@ const Title = () => {
 }
 
 const Header = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
-  const { dispatch } = useContext(context)
+  const { dispatch, state: { activePage } } = useContext(context)
 
   const handleHome = useCallback(() => {
     dispatch({ type: 'SET_ACTIVE_PAGE', payload: { page: EActivePage.Home } })
@@ -78,6 +71,20 @@ const Header = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
   const handleSuccess = useCallback(() => {
     dispatch({ type: 'SET_ACTIVE_PAGE', payload: { page: EActivePage.Successes } })
   }, [dispatch])
+
+  const subHeader = useMemo(() => {
+    switch (activePage) {
+      case EActivePage.Home:
+        // This might flicker
+        return 'Todo'
+      case EActivePage.History:
+        return 'Project and Task History'
+      case EActivePage.Successes:
+        return 'Successes'
+      default:
+        return 'Todo Today'
+    }
+  }, [activePage])
 
   return (
     <Box css={headerCSS}>
@@ -96,6 +103,7 @@ const Header = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
         <Title />
       </Box>
       <Box css={navigationCSS}>
+        <Typography>{subHeader}</Typography>
         <IconButton color="primary"
           onClick={handleHome}
         >
@@ -188,6 +196,8 @@ const navigationCSS = css`
   display: flex;
   flex-direction: row;
   flex-grow: 0;
+  justify-content: center;
+  align-items: center;
 `
 
 export const HEADER_HEIGHT = 55
