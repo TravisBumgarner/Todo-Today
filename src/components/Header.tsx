@@ -11,14 +11,14 @@ import db from 'database'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { ModalID } from 'modals'
 import { EActivePage } from 'types'
-import { DEFAULT_WORKSPACE_ID } from 'utilities'
+import { DEFAULT_WORKSPACE } from 'utilities'
 
 const Title = () => {
   const { state: { activeWorkspaceId }, dispatch } = useContext(context)
 
   const workspace = useLiveQuery(async () => {
     const result = await db.workspaces.where('id').equals(activeWorkspaceId).first()
-    return result ?? { name: 'Todo Today', id: DEFAULT_WORKSPACE_ID }
+    return result ?? { name: 'Todo Today', id: DEFAULT_WORKSPACE.id }
   }, [activeWorkspaceId])
 
   const header = useMemo(() => {

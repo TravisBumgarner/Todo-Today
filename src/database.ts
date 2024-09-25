@@ -1,6 +1,6 @@
 import Dexie, { type Table } from 'dexie'
 import { type TProject, type TSuccess, type TTask, type TTodoListItem, type TWorkspace } from 'types'
-import { DEFAULT_WORKSPACE_ID } from 'utilities'
+import { DEFAULT_WORKSPACE } from 'utilities'
 
 class MySubClassedDexie extends Dexie {
   projects!: Table<TProject>
@@ -19,21 +19,25 @@ class MySubClassedDexie extends Dexie {
       workspaces: 'id, name'
     }).upgrade(async tx => {
       return await Promise.all([
+        this.createDefaultWorkspace(),
         tx.table('projects').toCollection().modify(project => {
-          project.workspaceId = DEFAULT_WORKSPACE_ID
+          project.workspaceId = DEFAULT_WORKSPACE.id
         }),
         tx.table('successes').toCollection().modify(success => {
-          success.workspaceId = DEFAULT_WORKSPACE_ID
+          success.workspaceId = DEFAULT_WORKSPACE.id
         }),
-        this.createDefaultWorkspace()
+        tx.table('todoListItems').toCollection().modify(task => {
+          task.workspaceId = DEFAULT_WORKSPACE.id
+        })
+
       ])
     })
   }
 
   async createDefaultWorkspace() {
-    const defaultWorkspace = await this.workspaces.get(DEFAULT_WORKSPACE_ID)
+    const defaultWorkspace = await this.workspaces.get(DEFAULT_WORKSPACE.id)
     if (!defaultWorkspace) {
-      await this.workspaces.add({ id: DEFAULT_WORKSPACE_ID, name: 'Todo Today' })
+      await this.workspaces.add(DEFAULT_WORKSPACE)
     }
   }
 }

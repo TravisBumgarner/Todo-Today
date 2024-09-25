@@ -3,7 +3,7 @@ import { createContext, useEffect, useReducer, useState, type Dispatch } from 'r
 
 import { ESyncMessageIPC } from 'shared/types'
 import { EActivePage, EBackupInterval, EColorTheme, type TDateISODate, type TSettings } from 'types'
-import { DEFAULT_WORKSPACE_ID, formatDateKeyLookup, getLocalStorage, sendSyncIPCMessage, setLocalStorage } from 'utilities'
+import { DEFAULT_WORKSPACE, formatDateKeyLookup, getLocalStorage, sendSyncIPCMessage, setLocalStorage } from 'utilities'
 import { type ActiveModal } from './modals/RenderModal'
 
 const HAS_DONE_WARM_START = 'hasDoneWarmStart'
@@ -49,7 +49,7 @@ const EMPTY_STATE: State = {
   message: null,
   workMode: 'queue',
   timerDuration: 0,
-  activeWorkspaceId: DEFAULT_WORKSPACE_ID
+  activeWorkspaceId: DEFAULT_WORKSPACE.id
 
 }
 const initialSetup = (backupDir: string) => {

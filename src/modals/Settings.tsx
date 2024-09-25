@@ -1,5 +1,5 @@
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
-import { Box, Button, FormControl, InputLabel, MenuItem, Select, Typography, css, type SelectChangeEvent } from '@mui/material'
+import { Box, Button, css, FormControl, InputLabel, MenuItem, Select, Typography, type SelectChangeEvent } from '@mui/material'
 import moment from 'moment'
 import { useCallback, useContext, useState } from 'react'
 import { HtmlTooltip } from 'sharedComponents'
@@ -12,6 +12,7 @@ import { EBackupInterval, EColorTheme } from 'types'
 import {
   backupIntervalLookup,
   colorThemeOptionLabels,
+  DEFAULT_WORKSPACE,
   saveFile,
   sendAsyncIPCMessage,
   setLocalStorage
@@ -24,7 +25,8 @@ const copyIndexedDBToObject = async () => {
     projects: await database.projects.toArray(),
     tasks: await database.tasks.toArray(),
     todoListItems: await database.todoListItems.toArray(),
-    successes: await database.successes.toArray()
+    successes: await database.successes.toArray(),
+    workspaces: await database.workspaces.toArray()
   }
   return data
 }
@@ -101,20 +103,33 @@ const Settings = () => {
       reader.onload = async function (event) {
         try {
           if (event.target?.result) {
-            const newStore = JSON.parse(event.target.result as string)
+            let { projects, todoListItems, successes, workspaces, tasks } = JSON.parse(event.target.result as string)
 
             await Promise.all([
               database.projects.clear(),
               database.tasks.clear(),
               database.todoListItems.clear(),
-              database.successes.clear()
+              database.successes.clear(),
+              database.workspaces.clear()
             ])
 
+            // If import does not have any workspaces, we need to add the default workspace
+            let newWorkspaces = workspaces
+            if (!newWorkspaces) {
+              console.log('defaulting')
+              newWorkspaces = [DEFAULT_WORKSPACE]
+
+              projects = projects.map((project: any) => ({ ...project, workspaceId: DEFAULT_WORKSPACE.id }))
+              todoListItems = todoListItems.map((task: any) => ({ ...task, workspaceId: DEFAULT_WORKSPACE.id }))
+              successes = successes.map((success: any) => ({ ...success, workspaceId: DEFAULT_WORKSPACE.id }))
+            }
+            console.log(projects)
             await Promise.all([
-              database.projects.bulkAdd(newStore.projects),
-              database.tasks.bulkAdd(newStore.tasks),
-              database.todoListItems.bulkAdd(newStore.todoListItems),
-              database.successes.bulkAdd(newStore.successes)
+              database.projects.bulkAdd(projects),
+              database.tasks.bulkAdd(tasks),
+              database.todoListItems.bulkAdd(todoListItems),
+              database.successes.bulkAdd(successes),
+              database.workspaces.bulkAdd(newWorkspaces)
             ])
           } else {
             dispatch({
