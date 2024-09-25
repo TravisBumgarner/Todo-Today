@@ -116,7 +116,6 @@ const Settings = () => {
             // If import does not have any workspaces, we need to add the default workspace
             let newWorkspaces = workspaces
             if (!newWorkspaces) {
-              console.log('defaulting')
               newWorkspaces = [DEFAULT_WORKSPACE]
 
               projects = projects.map((project: any) => ({ ...project, workspaceId: DEFAULT_WORKSPACE.id }))
