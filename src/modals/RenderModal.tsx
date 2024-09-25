@@ -2,16 +2,19 @@ import { context } from 'Context'
 import { useContext, type FC } from 'react'
 import AddSuccessModal from './AddSuccessModal'
 import AddTaskModal from './AddTaskModal'
+import AddWorkspaceModal from './AddWorkspaceModal'
 import ConfirmationModal, { type ConfirmationModalProps } from './ConfirmationModal'
 import EditProjectModal from './EditProjectModal'
 import EditSuccessModal from './EditSuccessModal'
 import EditTaskModal from './EditTaskModal'
+import EditWorkspaceModal from './EditWorkspaceModal'
 import SelectTasksModal from './SelectTasksModal'
 import SettingsModal from './Settings'
 import TimerSetupModal from './TimerSetupModal'
 
 export enum ModalID {
   ADD_TASK_MODAL = 'ADD_TASK_MODAL',
+  ADD_WORKSPACE_MODAL = 'ADD_WORKSPACE_MODAL',
   EDIT_TASK_MODAL = 'EDIT_TASK_MODAL',
   EDIT_PROJECT_MODAL = 'EDIT_PROJECT_MODAL',
   SELECT_TASKS_MODAL = 'SELECT_TASKS_MODAL',
@@ -21,10 +24,12 @@ export enum ModalID {
   SETTINGS_MODAL = 'SETTINGS_MODAL',
   CONFIRMATION_MODAL = 'CONFIRMATION_MODAL',
   TIMER_SETUP_MODAL = 'TIMER_SETUP_MODAL',
+  EDIT_WORKSPACE_MODAL = 'EDIT_WORKSPACE_MODAL'
 }
 
 export type ActiveModal =
   | { id: ModalID.ADD_TASK_MODAL }
+  | { id: ModalID.ADD_WORKSPACE_MODAL }
   | { id: ModalID.EDIT_TASK_MODAL, taskId: string }
   | { id: ModalID.EDIT_PROJECT_MODAL, projectId: string }
   | { id: ModalID.SELECT_TASKS_MODAL }
@@ -34,6 +39,7 @@ export type ActiveModal =
   | { id: ModalID.SETTINGS_MODAL }
   | { id: ModalID.CONFIRMATION_MODAL } & ConfirmationModalProps
   | { id: ModalID.TIMER_SETUP_MODAL }
+  | { id: ModalID.EDIT_WORKSPACE_MODAL, workspaceId: string }
 
 const RenderModal: FC = () => {
   const { state } = useContext(context)
@@ -65,6 +71,10 @@ const RenderModal: FC = () => {
       />
     case ModalID.TIMER_SETUP_MODAL:
       return <TimerSetupModal />
+    case ModalID.ADD_WORKSPACE_MODAL:
+      return <AddWorkspaceModal />
+    case ModalID.EDIT_WORKSPACE_MODAL:
+      return <EditWorkspaceModal workspaceId={state.activeModal.workspaceId} />
     default:
       return null
   }

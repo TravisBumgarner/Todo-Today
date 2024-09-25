@@ -19,6 +19,7 @@ const EditSuccessModal = ({ successId }: Props) => {
   const [description, setDescription] = useState<string>('')
   const [projectId, setProjectId] = useState<TProject['id'] | ''>('')
   const [date, setDate] = useState<TSuccess['date'] | ''>('')
+  const [workspaceId, setWorkspaceId] = useState<string>('')
   const [isLoading, setIsLoading] = useState<boolean>(true)
 
   const projects = useLiveQuery(async () => {
@@ -34,20 +35,22 @@ const EditSuccessModal = ({ successId }: Props) => {
         setDate(s.date)
         setDescription(s.description)
         setProjectId(s.projectId)
+        setWorkspaceId(s.workspaceId)
         setIsLoading(false)
       })
   }, [successId])
 
   const handleSubmit = useCallback(async () => {
-    const editedSuccess = {
+    const editedSuccess: TSuccess = {
       description,
       id: successId,
       projectId,
-      date: formatDateKeyLookup(moment(date))
+      date: formatDateKeyLookup(moment(date)),
+      workspaceId
     }
     await database.successes.put(editedSuccess, [successId])
     dispatch({ type: 'CLEAR_ACTIVE_MODAL' })
-  }, [dispatch, description, projectId, successId, date])
+  }, [dispatch, description, projectId, successId, date, workspaceId])
 
   const handleCancel = useCallback(() => {
     dispatch({ type: 'CLEAR_ACTIVE_MODAL' })

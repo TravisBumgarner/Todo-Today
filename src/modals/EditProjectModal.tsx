@@ -13,7 +13,7 @@ interface Props {
 }
 
 const EditProjectModal = ({ projectId }: Props) => {
-  const { dispatch } = useContext(context)
+  const { dispatch, state: { activeWorkspaceId } } = useContext(context)
   const [title, setTitle] = useState<string>('')
   const [status, setStatus] = useState<EProjectStatus>(EProjectStatus.ACTIVE)
   const [isLoading, setIsLoading] = useState<boolean>(true)
@@ -33,14 +33,15 @@ const EditProjectModal = ({ projectId }: Props) => {
   }, [projectId])
 
   const handleSubmit = useCallback(async () => {
-    const editedProject = {
+    const editedProject: TProject = {
+      workspaceId: activeWorkspaceId,
       title,
       status,
       id: projectId
     }
     await database.projects.put(editedProject, [projectId])
     dispatch({ type: 'CLEAR_ACTIVE_MODAL' })
-  }, [dispatch, projectId, status, title])
+  }, [dispatch, projectId, status, title, activeWorkspaceId])
 
   const handleCancel = useCallback(() => {
     dispatch({ type: 'CLEAR_ACTIVE_MODAL' })

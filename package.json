@@ -1,7 +1,7 @@
 {
   "name": "todotodaydev",
   "productName": "Todo Today",
-  "version": "1.2.10",
+  "version": "1.3.2",
   "main": "dist-electron/main/index.js",
   "description": "Minimalistic Todo List",
   "license": "MIT",
@@ -22,17 +22,17 @@
     "build-react": "tsc && vite build",
     "setup-dev-mac": "rm -rf ./release && export CSC_IDENTITY_AUTO_DISCOVERY=false",
     "setup-prod-mac": "rm -rf ./release && export CSC_IDENTITY_AUTO_DISCOVERY=true",
-    "build-electron-mac-dev": "yarn run setup-dev-mac && yarn build-react && electron-builder build --mac --publish never --config ./electron-builder.dev.js && yarn run post-build-cleanup-mac",
-    "build-electron-mac-prod": "yarn run setup-prod-mac && yarn build-react && electron-builder build --mac --publish never --config ./electron-builder.production.js && yarn run post-build-cleanup-mac",
-    "deploy-electron-mac-prod": "yarn run setup-prod-mac && yarn build-react && electron-builder build --mac --publish always --config ./electron-builder.production.js && yarn run post-build-cleanup-mac",
+    "build-electron-mac-dev": "yarn run setup-dev-mac && yarn build-react && electron-builder build --mac --win --publish never --config ./electron-builder.dev.js && yarn run post-build-cleanup-mac",
+    "build-electron-mac-prod": "yarn run setup-prod-mac && yarn build-react && electron-builder build --mac --win --publish never --config ./electron-builder.production.js && yarn run post-build-cleanup-mac",
+    "deploy-electron-mac-prod": "yarn run setup-prod-mac && yarn build-react && electron-builder build --mac --win --publish always --config ./electron-builder.production.js && yarn run post-build-cleanup-mac",
     "post-build-cleanup-mac": "rm -rf dist/ dist-electron/",
     
     "setup-win": "rmdir /s /q release",
     "build-electron-win-dev": "yarn build-react && electron-builder build --win --publish never --config ./electron-builder.dev.js && yarn run post-build-cleanup-win",
     "build-electron-win-prod": "yarn run setup-win && yarn build-react && electron-builder build --win --publish never --config ./electron-builder.production.js && yarn run post-build-cleanup-win",
     "post-build-cleanup-win": "rmdir /s /q dist && rmdir /s /q dist-electron",
-    "deploy-electron-win-prod": "yarn run setup-win && yarn build-react && electron-builder build --win --publish always --config ./electron-builder.production.js && yarn run post-build-cleanup-win",
-    
+    "deploy-electron-win-prod": "echo \"use mac\"",
+
     "lint": "eslint src --ext .ts,.tsx",
     "verify-types": "tsc --noEmit"
   },

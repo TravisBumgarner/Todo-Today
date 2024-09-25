@@ -1,6 +1,7 @@
 import moment from 'moment'
 import { createContext, useEffect, useReducer, useState, type Dispatch } from 'react'
 
+import { DEFAULT_WORKSPACE } from 'database'
 import { ESyncMessageIPC } from 'shared/types'
 import { EActivePage, EBackupInterval, EColorTheme, type TDateISODate, type TSettings } from 'types'
 import { formatDateKeyLookup, getLocalStorage, sendSyncIPCMessage, setLocalStorage } from 'utilities'
@@ -31,6 +32,7 @@ export interface State {
   activePage: EActivePage
   workMode: 'queue' | 'do'
   timerDuration: number
+  activeWorkspaceId: string
 }
 
 const EMPTY_STATE: State = {
@@ -41,6 +43,7 @@ const EMPTY_STATE: State = {
     lastBackup: '',
     concurrentTodoListItems: 1
   },
+  activeWorkspaceId: DEFAULT_WORKSPACE.id,
   activeModal: null,
   selectedDate: formatDateKeyLookup(moment()),
   restoreInProgress: false,
@@ -48,7 +51,6 @@ const EMPTY_STATE: State = {
   message: null,
   workMode: 'queue',
   timerDuration: 0
-
 }
 const initialSetup = (backupDir: string) => {
   Object
@@ -57,9 +59,10 @@ const initialSetup = (backupDir: string) => {
 
   setLocalStorage('backupDir', backupDir)
   setLocalStorage(HAS_DONE_WARM_START, TRUE)
+  setLocalStorage('activeWorkspaceId', DEFAULT_WORKSPACE.id)
 }
 
-const getKeysFromStorage = () => {
+const getSettingsFromLocalStorage = () => {
   const output: Record<string, string> = {}
 
   Object
@@ -114,6 +117,13 @@ interface SetActivePage {
   }
 }
 
+interface ChangeWorkspace {
+  type: 'CHANGE_WORKSPACE'
+  payload: {
+    workspaceId: string
+  }
+}
+
 interface AddMessage {
   type: 'ADD_MESSAGE'
   payload: {
@@ -131,7 +141,7 @@ interface DeleteMessage {
   type: 'DELETE_MESSAGE'
 }
 
-interface UpdateworkMode {
+interface UpdateWorkMode {
   type: 'UPDATE_WORK_MODE'
   payload: {
     workMode: 'queue' | 'do'
@@ -156,8 +166,9 @@ export type Action =
   | SetActivePage
   | AddMessage
   | DeleteMessage
-  | UpdateworkMode
+  | UpdateWorkMode
   | UpdateTimer
+  | ChangeWorkspace
 
 const reducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -203,6 +214,11 @@ const reducer = (state: State, action: Action): State => {
       const { timerDuration } = action.payload
       return { ...state, timerDuration }
     }
+    case 'CHANGE_WORKSPACE': {
+      const { workspaceId } = action.payload
+      setLocalStorage('activeWorkspaceId', workspaceId)
+      return { ...state, activeWorkspaceId: workspaceId }
+    }
     default:
       throw new Error('Unexpected action')
   }
@@ -228,8 +244,8 @@ const ResultsContext = ({ children }: { children: any }) => {
       if (getLocalStorage(HAS_DONE_WARM_START) !== TRUE) {
         initialSetup(backupDir)
       } else {
-        const currentLocalStorage = getKeysFromStorage()
-        const payload = { ...currentLocalStorage, backupDir }
+        const localStorageSettings = getSettingsFromLocalStorage()
+        const payload = { ...localStorageSettings, backupDir }
         dispatch({ type: 'HYDRATE_USER_SETTINGS', payload })
       }
     }

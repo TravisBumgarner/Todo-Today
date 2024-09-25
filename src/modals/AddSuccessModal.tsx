@@ -6,12 +6,12 @@ import { v4 as uuid4 } from 'uuid'
 import { context } from 'Context'
 import database from 'database'
 import { ButtonWrapper } from 'sharedComponents'
-import { type TProject } from 'types'
+import { type TProject, type TSuccess } from 'types'
 import { sortStrings } from 'utilities'
 import Modal from './Modal'
 
 const AddSuccessModal = () => {
-  const { state, dispatch } = useContext(context)
+  const { state: { selectedDate, activeWorkspaceId }, dispatch } = useContext(context)
   const [description, setDescription] = useState<string>('')
   const [projectId, setProjectId] = useState<TProject['id'] | ''>('')
 
@@ -20,15 +20,16 @@ const AddSuccessModal = () => {
   }, [])
 
   const handleSubmit = useCallback(async () => {
-    const newSuccess = {
+    const newSuccess: TSuccess = {
       description,
       id: uuid4(),
       projectId,
-      date: state.selectedDate
+      workspaceId: activeWorkspaceId,
+      date: selectedDate
     }
     await database.successes.add(newSuccess)
     dispatch({ type: 'CLEAR_ACTIVE_MODAL' })
-  }, [dispatch, description, projectId, state.selectedDate])
+  }, [dispatch, description, projectId, selectedDate, activeWorkspaceId])
 
   const handleCancel = useCallback(() => {
     dispatch({ type: 'CLEAR_ACTIVE_MODAL' })

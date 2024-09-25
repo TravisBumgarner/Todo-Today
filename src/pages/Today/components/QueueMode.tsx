@@ -26,17 +26,16 @@ const reorder = (list: any[], startIndex: number, endIndex: number) => {
 }
 
 const EmptyTodoList = () => {
-  const { state: { selectedDate }, dispatch } = useContext(context)
+  const { state: { selectedDate, activeWorkspaceId }, dispatch } = useContext(context)
 
   const getPreviousDatesTasks = useCallback(async () => {
-    const lastDate = (
-      await database.todoListItems.where('todoListDate').below(selectedDate).sortBy('todoListDate')
-    ).reverse()[0]
+    const lastEntry = (await database.todoListItems.where('workspaceId').equals(activeWorkspaceId).sortBy('todoListDate')).filter(entry => entry.todoListDate < selectedDate).reverse()[0]
 
-    if (lastDate) {
+    if (lastEntry) {
       const previousDay = await database.todoListItems
         .where({
-          todoListDate: lastDate.todoListDate
+          todoListDate: lastEntry.todoListDate,
+          workspaceId: activeWorkspaceId
         })
         .toArray()
 
@@ -50,7 +49,7 @@ const EmptyTodoList = () => {
           }
         })
       } else {
-        previousDay.map(async ({ taskId }, index) => {
+        void previousDay.map(async ({ taskId }, index) => {
           const task = await database.tasks.where('id').equals(taskId).first()
 
           if (
@@ -62,7 +61,8 @@ const EmptyTodoList = () => {
               taskId,
               id: uuid4(),
               todoListDate: selectedDate,
-              sortOrder: index
+              sortOrder: index,
+              workspaceId: activeWorkspaceId
             })
           }
         })
@@ -77,7 +77,7 @@ const EmptyTodoList = () => {
         }
       })
     }
-  }, [selectedDate, dispatch])
+  }, [selectedDate, dispatch, activeWorkspaceId])
 
   const showManagementModal = useCallback(() => {
     dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.SELECT_TASKS_MODAL } })
@@ -117,7 +117,7 @@ const EmptyTodoList = () => {
 }
 
 const TodoList = () => {
-  const { state: { selectedDate, restoreInProgress }, dispatch } = useContext(context)
+  const { state: { selectedDate, activeWorkspaceId, restoreInProgress }, dispatch } = useContext(context)
   const [selectedDateActiveEntries, setSelectedDateActiveEntries] = useState<QueueItemEntry[]>([])
   const [selectedDateInactiveEntries, setSelectedDateInactiveEntries] = useState<QueueItemEntry[]>([])
   const [showArchive, setShowArchive] = useState(false)
@@ -125,9 +125,8 @@ const TodoList = () => {
   useLiveQuery(
     async () => {
       const todoListItems = await database.todoListItems
-        .where('todoListDate')
-        .equals(selectedDate)
-        .sortBy('sortOrder')
+        .where({ todoListDate: selectedDate, workspaceId: activeWorkspaceId })
+        .toArray()
 
       const entries = await Promise.all(todoListItems.map(async todoListItem => {
         const task = await database.tasks.where('id').equals(todoListItem.taskId).first() as TTask
@@ -146,7 +145,7 @@ const TodoList = () => {
       setSelectedDateActiveEntries(activeEntries)
       setSelectedDateInactiveEntries(inactiveEntries)
     },
-    [selectedDate]
+    [selectedDate, activeWorkspaceId]
   )
 
   const showManagementModal = useCallback(() => {

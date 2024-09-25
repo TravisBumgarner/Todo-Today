@@ -13,6 +13,7 @@ export interface TProject {
   id: string
   title: string
   status: EProjectStatus
+  workspaceId: string
 }
 
 export interface TSuccess {
@@ -20,6 +21,7 @@ export interface TSuccess {
   description: string
   date: TDateISODate
   projectId: TProject['id']
+  workspaceId: string
 }
 
 export enum ETaskStatus {
@@ -41,8 +43,8 @@ export interface TTask {
 export interface TTodoListItem {
   taskId: string
   todoListDate: TDateISODate
+  workspaceId: string
   id: string
-  // details?: string // Deprecated, get data from TTask.
   sortOrder: number
 }
 
@@ -69,4 +71,9 @@ export enum EActivePage {
   Home = 'Home',
   History = 'History',
   Successes = 'Successes',
+}
+
+export interface TWorkspace {
+  name: string
+  id: string
 }

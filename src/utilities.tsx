@@ -81,6 +81,7 @@ export interface TLocalStorage {
   colorTheme: EColorTheme
   backupInterval: EBackupInterval
   concurrentTodoListItems: number
+  activeWorkspaceId: string
 }
 
 const getLocalStorage = (key: keyof TLocalStorage) => {
@@ -148,3 +149,4 @@ export {
   formatDateKeyLookup,
   formatDurationDisplayString, getLocalStorage, projectStatusLookup, saveFile, sendAsyncIPCMessage, sendSyncIPCMessage, setLocalStorage, sumArray, taskStatusIcon, taskStatusLookup
 }
+

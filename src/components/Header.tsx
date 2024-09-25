@@ -1,29 +1,31 @@
+import MenuIcon from '@mui/icons-material/Menu'
+import { Box, css, IconButton, Tooltip, Typography } from '@mui/material'
 import { useCallback, useContext, useMemo } from 'react'
-// import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { Typography, Box, IconButton, css, Tooltip } from '@mui/material'
 
-import MenuBookIcon from '@mui/icons-material/MenuBook'
-import ChecklistIcon from '@mui/icons-material/Checklist'
-import SettingsIcon from '@mui/icons-material/Settings'
 import CelebrationIcon from '@mui/icons-material/Celebration'
+import ChecklistIcon from '@mui/icons-material/Checklist'
+import MenuBookIcon from '@mui/icons-material/MenuBook'
+import SettingsIcon from '@mui/icons-material/Settings'
 import { context } from 'Context'
+import db, { DEFAULT_WORKSPACE } from 'database'
+import { useLiveQuery } from 'dexie-react-hooks'
 import { ModalID } from 'modals'
 import { EActivePage } from 'types'
 
 const Title = () => {
-  const { state: { activePage }, dispatch } = useContext(context)
+  const { state: { activeWorkspaceId }, dispatch } = useContext(context)
+
+  const workspace = useLiveQuery(async () => {
+    const result = await db.workspaces.where('id').equals(activeWorkspaceId).first()
+    return result ?? { name: 'Todo Today', id: DEFAULT_WORKSPACE.id }
+  }, [activeWorkspaceId])
+
   const header = useMemo(() => {
-    switch (activePage) {
-      case EActivePage.Home:
-        return 'Todo Today'
-      case EActivePage.History:
-        return 'History'
-      case EActivePage.Successes:
-        return 'Successes'
-      default:
-        return 'Todo Today'
+    if (workspace) {
+      return workspace.name
     }
-  }, [activePage])
+    return 'Todo Today'
+  }, [workspace])
 
   const handleHome = useCallback(() => {
     dispatch({ type: 'SET_ACTIVE_PAGE', payload: { page: EActivePage.Home } })
@@ -50,8 +52,8 @@ const Title = () => {
   )
 }
 
-const Header = () => {
-  const { dispatch } = useContext(context)
+const Header = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
+  const { dispatch, state: { activePage } } = useContext(context)
 
   const handleHome = useCallback(() => {
     dispatch({ type: 'SET_ACTIVE_PAGE', payload: { page: EActivePage.Home } })
@@ -69,14 +71,42 @@ const Header = () => {
     dispatch({ type: 'SET_ACTIVE_PAGE', payload: { page: EActivePage.Successes } })
   }, [dispatch])
 
+  const subHeader = useMemo(() => {
+    switch (activePage) {
+      case EActivePage.Home:
+        // This might flicker
+        return 'Todo'
+      case EActivePage.History:
+        return 'History'
+      case EActivePage.Successes:
+        return 'Successes'
+      default:
+        return 'Todo Today'
+    }
+  }, [activePage])
+
   return (
     <Box css={headerCSS}>
-      <Title />
+      <Box css={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+        <Tooltip title="Change Workspace">
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            edge="start"
+            onClick={toggleSidebar}
+            sx={{ mr: 2 }}
+          >
+            <MenuIcon />
+          </IconButton>
+        </Tooltip>
+        <Title />
+      </Box>
       <Box css={navigationCSS}>
+        <Typography>{subHeader}</Typography>
         <IconButton color="primary"
           onClick={handleHome}
         >
-          <Tooltip title="Todo Today">
+          <Tooltip title="Today">
             <ChecklistIcon />
           </Tooltip>
         </IconButton>
@@ -112,7 +142,7 @@ const Header = () => {
 const titleCSS = css`
   position: relative;
   cursor: pointer;
-   
+
     h1{
         white-space: nowrap;
         opacity: 0.9;
@@ -165,6 +195,8 @@ const navigationCSS = css`
   display: flex;
   flex-direction: row;
   flex-grow: 0;
+  justify-content: center;
+  align-items: center;
 `
 
 export const HEADER_HEIGHT = 55

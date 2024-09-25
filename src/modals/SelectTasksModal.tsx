@@ -19,23 +19,24 @@ interface TaskProps {
 }
 
 const Task = ({ task, isSelected }: TaskProps) => {
-  const { state } = useContext(context)
+  const { state: { activeWorkspaceId, selectedDate } } = useContext(context)
 
   const handleSelect = async () => {
-    const nextSortOrder = await getNextSortOrderValue(state.selectedDate)
+    const nextSortOrder = await getNextSortOrderValue(selectedDate)
 
     await database.todoListItems.add({
       taskId: task.id,
       id: uuid4(),
-      todoListDate: state.selectedDate,
-      sortOrder: nextSortOrder
+      todoListDate: selectedDate,
+      sortOrder: nextSortOrder,
+      workspaceId: activeWorkspaceId
     })
   }
 
   const handleDeselect = async () => {
     await database.todoListItems
       .where('taskId').equals(task.id)
-      .and(item => item.todoListDate === state.selectedDate)
+      .and(item => item.todoListDate === selectedDate)
       .delete()
   }
 
@@ -131,11 +132,11 @@ const wrapperCSS = css`
 `
 
 const ManageTodoListItemsModal = () => {
-  const { state, dispatch } = useContext(context)
-  const projects = useLiveQuery(async () => await database.projects.where('status').anyOf(EProjectStatus.ACTIVE).toArray())
+  const { state: { selectedDate, activeWorkspaceId }, dispatch } = useContext(context)
+  const projects = useLiveQuery(async () => await database.projects.where({ status: EProjectStatus.ACTIVE, workspaceId: activeWorkspaceId }).toArray())
   const tasks = useLiveQuery(async () => await database.tasks.where('status').anyOf(ETaskStatus.BLOCKED, ETaskStatus.NEW, ETaskStatus.IN_PROGRESS).toArray())
 
-  const todoListItems = useLiveQuery(async () => await database.todoListItems.where({ todoListDate: state.selectedDate }).toArray(), [state.selectedDate])
+  const todoListItems = useLiveQuery(async () => await database.todoListItems.where({ todoListDate: selectedDate }).toArray(), [selectedDate])
   const selectedTaskIds = todoListItems?.map(({ taskId }) => taskId)
 
   const showAddNewTaskModal = useCallback(() => {
