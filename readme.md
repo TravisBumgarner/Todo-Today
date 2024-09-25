@@ -16,7 +16,7 @@ Note - Windows build will fail if app is open.
    - TeamID: https://developer.apple.com/account#MembershipDetailsCard
    - Password: https://account.apple.com/account/manage
 1. Bump version in `package.json`
-2. Update Changelog in Todo-Today-Website repo and deploy website
+2. Todo-Today-Website repo: Update Changelog and version numbers in consts.ts. and deploy website 
 3. `yarn run deploy-electron-mac-prod`
    - `The binary is not signed with a valid Developer ID certificate.`: See Below
 4. Visit https://github.com/TravisBumgarner/Todo-Today-Releases/releases and publish release
