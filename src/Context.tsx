@@ -24,6 +24,7 @@ export interface State {
     backupDir: string
     lastBackup: string
     concurrentTodoListItems: number
+    activeWorkspaceId: string
   }
   activeModal: ActiveModal | null
   selectedDate: TDateISODate
@@ -31,7 +32,6 @@ export interface State {
   activePage: EActivePage
   workMode: 'queue' | 'do'
   timerDuration: number
-  activeWorkspaceId: string
 }
 
 const EMPTY_STATE: State = {
@@ -40,7 +40,8 @@ const EMPTY_STATE: State = {
     backupInterval: EBackupInterval.OFF,
     backupDir: '',
     lastBackup: '',
-    concurrentTodoListItems: 1
+    concurrentTodoListItems: 1,
+    activeWorkspaceId: DEFAULT_WORKSPACE.id
   },
   activeModal: null,
   selectedDate: formatDateKeyLookup(moment()),
@@ -48,9 +49,7 @@ const EMPTY_STATE: State = {
   activePage: EActivePage.Home,
   message: null,
   workMode: 'queue',
-  timerDuration: 0,
-  activeWorkspaceId: DEFAULT_WORKSPACE.id
-
+  timerDuration: 0
 }
 const initialSetup = (backupDir: string) => {
   Object
@@ -212,10 +211,6 @@ const reducer = (state: State, action: Action): State => {
     case 'UPDATE_TIMER': {
       const { timerDuration } = action.payload
       return { ...state, timerDuration }
-    }
-    case 'CHANGE_WORKSPACE': {
-      const { workspaceId } = action.payload
-      return { ...state, activeWorkspaceId: workspaceId }
     }
     default:
       throw new Error('Unexpected action')

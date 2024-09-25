@@ -26,7 +26,7 @@ const reorder = (list: any[], startIndex: number, endIndex: number) => {
 }
 
 const EmptyTodoList = () => {
-  const { state: { selectedDate, activeWorkspaceId }, dispatch } = useContext(context)
+  const { state: { selectedDate, settings: { activeWorkspaceId } }, dispatch } = useContext(context)
 
   const getPreviousDatesTasks = useCallback(async () => {
     const lastEntry = (await database.todoListItems.where('workspaceId').equals(activeWorkspaceId).sortBy('todoListDate')).filter(entry => entry.todoListDate < selectedDate).reverse()[0]
@@ -117,7 +117,7 @@ const EmptyTodoList = () => {
 }
 
 const TodoList = () => {
-  const { state: { selectedDate, activeWorkspaceId, restoreInProgress }, dispatch } = useContext(context)
+  const { state: { selectedDate, settings: { activeWorkspaceId }, restoreInProgress }, dispatch } = useContext(context)
   const [selectedDateActiveEntries, setSelectedDateActiveEntries] = useState<QueueItemEntry[]>([])
   const [selectedDateInactiveEntries, setSelectedDateInactiveEntries] = useState<QueueItemEntry[]>([])
   const [showArchive, setShowArchive] = useState(false)

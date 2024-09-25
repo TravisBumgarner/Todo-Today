@@ -13,7 +13,7 @@ interface Props {
 }
 
 const EditProjectModal = ({ projectId }: Props) => {
-  const { dispatch, state: { activeWorkspaceId } } = useContext(context)
+  const { dispatch, state: { settings: { activeWorkspaceId } } } = useContext(context)
   const [title, setTitle] = useState<string>('')
   const [status, setStatus] = useState<EProjectStatus>(EProjectStatus.ACTIVE)
   const [isLoading, setIsLoading] = useState<boolean>(true)

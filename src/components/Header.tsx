@@ -14,7 +14,7 @@ import { EActivePage } from 'types'
 import { DEFAULT_WORKSPACE } from 'utilities'
 
 const Title = () => {
-  const { state: { activeWorkspaceId }, dispatch } = useContext(context)
+  const { state: { settings: { activeWorkspaceId } }, dispatch } = useContext(context)
 
   const workspace = useLiveQuery(async () => {
     const result = await db.workspaces.where('id').equals(activeWorkspaceId).first()
@@ -78,7 +78,7 @@ const Header = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
         // This might flicker
         return 'Todo'
       case EActivePage.History:
-        return 'Project and Task History'
+        return 'History'
       case EActivePage.Successes:
         return 'Successes'
       default:

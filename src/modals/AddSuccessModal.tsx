@@ -11,7 +11,7 @@ import { sortStrings } from 'utilities'
 import Modal from './Modal'
 
 const AddSuccessModal = () => {
-  const { state, dispatch } = useContext(context)
+  const { state: { selectedDate, settings: { activeWorkspaceId } }, dispatch } = useContext(context)
   const [description, setDescription] = useState<string>('')
   const [projectId, setProjectId] = useState<TProject['id'] | ''>('')
 
@@ -24,12 +24,12 @@ const AddSuccessModal = () => {
       description,
       id: uuid4(),
       projectId,
-      workspaceId: state.activeWorkspaceId,
-      date: state.selectedDate
+      workspaceId: activeWorkspaceId,
+      date: selectedDate
     }
     await database.successes.add(newSuccess)
     dispatch({ type: 'CLEAR_ACTIVE_MODAL' })
-  }, [dispatch, description, projectId, state.selectedDate, state.activeWorkspaceId])
+  }, [dispatch, description, projectId, selectedDate, activeWorkspaceId])
 
   const handleCancel = useCallback(() => {
     dispatch({ type: 'CLEAR_ACTIVE_MODAL' })

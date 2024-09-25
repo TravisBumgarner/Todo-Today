@@ -16,7 +16,7 @@ const Workspaces = (
         isSidebarOpen: boolean
         toggleSidebar: () => void
     }) => {
-    const { dispatch, state: { activeWorkspaceId } } = useContext(context)
+    const { dispatch, state: { settings: { activeWorkspaceId } } } = useContext(context)
 
     const handleDrawerClick = useCallback((e: React.MouseEvent) => {
         e.stopPropagation()
@@ -56,7 +56,7 @@ const Workspaces = (
                             {workspaces.map(({ id, name }) => (
                                 <ListItem
                                     sx={{ bgcolor: activeWorkspaceId === id ? 'background.default' : 'transparent', cursor: 'pointer' }}
-                                    onClick={() => { dispatch({ type: 'CHANGE_WORKSPACE', payload: { workspaceId: id } }) }}
+                                    onClick={() => { dispatch({ type: 'EDIT_USER_SETTING', payload: { key: 'activeWorkspaceId', value: id } }) }}
                                     key={id}
                                 >
                                     <ListItemText primary={name} />
