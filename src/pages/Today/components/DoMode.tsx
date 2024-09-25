@@ -64,7 +64,6 @@ const TodoList = () => {
   const handleNextTaskChange = useCallback(async (
   ) => {
     const nextSorterOrder = await getNextSortOrderValue(selectedDate)
-    console.log('next sort', nextSorterOrder)
     const todoListItemDTO: Partial<TTodoListItem> = { sortOrder: nextSorterOrder }
     await database.todoListItems.where('id').equals(selectedDateActiveEntries[0].todoListItemId).modify(todoListItemDTO)
   }, [selectedDate, selectedDateActiveEntries])
