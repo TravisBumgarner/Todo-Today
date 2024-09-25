@@ -24,7 +24,6 @@ export interface State {
     backupDir: string
     lastBackup: string
     concurrentTodoListItems: number
-    activeWorkspaceId: string
   }
   activeModal: ActiveModal | null
   selectedDate: TDateISODate
@@ -32,6 +31,7 @@ export interface State {
   activePage: EActivePage
   workMode: 'queue' | 'do'
   timerDuration: number
+  activeWorkspaceId: string
 }
 
 const EMPTY_STATE: State = {
@@ -40,9 +40,9 @@ const EMPTY_STATE: State = {
     backupInterval: EBackupInterval.OFF,
     backupDir: '',
     lastBackup: '',
-    concurrentTodoListItems: 1,
-    activeWorkspaceId: DEFAULT_WORKSPACE.id
+    concurrentTodoListItems: 1
   },
+  activeWorkspaceId: DEFAULT_WORKSPACE.id,
   activeModal: null,
   selectedDate: formatDateKeyLookup(moment()),
   restoreInProgress: false,
@@ -58,9 +58,10 @@ const initialSetup = (backupDir: string) => {
 
   setLocalStorage('backupDir', backupDir)
   setLocalStorage(HAS_DONE_WARM_START, TRUE)
+  setLocalStorage('activeWorkspaceId', DEFAULT_WORKSPACE.id)
 }
 
-const getKeysFromStorage = () => {
+const getSettingsFromLocalStorage = () => {
   const output: Record<string, string> = {}
 
   Object
@@ -212,6 +213,11 @@ const reducer = (state: State, action: Action): State => {
       const { timerDuration } = action.payload
       return { ...state, timerDuration }
     }
+    case 'CHANGE_WORKSPACE': {
+      const { workspaceId } = action.payload
+      setLocalStorage('activeWorkspaceId', workspaceId)
+      return { ...state, activeWorkspaceId: workspaceId }
+    }
     default:
       throw new Error('Unexpected action')
   }
@@ -237,8 +243,8 @@ const ResultsContext = ({ children }: { children: any }) => {
       if (getLocalStorage(HAS_DONE_WARM_START) !== TRUE) {
         initialSetup(backupDir)
       } else {
-        const currentLocalStorage = getKeysFromStorage()
-        const payload = { ...currentLocalStorage, backupDir }
+        const localStorageSettings = getSettingsFromLocalStorage()
+        const payload = { ...localStorageSettings, backupDir }
         dispatch({ type: 'HYDRATE_USER_SETTINGS', payload })
       }
     }

@@ -19,7 +19,7 @@ interface TaskProps {
 }
 
 const Task = ({ task, isSelected }: TaskProps) => {
-  const { state: { settings: { activeWorkspaceId }, selectedDate } } = useContext(context)
+  const { state: { activeWorkspaceId, selectedDate } } = useContext(context)
 
   const handleSelect = async () => {
     const nextSortOrder = await getNextSortOrderValue(selectedDate)
@@ -132,7 +132,7 @@ const wrapperCSS = css`
 `
 
 const ManageTodoListItemsModal = () => {
-  const { state: { selectedDate, settings: { activeWorkspaceId } }, dispatch } = useContext(context)
+  const { state: { selectedDate, activeWorkspaceId }, dispatch } = useContext(context)
   const projects = useLiveQuery(async () => await database.projects.where({ status: EProjectStatus.ACTIVE, workspaceId: activeWorkspaceId }).toArray())
   const tasks = useLiveQuery(async () => await database.tasks.where('status').anyOf(ETaskStatus.BLOCKED, ETaskStatus.NEW, ETaskStatus.IN_PROGRESS).toArray())
 

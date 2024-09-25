@@ -24,7 +24,7 @@ const EmptyTodoList = () => {
 }
 
 const TodoList = () => {
-  const { state: { selectedDate, restoreInProgress, settings: { activeWorkspaceId }, settings: { concurrentTodoListItems } }, dispatch } = useContext(context)
+  const { state: { selectedDate, restoreInProgress, activeWorkspaceId, settings: { concurrentTodoListItems } }, dispatch } = useContext(context)
   const [selectedDateActiveEntries, setSelectedDateActiveEntries] = useState<DoModeEntry[]>([])
 
   useLiveQuery(

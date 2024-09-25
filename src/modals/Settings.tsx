@@ -123,7 +123,7 @@ const Settings = () => {
               todoListItems = todoListItems.map((task: any) => ({ ...task, workspaceId: DEFAULT_WORKSPACE.id }))
               successes = successes.map((success: any) => ({ ...success, workspaceId: DEFAULT_WORKSPACE.id }))
             }
-            console.log(projects)
+
             await Promise.all([
               database.projects.bulkAdd(projects),
               database.tasks.bulkAdd(tasks),
@@ -131,6 +131,8 @@ const Settings = () => {
               database.successes.bulkAdd(successes),
               database.workspaces.bulkAdd(newWorkspaces)
             ])
+            setLocalStorage('activeWorkspaceId', newWorkspaces[0].id)
+            dispatch({ type: 'CHANGE_WORKSPACE', payload: { workspaceId: newWorkspaces[0].id } })
           } else {
             dispatch({
               type: 'SET_ACTIVE_MODAL',

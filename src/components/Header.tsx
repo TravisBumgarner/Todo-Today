@@ -14,7 +14,7 @@ import { EActivePage } from 'types'
 import { DEFAULT_WORKSPACE } from 'utilities'
 
 const Title = () => {
-  const { state: { settings: { activeWorkspaceId } }, dispatch } = useContext(context)
+  const { state: { activeWorkspaceId }, dispatch } = useContext(context)
 
   const workspace = useLiveQuery(async () => {
     const result = await db.workspaces.where('id').equals(activeWorkspaceId).first()

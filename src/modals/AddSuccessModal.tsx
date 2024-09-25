@@ -11,7 +11,7 @@ import { sortStrings } from 'utilities'
 import Modal from './Modal'
 
 const AddSuccessModal = () => {
-  const { state: { selectedDate, settings: { activeWorkspaceId } }, dispatch } = useContext(context)
+  const { state: { selectedDate, activeWorkspaceId }, dispatch } = useContext(context)
   const [description, setDescription] = useState<string>('')
   const [projectId, setProjectId] = useState<TProject['id'] | ''>('')
 

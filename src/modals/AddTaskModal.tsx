@@ -15,7 +15,7 @@ import Modal from './Modal'
 const CREATE_NEW_PROJECT_DROPDOWN_ITEM = 'create-new-project'
 
 const AddTaskModal = () => {
-  const { state: { selectedDate, settings: { activeWorkspaceId } }, dispatch } = useContext(context)
+  const { state: { selectedDate, activeWorkspaceId }, dispatch } = useContext(context)
   const [title, setTitle] = useState<string>('')
   const [status, setStatus] = useState<ETaskStatus>(ETaskStatus.NEW)
   const [details, setDetails] = useState<string>('')
