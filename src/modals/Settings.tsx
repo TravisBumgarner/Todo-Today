@@ -5,14 +5,13 @@ import { useCallback, useContext, useState } from 'react'
 import { HtmlTooltip } from 'sharedComponents'
 
 import { context } from 'Context'
-import database from 'database'
+import database, { DEFAULT_WORKSPACE } from 'database'
 import { EAsyncMessageIPCFromRenderer } from 'shared/types'
 import { DATE_BACKUP_DATE } from 'shared/utilities'
 import { EBackupInterval, EColorTheme } from 'types'
 import {
   backupIntervalLookup,
   colorThemeOptionLabels,
-  DEFAULT_WORKSPACE,
   saveFile,
   sendAsyncIPCMessage,
   setLocalStorage

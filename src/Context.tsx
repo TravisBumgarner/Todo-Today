@@ -1,9 +1,10 @@
 import moment from 'moment'
 import { createContext, useEffect, useReducer, useState, type Dispatch } from 'react'
 
+import { DEFAULT_WORKSPACE } from 'database'
 import { ESyncMessageIPC } from 'shared/types'
 import { EActivePage, EBackupInterval, EColorTheme, type TDateISODate, type TSettings } from 'types'
-import { DEFAULT_WORKSPACE, formatDateKeyLookup, getLocalStorage, sendSyncIPCMessage, setLocalStorage } from 'utilities'
+import { formatDateKeyLookup, getLocalStorage, sendSyncIPCMessage, setLocalStorage } from 'utilities'
 import { type ActiveModal } from './modals/RenderModal'
 
 const HAS_DONE_WARM_START = 'hasDoneWarmStart'

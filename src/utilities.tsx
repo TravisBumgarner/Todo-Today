@@ -150,7 +150,3 @@ export {
   formatDurationDisplayString, getLocalStorage, projectStatusLookup, saveFile, sendAsyncIPCMessage, sendSyncIPCMessage, setLocalStorage, sumArray, taskStatusIcon, taskStatusLookup
 }
 
-export const DEFAULT_WORKSPACE = {
-  id: 'default',
-  name: 'Todo Today'
-}

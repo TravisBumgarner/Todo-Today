@@ -7,11 +7,10 @@ import ChecklistIcon from '@mui/icons-material/Checklist'
 import MenuBookIcon from '@mui/icons-material/MenuBook'
 import SettingsIcon from '@mui/icons-material/Settings'
 import { context } from 'Context'
-import db from 'database'
+import db, { DEFAULT_WORKSPACE } from 'database'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { ModalID } from 'modals'
 import { EActivePage } from 'types'
-import { DEFAULT_WORKSPACE } from 'utilities'
 
 const Title = () => {
   const { state: { activeWorkspaceId }, dispatch } = useContext(context)
