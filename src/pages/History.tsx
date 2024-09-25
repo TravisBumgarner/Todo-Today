@@ -197,12 +197,13 @@ const projectWrapperCSS = css`
       `
 
 const History = () => {
+  const { state: { activeWorkspaceId } } = useContext(context)
   const [projects, setProjects] = useState<TProject[] | undefined>(undefined)
 
   useLiveQuery(async () => {
-    const projects = await database.projects.toCollection().sortBy('title')
+    const projects = await database.projects.where('workspaceId').equals(activeWorkspaceId).toArray()
     setProjects(projects)
-  })
+  }, [activeWorkspaceId])
 
   const content = useMemo(() => {
     if (!projects) {

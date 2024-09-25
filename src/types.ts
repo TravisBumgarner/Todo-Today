@@ -13,6 +13,7 @@ export interface TProject {
   id: string
   title: string
   status: EProjectStatus
+  workspaceId: string
 }
 
 export interface TSuccess {
@@ -43,7 +44,6 @@ export interface TTodoListItem {
   taskId: string
   todoListDate: TDateISODate
   id: string
-  // details?: string // Deprecated, get data from TTask.
   sortOrder: number
 }
 

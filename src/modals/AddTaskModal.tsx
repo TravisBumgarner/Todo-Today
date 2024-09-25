@@ -15,7 +15,7 @@ import Modal from './Modal'
 const CREATE_NEW_PROJECT_DROPDOWN_ITEM = 'create-new-project'
 
 const AddTaskModal = () => {
-  const { state, dispatch } = useContext(context)
+  const { state: { selectedDate, activeWorkspaceId }, dispatch } = useContext(context)
   const [title, setTitle] = useState<string>('')
   const [status, setStatus] = useState<ETaskStatus>(ETaskStatus.NEW)
   const [details, setDetails] = useState<string>('')
@@ -24,11 +24,12 @@ const AddTaskModal = () => {
   const [addToSelectedDate, setAddToSelectedDate] = useState<'yes' | 'no'>('yes')
 
   const projects = useLiveQuery(async () => {
-    return await database
+    return (await database
       .projects
-      .where('status')
-      .anyOf(EProjectStatus.ACTIVE)
+      .where('workspaceId')
+      .equals(activeWorkspaceId)
       .toArray()
+    ).filter(p => p.status === EProjectStatus.ACTIVE)
   }, [])
 
   const handleCancel = useCallback(() => {
@@ -44,7 +45,8 @@ const AddTaskModal = () => {
       const newProject: TProject = {
         id: uuid4(),
         title: addProjectInput,
-        status: EProjectStatus.ACTIVE
+        status: EProjectStatus.ACTIVE,
+        workspaceId: activeWorkspaceId
       }
       projectIdForTask = newProject.id
       await database.projects.add(newProject)
@@ -60,11 +62,11 @@ const AddTaskModal = () => {
     await database.tasks.add(newTask)
 
     if (addToSelectedDate === 'yes') {
-      const nextSortOrder = await getNextSortOrderValue(state.selectedDate)
+      const nextSortOrder = await getNextSortOrderValue(selectedDate)
       await database.todoListItems.add({
         taskId,
         id: taskId,
-        todoListDate: state.selectedDate,
+        todoListDate: selectedDate,
         sortOrder: nextSortOrder
       })
     }

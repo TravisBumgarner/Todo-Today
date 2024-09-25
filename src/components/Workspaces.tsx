@@ -51,9 +51,8 @@ const Workspaces = (
                         <List>
                             {workspaces.map(({ id, name }) => (
                                 <ListItem
-                                    sx={{ bgcolor: activeWorkspaceId === id ? 'background.default' : 'transparent' }}
+                                    sx={{ bgcolor: activeWorkspaceId === id ? 'background.default' : 'transparent', cursor: 'pointer' }}
                                     color="warning"
-                                    // css={{ backgroundColor: activeWorkspaceId === id ? 'red'  : 'transparent' }}
                                     onClick={() => { dispatch({ type: 'CHANGE_WORKSPACE', payload: { workspaceId: id } }) }}
                                     key={id}
                                 >
