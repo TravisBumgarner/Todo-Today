@@ -26,17 +26,20 @@ const reorder = (list: any[], startIndex: number, endIndex: number) => {
 }
 
 const EmptyTodoList = () => {
-  const { state: { selectedDate }, dispatch } = useContext(context)
+  const { state: { selectedDate, activeWorkspaceId }, dispatch } = useContext(context)
 
   const getPreviousDatesTasks = useCallback(async () => {
-    const lastDate = (
-      await database.todoListItems.where('todoListDate').below(selectedDate).sortBy('todoListDate')
-    ).reverse()[0]
+    // const lastEntry = (
+    //   await database.todoListItems.where('todoListDate').below(selectedDate).sortBy('todoListDate')
+    // ).reverse()[0]
 
-    if (lastDate) {
+    const lastEntry = (await database.todoListItems.where('workspaceId').equals(activeWorkspaceId).sortBy('todoListDate')).filter(entry => entry.todoListDate < selectedDate).reverse()[0]
+    console.log('lastEntry', lastEntry)
+    if (lastEntry) {
       const previousDay = await database.todoListItems
         .where({
-          todoListDate: lastDate.todoListDate
+          todoListDate: lastEntry.todoListDate,
+          workspaceId: activeWorkspaceId
         })
         .toArray()
 
@@ -50,7 +53,7 @@ const EmptyTodoList = () => {
           }
         })
       } else {
-        previousDay.map(async ({ taskId }, index) => {
+        void previousDay.map(async ({ taskId }, index) => {
           const task = await database.tasks.where('id').equals(taskId).first()
 
           if (
@@ -62,7 +65,8 @@ const EmptyTodoList = () => {
               taskId,
               id: uuid4(),
               todoListDate: selectedDate,
-              sortOrder: index
+              sortOrder: index,
+              workspaceId: activeWorkspaceId
             })
           }
         })
@@ -77,7 +81,7 @@ const EmptyTodoList = () => {
         }
       })
     }
-  }, [selectedDate, dispatch])
+  }, [selectedDate, dispatch, activeWorkspaceId])
 
   const showManagementModal = useCallback(() => {
     dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.SELECT_TASKS_MODAL } })

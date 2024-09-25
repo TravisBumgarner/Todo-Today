@@ -11,10 +11,10 @@ class MySubClassedDexie extends Dexie {
 
   constructor() {
     super('todo-today')
-    this.version(11).stores({
+    this.version(12).stores({
       projects: 'id, title, status, createdAt, workspaceId',
       tasks: 'id, projectId, title, status, details, createdAt',
-      todoListItems: 'id, taskId, todoListDate, sortOrder, createdAt',
+      todoListItems: 'id, taskId, todoListDate, sortOrder, createdAt, workspaceId',
       successes: 'id, description, date, projectId, createdAt, workspaceId',
       workspaces: 'id, name'
     }).upgrade(async tx => {

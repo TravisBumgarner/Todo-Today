@@ -67,7 +67,8 @@ const AddTaskModal = () => {
         taskId,
         id: taskId,
         todoListDate: selectedDate,
-        sortOrder: nextSortOrder
+        sortOrder: nextSortOrder,
+        workspaceId: activeWorkspaceId
       })
     }
     dispatch({ type: 'CLEAR_ACTIVE_MODAL' })

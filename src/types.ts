@@ -43,6 +43,7 @@ export interface TTask {
 export interface TTodoListItem {
   taskId: string
   todoListDate: TDateISODate
+  workspaceId: string
   id: string
   sortOrder: number
 }
