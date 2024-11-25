@@ -1,4 +1,3 @@
-import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd'
 import { ChevronRight } from '@mui/icons-material'
 import { Box, Button, ButtonGroup, Stack, ToggleButton, Tooltip, Typography, css } from '@mui/material'
 import { useLiveQuery } from 'dexie-react-hooks'
@@ -11,19 +10,19 @@ import { context } from 'Context'
 import database from 'database'
 import { ModalID } from 'modals'
 import { globalButtonsWrapperCSS, globalContentWrapperCSS } from 'theme'
-import { DATE_ISO_DATE_MOMENT_STRING, ETaskStatus, type TProject, type TTask, type TTodoListItem } from 'types'
+import { DATE_ISO_DATE_MOMENT_STRING, ETaskStatus, type TProject, type TTask } from 'types'
 import { TASK_STATUS_IS_ACTIVE, formatDateDisplayString, formatDateKeyLookup } from 'utilities'
 import ModeToggle from './ModeToggle'
 import QueueItem, { type QueueItemEntry } from './QueueItem'
 import { emptyTodoListCSS } from './sharedCSS'
 
-const reorder = (list: any[], startIndex: number, endIndex: number) => {
-  const result = Array.from(list)
-  const [removed] = result.splice(startIndex, 1)
-  result.splice(endIndex, 0, removed)
+// const reorder = (list: any[], startIndex: number, endIndex: number) => {
+//   const result = Array.from(list)
+//   const [removed] = result.splice(startIndex, 1)
+//   result.splice(endIndex, 0, removed)
 
-  return result
-}
+//   return result
+// }
 
 const EmptyTodoList = () => {
   const { state: { selectedDate, activeWorkspaceId }, dispatch } = useContext(context)
@@ -169,7 +168,7 @@ const TodoList = () => {
   }
 
   // Laziness for types lol
-  const onDragEnd = async (result: any) => {
+  /* const onDragEnd = async (result: any) => {
     // Sorting order gets updated a little weirdly if data goes all the way to Dexie and back.
     // That's why we call set state at the end of this function.
     if (!selectedDateActiveEntries || !result.destination) return
@@ -188,7 +187,7 @@ const TodoList = () => {
     }))
 
     setSelectedDateActiveEntries(reordered)
-  }
+  } */
 
   const toggleShowArchive = useCallback(() => { setShowArchive(prev => !prev) }, [])
 
@@ -225,40 +224,7 @@ const TodoList = () => {
 
       <Box css={globalContentWrapperCSS}>
         {selectedDateActiveEntries.length === 0 && selectedDateInactiveEntries.length === 0 && <EmptyTodoList />}
-        {selectedDateActiveEntries.length > 0 && (
-          <DragDropContext onDragEnd={onDragEnd}>
-            <Droppable droppableId="droppable">
-              {(provided, snapshot) => (
-                <div
-                  {...provided.droppableProps}
-                  ref={provided.innerRef}
-                >
-                  {selectedDateActiveEntries.map((it, index) => (
-                    <Draggable
-                      key={it.id}
-                      draggableId={it.id}
-                      index={index}
-                    >
-                      {(provided) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          style={dragItemCSS(snapshot.isDraggingOver, provided.draggableProps.style)}
-                        >
-                          <QueueItem {...it}
-                          />
-                        </div>
-                      )}
-                    </Draggable>
-                  ))
-                  }
-                  {provided.placeholder}
-                </div >
-              )}
-            </Droppable >
-          </DragDropContext >
-        )}
+        {selectedDateActiveEntries.length > 0 && (selectedDateActiveEntries.map((it) => (<QueueItem key={it.id} {...it} />)))}
         {(selectedDateInactiveEntries.length > 0) && (
           <>
             <Stack direction="row" css={css`margin-bottom: 0.5rem;`}>
@@ -282,12 +248,12 @@ const TodoList = () => {
   )
 }
 
-const dragItemCSS = (_isDragging: boolean, draggableStyle: any) => ({
+/* const dragItemCSS = (_isDragging: boolean, draggableStyle: any) => ({
   cursor: 'pointer',
 
   // styles we need to apply on draggables
   ...draggableStyle
-})
+}) */
 
 const todayButtonCSS = css`
   width: 220px;
