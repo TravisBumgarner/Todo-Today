@@ -8,6 +8,7 @@ import { v4 as uuid4 } from 'uuid'
 
 import { context } from 'Context'
 import database from 'database'
+import { Reorder } from 'framer-motion'
 import { ModalID } from 'modals'
 import { globalButtonsWrapperCSS, globalContentWrapperCSS } from 'theme'
 import { DATE_ISO_DATE_MOMENT_STRING, ETaskStatus, type TProject, type TTask } from 'types'
@@ -224,7 +225,10 @@ const TodoList = () => {
 
       <Box css={globalContentWrapperCSS}>
         {selectedDateActiveEntries.length === 0 && selectedDateInactiveEntries.length === 0 && <EmptyTodoList />}
-        {selectedDateActiveEntries.length > 0 && (selectedDateActiveEntries.map((it) => (<QueueItem key={it.id} {...it} />)))}
+        <Reorder.Group axis="y" values={selectedDateActiveEntries} onReorder={console.log}>
+          {selectedDateActiveEntries.map((it) => (<Reorder.Item value={it} key={it.id}><QueueItem {...it} /></Reorder.Item>))}
+        </Reorder.Group>
+
         {(selectedDateInactiveEntries.length > 0) && (
           <>
             <Stack direction="row" css={css`margin-bottom: 0.5rem;`}>
@@ -240,9 +244,9 @@ const TodoList = () => {
                 </Tooltip>
               </ToggleButton>
             </Stack>
-            {showArchive && selectedDateInactiveEntries.map((it) => <QueueItem key={it.id} {...it} />)}
           </>
         )}
+        {showArchive && selectedDateInactiveEntries.map((it) => <QueueItem key={it.id} {...it} />)}
       </Box >
     </ >
   )
