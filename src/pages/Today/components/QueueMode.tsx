@@ -115,7 +115,7 @@ const TodoList = () => {
 
       <Box css={globalContentWrapperCSS}>
         {activeEntries.length === 0 && inactiveEntries.length === 0 && <EmptyTodoList />}
-        <Reorder.Group axis="y" values={activeEntryIds} onReorder={setActiveEntryIds}>
+        <Reorder.Group style={{ listStyleType: 'none', padding: 0 }} axis="y" values={activeEntryIds} onReorder={setActiveEntryIds}>
           {activeEntryIds.map((id) => (<Reorder.Item value={id} key={id}><QueueItem {...getEntryById(id)} /></Reorder.Item>))}
         </Reorder.Group>
 

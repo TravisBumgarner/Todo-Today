@@ -54,9 +54,7 @@ const QueueItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTi
     <Card css={wrapperCSS}>
       <Box css={headerCSS(showDetails)}>
         <Box css={leftHeaderCSS}>
-          <Box>
-            <TaskStatusSelector handleStatusChangeCallback={handleStatusChange} taskStatus={taskStatus} showLabel={false} />
-          </Box>
+          <TaskStatusSelector handleStatusChangeCallback={handleStatusChange} taskStatus={taskStatus} showLabel={false} />
           <Box css={{ marginLeft: '1rem' }}>
             <Typography css={headerTextCSS} variant="h2">{taskTitle}</Typography>
             <Typography variant="body1">{projectTitle}</Typography>
