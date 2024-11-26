@@ -19,12 +19,43 @@ import QueueItem, { type QueueItemEntry } from './QueueItem'
 const TodoList = () => {
   const { state: { selectedDate, activeWorkspaceId, restoreInProgress }, dispatch } = useContext(context)
   const [activeEntries, setActiveEntries] = useState<QueueItemEntry[]>([])
+  // Store sort order separately which avoids the need for something like fractional indexing.
   const [activeEntryIds, setActiveEntryIds] = useState<string[]>([])
-
   const [inactiveEntries, setInactiveEntries] = useState<QueueItemEntry[]>([])
-  const [inactiveEntryIds, setInactiveEntryIds] = useState<string[]>([])
-
   const [showArchive, setShowArchive] = useState(false)
+
+  // When sort order is changed, update local state and sync a copy to the database.
+  const updateActiveEntryIds = useCallback((newActiveEntryIds: string[]) => {
+    setActiveEntryIds(newActiveEntryIds)
+
+    void database.todoListSortOrder.put({
+      workspaceId: activeWorkspaceId,
+      todoListDate: selectedDate,
+      sortOrder: newActiveEntryIds
+    })
+  }, [activeWorkspaceId, selectedDate])
+
+  // When new items are added/updated via useLiveQuery, check current sort order and append any new ids.
+  const syncDexieWithLocalActiveEntryIds = useCallback((newActiveEntries: QueueItemEntry[]) => {
+    const newActiveEntryIds = newActiveEntries.map(it => it.id)
+
+    const patch: string[] = []
+    activeEntryIds.forEach(entryId => {
+      // Maintain sort order for any item in both lists.
+      if (newActiveEntryIds.includes(entryId)) {
+        patch.push(entryId)
+      }
+    })
+
+    newActiveEntryIds.forEach(entryId => {
+      // If new item is found, add it to list.
+      if (!activeEntryIds.includes(entryId)) {
+        patch.push(entryId)
+      }
+    })
+    console.log(patch)
+    updateActiveEntryIds(patch)
+  }, [activeEntryIds, updateActiveEntryIds])
 
   useLiveQuery(
     async () => {
@@ -47,8 +78,7 @@ const TodoList = () => {
 
       const [activeEntries, inactiveEntries] = _.partition(entries, entry => TASK_STATUS_IS_ACTIVE[entry.taskStatus])
 
-      setActiveEntryIds(activeEntries.map(it => it.id))
-      setInactiveEntryIds(inactiveEntries.map(it => it.id))
+      syncDexieWithLocalActiveEntryIds(activeEntries)
 
       setActiveEntries(activeEntries)
       setInactiveEntries(inactiveEntries)
@@ -115,7 +145,7 @@ const TodoList = () => {
 
       <Box css={globalContentWrapperCSS}>
         {activeEntries.length === 0 && inactiveEntries.length === 0 && <EmptyTodoList />}
-        <Reorder.Group style={{ listStyleType: 'none', padding: 0 }} axis="y" values={activeEntryIds} onReorder={setActiveEntryIds}>
+        <Reorder.Group style={{ listStyleType: 'none', padding: 0 }} axis="y" values={activeEntryIds} onReorder={updateActiveEntryIds}>
           {activeEntryIds.map((id) => (<Reorder.Item value={id} key={id}><QueueItem {...getEntryById(id)} /></Reorder.Item>))}
         </Reorder.Group>
 

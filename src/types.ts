@@ -9,6 +9,12 @@ export enum EProjectStatus {
   INACTIVE = 'INACTIVE',
 }
 
+export interface TTodoListSortOrder {
+  workspaceId: string
+  todoListDate: TDateISODate
+  sortOrder: string[]
+}
+
 export interface TProject {
   id: string
   title: string
