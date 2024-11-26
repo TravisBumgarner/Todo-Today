@@ -4,116 +4,17 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import _ from 'lodash'
 import moment from 'moment'
 import { useCallback, useContext, useState } from 'react'
-import { v4 as uuid4 } from 'uuid'
 
 import { context } from 'Context'
 import database from 'database'
 import { Reorder } from 'framer-motion'
 import { ModalID } from 'modals'
 import { globalButtonsWrapperCSS, globalContentWrapperCSS } from 'theme'
-import { DATE_ISO_DATE_MOMENT_STRING, ETaskStatus, type TProject, type TTask } from 'types'
+import { DATE_ISO_DATE_MOMENT_STRING, type TProject, type TTask } from 'types'
 import { TASK_STATUS_IS_ACTIVE, formatDateDisplayString, formatDateKeyLookup } from 'utilities'
+import EmptyTodoList from './EmptyTodoList'
 import ModeToggle from './ModeToggle'
 import QueueItem, { type QueueItemEntry } from './QueueItem'
-import { emptyTodoListCSS } from './sharedCSS'
-
-// const reorder = (list: any[], startIndex: number, endIndex: number) => {
-//   const result = Array.from(list)
-//   const [removed] = result.splice(startIndex, 1)
-//   result.splice(endIndex, 0, removed)
-
-//   return result
-// }
-
-const EmptyTodoList = () => {
-  const { state: { selectedDate, activeWorkspaceId }, dispatch } = useContext(context)
-
-  const getPreviousDatesTasks = useCallback(async () => {
-    const lastEntry = (await database.todoListItems.where('workspaceId').equals(activeWorkspaceId).sortBy('todoListDate')).filter(entry => entry.todoListDate < selectedDate).reverse()[0]
-
-    if (lastEntry) {
-      const previousDay = await database.todoListItems
-        .where({
-          todoListDate: lastEntry.todoListDate,
-          workspaceId: activeWorkspaceId
-        })
-        .toArray()
-
-      if (previousDay.length === 0) {
-        dispatch({
-          type: 'SET_ACTIVE_MODAL',
-          payload: {
-            id: ModalID.CONFIRMATION_MODAL,
-            title: 'Something went Wrong',
-            body: 'There is nothing to copy from the previous day'
-          }
-        })
-      } else {
-        void previousDay.map(async ({ taskId }) => {
-          const task = await database.tasks.where('id').equals(taskId).first()
-
-          if (
-            task?.status === ETaskStatus.NEW ||
-            task?.status === ETaskStatus.IN_PROGRESS ||
-            task?.status === ETaskStatus.BLOCKED
-          ) {
-            await database.todoListItems.add({
-              taskId,
-              id: uuid4(),
-              todoListDate: selectedDate,
-              workspaceId: activeWorkspaceId
-            })
-          }
-        })
-      }
-    } else {
-      dispatch({
-        type: 'SET_ACTIVE_MODAL',
-        payload: {
-          id: ModalID.CONFIRMATION_MODAL,
-          title: 'Something went Wrong',
-          body: 'There is nothing to copy from the previous day'
-        }
-      })
-    }
-  }, [selectedDate, dispatch, activeWorkspaceId])
-
-  const showManagementModal = useCallback(() => {
-    dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.SELECT_TASKS_MODAL } })
-  }, [dispatch])
-
-  const showAddNewTaskModal = useCallback(() => {
-    dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.ADD_TASK_MODAL } })
-  }, [dispatch])
-
-  return (
-    <Box css={emptyTodoListCSS}>
-      <Box>
-        <Typography css={css`margin-bottom: 1rem`} variant='h2'>What will you do today?</Typography>
-        <ButtonGroup>
-          <Button
-            variant='contained'
-            onClick={getPreviousDatesTasks}
-          >
-            Copy Previous Day
-          </Button>
-          <Button
-            variant='contained'
-            onClick={showManagementModal}
-          >
-            Select Tasks
-          </Button>
-          <Button
-            variant='contained'
-            onClick={showAddNewTaskModal}
-          >
-            Add New Task
-          </Button>
-        </ButtonGroup>
-      </Box>
-    </Box>
-  )
-}
 
 const TodoList = () => {
   const { state: { selectedDate, activeWorkspaceId, restoreInProgress }, dispatch } = useContext(context)
@@ -166,28 +67,6 @@ const TodoList = () => {
   const getToday = () => {
     dispatch({ type: 'SET_SELECTED_DATE', payload: { date: formatDateKeyLookup(moment()) } })
   }
-
-  // Laziness for types lol
-  /* const onDragEnd = async (result: any) => {
-    // Sorting order gets updated a little weirdly if data goes all the way to Dexie and back.
-    // That's why we call set state at the end of this function.
-    if (!selectedDateActiveEntries || !result.destination) return
-
-    const source = selectedDateActiveEntries[result.source.index]
-    const destination = selectedDateActiveEntries[result.destination.index]
-    if (!source || !destination) {
-      return
-    }
-    const reordered = reorder(selectedDateActiveEntries, result.source.index, result.destination.index)
-    await Promise.all(reordered.map(({ id }, index) => {
-      void database.todoListItems.where('id').equals(id).modify((i: TTodoListItem) => {
-        i.sortOrder = index
-      })
-      return null
-    }))
-
-    setSelectedDateActiveEntries(reordered)
-  } */
 
   const toggleShowArchive = useCallback(() => { setShowArchive(prev => !prev) }, [])
 
@@ -250,13 +129,6 @@ const TodoList = () => {
     </ >
   )
 }
-
-/* const dragItemCSS = (_isDragging: boolean, draggableStyle: any) => ({
-  cursor: 'pointer',
-
-  // styles we need to apply on draggables
-  ...draggableStyle
-}) */
 
 const todayButtonCSS = css`
   width: 220px;
