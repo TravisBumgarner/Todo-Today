@@ -1,7 +1,5 @@
-import { ChevronRight } from '@mui/icons-material'
-import { Box, Button, ButtonGroup, Stack, ToggleButton, Tooltip, Typography, css } from '@mui/material'
+import { Box, Button, ButtonGroup, css } from '@mui/material'
 import { useLiveQuery } from 'dexie-react-hooks'
-import _ from 'lodash'
 import moment from 'moment'
 import { useCallback, useContext, useState } from 'react'
 
@@ -10,23 +8,20 @@ import database from 'database'
 import { Reorder } from 'framer-motion'
 import { ModalID } from 'modals'
 import { globalButtonsWrapperCSS, globalContentWrapperCSS } from 'theme'
-import { DATE_ISO_DATE_MOMENT_STRING, type TProject, type TTask } from 'types'
-import { TASK_STATUS_IS_ACTIVE, formatDateDisplayString, formatDateKeyLookup } from 'utilities'
+import { DATE_ISO_DATE_MOMENT_STRING } from 'types'
+import { formatDateDisplayString, formatDateKeyLookup } from 'utilities'
 import EmptyTodoList from './EmptyTodoList'
 import ModeToggle from './ModeToggle'
-import QueueItem, { type QueueItemEntry } from './QueueItem'
+import QueueItem from './QueueItem'
 
 const TodoList = () => {
   const { state: { selectedDate, activeWorkspaceId, restoreInProgress }, dispatch } = useContext(context)
-  const [activeEntries, setActiveEntries] = useState<QueueItemEntry[]>([])
   // Store sort order separately which avoids the need for something like fractional indexing.
-  const [activeEntryIds, setActiveEntryIds] = useState<string[]>([])
-  const [inactiveEntries, setInactiveEntries] = useState<QueueItemEntry[]>([])
-  const [showArchive, setShowArchive] = useState(false)
+  const [entryIds, setEntryIds] = useState<string[]>([])
 
   // When sort order is changed, update local state and sync a copy to the database.
-  const updateActiveEntryIds = useCallback((newActiveEntryIds: string[]) => {
-    setActiveEntryIds(newActiveEntryIds)
+  const updateEntryIds = useCallback((newActiveEntryIds: string[]) => {
+    setEntryIds(newActiveEntryIds)
 
     void database.todoListSortOrder.put({
       workspaceId: activeWorkspaceId,
@@ -36,52 +31,30 @@ const TodoList = () => {
   }, [activeWorkspaceId, selectedDate])
 
   // When new items are added/updated via useLiveQuery, check current sort order and append any new ids.
-  const syncDexieWithLocalActiveEntryIds = useCallback((newActiveEntries: QueueItemEntry[]) => {
-    const newActiveEntryIds = newActiveEntries.map(it => it.id)
-
+  const syncDexieWithLocalActiveEntryIds = useCallback((newEntryIds: string[]) => {
     const patch: string[] = []
-    activeEntryIds.forEach(entryId => {
+    entryIds.forEach(entryId => {
       // Maintain sort order for any item in both lists.
-      if (newActiveEntryIds.includes(entryId)) {
+      if (newEntryIds.includes(entryId)) {
         patch.push(entryId)
       }
     })
 
-    newActiveEntryIds.forEach(entryId => {
+    newEntryIds.forEach(entryId => {
       // If new item is found, add it to list.
-      if (!activeEntryIds.includes(entryId)) {
+      if (!entryIds.includes(entryId)) {
         patch.push(entryId)
       }
     })
     console.log(patch)
-    updateActiveEntryIds(patch)
-  }, [activeEntryIds, updateActiveEntryIds])
+    updateEntryIds(patch)
+  }, [entryIds, updateEntryIds])
 
   useLiveQuery(
     async () => {
-      const todoListItems = await database.todoListItems
-        .where({ todoListDate: selectedDate, workspaceId: activeWorkspaceId })
-        .toArray()
-
-      const entries = await Promise.all(todoListItems.map(async todoListItem => {
-        const task = await database.tasks.where('id').equals(todoListItem.taskId).first() as TTask
-        const project = await database.projects.where('id').equals(task.projectId).first() as TProject
-
-        return {
-          ...todoListItem,
-          taskTitle: task.title,
-          taskStatus: task.status,
-          projectTitle: project.title,
-          taskDetails: task.details
-        }
-      }))
-
-      const [activeEntries, inactiveEntries] = _.partition(entries, entry => TASK_STATUS_IS_ACTIVE[entry.taskStatus])
-
-      syncDexieWithLocalActiveEntryIds(activeEntries)
-
-      setActiveEntries(activeEntries)
-      setInactiveEntries(inactiveEntries)
+      const entryIds = (await database.todoListSortOrder.where({ todoListDate: selectedDate, workspaceId: activeWorkspaceId }).first())?.sortOrder
+      console.log('sortorder', entryIds)
+      syncDexieWithLocalActiveEntryIds(entryIds ?? [])
     },
     [selectedDate, activeWorkspaceId]
   )
@@ -105,12 +78,6 @@ const TodoList = () => {
   const getToday = () => {
     dispatch({ type: 'SET_SELECTED_DATE', payload: { date: formatDateKeyLookup(moment()) } })
   }
-
-  const toggleShowArchive = useCallback(() => { setShowArchive(prev => !prev) }, [])
-
-  const getEntryById = useCallback((id: string) => {
-    return [...activeEntries, ...inactiveEntries].find(it => it.id === id) as QueueItemEntry
-  }, [activeEntries, inactiveEntries])
 
   if (restoreInProgress) {
     return null
@@ -144,29 +111,10 @@ const TodoList = () => {
       </Box>
 
       <Box css={globalContentWrapperCSS}>
-        {activeEntries.length === 0 && inactiveEntries.length === 0 && <EmptyTodoList />}
-        <Reorder.Group style={{ listStyleType: 'none', padding: 0 }} axis="y" values={activeEntryIds} onReorder={updateActiveEntryIds}>
-          {activeEntryIds.map((id) => (<Reorder.Item value={id} key={id}><QueueItem {...getEntryById(id)} /></Reorder.Item>))}
+        {entryIds.length === 0 && <EmptyTodoList />}
+        <Reorder.Group style={{ listStyleType: 'none', padding: 0 }} axis="y" values={entryIds} onReorder={updateEntryIds}>
+          {entryIds.map((id) => (<Reorder.Item value={id} key={id}><QueueItem id={id} /></Reorder.Item>))}
         </Reorder.Group>
-
-        {(inactiveEntries.length > 0) && (
-          <>
-            <Stack direction="row" css={{ marginBottom: '0.5rem' }}>
-              <Typography variant="h2">Archive</Typography>
-              <ToggleButton
-                size='small'
-                value="text"
-                onChange={toggleShowArchive}
-                css={{ marginLeft: '0.5rem' }}
-              >
-                <Tooltip title="Show archive" >
-                  <ChevronRight fontSize="small" css={{ transform: `rotate(${showArchive ? '90deg' : '0deg'})` }} />
-                </Tooltip>
-              </ToggleButton>
-            </Stack>
-          </>
-        )}
-        {showArchive && inactiveEntries.map((it) => <QueueItem key={it.id} {...it} />)}
       </Box >
     </ >
   )

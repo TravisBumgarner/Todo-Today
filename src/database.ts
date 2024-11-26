@@ -17,13 +17,13 @@ class MySubClassedDexie extends Dexie {
 
   constructor() {
     super('todo-today')
-    this.version(17).stores({
+    this.version(18).stores({
       projects: 'id, title, status, createdAt, workspaceId',
       tasks: 'id, projectId, title, status, details, createdAt',
       todoListItems: 'id, taskId, todoListDate, createdAt, workspaceId, [todoListDate+workspaceId]',
       successes: 'id, description, date, projectId, createdAt, workspaceId',
       workspaces: 'id, name',
-      todoListSortOrder: '[workspaceId+todoListDate]'
+      todoListSortOrder: '[workspaceId+todoListDate], workspaceId, todoListDate'
     })
       .upgrade(async tx => {
         return await Promise.all([

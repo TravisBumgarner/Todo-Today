@@ -7,12 +7,16 @@ import { useCallback, useContext, useState, type ChangeEvent } from 'react'
 
 import { context } from 'Context'
 import database from 'database'
+import { useLiveQuery } from 'dexie-react-hooks'
 import { ModalID } from 'modals'
 import { TaskStatusSelector } from 'sharedComponents'
-import { type ETaskStatus } from 'types'
+import { ETaskStatus, type TProject, type TTask, type TTodoListItem } from 'types'
 
 export interface QueueItemEntry {
   id: string
+}
+
+interface Data {
   taskId: string
   todoListDate: string
   taskTitle: string
@@ -21,10 +25,36 @@ export interface QueueItemEntry {
   taskDetails?: string
 }
 
-const QueueItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTitle, projectTitle }: QueueItemEntry) => {
+const EMPTY_STATE = {
+  taskId: '',
+  todoListDate: '',
+  taskTitle: '',
+  taskStatus: ETaskStatus.NEW,
+  projectTitle: '',
+  taskDetails: ''
+}
+
+const QueueItem = ({ id }: QueueItemEntry) => {
+  const [data, setData] = useState<Data>(EMPTY_STATE)
+  const [showDetails, setShowDetails] = useState(false)
+  const [details, setDetails] = useState('') // Undo doesn't work if synced directly to DB. Might be a more elegant solution, but for now, this works.
   const { dispatch } = useContext(context)
-  const [showDetails, setShowDetails] = useState(initialDetails ? initialDetails.length > 0 : false)
-  const [details, setDetails] = useState(initialDetails ?? '') // Undo doesn't work if synced directly to DB. Might be a more elegant solution, but for now, this works.
+
+  useLiveQuery(
+    async () => {
+      const todoListItem = await database.todoListItems.where('id').equals(id).first() as TTodoListItem
+      const task = await database.tasks.where('id').equals(todoListItem.taskId).first() as TTask
+      const project = await database.projects.where('id').equals(task.projectId).first() as TProject
+
+      setData({
+        ...todoListItem,
+        taskTitle: task.title,
+        taskStatus: task.status,
+        projectTitle: project.title,
+        taskDetails: task.details
+      })
+      setShowDetails(!!task.details && task.details.length > 0)
+    }, [id])
 
   const toggleShowDetails = useCallback(() => { setShowDetails(prev => !prev) }, [])
 
@@ -32,32 +62,32 @@ const QueueItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTi
     status: ETaskStatus
   ) => {
     if (status === null) return
-    await database.tasks.where('id').equals(taskId).modify({ status })
-  }, [taskId])
+    await database.tasks.where('id').equals(data.taskId).modify({ status })
+  }, [data])
 
   const handleDetailsChange = useCallback(async (
     event: ChangeEvent<HTMLInputElement>
   ) => {
-    void database.tasks.where('id').equals(taskId).modify({ details: event.target.value })
+    void database.tasks.where('id').equals(data.taskId).modify({ details: event.target.value })
     setDetails(event.target.value)
-  }, [taskId])
+  }, [data.taskId])
 
   const handleRemoveFromToday = useCallback(async () => {
     await database.todoListItems.where({ id }).delete()
   }, [id])
 
   const handleEdit = useCallback(() => {
-    dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.EDIT_TASK_MODAL, taskId } })
-  }, [dispatch, taskId])
+    dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.EDIT_TASK_MODAL, taskId: data.taskId } })
+  }, [dispatch, data.taskId])
 
   return (
     <Card css={wrapperCSS}>
       <Box css={headerCSS(showDetails)}>
         <Box css={leftHeaderCSS}>
-          <TaskStatusSelector handleStatusChangeCallback={handleStatusChange} taskStatus={taskStatus} showLabel={false} />
+          <TaskStatusSelector handleStatusChangeCallback={handleStatusChange} taskStatus={data.taskStatus} showLabel={false} />
           <Box css={{ marginLeft: '1rem' }}>
-            <Typography css={headerTextCSS} variant="h2">{taskTitle}</Typography>
-            <Typography variant="body1">{projectTitle}</Typography>
+            <Typography css={headerTextCSS} variant="h2">{data.taskTitle}</Typography>
+            <Typography variant="body1">{data.projectTitle}</Typography>
           </Box>
         </Box>
         <Box css={rightHeaderCSS}>
