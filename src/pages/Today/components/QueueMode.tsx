@@ -18,8 +18,12 @@ import QueueItem, { type QueueItemEntry } from './QueueItem'
 
 const TodoList = () => {
   const { state: { selectedDate, activeWorkspaceId, restoreInProgress }, dispatch } = useContext(context)
-  const [selectedDateActiveEntries, setSelectedDateActiveEntries] = useState<QueueItemEntry[]>([])
-  const [selectedDateInactiveEntries, setSelectedDateInactiveEntries] = useState<QueueItemEntry[]>([])
+  const [activeEntries, setActiveEntries] = useState<QueueItemEntry[]>([])
+  const [activeEntryIds, setActiveEntryIds] = useState<string[]>([])
+
+  const [inactiveEntries, setInactiveEntries] = useState<QueueItemEntry[]>([])
+  const [inactiveEntryIds, setInactiveEntryIds] = useState<string[]>([])
+
   const [showArchive, setShowArchive] = useState(false)
 
   useLiveQuery(
@@ -42,8 +46,12 @@ const TodoList = () => {
       }))
 
       const [activeEntries, inactiveEntries] = _.partition(entries, entry => TASK_STATUS_IS_ACTIVE[entry.taskStatus])
-      setSelectedDateActiveEntries(activeEntries)
-      setSelectedDateInactiveEntries(inactiveEntries)
+
+      setActiveEntryIds(activeEntries.map(it => it.id))
+      setInactiveEntryIds(inactiveEntries.map(it => it.id))
+
+      setActiveEntries(activeEntries)
+      setInactiveEntries(inactiveEntries)
     },
     [selectedDate, activeWorkspaceId]
   )
@@ -69,6 +77,10 @@ const TodoList = () => {
   }
 
   const toggleShowArchive = useCallback(() => { setShowArchive(prev => !prev) }, [])
+
+  const getEntryById = useCallback((id: string) => {
+    return [...activeEntries, ...inactiveEntries].find(it => it.id === id) as QueueItemEntry
+  }, [activeEntries, inactiveEntries])
 
   if (restoreInProgress) {
     return null
@@ -102,14 +114,14 @@ const TodoList = () => {
       </Box>
 
       <Box css={globalContentWrapperCSS}>
-        {selectedDateActiveEntries.length === 0 && selectedDateInactiveEntries.length === 0 && <EmptyTodoList />}
-        <Reorder.Group axis="y" values={selectedDateActiveEntries} onReorder={console.log}>
-          {selectedDateActiveEntries.map((it) => (<Reorder.Item value={it} key={it.id}><QueueItem {...it} /></Reorder.Item>))}
+        {activeEntries.length === 0 && inactiveEntries.length === 0 && <EmptyTodoList />}
+        <Reorder.Group axis="y" values={activeEntryIds} onReorder={setActiveEntryIds}>
+          {activeEntryIds.map((id) => (<Reorder.Item value={id} key={id}><QueueItem {...getEntryById(id)} /></Reorder.Item>))}
         </Reorder.Group>
 
-        {(selectedDateInactiveEntries.length > 0) && (
+        {(inactiveEntries.length > 0) && (
           <>
-            <Stack direction="row" css={css`margin-bottom: 0.5rem;`}>
+            <Stack direction="row" css={{ marginBottom: '0.5rem' }}>
               <Typography variant="h2">Archive</Typography>
               <ToggleButton
                 size='small'
@@ -124,7 +136,7 @@ const TodoList = () => {
             </Stack>
           </>
         )}
-        {showArchive && selectedDateInactiveEntries.map((it) => <QueueItem key={it.id} {...it} />)}
+        {showArchive && inactiveEntries.map((it) => <QueueItem key={it.id} {...it} />)}
       </Box >
     </ >
   )

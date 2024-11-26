@@ -104,7 +104,7 @@ const SuccessesPage = () => {
     <>
       <Box css={globalButtonsWrapperCSS}>
         <ButtonGroup>
-          <Button css={css`align-self: flex-start;`} variant='contained' key="add" onClick={handleSuccess} >Add Success</Button>
+          <Button css={{ alignSelf: 'flex-start' }} variant='contained' key="add" onClick={handleSuccess} >Add Success</Button>
         </ButtonGroup >
       </Box>
       <Box css={globalContentWrapperCSS}>

@@ -52,7 +52,7 @@ const TaskSelect = ({ handleStatusChangeCallback, taskStatus }: Props) => {
           labelId="task-status-selector"
           fullWidth
           value={taskStatus}
-          css={css`flex-direction: row; display: flex;`}
+          css={{ flexDirection: 'row', display: 'flex' }}
           onChange={(event) => { handleStatusChangeCallback(event.target.value as ETaskStatus) }}
           renderValue={(value) => {
             return (
