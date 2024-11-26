@@ -49,7 +49,7 @@ const EmptyTodoList = () => {
           }
         })
       } else {
-        void previousDay.map(async ({ taskId }, index) => {
+        void previousDay.map(async ({ taskId }) => {
           const task = await database.tasks.where('id').equals(taskId).first()
 
           if (
@@ -61,7 +61,6 @@ const EmptyTodoList = () => {
               taskId,
               id: uuid4(),
               todoListDate: selectedDate,
-              sortOrder: index,
               workspaceId: activeWorkspaceId
             })
           }

@@ -45,7 +45,6 @@ export interface TTodoListItem {
   todoListDate: TDateISODate
   workspaceId: string
   id: string
-  sortOrder: number
 }
 
 export enum EBackupInterval {

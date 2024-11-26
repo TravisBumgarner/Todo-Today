@@ -6,8 +6,8 @@ import { context } from 'Context'
 import database from 'database'
 import { ModalID } from 'modals'
 import { globalButtonsWrapperCSS, globalContentWrapperCSS } from 'theme'
-import { type TProject, type TTask, type TTodoListItem } from 'types'
-import { TASK_STATUS_IS_ACTIVE, getNextSortOrderValue } from 'utilities'
+import { type TProject, type TTask } from 'types'
+import { TASK_STATUS_IS_ACTIVE } from 'utilities'
 import DoItem, { type DoModeEntry } from './DoItem'
 import ModeToggle from './ModeToggle'
 import Timer from './Timer'
@@ -30,8 +30,7 @@ const TodoList = () => {
   useLiveQuery(
     async () => {
       const todoListItems = await database.todoListItems
-        .where({ todoListDate: selectedDate, workspaceId: activeWorkspaceId })
-        .sortBy('sortOrder')
+        .where({ todoListDate: selectedDate, workspaceId: activeWorkspaceId }).toArray()
 
       const entries = await Promise.all(todoListItems.map(async todoListItem => {
         const task = await database.tasks.where('id').equals(todoListItem.taskId).first() as TTask
@@ -63,9 +62,10 @@ const TodoList = () => {
 
   const handleNextTaskChange = useCallback(async (
   ) => {
-    const nextSorterOrder = await getNextSortOrderValue(selectedDate)
-    const todoListItemDTO: Partial<TTodoListItem> = { sortOrder: nextSorterOrder }
-    await database.todoListItems.where('id').equals(selectedDateActiveEntries[0].todoListItemId).modify(todoListItemDTO)
+    console.log('fix me', selectedDate, selectedDateActiveEntries)
+    // const nextSorterOrder = await getNextSortOrderValue(selectedDate)
+    // const todoListItemDTO: Partial<TTodoListItem> = { sortOrder: nextSorterOrder }
+    // await database.todoListItems.where('id').equals(selectedDateActiveEntries[0].todoListItemId).modify(todoListItemDTO)
   }, [selectedDate, selectedDateActiveEntries])
 
   if (restoreInProgress) {

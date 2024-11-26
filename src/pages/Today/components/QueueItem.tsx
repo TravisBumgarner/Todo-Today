@@ -15,7 +15,6 @@ export interface QueueItemEntry {
   id: string
   taskId: string
   todoListDate: string
-  sortOrder: number
   taskTitle: string
   taskStatus: ETaskStatus
   projectTitle: string

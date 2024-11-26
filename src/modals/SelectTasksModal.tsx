@@ -9,7 +9,7 @@ import { context } from 'Context'
 import database from 'database'
 import { EmptyStateDisplay } from 'sharedComponents'
 import { EProjectStatus, ETaskStatus, type TProject, type TTask } from 'types'
-import { getNextSortOrderValue, sortStrings } from 'utilities'
+import { sortStrings } from 'utilities'
 import Modal, { MODAL_MAX_HEIGHT } from './Modal'
 import { ModalID } from './RenderModal'
 
@@ -22,13 +22,10 @@ const Task = ({ task, isSelected }: TaskProps) => {
   const { state: { activeWorkspaceId, selectedDate } } = useContext(context)
 
   const handleSelect = async () => {
-    const nextSortOrder = await getNextSortOrderValue(selectedDate)
-
     await database.todoListItems.add({
       taskId: task.id,
       id: uuid4(),
       todoListDate: selectedDate,
-      sortOrder: nextSortOrder,
       workspaceId: activeWorkspaceId
     })
   }
