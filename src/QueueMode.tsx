@@ -11,7 +11,7 @@ import { context } from 'Context'
 import database from 'database'
 import { ModalID } from 'modals'
 import { globalContentWrapperCSS } from 'theme'
-import { DATE_ISO_DATE_MOMENT_STRING, ETaskStatus, type TTask, type TTodoListItem } from 'types'
+import { DATE_ISO_DATE_MOMENT_STRING, ETaskStatus, type TDateISODate, type TTask, type TTodoListItem } from 'types'
 import { TASK_STATUS_IS_ACTIVE, formatDateDisplayString, formatDateKeyLookup } from 'utilities'
 import QueueItem, { type QueueItemEntry } from './QueueItem'
 import Timer from './Timer'
@@ -38,8 +38,8 @@ const reorder = (list: any[], startIndex: number, endIndex: number) => {
   return result
 }
 
-const EmptyTodoList = () => {
-  const { state: { selectedDate, activeWorkspaceId }, dispatch } = useContext(context)
+const EmptyTodoList = ({ selectedDate }: { selectedDate: TDateISODate }) => {
+  const { state: { activeWorkspaceId }, dispatch } = useContext(context)
 
   const getPreviousDatesTasks = useCallback(async () => {
     const lastEntry = (await database.todoListItems.where('workspaceId').equals(activeWorkspaceId).sortBy('todoListDate')).filter(entry => entry.todoListDate < selectedDate).reverse()[0]
@@ -90,7 +90,7 @@ const EmptyTodoList = () => {
         }
       })
     }
-  }, [selectedDate, dispatch, activeWorkspaceId])
+  }, [dispatch, activeWorkspaceId])
 
   const showManagementModal = useCallback(() => {
     dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.SELECT_TASKS_MODAL } })
@@ -130,10 +130,11 @@ const EmptyTodoList = () => {
 }
 
 const TodoList = () => {
-  const { state: { selectedDate, activeWorkspaceId, restoreInProgress }, dispatch } = useContext(context)
+  const { state: { activeWorkspaceId, restoreInProgress }, dispatch } = useContext(context)
   const [selectedDateActiveEntries, setSelectedDateActiveEntries] = useState<QueueItemEntry[]>([])
   const [selectedDateInactiveEntries, setSelectedDateInactiveEntries] = useState<QueueItemEntry[]>([])
   const [showArchive, setShowArchive] = useState(false)
+  const [selectedDate, setSelectedDate] = useState<TDateISODate>(formatDateKeyLookup(moment()))
 
   useLiveQuery(
     async () => {
@@ -167,17 +168,17 @@ const TodoList = () => {
     dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.ADD_TASK_MODAL } })
   }, [dispatch])
 
-  const setPreviousDate = () => {
-    dispatch({ type: 'SET_SELECTED_DATE', payload: { date: formatDateKeyLookup(moment(selectedDate, DATE_ISO_DATE_MOMENT_STRING).subtract(1, 'day')) } })
-  }
+  const setPreviousDate = useCallback(() => {
+    setSelectedDate(formatDateKeyLookup(moment(selectedDate, DATE_ISO_DATE_MOMENT_STRING).subtract(1, 'day')))
+  }, [selectedDate])
 
-  const getNextDate = () => {
-    dispatch({ type: 'SET_SELECTED_DATE', payload: { date: formatDateKeyLookup(moment(selectedDate, DATE_ISO_DATE_MOMENT_STRING).add(1, 'day')) } })
-  }
+  const getNextDate = useCallback(() => {
+    setSelectedDate(formatDateKeyLookup(moment(selectedDate, DATE_ISO_DATE_MOMENT_STRING).add(1, 'day')))
+  }, [selectedDate])
 
-  const getToday = () => {
-    dispatch({ type: 'SET_SELECTED_DATE', payload: { date: formatDateKeyLookup(moment()) } })
-  }
+  const getToday = useCallback(() => {
+    setSelectedDate(formatDateKeyLookup(moment()))
+  }, [])
 
   // Laziness for types lol
   const onDragEnd = async (result: any) => {
@@ -237,7 +238,7 @@ const TodoList = () => {
       </Box>
 
       <Box css={globalContentWrapperCSS}>
-        {selectedDateActiveEntries.length === 0 && selectedDateInactiveEntries.length === 0 && <EmptyTodoList />}
+        {selectedDateActiveEntries.length === 0 && selectedDateInactiveEntries.length === 0 && <EmptyTodoList selectedDate={selectedDate} />}
         {selectedDateActiveEntries.length > 0 && (
           <DragDropContext onDragEnd={onDragEnd}>
             <Droppable droppableId="droppable">

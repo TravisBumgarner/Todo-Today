@@ -1,10 +1,9 @@
-import moment from 'moment'
 import { createContext, useEffect, useReducer, useState, type Dispatch } from 'react'
 
 import { DEFAULT_WORKSPACE } from 'database'
 import { ESyncMessageIPC } from 'shared/types'
-import { EBackupInterval, EColorTheme, type TDateISODate, type TSettings } from 'types'
-import { formatDateKeyLookup, getLocalStorage, sendSyncIPCMessage, setLocalStorage } from 'utilities'
+import { EBackupInterval, EColorTheme, type TSettings } from 'types'
+import { getLocalStorage, sendSyncIPCMessage, setLocalStorage } from 'utilities'
 import { type ActiveModal } from './modals/RenderModal'
 
 const HAS_DONE_WARM_START = 'hasDoneWarmStart'
@@ -27,9 +26,7 @@ export interface State {
     concurrentTodoListItems: number
   }
   activeModal: ActiveModal | null
-  selectedDate: TDateISODate
   restoreInProgress: boolean
-  workMode: 'queue' | 'do'
   timerDuration: number
   activeWorkspaceId: string
 }
@@ -44,10 +41,8 @@ const EMPTY_STATE: State = {
   },
   activeWorkspaceId: DEFAULT_WORKSPACE.id,
   activeModal: null,
-  selectedDate: formatDateKeyLookup(moment()),
   restoreInProgress: false,
   message: null,
-  workMode: 'queue',
   timerDuration: 0
 }
 const initialSetup = (backupDir: string) => {
@@ -89,13 +84,6 @@ interface SetActiveModal {
   payload: ActiveModal
 }
 
-interface SetSelectedDate {
-  type: 'SET_SELECTED_DATE'
-  payload: {
-    date: TDateISODate
-  }
-}
-
 interface ClearActiveModal {
   type: 'CLEAR_ACTIVE_MODAL'
 }
@@ -132,13 +120,6 @@ interface DeleteMessage {
   type: 'DELETE_MESSAGE'
 }
 
-interface UpdateWorkMode {
-  type: 'UPDATE_WORK_MODE'
-  payload: {
-    workMode: 'queue' | 'do'
-  }
-}
-
 interface UpdateTimer {
   type: 'UPDATE_TIMER'
   payload: {
@@ -151,12 +132,10 @@ export type Action =
   | HydrateUserSettings
   | SetActiveModal
   | ClearActiveModal
-  | SetSelectedDate
   | RestoreStarted
   | RestoreEnded
   | AddMessage
   | DeleteMessage
-  | UpdateWorkMode
   | UpdateTimer
   | ChangeWorkspace
 
@@ -176,10 +155,6 @@ const reducer = (state: State, action: Action): State => {
     case 'CLEAR_ACTIVE_MODAL': {
       return { ...state, activeModal: null }
     }
-    case 'SET_SELECTED_DATE': {
-      const { date } = action.payload
-      return { ...state, selectedDate: date }
-    }
     case 'RESTORE_STARTED': {
       return { ...state, restoreInProgress: true }
     }
@@ -191,10 +166,6 @@ const reducer = (state: State, action: Action): State => {
     }
     case 'DELETE_MESSAGE': {
       return { ...state, message: null }
-    }
-    case 'UPDATE_WORK_MODE': {
-      const { workMode } = action.payload
-      return { ...state, workMode }
     }
     case 'UPDATE_TIMER': {
       const { timerDuration } = action.payload
