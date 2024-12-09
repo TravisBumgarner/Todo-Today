@@ -2,7 +2,6 @@ import MenuIcon from '@mui/icons-material/Menu'
 import { Box, css, IconButton, Tooltip, Typography } from '@mui/material'
 import { useCallback, useContext, useMemo } from 'react'
 
-import CelebrationIcon from '@mui/icons-material/Celebration'
 import ChecklistIcon from '@mui/icons-material/Checklist'
 import MenuBookIcon from '@mui/icons-material/MenuBook'
 import SettingsIcon from '@mui/icons-material/Settings'
@@ -67,10 +66,6 @@ const Header = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
     dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.SETTINGS_MODAL } })
   }, [dispatch])
 
-  const handleSuccess = useCallback(() => {
-    dispatch({ type: 'SET_ACTIVE_PAGE', payload: { page: EActivePage.Successes } })
-  }, [dispatch])
-
   const subHeader = useMemo(() => {
     switch (activePage) {
       case EActivePage.Home:
@@ -78,8 +73,6 @@ const Header = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
         return 'Todo'
       case EActivePage.History:
         return 'History'
-      case EActivePage.Successes:
-        return 'Successes'
       default:
         return 'Todo Today'
     }
@@ -108,14 +101,6 @@ const Header = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
         >
           <Tooltip title="Today">
             <ChecklistIcon />
-          </Tooltip>
-        </IconButton>
-
-        <IconButton color="secondary"
-          onClick={handleSuccess}
-        >
-          <Tooltip title="Successes">
-            <CelebrationIcon />
           </Tooltip>
         </IconButton>
 

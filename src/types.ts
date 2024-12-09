@@ -16,14 +16,6 @@ export interface TProject {
   workspaceId: string
 }
 
-export interface TSuccess {
-  id: string
-  description: string
-  date: TDateISODate
-  projectId: TProject['id']
-  workspaceId: string
-}
-
 export enum ETaskStatus {
   NEW = 'NEW',
   IN_PROGRESS = 'IN_PROGRESS',
@@ -70,7 +62,6 @@ export interface TSettings {
 export enum EActivePage {
   Home = 'Home',
   History = 'History',
-  Successes = 'Successes',
 }
 
 export interface TWorkspace {
