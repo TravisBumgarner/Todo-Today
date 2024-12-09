@@ -6,6 +6,7 @@ import db from 'database'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { ModalID } from 'modals'
 import { useCallback, useContext } from 'react'
+import { activeModalSignal } from '../signals'
 
 const Workspaces = (
     {
@@ -29,12 +30,12 @@ const Workspaces = (
     })
 
     const createWorkspace = useCallback(() => {
-        dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.ADD_WORKSPACE_MODAL } })
-    }, [dispatch])
+        activeModalSignal.value = { id: ModalID.ADD_WORKSPACE_MODAL }
+    }, [])
 
     const editWorkspace = useCallback((id: string) => {
-        dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.EDIT_WORKSPACE_MODAL, workspaceId: id } })
-    }, [dispatch])
+        activeModalSignal.value = { id: ModalID.EDIT_WORKSPACE_MODAL, workspaceId: id }
+    }, [])
 
     if (workspaces === undefined) return null
 

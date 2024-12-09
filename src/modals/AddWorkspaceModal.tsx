@@ -5,6 +5,7 @@ import { v4 as uuid4 } from 'uuid'
 import { context } from 'Context'
 import database from 'database'
 import { ButtonWrapper } from 'sharedComponents'
+import { activeModalSignal } from '../signals'
 import Modal from './Modal'
 
 const AddWorkspaceModal = () => {
@@ -17,13 +18,13 @@ const AddWorkspaceModal = () => {
       id: uuid4()
     }
     await database.workspaces.add(newWorkspace)
-    dispatch({ type: 'CLEAR_ACTIVE_MODAL' })
+    activeModalSignal.value = null
     dispatch({ type: 'CHANGE_WORKSPACE', payload: { workspaceId: newWorkspace.id } })
   }, [dispatch, name])
 
   const handleCancel = useCallback(() => {
-    dispatch({ type: 'CLEAR_ACTIVE_MODAL' })
-  }, [dispatch])
+    activeModalSignal.value = null
+  }, [])
 
   return (
     <Modal

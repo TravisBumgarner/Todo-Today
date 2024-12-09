@@ -7,6 +7,7 @@ import { context } from 'Context'
 import db, { DEFAULT_WORKSPACE } from 'database'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { ModalID } from 'modals'
+import { activeModalSignal } from '../signals'
 
 const Title = () => {
   const { state: { activeWorkspaceId } } = useContext(context)
@@ -45,11 +46,9 @@ const Title = () => {
 }
 
 const Header = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
-  const { dispatch } = useContext(context)
-
   const handleSettings = useCallback(() => {
-    dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.SETTINGS_MODAL } })
-  }, [dispatch])
+    activeModalSignal.value = { id: ModalID.SETTINGS_MODAL }
+  }, [])
 
   return (
     <Box css={headerCSS}>

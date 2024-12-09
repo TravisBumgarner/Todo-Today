@@ -4,7 +4,6 @@ import { DEFAULT_WORKSPACE } from 'database'
 import { ESyncMessageIPC } from 'shared/types'
 import { EBackupInterval, EColorTheme, type TSettings } from 'types'
 import { getLocalStorage, sendSyncIPCMessage, setLocalStorage } from 'utilities'
-import { type ActiveModal } from './modals/RenderModal'
 
 const HAS_DONE_WARM_START = 'hasDoneWarmStart'
 const TRUE = 'TRUE'
@@ -17,7 +16,6 @@ export interface State {
     lastBackup: string
     concurrentTodoListItems: number
   }
-  activeModal: ActiveModal | null
   restoreInProgress: boolean
   activeWorkspaceId: string
 }
@@ -31,7 +29,6 @@ const EMPTY_STATE: State = {
     concurrentTodoListItems: 1
   },
   activeWorkspaceId: DEFAULT_WORKSPACE.id,
-  activeModal: null,
   restoreInProgress: false
 }
 const initialSetup = (backupDir: string) => {
@@ -68,15 +65,6 @@ interface EditUserSettings {
   }
 }
 
-interface SetActiveModal {
-  type: 'SET_ACTIVE_MODAL'
-  payload: ActiveModal
-}
-
-interface ClearActiveModal {
-  type: 'CLEAR_ACTIVE_MODAL'
-}
-
 interface RestoreStarted {
   type: 'RESTORE_STARTED'
 }
@@ -95,8 +83,6 @@ interface ChangeWorkspace {
 export type Action =
   | EditUserSettings
   | HydrateUserSettings
-  | SetActiveModal
-  | ClearActiveModal
   | RestoreStarted
   | RestoreEnded
   | ChangeWorkspace
@@ -111,12 +97,6 @@ const reducer = (state: State, action: Action): State => {
       setLocalStorage(key, value)
       return { ...state, settings: { ...state.settings, [key]: value } }
     }
-    case 'SET_ACTIVE_MODAL': {
-      return { ...state, activeModal: action.payload }
-    }
-    case 'CLEAR_ACTIVE_MODAL': {
-      return { ...state, activeModal: null }
-    }
     case 'RESTORE_STARTED': {
       return { ...state, restoreInProgress: true }
     }
@@ -129,7 +109,7 @@ const reducer = (state: State, action: Action): State => {
       return { ...state, activeWorkspaceId: workspaceId }
     }
     default:
-      throw new Error('Unexpected action')
+      throw new Error(`Unexpected action: ${JSON.stringify(action)}`)
   }
 }
 

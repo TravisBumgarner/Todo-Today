@@ -1,5 +1,6 @@
-import { context } from 'Context'
-import { useContext, type FC } from 'react'
+import { useSignals } from '@preact/signals-react/runtime'
+import { type FC } from 'react'
+import { activeModalSignal } from '../signals'
 import AddTaskModal from './AddTaskModal'
 import AddWorkspaceModal from './AddWorkspaceModal'
 import ConfirmationModal, { type ConfirmationModalProps } from './ConfirmationModal'
@@ -28,11 +29,11 @@ export type ActiveModal =
   | { id: ModalID.EDIT_WORKSPACE_MODAL, workspaceId: string }
 
 const RenderModal: FC = () => {
-  const { state } = useContext(context)
+  useSignals()
 
-  if (!state.activeModal?.id) return null
+  if (!activeModalSignal.value?.id) return null
 
-  switch (state.activeModal.id) {
+  switch (activeModalSignal.value.id) {
     case ModalID.ADD_TASK_MODAL:
       return <AddTaskModal />
     case ModalID.SELECT_TASKS_MODAL:
@@ -41,16 +42,16 @@ const RenderModal: FC = () => {
       return <SettingsModal />
     case ModalID.CONFIRMATION_MODAL:
       return < ConfirmationModal
-        id={state.activeModal.id}
-        title={state.activeModal.title}
-        body={state.activeModal.body}
-        cancelCallback={state.activeModal.cancelCallback}
-        confirmationCallback={state.activeModal.confirmationCallback}
+        id={activeModalSignal.value.id}
+        title={activeModalSignal.value.title}
+        body={activeModalSignal.value.body}
+        cancelCallback={activeModalSignal.value.cancelCallback}
+        confirmationCallback={activeModalSignal.value.confirmationCallback}
       />
     case ModalID.ADD_WORKSPACE_MODAL:
       return <AddWorkspaceModal />
     case ModalID.EDIT_WORKSPACE_MODAL:
-      return <EditWorkspaceModal workspaceId={state.activeModal.workspaceId} />
+      return <EditWorkspaceModal workspaceId={activeModalSignal.value.workspaceId} />
     default:
       return null
   }

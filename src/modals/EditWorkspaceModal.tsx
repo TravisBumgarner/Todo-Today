@@ -1,10 +1,10 @@
 import { Button, TextField, Typography } from '@mui/material'
-import { useCallback, useContext, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
-import { context } from 'Context'
 import database from 'database'
 import { ButtonWrapper } from 'sharedComponents'
 import { type TWorkspace } from 'types'
+import { activeModalSignal } from '../signals'
 import Modal from './Modal'
 
 interface Props {
@@ -12,7 +12,6 @@ interface Props {
 }
 
 const EditWorkspaceModal = ({ workspaceId }: Props) => {
-  const { dispatch } = useContext(context)
   const [name, setName] = useState<string>('')
   const [isLoading, setIsLoading] = useState<boolean>(true)
 
@@ -35,12 +34,12 @@ const EditWorkspaceModal = ({ workspaceId }: Props) => {
       name
     }
     await database.workspaces.put(editedWorkspace, [workspaceId])
-    dispatch({ type: 'CLEAR_ACTIVE_MODAL' })
-  }, [dispatch, workspaceId, name])
+    activeModalSignal.value = null
+  }, [workspaceId, name])
 
   const handleCancel = useCallback(() => {
-    dispatch({ type: 'CLEAR_ACTIVE_MODAL' })
-  }, [dispatch])
+    activeModalSignal.value = null
+  }, [])
 
   return (
     <Modal

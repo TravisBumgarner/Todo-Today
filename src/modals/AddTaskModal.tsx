@@ -9,18 +9,22 @@ import database from 'database'
 import { ButtonWrapper, TaskStatusSelector } from 'sharedComponents'
 import { ETaskStatus, type TTask } from 'types'
 import { getNextSortOrderValue } from 'utilities'
+import { activeModalSignal } from '../signals'
 import Modal from './Modal'
 
 const AddTaskModal = () => {
-  const { state: { selectedDate, activeWorkspaceId }, dispatch } = useContext(context)
+  const { state: { activeWorkspaceId } } = useContext(context)
   const [title, setTitle] = useState<string>('')
   const [status, setStatus] = useState<ETaskStatus>(ETaskStatus.NEW)
   const [details, setDetails] = useState<string>('')
   const [addToSelectedDate, setAddToSelectedDate] = useState<'yes' | 'no'>('yes')
 
+  // Todo - Move to signal.
+  const selectedDate = '2024-01-01'
+
   const handleCancel = useCallback(() => {
-    dispatch({ type: 'CLEAR_ACTIVE_MODAL' })
-  }, [dispatch])
+    activeModalSignal.value = null
+  }, [])
 
   const handleSubmit = async () => {
     const taskId = uuid4()
@@ -43,7 +47,8 @@ const AddTaskModal = () => {
         workspaceId: activeWorkspaceId
       })
     }
-    dispatch({ type: 'CLEAR_ACTIVE_MODAL' })
+
+    activeModalSignal.value = null
   }
 
   const handleAddToTodayChange = useCallback((event: React.MouseEvent<HTMLElement>, newValue: 'yes' | 'no') => {

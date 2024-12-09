@@ -9,6 +9,7 @@ import database from 'database'
 import { EmptyStateDisplay } from 'sharedComponents'
 import { ETaskStatus, type TTask } from 'types'
 import { getNextSortOrderValue, sortStrings } from 'utilities'
+import { activeModalSignal } from '../signals'
 import Modal, { MODAL_MAX_HEIGHT } from './Modal'
 import { ModalID } from './RenderModal'
 
@@ -18,7 +19,10 @@ interface TaskProps {
 }
 
 const Task = ({ task, isSelected }: TaskProps) => {
-  const { state: { activeWorkspaceId, selectedDate } } = useContext(context)
+  const { state: { activeWorkspaceId } } = useContext(context)
+
+  // todo resolve
+  const selectedDate = '2024-01-01'
 
   const handleSelect = async () => {
     const nextSortOrder = await getNextSortOrderValue(selectedDate)
@@ -66,7 +70,8 @@ const tasksHeaderCSS = css`
 `
 
 const ManageTodoListItemsModal = () => {
-  const { state: { selectedDate }, dispatch } = useContext(context)
+  // todo resolve
+  const selectedDate = '2024-01-01'
 
   const tasks = useLiveQuery(async () => await database.tasks.where('status').anyOf(ETaskStatus.BLOCKED, ETaskStatus.NEW, ETaskStatus.IN_PROGRESS).toArray())
 
@@ -74,12 +79,12 @@ const ManageTodoListItemsModal = () => {
   const selectedTaskIds = todoListItems?.map(({ taskId }) => taskId)
 
   const showAddNewTaskModal = useCallback(() => {
-    dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.ADD_TASK_MODAL } })
-  }, [dispatch])
+    activeModalSignal.value = { id: ModalID.ADD_TASK_MODAL }
+  }, [])
 
   const handleClose = useCallback(() => {
-    dispatch({ type: 'CLEAR_ACTIVE_MODAL' })
-  }, [dispatch])
+    activeModalSignal.value = null
+  }, [])
 
   const content = useMemo(() => {
     if (!tasks || tasks.length === 0) {

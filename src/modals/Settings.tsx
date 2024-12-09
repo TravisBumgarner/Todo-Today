@@ -16,6 +16,7 @@ import {
   sendAsyncIPCMessage,
   setLocalStorage
 } from 'utilities'
+import { activeModalSignal } from '../signals'
 import Modal from './Modal'
 import { ModalID } from './RenderModal'
 
@@ -64,14 +65,11 @@ const Settings = () => {
   const handleBackup = async () => {
     const backupData = await copyIndexedDBToObject()
     if (!backupData) {
-      dispatch({
-        type: 'SET_ACTIVE_MODAL',
-        payload: {
-          id: ModalID.CONFIRMATION_MODAL,
-          title: 'Something went wrong',
-          body: 'There is no data to backup'
-        }
-      })
+      activeModalSignal.value = {
+        id: ModalID.CONFIRMATION_MODAL,
+        title: 'Something went wrong',
+        body: 'There is no data to backup'
+      }
     } else {
       const backupDate = moment().format(DATE_BACKUP_DATE)
       void saveFile(`${backupDate}.json`, backupData)
@@ -123,24 +121,18 @@ const Settings = () => {
             setLocalStorage('activeWorkspaceId', newWorkspaces[0].id)
             dispatch({ type: 'CHANGE_WORKSPACE', payload: { workspaceId: newWorkspaces[0].id } })
           } else {
-            dispatch({
-              type: 'SET_ACTIVE_MODAL',
-              payload: {
-                id: ModalID.CONFIRMATION_MODAL,
-                title: 'Something went Wrong',
-                body: 'Please select a valid backup file and try again'
-              }
-            })
-          }
-        } catch (error) {
-          dispatch({
-            type: 'SET_ACTIVE_MODAL',
-            payload: {
+            activeModalSignal.value = {
               id: ModalID.CONFIRMATION_MODAL,
               title: 'Something went Wrong',
               body: 'Please select a valid backup file and try again'
             }
-          })
+          }
+        } catch (error) {
+          activeModalSignal.value = {
+            id: ModalID.CONFIRMATION_MODAL,
+            title: 'Something went Wrong',
+            body: 'Please select a valid backup file and try again'
+          }
         }
       }
     }
@@ -148,16 +140,13 @@ const Settings = () => {
   }, [dispatch])
 
   const handleRestoreClick = useCallback(() => {
-    dispatch({
-      type: 'SET_ACTIVE_MODAL',
-      payload: {
-        id: ModalID.CONFIRMATION_MODAL,
-        title: 'Restore from Backup?',
-        body: 'All current data will be lost.',
-        confirmationCallback: () => { restore(restoreFile) }
-      }
-    })
-  }, [dispatch, restore, restoreFile])
+    activeModalSignal.value = {
+      id: ModalID.CONFIRMATION_MODAL,
+      title: 'Restore from Backup?',
+      body: 'All current data will be lost.',
+      confirmationCallback: () => { restore(restoreFile) }
+    }
+  }, [restore, restoreFile])
 
   return (
     <Modal
@@ -237,7 +226,6 @@ const Settings = () => {
       </Box>
 
       <Box css={sectionWrapperCSS}>
-
         <Typography variant="h3">Restore</Typography>
         <Button
           variant="contained"

@@ -13,6 +13,7 @@ import { ModalID } from 'modals'
 import { globalContentWrapperCSS } from 'theme'
 import { DATE_ISO_DATE_MOMENT_STRING, ETaskStatus, type TDateISODate, type TTask, type TTodoListItem } from 'types'
 import { TASK_STATUS_IS_ACTIVE, formatDateDisplayString, formatDateKeyLookup } from 'utilities'
+import { activeModalSignal } from '../signals'
 import QueueItem, { type QueueItemEntry } from './QueueItem'
 
 export const emptyTodoListCSS = css`
@@ -38,7 +39,7 @@ const reorder = (list: any[], startIndex: number, endIndex: number) => {
 }
 
 const EmptyTodoList = ({ selectedDate }: { selectedDate: TDateISODate }) => {
-  const { state: { activeWorkspaceId }, dispatch } = useContext(context)
+  const { state: { activeWorkspaceId } } = useContext(context)
 
   const getPreviousDatesTasks = useCallback(async () => {
     const lastEntry = (await database.todoListItems.where('workspaceId').equals(activeWorkspaceId).sortBy('todoListDate')).filter(entry => entry.todoListDate < selectedDate).reverse()[0]
@@ -52,14 +53,11 @@ const EmptyTodoList = ({ selectedDate }: { selectedDate: TDateISODate }) => {
         .toArray()
 
       if (previousDay.length === 0) {
-        dispatch({
-          type: 'SET_ACTIVE_MODAL',
-          payload: {
-            id: ModalID.CONFIRMATION_MODAL,
-            title: 'Something went Wrong',
-            body: 'There is nothing to copy from the previous day'
-          }
-        })
+        activeModalSignal.value = {
+          id: ModalID.CONFIRMATION_MODAL,
+          title: 'Something went Wrong',
+          body: 'There is nothing to copy from the previous day'
+        }
       } else {
         void previousDay.map(async ({ taskId }, index) => {
           const task = await database.tasks.where('id').equals(taskId).first()
@@ -80,24 +78,21 @@ const EmptyTodoList = ({ selectedDate }: { selectedDate: TDateISODate }) => {
         })
       }
     } else {
-      dispatch({
-        type: 'SET_ACTIVE_MODAL',
-        payload: {
-          id: ModalID.CONFIRMATION_MODAL,
-          title: 'Something went Wrong',
-          body: 'There is nothing to copy from the previous day'
-        }
-      })
+      activeModalSignal.value = {
+        id: ModalID.CONFIRMATION_MODAL,
+        title: 'Something went Wrong',
+        body: 'There is nothing to copy from the previous day'
+      }
     }
-  }, [dispatch, activeWorkspaceId])
+  }, [activeWorkspaceId, selectedDate])
 
   const showManagementModal = useCallback(() => {
-    dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.SELECT_TASKS_MODAL } })
-  }, [dispatch])
+    activeModalSignal.value = { id: ModalID.SELECT_TASKS_MODAL }
+  }, [])
 
   const showAddNewTaskModal = useCallback(() => {
-    dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.ADD_TASK_MODAL } })
-  }, [dispatch])
+    activeModalSignal.value = { id: ModalID.ADD_TASK_MODAL }
+  }, [])
 
   return (
     <Box css={emptyTodoListCSS}>
@@ -129,7 +124,7 @@ const EmptyTodoList = ({ selectedDate }: { selectedDate: TDateISODate }) => {
 }
 
 const TodoList = () => {
-  const { state: { activeWorkspaceId, restoreInProgress }, dispatch } = useContext(context)
+  const { state: { activeWorkspaceId, restoreInProgress } } = useContext(context)
   const [selectedDateActiveEntries, setSelectedDateActiveEntries] = useState<QueueItemEntry[]>([])
   const [selectedDateInactiveEntries, setSelectedDateInactiveEntries] = useState<QueueItemEntry[]>([])
   const [showArchive, setShowArchive] = useState(false)
@@ -160,12 +155,12 @@ const TodoList = () => {
   )
 
   const showManagementModal = useCallback(() => {
-    dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.SELECT_TASKS_MODAL } })
-  }, [dispatch])
+    activeModalSignal.value = { id: ModalID.SELECT_TASKS_MODAL }
+  }, [])
 
   const showAddNewTaskModal = useCallback(() => {
-    dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.ADD_TASK_MODAL } })
-  }, [dispatch])
+    activeModalSignal.value = { id: ModalID.ADD_TASK_MODAL }
+  }, [])
 
   const setPreviousDate = useCallback(() => {
     setSelectedDate(formatDateKeyLookup(moment(selectedDate, DATE_ISO_DATE_MOMENT_STRING).subtract(1, 'day')))
