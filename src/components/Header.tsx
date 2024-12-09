@@ -3,7 +3,6 @@ import { Box, css, IconButton, Tooltip, Typography } from '@mui/material'
 import { useCallback, useContext, useMemo } from 'react'
 
 import ChecklistIcon from '@mui/icons-material/Checklist'
-import MenuBookIcon from '@mui/icons-material/MenuBook'
 import SettingsIcon from '@mui/icons-material/Settings'
 import { context } from 'Context'
 import db, { DEFAULT_WORKSPACE } from 'database'
@@ -58,10 +57,6 @@ const Header = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
     dispatch({ type: 'SET_ACTIVE_PAGE', payload: { page: EActivePage.Home } })
   }, [dispatch])
 
-  const handleHistory = useCallback(() => {
-    dispatch({ type: 'SET_ACTIVE_PAGE', payload: { page: EActivePage.History } })
-  }, [dispatch])
-
   const handleSettings = useCallback(() => {
     dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.SETTINGS_MODAL } })
   }, [dispatch])
@@ -71,8 +66,6 @@ const Header = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
       case EActivePage.Home:
         // This might flicker
         return 'Todo'
-      case EActivePage.History:
-        return 'History'
       default:
         return 'Todo Today'
     }
@@ -101,14 +94,6 @@ const Header = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
         >
           <Tooltip title="Today">
             <ChecklistIcon />
-          </Tooltip>
-        </IconButton>
-
-        <IconButton color="warning"
-          onClick={handleHistory}
-        >
-          <Tooltip title="Project and Task History">
-            <MenuBookIcon />
           </Tooltip>
         </IconButton>
 

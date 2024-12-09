@@ -1,7 +1,7 @@
-import { TodoList, History, Error } from '../pages'
 import { context } from 'Context'
 import { useContext, useMemo } from 'react'
 import { EActivePage } from 'types'
+import { Error, TodoList } from '../pages'
 
 const Router = () => {
   const { state: { activePage } } = useContext(context)
@@ -9,8 +9,6 @@ const Router = () => {
     switch (activePage) {
       case EActivePage.Home:
         return <TodoList />
-      case EActivePage.History:
-        return <History />
       default:
         return <Error />
     }

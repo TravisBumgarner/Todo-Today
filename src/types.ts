@@ -61,7 +61,6 @@ export interface TSettings {
 
 export enum EActivePage {
   Home = 'Home',
-  History = 'History',
 }
 
 export interface TWorkspace {
