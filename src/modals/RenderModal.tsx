@@ -6,7 +6,6 @@ import ConfirmationModal, { type ConfirmationModalProps } from './ConfirmationMo
 import EditWorkspaceModal from './EditWorkspaceModal'
 import SelectTasksModal from './SelectTasksModal'
 import SettingsModal from './Settings'
-import TimerSetupModal from './TimerSetupModal'
 
 export enum ModalID {
   ADD_TASK_MODAL = 'ADD_TASK_MODAL',
@@ -16,7 +15,6 @@ export enum ModalID {
   BACKUP_FAILURE_MODAL = 'BACKUP_FAILURE_MODAL',
   SETTINGS_MODAL = 'SETTINGS_MODAL',
   CONFIRMATION_MODAL = 'CONFIRMATION_MODAL',
-  TIMER_SETUP_MODAL = 'TIMER_SETUP_MODAL',
   EDIT_WORKSPACE_MODAL = 'EDIT_WORKSPACE_MODAL'
 }
 
@@ -27,7 +25,6 @@ export type ActiveModal =
   | { id: ModalID.BACKUP_FAILURE_MODAL }
   | { id: ModalID.SETTINGS_MODAL }
   | { id: ModalID.CONFIRMATION_MODAL } & ConfirmationModalProps
-  | { id: ModalID.TIMER_SETUP_MODAL }
   | { id: ModalID.EDIT_WORKSPACE_MODAL, workspaceId: string }
 
 const RenderModal: FC = () => {
@@ -50,8 +47,6 @@ const RenderModal: FC = () => {
         cancelCallback={state.activeModal.cancelCallback}
         confirmationCallback={state.activeModal.confirmationCallback}
       />
-    case ModalID.TIMER_SETUP_MODAL:
-      return <TimerSetupModal />
     case ModalID.ADD_WORKSPACE_MODAL:
       return <AddWorkspaceModal />
     case ModalID.EDIT_WORKSPACE_MODAL:

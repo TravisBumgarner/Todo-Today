@@ -1,6 +1,6 @@
-import { ipcRenderer } from 'electron'
 import { type Action } from 'Context'
-import { type AsyncBackupIPCFromMain, EAsyncMessageIPCFromMain, EAsyncMessageIPCFromRenderer, type AsyncTimerTickIPCFromMain } from 'shared/types'
+import { ipcRenderer } from 'electron'
+import { EAsyncMessageIPCFromMain, EAsyncMessageIPCFromRenderer, type AsyncBackupIPCFromMain } from 'shared/types'
 import { setLocalStorage } from 'utilities'
 
 export const useIPCAsyncMessageEffect = (dispatch: React.Dispatch<Action>) => {
@@ -21,9 +21,5 @@ export const useIPCAsyncMessageEffect = (dispatch: React.Dispatch<Action>) => {
     } else {
       dispatch({ type: 'ADD_MESSAGE', payload: { text: 'Backup Failed. Please try again.', severity: 'error' } })
     }
-  })
-
-  ipcRenderer.on(EAsyncMessageIPCFromMain.TimerTick, (_event, message: AsyncTimerTickIPCFromMain['body']) => {
-    dispatch({ type: 'UPDATE_TIMER', payload: { timerDuration: message.timerDuration } })
   })
 }

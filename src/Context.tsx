@@ -27,7 +27,6 @@ export interface State {
   }
   activeModal: ActiveModal | null
   restoreInProgress: boolean
-  timerDuration: number
   activeWorkspaceId: string
 }
 
@@ -43,7 +42,6 @@ const EMPTY_STATE: State = {
   activeModal: null,
   restoreInProgress: false,
   message: null,
-  timerDuration: 0
 }
 const initialSetup = (backupDir: string) => {
   Object
@@ -120,12 +118,6 @@ interface DeleteMessage {
   type: 'DELETE_MESSAGE'
 }
 
-interface UpdateTimer {
-  type: 'UPDATE_TIMER'
-  payload: {
-    timerDuration: number
-  }
-}
 
 export type Action =
   | EditUserSettings
@@ -136,7 +128,6 @@ export type Action =
   | RestoreEnded
   | AddMessage
   | DeleteMessage
-  | UpdateTimer
   | ChangeWorkspace
 
 const reducer = (state: State, action: Action): State => {
@@ -166,10 +157,6 @@ const reducer = (state: State, action: Action): State => {
     }
     case 'DELETE_MESSAGE': {
       return { ...state, message: null }
-    }
-    case 'UPDATE_TIMER': {
-      const { timerDuration } = action.payload
-      return { ...state, timerDuration }
     }
     case 'CHANGE_WORKSPACE': {
       const { workspaceId } = action.payload

@@ -14,7 +14,6 @@ import { globalContentWrapperCSS } from 'theme'
 import { DATE_ISO_DATE_MOMENT_STRING, ETaskStatus, type TDateISODate, type TTask, type TTodoListItem } from 'types'
 import { TASK_STATUS_IS_ACTIVE, formatDateDisplayString, formatDateKeyLookup } from 'utilities'
 import QueueItem, { type QueueItemEntry } from './QueueItem'
-import Timer from './Timer'
 
 export const emptyTodoListCSS = css`
     display: flex;
@@ -227,13 +226,12 @@ const TodoList = () => {
             </Button>
           </ButtonGroup>
         </Box>
-        <Box css={{ display: 'flex' }}>
+        <Box>
           <ButtonGroup>
             <Button variant='contained' onClick={setPreviousDate}>&lt;</Button>
             <Button variant='contained' css={todayButtonCSS} onClick={getToday}><span>{formatDateDisplayString(selectedDate)}</span></Button>
             <Button variant='contained' onClick={getNextDate}>&gt;</Button>
           </ButtonGroup>
-          <Timer />
         </Box>
       </Box>
 
