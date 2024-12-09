@@ -19,18 +19,6 @@ class MySubClassedDexie extends Dexie {
       todoListItems: 'id, taskId, todoListDate, sortOrder, createdAt, workspaceId',
       workspaces: 'id, name'
     })
-      .upgrade(async tx => {
-        return await Promise.all([
-          this.createDefaultWorkspace(),
-          tx.table('successes').toCollection().modify(success => {
-            success.workspaceId = DEFAULT_WORKSPACE.id
-          }),
-          tx.table('todoListItems').toCollection().modify(task => {
-            task.workspaceId = DEFAULT_WORKSPACE.id
-          })
-
-        ])
-      })
     this.createDefaultWorkspace().catch(console.error)
   }
 
