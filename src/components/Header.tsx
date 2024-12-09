@@ -2,18 +2,14 @@ import MenuIcon from '@mui/icons-material/Menu'
 import { Box, css, IconButton, Tooltip, Typography } from '@mui/material'
 import { useCallback, useContext, useMemo } from 'react'
 
-import CelebrationIcon from '@mui/icons-material/Celebration'
-import ChecklistIcon from '@mui/icons-material/Checklist'
-import MenuBookIcon from '@mui/icons-material/MenuBook'
 import SettingsIcon from '@mui/icons-material/Settings'
 import { context } from 'Context'
 import db, { DEFAULT_WORKSPACE } from 'database'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { ModalID } from 'modals'
-import { EActivePage } from 'types'
 
 const Title = () => {
-  const { state: { activeWorkspaceId }, dispatch } = useContext(context)
+  const { state: { activeWorkspaceId } } = useContext(context)
 
   const workspace = useLiveQuery(async () => {
     const result = await db.workspaces.where('id').equals(activeWorkspaceId).first()
@@ -27,12 +23,8 @@ const Title = () => {
     return 'Todo Today'
   }, [workspace])
 
-  const handleHome = useCallback(() => {
-    dispatch({ type: 'SET_ACTIVE_PAGE', payload: { page: EActivePage.Home } })
-  }, [dispatch])
-
   return (
-    <Box css={titleCSS} onClick={handleHome}>
+    <Box css={titleCSS}>
       <Typography variant="h1">
         {header}
       </Typography>
@@ -53,37 +45,11 @@ const Title = () => {
 }
 
 const Header = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
-  const { dispatch, state: { activePage } } = useContext(context)
-
-  const handleHome = useCallback(() => {
-    dispatch({ type: 'SET_ACTIVE_PAGE', payload: { page: EActivePage.Home } })
-  }, [dispatch])
-
-  const handleHistory = useCallback(() => {
-    dispatch({ type: 'SET_ACTIVE_PAGE', payload: { page: EActivePage.History } })
-  }, [dispatch])
+  const { dispatch } = useContext(context)
 
   const handleSettings = useCallback(() => {
     dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.SETTINGS_MODAL } })
   }, [dispatch])
-
-  const handleSuccess = useCallback(() => {
-    dispatch({ type: 'SET_ACTIVE_PAGE', payload: { page: EActivePage.Successes } })
-  }, [dispatch])
-
-  const subHeader = useMemo(() => {
-    switch (activePage) {
-      case EActivePage.Home:
-        // This might flicker
-        return 'Todo'
-      case EActivePage.History:
-        return 'History'
-      case EActivePage.Successes:
-        return 'Successes'
-      default:
-        return 'Todo Today'
-    }
-  }, [activePage])
 
   return (
     <Box css={headerCSS}>
@@ -102,31 +68,6 @@ const Header = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
         <Title />
       </Box>
       <Box css={navigationCSS}>
-        <Typography>{subHeader}</Typography>
-        <IconButton color="primary"
-          onClick={handleHome}
-        >
-          <Tooltip title="Today">
-            <ChecklistIcon />
-          </Tooltip>
-        </IconButton>
-
-        <IconButton color="secondary"
-          onClick={handleSuccess}
-        >
-          <Tooltip title="Successes">
-            <CelebrationIcon />
-          </Tooltip>
-        </IconButton>
-
-        <IconButton color="warning"
-          onClick={handleHistory}
-        >
-          <Tooltip title="Project and Task History">
-            <MenuBookIcon />
-          </Tooltip>
-        </IconButton>
-
         <IconButton color="error"
           onClick={handleSettings}
         >

@@ -11,7 +11,7 @@ import { context } from 'Context'
 import database from 'database'
 import { ModalID } from 'modals'
 import { globalButtonsWrapperCSS, globalContentWrapperCSS } from 'theme'
-import { DATE_ISO_DATE_MOMENT_STRING, ETaskStatus, type TProject, type TTask, type TTodoListItem } from 'types'
+import { DATE_ISO_DATE_MOMENT_STRING, ETaskStatus, type TTask, type TTodoListItem } from 'types'
 import { TASK_STATUS_IS_ACTIVE, formatDateDisplayString, formatDateKeyLookup } from 'utilities'
 import ModeToggle from './ModeToggle'
 import QueueItem, { type QueueItemEntry } from './QueueItem'
@@ -130,13 +130,11 @@ const TodoList = () => {
 
       const entries = await Promise.all(todoListItems.map(async todoListItem => {
         const task = await database.tasks.where('id').equals(todoListItem.taskId).first() as TTask
-        const project = await database.projects.where('id').equals(task.projectId).first() as TProject
 
         return {
           ...todoListItem,
           taskTitle: task.title,
           taskStatus: task.status,
-          projectTitle: project.title,
           taskDetails: task.details
         }
       }))

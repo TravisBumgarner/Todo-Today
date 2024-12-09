@@ -1,12 +1,10 @@
-import { Button, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material'
-import { useLiveQuery } from 'dexie-react-hooks'
+import { Button, TextField } from '@mui/material'
 import { useCallback, useContext, useEffect, useState } from 'react'
 
 import { context } from 'Context'
 import database from 'database'
 import { ButtonWrapper, TaskStatusSelector } from 'sharedComponents'
 import { ETaskStatus, type TTask } from 'types'
-import { sortStrings } from 'utilities'
 import Modal from './Modal'
 
 interface Props {
@@ -18,8 +16,6 @@ const EditTaskModal = ({ taskId }: Props) => {
   const [title, setTitle] = useState<string>('')
   const [details, setDetails] = useState<string>('')
   const [status, setStatus] = useState<ETaskStatus>(ETaskStatus.NEW)
-  const [projectId, setProjectId] = useState<string>('')
-  const projects = useLiveQuery(async () => await database.projects.toArray(), [])
 
   useEffect(() => {
     void database
@@ -28,7 +24,6 @@ const EditTaskModal = ({ taskId }: Props) => {
         if (!t) return
 
         setTitle(t.title)
-        setProjectId(t.projectId)
         setStatus(t.status)
         setDetails(t.details ?? '')
       })
@@ -39,12 +34,10 @@ const EditTaskModal = ({ taskId }: Props) => {
   }, [dispatch])
 
   const handleSubmit = useCallback(async () => {
-    await database.tasks.where('id').equals(taskId).modify({ title, status, projectId, details })
+    await database.tasks.where('id').equals(taskId).modify({ title, status, details })
 
     dispatch({ type: 'CLEAR_ACTIVE_MODAL' })
-  }, [dispatch, taskId, projectId, status, title, details])
-
-  const projectSelectOptions = projects ? projects.sort((a, b) => sortStrings(a.title, b.title)).map(({ id, title }) => ({ value: id, label: title })) : []
+  }, [dispatch, taskId, status, title, details])
 
   return (
     <Modal
@@ -61,18 +54,6 @@ const EditTaskModal = ({ taskId }: Props) => {
           value={title}
           onChange={(event) => { setTitle(event.target.value) }}
         />
-        <FormControl fullWidth margin='normal'>
-          <InputLabel id="edit-task-modal-project-select">Project</InputLabel>
-          <Select
-            label="Project"
-            labelId="edit-task-modal-project-select"
-            fullWidth
-            value={projectId}
-            onChange={(event) => { setProjectId(event.target.value) }}
-          >
-            {projectSelectOptions.map(({ label, value }) => <MenuItem key={value} value={value}>{label}</MenuItem>)}
-          </Select>
-        </FormControl>
         <TextField
           multiline
           fullWidth

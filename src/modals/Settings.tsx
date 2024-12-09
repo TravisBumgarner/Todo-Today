@@ -21,10 +21,8 @@ import { ModalID } from './RenderModal'
 
 const copyIndexedDBToObject = async () => {
   const data = {
-    projects: await database.projects.toArray(),
     tasks: await database.tasks.toArray(),
     todoListItems: await database.todoListItems.toArray(),
-    successes: await database.successes.toArray(),
     workspaces: await database.workspaces.toArray()
   }
   return data
@@ -102,13 +100,11 @@ const Settings = () => {
       reader.onload = async function (event) {
         try {
           if (event.target?.result) {
-            let { projects, todoListItems, successes, workspaces, tasks } = JSON.parse(event.target.result as string)
+            let { todoListItems, workspaces, tasks } = JSON.parse(event.target.result as string)
 
             await Promise.all([
-              database.projects.clear(),
               database.tasks.clear(),
               database.todoListItems.clear(),
-              database.successes.clear(),
               database.workspaces.clear()
             ])
 
@@ -116,17 +112,12 @@ const Settings = () => {
             let newWorkspaces = workspaces
             if (!newWorkspaces) {
               newWorkspaces = [DEFAULT_WORKSPACE]
-
-              projects = projects.map((project: any) => ({ ...project, workspaceId: DEFAULT_WORKSPACE.id }))
               todoListItems = todoListItems.map((task: any) => ({ ...task, workspaceId: DEFAULT_WORKSPACE.id }))
-              successes = successes.map((success: any) => ({ ...success, workspaceId: DEFAULT_WORKSPACE.id }))
             }
 
             await Promise.all([
-              database.projects.bulkAdd(projects),
               database.tasks.bulkAdd(tasks),
               database.todoListItems.bulkAdd(todoListItems),
-              database.successes.bulkAdd(successes),
               database.workspaces.bulkAdd(newWorkspaces)
             ])
             setLocalStorage('activeWorkspaceId', newWorkspaces[0].id)

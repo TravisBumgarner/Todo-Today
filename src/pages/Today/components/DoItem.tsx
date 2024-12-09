@@ -16,13 +16,12 @@ export interface DoModeEntry {
   sortOrder: number
   taskTitle: string
   taskStatus: ETaskStatus
-  projectTitle: string
   taskDetails?: string
   selectedDate: TDateISODate
   todoListItemId: string
 }
 
-const QueueItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTitle, projectTitle }: DoModeEntry) => {
+const QueueItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTitle }: DoModeEntry) => {
   const { dispatch } = useContext(context)
   const [details, setDetails] = useState(initialDetails ?? '') // Undo doesn't work if synced directly to DB. Might be a more elegant solution, but for now, this works.
 
@@ -55,9 +54,8 @@ const QueueItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTi
           <Box>
             <TaskStatusSelector handleStatusChangeCallback={handleStatusChange} taskStatus={taskStatus} showLabel={false} />
           </Box>
-          <Box css={css`margin-left: 1rem`}>
+          <Box css={{ marginLeft: '1rem' }}>
             <Typography css={headerTextCSS} variant="h2">{taskTitle}</Typography>
-            <Typography variant="body1">{projectTitle}</Typography>
           </Box>
         </Box>
         <Box css={rightHeaderCSS}>
