@@ -90,7 +90,7 @@ const EmptyTodoList = () => {
   return (
     <Box css={emptyTodoListCSS}>
       <Box>
-        <Typography css={css`margin-bottom: 1rem`} variant='h2'>What will you do today?</Typography>
+        <Typography css={{ marginBottom: '1rem' }} variant='h2'>What will you do today?</Typography>
         <ButtonGroup>
           <Button
             variant='contained'

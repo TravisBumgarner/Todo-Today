@@ -3,7 +3,6 @@ import { useContext, type FC } from 'react'
 import AddTaskModal from './AddTaskModal'
 import AddWorkspaceModal from './AddWorkspaceModal'
 import ConfirmationModal, { type ConfirmationModalProps } from './ConfirmationModal'
-import EditTaskModal from './EditTaskModal'
 import EditWorkspaceModal from './EditWorkspaceModal'
 import SelectTasksModal from './SelectTasksModal'
 import SettingsModal from './Settings'
@@ -24,7 +23,6 @@ export enum ModalID {
 export type ActiveModal =
   | { id: ModalID.ADD_TASK_MODAL }
   | { id: ModalID.ADD_WORKSPACE_MODAL }
-  | { id: ModalID.EDIT_TASK_MODAL, taskId: string }
   | { id: ModalID.SELECT_TASKS_MODAL }
   | { id: ModalID.BACKUP_FAILURE_MODAL }
   | { id: ModalID.SETTINGS_MODAL }
@@ -40,8 +38,6 @@ const RenderModal: FC = () => {
   switch (state.activeModal.id) {
     case ModalID.ADD_TASK_MODAL:
       return <AddTaskModal />
-    case ModalID.EDIT_TASK_MODAL:
-      return <EditTaskModal taskId={state.activeModal.taskId} />
     case ModalID.SELECT_TASKS_MODAL:
       return <SelectTasksModal />
     case ModalID.SETTINGS_MODAL:
