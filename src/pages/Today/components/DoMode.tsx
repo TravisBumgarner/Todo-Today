@@ -6,7 +6,7 @@ import { context } from 'Context'
 import database from 'database'
 import { ModalID } from 'modals'
 import { globalButtonsWrapperCSS, globalContentWrapperCSS } from 'theme'
-import { type TProject, type TTask, type TTodoListItem } from 'types'
+import { type TTask, type TTodoListItem } from 'types'
 import { TASK_STATUS_IS_ACTIVE, getNextSortOrderValue } from 'utilities'
 import DoItem, { type DoModeEntry } from './DoItem'
 import ModeToggle from './ModeToggle'
@@ -35,13 +35,11 @@ const TodoList = () => {
 
       const entries = await Promise.all(todoListItems.map(async todoListItem => {
         const task = await database.tasks.where('id').equals(todoListItem.taskId).first() as TTask
-        const project = await database.projects.where('id').equals(task.projectId).first() as TProject
 
         return {
           ...todoListItem,
           taskTitle: task.title,
           taskStatus: task.status,
-          projectTitle: project.title,
           taskDetails: task.details,
           selectedDate: todoListItem.todoListDate,
           todoListItemId: todoListItem.id

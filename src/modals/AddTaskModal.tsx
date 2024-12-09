@@ -1,36 +1,22 @@
 import CancelIcon from '@mui/icons-material/Cancel'
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline'
-import { Box, Button, FormControl, InputLabel, MenuItem, Select, TextField, ToggleButton, ToggleButtonGroup, Tooltip } from '@mui/material'
-import { useLiveQuery } from 'dexie-react-hooks'
+import { Box, Button, InputLabel, TextField, ToggleButton, ToggleButtonGroup, Tooltip } from '@mui/material'
 import { useCallback, useContext, useState } from 'react'
 import { v4 as uuid4 } from 'uuid'
 
 import { context } from 'Context'
 import database from 'database'
 import { ButtonWrapper, TaskStatusSelector } from 'sharedComponents'
-import { EProjectStatus, ETaskStatus, type TProject, type TTask } from 'types'
-import { getNextSortOrderValue, sortStrings } from 'utilities'
+import { ETaskStatus, type TTask } from 'types'
+import { getNextSortOrderValue } from 'utilities'
 import Modal from './Modal'
-
-const CREATE_NEW_PROJECT_DROPDOWN_ITEM = 'create-new-project'
 
 const AddTaskModal = () => {
   const { state: { selectedDate, activeWorkspaceId }, dispatch } = useContext(context)
   const [title, setTitle] = useState<string>('')
   const [status, setStatus] = useState<ETaskStatus>(ETaskStatus.NEW)
   const [details, setDetails] = useState<string>('')
-  const [projectId, setProjectId] = useState<TProject['id'] | ''>('')
-  const [addProjectInput, setAddProjectInput] = useState<string>('')
   const [addToSelectedDate, setAddToSelectedDate] = useState<'yes' | 'no'>('yes')
-
-  const projects = useLiveQuery(async () => {
-    return (await database
-      .projects
-      .where('workspaceId')
-      .equals(activeWorkspaceId)
-      .toArray()
-    ).filter(p => p.status === EProjectStatus.ACTIVE)
-  }, [])
 
   const handleCancel = useCallback(() => {
     dispatch({ type: 'CLEAR_ACTIVE_MODAL' })
@@ -38,24 +24,10 @@ const AddTaskModal = () => {
 
   const handleSubmit = async () => {
     const taskId = uuid4()
-
-    let projectIdForTask = projectId
-
-    if (projectId === CREATE_NEW_PROJECT_DROPDOWN_ITEM) {
-      const newProject: TProject = {
-        id: uuid4(),
-        title: addProjectInput,
-        status: EProjectStatus.ACTIVE,
-        workspaceId: activeWorkspaceId
-      }
-      projectIdForTask = newProject.id
-      await database.projects.add(newProject)
-    }
     const newTask: TTask = {
       title,
       status,
       id: taskId,
-      projectId: projectIdForTask,
       details
     }
 
@@ -73,9 +45,6 @@ const AddTaskModal = () => {
     }
     dispatch({ type: 'CLEAR_ACTIVE_MODAL' })
   }
-
-  const projectSelectOptions = projects ? projects.sort((a, b) => sortStrings(a.title, b.title)).map((p) => ({ value: p.id, label: p.title })) : []
-  projectSelectOptions.unshift({ value: CREATE_NEW_PROJECT_DROPDOWN_ITEM, label: 'Create new Project' })
 
   const handleAddToTodayChange = useCallback((event: React.MouseEvent<HTMLElement>, newValue: 'yes' | 'no') => {
     if (newValue === null) return
@@ -98,28 +67,6 @@ const AddTaskModal = () => {
         margin='normal'
         onChange={(event) => { setTitle(event.target.value) }}
       />
-      <FormControl fullWidth margin='normal'>
-        <InputLabel id="add-task-modal-project-select">Project</InputLabel>
-        <Select
-          label="Project"
-          labelId="add-task-modal-project-select"
-          fullWidth
-          value={projectId}
-          onChange={(event) => { setProjectId(event.target.value) }}
-        >
-          {projectSelectOptions.map(({ label, value }) => <MenuItem key={label} value={value}>{label}</MenuItem>)}
-        </Select>
-      </FormControl>
-      {projectId === CREATE_NEW_PROJECT_DROPDOWN_ITEM &&
-        <TextField
-          fullWidth
-          label="Add Project"
-          name="add-project"
-          value={addProjectInput}
-          margin='normal'
-          onChange={(event) => { setAddProjectInput(event.target.value) }}
-        />
-      }
       <TaskStatusSelector taskStatus={status} handleStatusChangeCallback={setStatus} showLabel />
       <TextField
         multiline
@@ -160,7 +107,7 @@ const AddTaskModal = () => {
           fullWidth
           type="button"
           variant='contained'
-          disabled={title.length === 0 || projectId.length === 0 || (projectId === CREATE_NEW_PROJECT_DROPDOWN_ITEM && addProjectInput.length === 0)}
+          disabled={title.length === 0}
           key="save"
 
           onClick={handleSubmit}

@@ -3,7 +3,7 @@ import { createContext, useEffect, useReducer, useState, type Dispatch } from 'r
 
 import { DEFAULT_WORKSPACE } from 'database'
 import { ESyncMessageIPC } from 'shared/types'
-import { EActivePage, EBackupInterval, EColorTheme, type TDateISODate, type TSettings } from 'types'
+import { EBackupInterval, EColorTheme, type TDateISODate, type TSettings } from 'types'
 import { formatDateKeyLookup, getLocalStorage, sendSyncIPCMessage, setLocalStorage } from 'utilities'
 import { type ActiveModal } from './modals/RenderModal'
 
@@ -29,7 +29,6 @@ export interface State {
   activeModal: ActiveModal | null
   selectedDate: TDateISODate
   restoreInProgress: boolean
-  activePage: EActivePage
   workMode: 'queue' | 'do'
   timerDuration: number
   activeWorkspaceId: string
@@ -47,7 +46,6 @@ const EMPTY_STATE: State = {
   activeModal: null,
   selectedDate: formatDateKeyLookup(moment()),
   restoreInProgress: false,
-  activePage: EActivePage.Home,
   message: null,
   workMode: 'queue',
   timerDuration: 0
@@ -110,13 +108,6 @@ interface RestoreEnded {
   type: 'RESTORE_ENDED'
 }
 
-interface SetActivePage {
-  type: 'SET_ACTIVE_PAGE'
-  payload: {
-    page: EActivePage
-  }
-}
-
 interface ChangeWorkspace {
   type: 'CHANGE_WORKSPACE'
   payload: {
@@ -163,7 +154,6 @@ export type Action =
   | SetSelectedDate
   | RestoreStarted
   | RestoreEnded
-  | SetActivePage
   | AddMessage
   | DeleteMessage
   | UpdateWorkMode
@@ -195,10 +185,6 @@ const reducer = (state: State, action: Action): State => {
     }
     case 'RESTORE_ENDED': {
       return { ...state, restoreInProgress: false }
-    }
-    case 'SET_ACTIVE_PAGE': {
-      const { page } = action.payload
-      return { ...state, activePage: page }
     }
     case 'ADD_MESSAGE': {
       return { ...state, message: { ...action.payload } }

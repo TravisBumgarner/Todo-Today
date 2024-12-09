@@ -7,11 +7,12 @@ import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import Context, { context } from 'Context'
 import RenderModal from 'modals'
 import { baseTheme, beachTheme, highContrastTheme, retroFutureTheme, underTheSeaTheme } from 'theme'
-import { Header, Message, Router, Workspaces } from './components'
+import { Header, Message, Workspaces } from './components'
 import { EColorTheme } from './types'
 
 import { useIPCAsyncMessageEffect } from './hooks/useIPCAsyncMessageEffect'
 import { setupAutomatedBackup } from './modals/Settings'
+import Today from './pages/Today'
 
 const App = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
@@ -52,7 +53,7 @@ const App = () => {
       <Box css={appWrapperCSS}>
         <Message />
         <Header toggleSidebar={toggleSidebar} />
-        <Router />
+        <Today />
         <Workspaces toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
       </Box>
       <RenderModal />

@@ -18,11 +18,10 @@ export interface QueueItemEntry {
   sortOrder: number
   taskTitle: string
   taskStatus: ETaskStatus
-  projectTitle: string
   taskDetails?: string
 }
 
-const QueueItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTitle, projectTitle }: QueueItemEntry) => {
+const QueueItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTitle }: QueueItemEntry) => {
   const { dispatch } = useContext(context)
   const [showDetails, setShowDetails] = useState(initialDetails ? initialDetails.length > 0 : false)
   const [details, setDetails] = useState(initialDetails ?? '') // Undo doesn't work if synced directly to DB. Might be a more elegant solution, but for now, this works.
@@ -58,9 +57,8 @@ const QueueItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTi
           <Box>
             <TaskStatusSelector handleStatusChangeCallback={handleStatusChange} taskStatus={taskStatus} showLabel={false} />
           </Box>
-          <Box css={css`margin-left: 1rem`}>
+          <Box css={{ marginLeft: '1rem' }}>
             <Typography css={headerTextCSS} variant="h2">{taskTitle}</Typography>
-            <Typography variant="body1">{projectTitle}</Typography>
           </Box>
         </Box>
         <Box css={rightHeaderCSS}>

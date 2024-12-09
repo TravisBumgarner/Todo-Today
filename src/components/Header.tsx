@@ -2,16 +2,14 @@ import MenuIcon from '@mui/icons-material/Menu'
 import { Box, css, IconButton, Tooltip, Typography } from '@mui/material'
 import { useCallback, useContext, useMemo } from 'react'
 
-import ChecklistIcon from '@mui/icons-material/Checklist'
 import SettingsIcon from '@mui/icons-material/Settings'
 import { context } from 'Context'
 import db, { DEFAULT_WORKSPACE } from 'database'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { ModalID } from 'modals'
-import { EActivePage } from 'types'
 
 const Title = () => {
-  const { state: { activeWorkspaceId }, dispatch } = useContext(context)
+  const { state: { activeWorkspaceId } } = useContext(context)
 
   const workspace = useLiveQuery(async () => {
     const result = await db.workspaces.where('id').equals(activeWorkspaceId).first()
@@ -25,12 +23,8 @@ const Title = () => {
     return 'Todo Today'
   }, [workspace])
 
-  const handleHome = useCallback(() => {
-    dispatch({ type: 'SET_ACTIVE_PAGE', payload: { page: EActivePage.Home } })
-  }, [dispatch])
-
   return (
-    <Box css={titleCSS} onClick={handleHome}>
+    <Box css={titleCSS}>
       <Typography variant="h1">
         {header}
       </Typography>
@@ -51,25 +45,11 @@ const Title = () => {
 }
 
 const Header = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
-  const { dispatch, state: { activePage } } = useContext(context)
-
-  const handleHome = useCallback(() => {
-    dispatch({ type: 'SET_ACTIVE_PAGE', payload: { page: EActivePage.Home } })
-  }, [dispatch])
+  const { dispatch } = useContext(context)
 
   const handleSettings = useCallback(() => {
     dispatch({ type: 'SET_ACTIVE_MODAL', payload: { id: ModalID.SETTINGS_MODAL } })
   }, [dispatch])
-
-  const subHeader = useMemo(() => {
-    switch (activePage) {
-      case EActivePage.Home:
-        // This might flicker
-        return 'Todo'
-      default:
-        return 'Todo Today'
-    }
-  }, [activePage])
 
   return (
     <Box css={headerCSS}>
@@ -88,15 +68,6 @@ const Header = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
         <Title />
       </Box>
       <Box css={navigationCSS}>
-        <Typography>{subHeader}</Typography>
-        <IconButton color="primary"
-          onClick={handleHome}
-        >
-          <Tooltip title="Today">
-            <ChecklistIcon />
-          </Tooltip>
-        </IconButton>
-
         <IconButton color="error"
           onClick={handleSettings}
         >

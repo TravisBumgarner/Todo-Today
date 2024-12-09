@@ -3,7 +3,6 @@ import { useContext, type FC } from 'react'
 import AddTaskModal from './AddTaskModal'
 import AddWorkspaceModal from './AddWorkspaceModal'
 import ConfirmationModal, { type ConfirmationModalProps } from './ConfirmationModal'
-import EditProjectModal from './EditProjectModal'
 import EditTaskModal from './EditTaskModal'
 import EditWorkspaceModal from './EditWorkspaceModal'
 import SelectTasksModal from './SelectTasksModal'
@@ -14,7 +13,6 @@ export enum ModalID {
   ADD_TASK_MODAL = 'ADD_TASK_MODAL',
   ADD_WORKSPACE_MODAL = 'ADD_WORKSPACE_MODAL',
   EDIT_TASK_MODAL = 'EDIT_TASK_MODAL',
-  EDIT_PROJECT_MODAL = 'EDIT_PROJECT_MODAL',
   SELECT_TASKS_MODAL = 'SELECT_TASKS_MODAL',
   BACKUP_FAILURE_MODAL = 'BACKUP_FAILURE_MODAL',
   SETTINGS_MODAL = 'SETTINGS_MODAL',
@@ -27,7 +25,6 @@ export type ActiveModal =
   | { id: ModalID.ADD_TASK_MODAL }
   | { id: ModalID.ADD_WORKSPACE_MODAL }
   | { id: ModalID.EDIT_TASK_MODAL, taskId: string }
-  | { id: ModalID.EDIT_PROJECT_MODAL, projectId: string }
   | { id: ModalID.SELECT_TASKS_MODAL }
   | { id: ModalID.BACKUP_FAILURE_MODAL }
   | { id: ModalID.SETTINGS_MODAL }
@@ -45,8 +42,6 @@ const RenderModal: FC = () => {
       return <AddTaskModal />
     case ModalID.EDIT_TASK_MODAL:
       return <EditTaskModal taskId={state.activeModal.taskId} />
-    case ModalID.EDIT_PROJECT_MODAL:
-      return <EditProjectModal projectId={state.activeModal.projectId} />
     case ModalID.SELECT_TASKS_MODAL:
       return <SelectTasksModal />
     case ModalID.SETTINGS_MODAL:

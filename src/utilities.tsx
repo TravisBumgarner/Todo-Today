@@ -4,12 +4,7 @@ import { Icons } from 'sharedComponents'
 
 import database from 'database'
 import { type AppStartIPCFromMain, type AsyncMessageIPCFromRenderer, type ESyncMessageIPC, type SyncMessageIPCFromRenderer } from 'shared/types'
-import { DATE_ISO_DATE_MOMENT_STRING, EBackupInterval, EColorTheme, EProjectStatus, ETaskStatus, type TDateISODate } from './types'
-
-const projectStatusLookup: Record<EProjectStatus, string> = {
-  [EProjectStatus.INACTIVE]: 'Inactive',
-  [EProjectStatus.ACTIVE]: 'Active'
-}
+import { DATE_ISO_DATE_MOMENT_STRING, EBackupInterval, EColorTheme, ETaskStatus, type TDateISODate } from './types'
 
 const backupIntervalLookup: Record<EBackupInterval, string> = {
   [EBackupInterval.DAILY]: 'Every Day',
@@ -147,6 +142,5 @@ const taskStatusIcon = (taskStatus: ETaskStatus) => {
 export {
   backupIntervalLookup, colorThemeOptionLabels, formatDateDisplayString,
   formatDateKeyLookup,
-  formatDurationDisplayString, getLocalStorage, projectStatusLookup, saveFile, sendAsyncIPCMessage, sendSyncIPCMessage, setLocalStorage, sumArray, taskStatusIcon, taskStatusLookup
+  formatDurationDisplayString, getLocalStorage, saveFile, sendAsyncIPCMessage, sendSyncIPCMessage, setLocalStorage, sumArray, taskStatusIcon, taskStatusLookup
 }
-

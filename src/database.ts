@@ -1,5 +1,5 @@
 import Dexie, { type Table } from 'dexie'
-import { type TProject, type TTask, type TTodoListItem, type TWorkspace } from 'types'
+import { type TTask, type TTodoListItem, type TWorkspace } from 'types'
 
 // needs to be here for initialization (I think)
 export const DEFAULT_WORKSPACE = {
@@ -8,7 +8,6 @@ export const DEFAULT_WORKSPACE = {
 }
 
 class MySubClassedDexie extends Dexie {
-  projects!: Table<TProject>
   tasks!: Table<TTask>
   todoListItems!: Table<TTodoListItem>
   workspaces!: Table<TWorkspace>
@@ -16,17 +15,13 @@ class MySubClassedDexie extends Dexie {
   constructor() {
     super('todo-today')
     this.version(14).stores({
-      projects: 'id, title, status, createdAt, workspaceId',
-      tasks: 'id, projectId, title, status, details, createdAt',
+      tasks: 'id, title, status, details, createdAt',
       todoListItems: 'id, taskId, todoListDate, sortOrder, createdAt, workspaceId',
       workspaces: 'id, name'
     })
       .upgrade(async tx => {
         return await Promise.all([
           this.createDefaultWorkspace(),
-          tx.table('projects').toCollection().modify(project => {
-            project.workspaceId = DEFAULT_WORKSPACE.id
-          }),
           tx.table('successes').toCollection().modify(success => {
             success.workspaceId = DEFAULT_WORKSPACE.id
           }),
