@@ -7,12 +7,11 @@ import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import Context, { context } from 'Context'
 import RenderModal from 'modals'
 import { baseTheme, beachTheme, highContrastTheme, retroFutureTheme, underTheSeaTheme } from 'theme'
-import { Header, Message, Workspaces } from './components'
+import { Header, Message, QueueMode, Workspaces } from './components'
 import { EColorTheme } from './types'
 
 import { useIPCAsyncMessageEffect } from './hooks/useIPCAsyncMessageEffect'
 import { setupAutomatedBackup } from './modals/Settings'
-import QueueMode from './QueueMode'
 
 const App = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)

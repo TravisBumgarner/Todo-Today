@@ -10,14 +10,6 @@ const HAS_DONE_WARM_START = 'hasDoneWarmStart'
 const TRUE = 'TRUE'
 
 export interface State {
-  message: {
-    text: string
-    severity: 'error' | 'warning' | 'info' | 'success'
-    confirmCallback?: () => void
-    confirmCallbackText?: string
-    cancelCallback?: () => void
-    cancelCallbackText?: string
-  } | null
   settings: {
     colorTheme: EColorTheme
     backupInterval: EBackupInterval
@@ -40,8 +32,7 @@ const EMPTY_STATE: State = {
   },
   activeWorkspaceId: DEFAULT_WORKSPACE.id,
   activeModal: null,
-  restoreInProgress: false,
-  message: null,
+  restoreInProgress: false
 }
 const initialSetup = (backupDir: string) => {
   Object
@@ -101,24 +92,6 @@ interface ChangeWorkspace {
   }
 }
 
-interface AddMessage {
-  type: 'ADD_MESSAGE'
-  payload: {
-    text: string
-    severity: 'error' | 'warning' | 'info' | 'success'
-    url?: string
-    confirmCallback?: () => void
-    confirmCallbackText?: string
-    cancelCallback?: () => void
-    cancelCallbackText?: string
-  }
-}
-
-interface DeleteMessage {
-  type: 'DELETE_MESSAGE'
-}
-
-
 export type Action =
   | EditUserSettings
   | HydrateUserSettings
@@ -126,8 +99,6 @@ export type Action =
   | ClearActiveModal
   | RestoreStarted
   | RestoreEnded
-  | AddMessage
-  | DeleteMessage
   | ChangeWorkspace
 
 const reducer = (state: State, action: Action): State => {
@@ -151,12 +122,6 @@ const reducer = (state: State, action: Action): State => {
     }
     case 'RESTORE_ENDED': {
       return { ...state, restoreInProgress: false }
-    }
-    case 'ADD_MESSAGE': {
-      return { ...state, message: { ...action.payload } }
-    }
-    case 'DELETE_MESSAGE': {
-      return { ...state, message: null }
     }
     case 'CHANGE_WORKSPACE': {
       const { workspaceId } = action.payload

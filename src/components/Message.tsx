@@ -1,24 +1,22 @@
-import { useContext } from 'react'
-import { Alert as AlertMUI, Box, Button } from '@mui/material'
 import { css } from '@emotion/react'
+import { Alert as AlertMUI, Box, Button } from '@mui/material'
 
-import { context } from 'Context'
+import { useSignals } from '@preact/signals-react/runtime'
+import { useCallback } from 'react'
 import { ButtonWrapper } from 'sharedComponents'
+import { messageSignal } from '../signals'
 
 const Alert = () => {
-  const { state, dispatch } = useContext(context)
+  useSignals()
+  const handleCancel = useCallback(() => {
+    messageSignal.value = null
+  }, [])
 
-  const handleCancel = () => {
-    state.message?.cancelCallback?.()
-    dispatch({ type: 'DELETE_MESSAGE' })
-  }
+  const handleConfirm = useCallback(() => {
+    messageSignal.value = null
+  }, [])
 
-  const handleConfirm = () => {
-    state.message?.confirmCallback?.()
-    dispatch({ type: 'DELETE_MESSAGE' })
-  }
-
-  if (!state.message) return null
+  if (messageSignal.value === null) return null
 
   return (
     <Box css={AlertPositionerCSS}>
@@ -27,19 +25,19 @@ const Alert = () => {
         css={AlertMuiCSS}
         action={
           <ButtonWrapper isHorizontal>
-            {state.message.cancelCallbackText
+            {messageSignal.value.cancelText
               ? <Button color="secondary" variant="outlined" size="small" onClick={handleCancel}>
-                {state.message.cancelCallbackText ? state.message.cancelCallbackText : 'Cancel'}
+                {messageSignal.value.cancelText ? messageSignal.value.cancelText : 'Cancel'}
               </Button>
               : null
             }
             <Button color="primary" size="small" variant="outlined" onClick={handleConfirm}>
-              {state.message.confirmCallbackText ? state.message.confirmCallbackText : 'Close'}
+              {messageSignal.value.confirmText ? messageSignal.value.confirmText : 'Close'}
             </Button>
           </ButtonWrapper>
         }
         color="info"
-      >{state.message.text}</AlertMUI>
+      >{messageSignal.value.text}</AlertMUI>
     </Box >
   )
 }
