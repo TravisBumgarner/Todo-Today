@@ -152,13 +152,6 @@ export const underTheSeaTheme = extendTheme(_.merge(baseThemeOptions, underTheSe
 
 export const BUTTONS_WRAPPER_HEIGHT = 36
 
-export const globalButtonsWrapperCSS = css`
-  display: flex;
-  justify-content: space-between;
-  height: ${BUTTONS_WRAPPER_HEIGHT}px;
-  margin-bottom: 1rem;
-`
-
 export const globalContentWrapperCSS = css`
   overflow: auto;
   height: calc(100vh - ${BUTTONS_WRAPPER_HEIGHT}px - ${HEADER_HEIGHT}px);

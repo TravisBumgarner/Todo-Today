@@ -12,7 +12,7 @@ import { EColorTheme } from './types'
 
 import { useIPCAsyncMessageEffect } from './hooks/useIPCAsyncMessageEffect'
 import { setupAutomatedBackup } from './modals/Settings'
-import Today from './pages/Today'
+import QueueMode from './QueueMode'
 
 const App = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
@@ -53,7 +53,7 @@ const App = () => {
       <Box css={appWrapperCSS}>
         <Message />
         <Header toggleSidebar={toggleSidebar} />
-        <Today />
+        <QueueMode />
         <Workspaces toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
       </Box>
       <RenderModal />

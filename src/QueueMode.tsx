@@ -10,12 +10,25 @@ import { v4 as uuid4 } from 'uuid'
 import { context } from 'Context'
 import database from 'database'
 import { ModalID } from 'modals'
-import { globalButtonsWrapperCSS, globalContentWrapperCSS } from 'theme'
+import { globalContentWrapperCSS } from 'theme'
 import { DATE_ISO_DATE_MOMENT_STRING, ETaskStatus, type TTask, type TTodoListItem } from 'types'
 import { TASK_STATUS_IS_ACTIVE, formatDateDisplayString, formatDateKeyLookup } from 'utilities'
-import ModeToggle from './ModeToggle'
 import QueueItem, { type QueueItemEntry } from './QueueItem'
-import { emptyTodoListCSS } from './sharedCSS'
+import Timer from './Timer'
+
+export const emptyTodoListCSS = css`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100%;
+
+    > div {
+      height: 80px;
+      width: 800px;
+      text-align: center;
+    }
+`
 
 const reorder = (list: any[], startIndex: number, endIndex: number) => {
   const result = Array.from(list)
@@ -196,9 +209,8 @@ const TodoList = () => {
 
   return (
     <>
-      <Box css={globalButtonsWrapperCSS}>
+      <Box css={buttonWrapperCSS}>
         <Box>
-          <ModeToggle />
           <ButtonGroup>
             <Button
               variant='contained'
@@ -214,11 +226,14 @@ const TodoList = () => {
             </Button>
           </ButtonGroup>
         </Box>
-        <ButtonGroup>
-          <Button variant='contained' onClick={setPreviousDate}>&lt;</Button>
-          <Button variant='contained' css={todayButtonCSS} onClick={getToday}><span>{formatDateDisplayString(selectedDate)}</span></Button>
-          <Button variant='contained' onClick={getNextDate}>&gt;</Button>
-        </ButtonGroup>
+        <Box css={{ display: 'flex' }}>
+          <ButtonGroup>
+            <Button variant='contained' onClick={setPreviousDate}>&lt;</Button>
+            <Button variant='contained' css={todayButtonCSS} onClick={getToday}><span>{formatDateDisplayString(selectedDate)}</span></Button>
+            <Button variant='contained' onClick={getNextDate}>&gt;</Button>
+          </ButtonGroup>
+          <Timer />
+        </Box>
       </Box>
 
       <Box css={globalContentWrapperCSS}>
@@ -279,6 +294,12 @@ const TodoList = () => {
     </ >
   )
 }
+
+export const buttonWrapperCSS = css`
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+`
 
 const dragItemCSS = (_isDragging: boolean, draggableStyle: any) => ({
   cursor: 'pointer',
