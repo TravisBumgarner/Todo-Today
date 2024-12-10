@@ -2,9 +2,9 @@ import CloseIcon from '@mui/icons-material/CloseOutlined'
 import { IconButton, Tooltip, Typography, css } from '@mui/material'
 import Box from '@mui/material/Box'
 import MUIModal from '@mui/material/Modal'
-import { useCallback, useContext, type FC } from 'react'
+import { useCallback, type FC } from 'react'
 
-import { context } from 'Context'
+import { activeModalSignal } from '../signals'
 
 interface ActiveModal {
   children: any
@@ -17,13 +17,10 @@ interface ActiveModal {
 export const MODAL_MAX_HEIGHT = 800
 
 const Modal: FC<ActiveModal> = ({ children, title, disableEscapeKeyDown, disableBackdropClick }) => {
-  const { dispatch } = useContext(context)
-
   const handleClose = useCallback((event?: any, reason?: 'backdropClick' | 'escapeKeyDown') => {
     if (reason === 'backdropClick' && disableBackdropClick) return
-
-    dispatch({ type: 'CLEAR_ACTIVE_MODAL' })
-  }, [dispatch, disableBackdropClick])
+    activeModalSignal.value = null
+  }, [disableBackdropClick])
 
   return (
     <MUIModal

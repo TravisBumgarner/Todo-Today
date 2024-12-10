@@ -1,103 +1,11 @@
-import moment from 'moment'
-import { createContext, useEffect, useReducer, useState, type Dispatch } from 'react'
-
-import { DEFAULT_WORKSPACE } from 'database'
-import { ESyncMessageIPC } from 'shared/types'
-import { EBackupInterval, EColorTheme, type TDateISODate, type TSettings } from 'types'
-import { formatDateKeyLookup, getLocalStorage, sendSyncIPCMessage, setLocalStorage } from 'utilities'
-import { type ActiveModal } from './modals/RenderModal'
-
-const HAS_DONE_WARM_START = 'hasDoneWarmStart'
-const TRUE = 'TRUE'
+import { createContext, useReducer, type Dispatch } from 'react'
 
 export interface State {
-  message: {
-    text: string
-    severity: 'error' | 'warning' | 'info' | 'success'
-    confirmCallback?: () => void
-    confirmCallbackText?: string
-    cancelCallback?: () => void
-    cancelCallbackText?: string
-  } | null
-  settings: {
-    colorTheme: EColorTheme
-    backupInterval: EBackupInterval
-    backupDir: string
-    lastBackup: string
-    concurrentTodoListItems: number
-  }
-  activeModal: ActiveModal | null
-  selectedDate: TDateISODate
   restoreInProgress: boolean
-  workMode: 'queue' | 'do'
-  timerDuration: number
-  activeWorkspaceId: string
 }
 
 const EMPTY_STATE: State = {
-  settings: {
-    colorTheme: EColorTheme.BEACH,
-    backupInterval: EBackupInterval.OFF,
-    backupDir: '',
-    lastBackup: '',
-    concurrentTodoListItems: 1
-  },
-  activeWorkspaceId: DEFAULT_WORKSPACE.id,
-  activeModal: null,
-  selectedDate: formatDateKeyLookup(moment()),
-  restoreInProgress: false,
-  message: null,
-  workMode: 'queue',
-  timerDuration: 0
-}
-const initialSetup = (backupDir: string) => {
-  Object
-    .keys(EMPTY_STATE.settings)
-    .forEach((key) => { setLocalStorage(key as keyof typeof EMPTY_STATE['settings'], EMPTY_STATE.settings[key as keyof typeof EMPTY_STATE['settings']]) })
-
-  setLocalStorage('backupDir', backupDir)
-  setLocalStorage(HAS_DONE_WARM_START, TRUE)
-  setLocalStorage('activeWorkspaceId', DEFAULT_WORKSPACE.id)
-}
-
-const getSettingsFromLocalStorage = () => {
-  const output: Record<string, string> = {}
-
-  Object
-    .keys(EMPTY_STATE.settings)
-    .forEach((key) => {
-      output[key] = getLocalStorage(key as keyof State['settings'])
-    })
-  return output as unknown as State['settings']
-}
-
-interface HydrateUserSettings {
-  type: 'HYDRATE_USER_SETTINGS'
-  payload: TSettings
-}
-
-interface EditUserSettings {
-  type: 'EDIT_USER_SETTING'
-  payload: {
-    key: keyof State['settings']
-    value: string | number
-  }
-}
-
-interface SetActiveModal {
-  type: 'SET_ACTIVE_MODAL'
-  payload: ActiveModal
-}
-
-interface SetSelectedDate {
-  type: 'SET_SELECTED_DATE'
-  payload: {
-    date: TDateISODate
-  }
-}
-
-interface ClearActiveModal {
-  type: 'CLEAR_ACTIVE_MODAL'
+  restoreInProgress: false
 }
 
 interface RestoreStarted {
@@ -108,105 +16,20 @@ interface RestoreEnded {
   type: 'RESTORE_ENDED'
 }
 
-interface ChangeWorkspace {
-  type: 'CHANGE_WORKSPACE'
-  payload: {
-    workspaceId: string
-  }
-}
-
-interface AddMessage {
-  type: 'ADD_MESSAGE'
-  payload: {
-    text: string
-    severity: 'error' | 'warning' | 'info' | 'success'
-    url?: string
-    confirmCallback?: () => void
-    confirmCallbackText?: string
-    cancelCallback?: () => void
-    cancelCallbackText?: string
-  }
-}
-
-interface DeleteMessage {
-  type: 'DELETE_MESSAGE'
-}
-
-interface UpdateWorkMode {
-  type: 'UPDATE_WORK_MODE'
-  payload: {
-    workMode: 'queue' | 'do'
-  }
-}
-
-interface UpdateTimer {
-  type: 'UPDATE_TIMER'
-  payload: {
-    timerDuration: number
-  }
-}
-
 export type Action =
-  | EditUserSettings
-  | HydrateUserSettings
-  | SetActiveModal
-  | ClearActiveModal
-  | SetSelectedDate
   | RestoreStarted
   | RestoreEnded
-  | AddMessage
-  | DeleteMessage
-  | UpdateWorkMode
-  | UpdateTimer
-  | ChangeWorkspace
 
 const reducer = (state: State, action: Action): State => {
   switch (action.type) {
-    case 'HYDRATE_USER_SETTINGS': {
-      return { ...state, settings: { ...state.settings, ...action.payload } }
-    }
-    case 'EDIT_USER_SETTING': {
-      const { key, value } = action.payload
-      setLocalStorage(key, value)
-      return { ...state, settings: { ...state.settings, [key]: value } }
-    }
-    case 'SET_ACTIVE_MODAL': {
-      return { ...state, activeModal: action.payload }
-    }
-    case 'CLEAR_ACTIVE_MODAL': {
-      return { ...state, activeModal: null }
-    }
-    case 'SET_SELECTED_DATE': {
-      const { date } = action.payload
-      return { ...state, selectedDate: date }
-    }
     case 'RESTORE_STARTED': {
       return { ...state, restoreInProgress: true }
     }
     case 'RESTORE_ENDED': {
       return { ...state, restoreInProgress: false }
     }
-    case 'ADD_MESSAGE': {
-      return { ...state, message: { ...action.payload } }
-    }
-    case 'DELETE_MESSAGE': {
-      return { ...state, message: null }
-    }
-    case 'UPDATE_WORK_MODE': {
-      const { workMode } = action.payload
-      return { ...state, workMode }
-    }
-    case 'UPDATE_TIMER': {
-      const { timerDuration } = action.payload
-      return { ...state, timerDuration }
-    }
-    case 'CHANGE_WORKSPACE': {
-      const { workspaceId } = action.payload
-      setLocalStorage('activeWorkspaceId', workspaceId)
-      return { ...state, activeWorkspaceId: workspaceId }
-    }
     default:
-      throw new Error('Unexpected action')
+      throw new Error(`Unexpected action: ${JSON.stringify(action)}`)
   }
 }
 
@@ -222,28 +45,6 @@ const context = createContext(
 
 const ResultsContext = ({ children }: { children: any }) => {
   const [state, dispatch] = useReducer(reducer, EMPTY_STATE)
-  const [isLoading, setIsLoading] = useState<boolean>(true)
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const { backupDir } = await sendSyncIPCMessage({ type: ESyncMessageIPC.AppStart, body: null })
-      if (getLocalStorage(HAS_DONE_WARM_START) !== TRUE) {
-        initialSetup(backupDir)
-      } else {
-        const localStorageSettings = getSettingsFromLocalStorage()
-        const payload = { ...localStorageSettings, backupDir }
-        dispatch({ type: 'HYDRATE_USER_SETTINGS', payload })
-      }
-    }
-
-    setIsLoading(true)
-    void fetchData().then(() => { setIsLoading(false) })
-  }, [])
-
-  if (isLoading) {
-    return <p>Loading...</p>
-  }
-
   const { Provider } = context
 
   return (

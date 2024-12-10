@@ -1,8 +1,8 @@
 import { Button, Typography } from '@mui/material'
-import { useCallback, useContext } from 'react'
+import { useCallback } from 'react'
 
-import { context } from 'Context'
 import { ButtonWrapper } from 'sharedComponents'
+import { activeModalSignal } from '../signals'
 import Modal from './Modal'
 import { type ModalID } from './RenderModal'
 
@@ -15,16 +15,14 @@ export interface ConfirmationModalProps {
 }
 
 const ConfirmationModal = ({ title, body, confirmationCallback }: ConfirmationModalProps) => {
-  const { dispatch } = useContext(context)
-
   const handleCancel = useCallback(() => {
-    dispatch({ type: 'CLEAR_ACTIVE_MODAL' })
-  }, [dispatch])
+    activeModalSignal.value = null
+  }, [])
 
   const handleConfirm = useCallback(() => {
     confirmationCallback?.()
-    dispatch({ type: 'CLEAR_ACTIVE_MODAL' })
-  }, [dispatch, confirmationCallback])
+    activeModalSignal.value = null
+  }, [confirmationCallback])
 
   return (
     <Modal

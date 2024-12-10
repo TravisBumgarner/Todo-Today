@@ -6,11 +6,10 @@ import { existsSync, mkdirSync, writeFileSync } from 'node:fs'
 import { release } from 'node:os'
 import { join, resolve } from 'node:path'
 
-import { EAsyncMessageIPCFromMain, EAsyncMessageIPCFromRenderer, ESyncMessageIPC, type AppStartIPCFromMain, type AsyncBackupIPCFromMain, type AsyncBackupIPCFromRenderer, type AsyncNotificationIPCFromRenderer, type AsyncStartTimerIPCFromRenderer } from '../../shared/types'
+import { EAsyncMessageIPCFromMain, EAsyncMessageIPCFromRenderer, ESyncMessageIPC, type AppStartIPCFromMain, type AsyncBackupIPCFromMain, type AsyncBackupIPCFromRenderer, type AsyncNotificationIPCFromRenderer } from '../../shared/types'
 import { DATE_BACKUP_DATE } from '../../shared/utilities'
 import { isDebugProduction, isDev } from './config'
 import menu from './menu'
-import Timer from './timer'
 import { update } from './update'
 
 Menu.setApplicationMenu(menu)
@@ -125,8 +124,6 @@ app.on('activate', () => {
   }
 })
 
-let timer: Timer
-
 // New window example arg: new windows url
 ipcMain.handle('open-win', (_, arg) => {
   const childWindow = new BrowserWindow({
@@ -148,29 +145,6 @@ const BACKUPS_DIR = resolve(app.getPath('documents'), app.name, 'backups')
 if (!existsSync(BACKUPS_DIR)) {
   mkdirSync(BACKUPS_DIR, { recursive: true })
 }
-
-const timerTickCallback = (timerDuration: number) => {
-  if (win) {
-    win.webContents.send(EAsyncMessageIPCFromMain.TimerTick, { timerDuration })
-  }
-}
-
-ipcMain.on(EAsyncMessageIPCFromRenderer.StartTimer, async (_, arg: AsyncStartTimerIPCFromRenderer['body']) => {
-  timer = new Timer(timerTickCallback)
-  timer.start(arg.duration)
-})
-
-ipcMain.on(EAsyncMessageIPCFromRenderer.PauseTimer, async () => {
-  timer.pause()
-})
-
-ipcMain.on(EAsyncMessageIPCFromRenderer.ResetTimer, async () => {
-  timer.reset()
-})
-
-ipcMain.on(EAsyncMessageIPCFromRenderer.ResumeTimer, async () => {
-  timer.resume()
-})
 
 ipcMain.handle(ESyncMessageIPC.AppStart, async (): Promise<AppStartIPCFromMain['body']> => {
   return {
