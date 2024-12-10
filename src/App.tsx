@@ -2,58 +2,55 @@
 import CssBaseline from '@mui/material/CssBaseline'
 
 import { Box, Experimental_CssVarsProvider, css } from '@mui/material'
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { useCallback, useContext, useState } from 'react'
 
 import Context, { context } from 'Context'
 import RenderModal from 'modals'
 import { baseTheme, beachTheme, highContrastTheme, retroFutureTheme, underTheSeaTheme } from 'theme'
-import { Header, Message, QueueMode, Workspaces } from './components'
+import { Header, Message, QueueMode } from './components'
 import { EColorTheme } from './types'
 
+import { useSignalEffect } from '@preact/signals-react'
+import { useSignals } from '@preact/signals-react/runtime'
+import { setLocalStorage } from 'utilities'
 import { useIPCAsyncMessageEffect } from './hooks/useIPCAsyncMessageEffect'
-import { setupAutomatedBackup } from './modals/Settings'
+import { settingsSignal } from './signals'
 
 const App = () => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  useSignals()
+  const [theme, setTheme] = useState(baseTheme)
 
-  const { state, dispatch } = useContext(context)
-  useEffect(() => {
-    setupAutomatedBackup(state.settings.backupInterval)
-  }, [state.settings.backupInterval])
+  const syncSettingsToLocalStorage = useCallback(() => {
+    if (settingsSignal.value) {
+      Object.entries(settingsSignal.value).forEach(([key, value]) => {
+        setLocalStorage(key as keyof typeof settingsSignal.value, value)
+      })
+    }
+  }, [])
+  useSignalEffect(() => {
+    syncSettingsToLocalStorage()
+  })
+  const { dispatch } = useContext(context)
   useIPCAsyncMessageEffect(dispatch)
 
-  const toggleSidebar = useCallback(() => {
-    setIsSidebarOpen(!isSidebarOpen)
-  }, [isSidebarOpen])
-
-  const theme = useMemo(() => {
-    switch (state.settings.colorTheme) {
-      case EColorTheme.BEACH: {
-        return beachTheme
-      }
-      case EColorTheme.RETRO_FUTURE: {
-        return retroFutureTheme
-      }
-      case EColorTheme.UNDER_THE_SEA: {
-        return underTheSeaTheme
-      }
-      case EColorTheme.CONTRAST: {
-        return highContrastTheme
-      }
-      default: {
-        return baseTheme
-      }
+  useSignalEffect(() => {
+    const THEME_MAP = {
+      [EColorTheme.BEACH]: beachTheme,
+      [EColorTheme.RETRO_FUTURE]: retroFutureTheme,
+      [EColorTheme.UNDER_THE_SEA]: underTheSeaTheme,
+      [EColorTheme.CONTRAST]: highContrastTheme
     }
-  }, [state.settings.colorTheme])
+
+    setTheme(THEME_MAP[settingsSignal.value.colorTheme])
+  })
 
   return (
     <Experimental_CssVarsProvider theme={theme}>
       <CssBaseline />
       <Box css={appWrapperCSS}>
         <Message />
-        <Header toggleSidebar={toggleSidebar} />
+        <Header />
         <QueueMode />
-        <Workspaces toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
       </Box>
       <RenderModal />
     </Experimental_CssVarsProvider>

@@ -1,51 +1,33 @@
-import MenuIcon from '@mui/icons-material/Menu'
 import { Box, css, IconButton, Tooltip, Typography } from '@mui/material'
-import { useCallback, useContext, useMemo } from 'react'
+import { useCallback } from 'react'
 
 import SettingsIcon from '@mui/icons-material/Settings'
-import { context } from 'Context'
-import db, { DEFAULT_WORKSPACE } from 'database'
-import { useLiveQuery } from 'dexie-react-hooks'
 import { ModalID } from 'modals'
 import { activeModalSignal } from '../signals'
 
 const Title = () => {
-  const { state: { activeWorkspaceId } } = useContext(context)
-
-  const workspace = useLiveQuery(async () => {
-    const result = await db.workspaces.where('id').equals(activeWorkspaceId).first()
-    return result ?? { name: 'Todo Today', id: DEFAULT_WORKSPACE.id }
-  }, [activeWorkspaceId])
-
-  const header = useMemo(() => {
-    if (workspace) {
-      return workspace.name
-    }
-    return 'Todo Today'
-  }, [workspace])
-
   return (
     <Box css={titleCSS}>
       <Typography variant="h1">
-        {header}
+        Todo Today
       </Typography>
       <Typography variant="h1">
-        {header}
+        Todo Today
       </Typography>
       <Typography variant="h1">
-        {header}
+        Todo Today
       </Typography>
       <Typography variant="h1">
-        {header}
+        Todo Today
       </Typography>
       <Typography variant="h1">
-        {header}
+        Todo Today
       </Typography>
     </Box >
   )
 }
 
-const Header = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
+const Header = () => {
   const handleSettings = useCallback(() => {
     activeModalSignal.value = { id: ModalID.SETTINGS_MODAL }
   }, [])
@@ -53,17 +35,6 @@ const Header = ({ toggleSidebar }: { toggleSidebar: () => void }) => {
   return (
     <Box css={headerCSS}>
       <Box css={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-        <Tooltip title="Change Workspace">
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
-            onClick={toggleSidebar}
-            sx={{ mr: 2 }}
-          >
-            <MenuIcon />
-          </IconButton>
-        </Tooltip>
         <Title />
       </Box>
       <Box css={navigationCSS}>

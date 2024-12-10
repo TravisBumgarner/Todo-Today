@@ -7,13 +7,14 @@ import moment from 'moment'
 import { useCallback, useContext, useState } from 'react'
 import { v4 as uuid4 } from 'uuid'
 
+import { useSignals } from '@preact/signals-react/runtime'
 import { context } from 'Context'
 import database from 'database'
 import { ModalID } from 'modals'
 import { globalContentWrapperCSS } from 'theme'
-import { DATE_ISO_DATE_MOMENT_STRING, ETaskStatus, type TDateISODate, type TTask, type TTodoListItem } from 'types'
+import { DATE_ISO_DATE_MOMENT_STRING, ETaskStatus, type TTask, type TTodoListItem } from 'types'
 import { TASK_STATUS_IS_ACTIVE, formatDateDisplayString, formatDateKeyLookup } from 'utilities'
-import { activeModalSignal } from '../signals'
+import { activeModalSignal, selectedDateSignal } from '../signals'
 import QueueItem, { type QueueItemEntry } from './QueueItem'
 
 export const emptyTodoListCSS = css`
@@ -38,17 +39,15 @@ const reorder = (list: any[], startIndex: number, endIndex: number) => {
   return result
 }
 
-const EmptyTodoList = ({ selectedDate }: { selectedDate: TDateISODate }) => {
-  const { state: { activeWorkspaceId } } = useContext(context)
-
+const EmptyTodoList = () => {
+  useSignals()
   const getPreviousDatesTasks = useCallback(async () => {
-    const lastEntry = (await database.todoListItems.where('workspaceId').equals(activeWorkspaceId).sortBy('todoListDate')).filter(entry => entry.todoListDate < selectedDate).reverse()[0]
+    const lastEntry = (await database.todoListItems.toArray()).filter(entry => entry.todoListDate < selectedDateSignal.value).reverse()[0]
 
     if (lastEntry) {
       const previousDay = await database.todoListItems
         .where({
-          todoListDate: lastEntry.todoListDate,
-          workspaceId: activeWorkspaceId
+          todoListDate: lastEntry.todoListDate
         })
         .toArray()
 
@@ -70,9 +69,8 @@ const EmptyTodoList = ({ selectedDate }: { selectedDate: TDateISODate }) => {
             await database.todoListItems.add({
               taskId,
               id: uuid4(),
-              todoListDate: selectedDate,
-              sortOrder: index,
-              workspaceId: activeWorkspaceId
+              todoListDate: selectedDateSignal.value,
+              sortOrder: index
             })
           }
         })
@@ -84,7 +82,7 @@ const EmptyTodoList = ({ selectedDate }: { selectedDate: TDateISODate }) => {
         body: 'There is nothing to copy from the previous day'
       }
     }
-  }, [activeWorkspaceId, selectedDate])
+  }, [])
 
   const showManagementModal = useCallback(() => {
     activeModalSignal.value = { id: ModalID.SELECT_TASKS_MODAL }
@@ -124,16 +122,16 @@ const EmptyTodoList = ({ selectedDate }: { selectedDate: TDateISODate }) => {
 }
 
 const TodoList = () => {
-  const { state: { activeWorkspaceId, restoreInProgress } } = useContext(context)
+  useSignals()
+  const { state: { restoreInProgress } } = useContext(context)
   const [selectedDateActiveEntries, setSelectedDateActiveEntries] = useState<QueueItemEntry[]>([])
   const [selectedDateInactiveEntries, setSelectedDateInactiveEntries] = useState<QueueItemEntry[]>([])
   const [showArchive, setShowArchive] = useState(false)
-  const [selectedDate, setSelectedDate] = useState<TDateISODate>(formatDateKeyLookup(moment()))
 
   useLiveQuery(
     async () => {
       const todoListItems = await database.todoListItems
-        .where({ todoListDate: selectedDate, workspaceId: activeWorkspaceId })
+        .where({ todoListDate: selectedDateSignal.value })
         .toArray()
 
       const entries = await Promise.all(todoListItems.map(async todoListItem => {
@@ -151,7 +149,7 @@ const TodoList = () => {
       setSelectedDateActiveEntries(activeEntries)
       setSelectedDateInactiveEntries(inactiveEntries)
     },
-    [selectedDate, activeWorkspaceId]
+    [selectedDateSignal.value]
   )
 
   const showManagementModal = useCallback(() => {
@@ -163,15 +161,15 @@ const TodoList = () => {
   }, [])
 
   const setPreviousDate = useCallback(() => {
-    setSelectedDate(formatDateKeyLookup(moment(selectedDate, DATE_ISO_DATE_MOMENT_STRING).subtract(1, 'day')))
-  }, [selectedDate])
+    selectedDateSignal.value = formatDateKeyLookup(moment(selectedDateSignal.value, DATE_ISO_DATE_MOMENT_STRING).subtract(1, 'day'))
+  }, [])
 
   const getNextDate = useCallback(() => {
-    setSelectedDate(formatDateKeyLookup(moment(selectedDate, DATE_ISO_DATE_MOMENT_STRING).add(1, 'day')))
-  }, [selectedDate])
+    selectedDateSignal.value = formatDateKeyLookup(moment(selectedDateSignal.value, DATE_ISO_DATE_MOMENT_STRING).add(1, 'day'))
+  }, [])
 
   const getToday = useCallback(() => {
-    setSelectedDate(formatDateKeyLookup(moment()))
+    selectedDateSignal.value = formatDateKeyLookup(moment())
   }, [])
 
   // Laziness for types lol
@@ -224,14 +222,14 @@ const TodoList = () => {
         <Box>
           <ButtonGroup>
             <Button variant='contained' onClick={setPreviousDate}>&lt;</Button>
-            <Button variant='contained' css={todayButtonCSS} onClick={getToday}><span>{formatDateDisplayString(selectedDate)}</span></Button>
+            <Button variant='contained' css={todayButtonCSS} onClick={getToday}><span>{formatDateDisplayString(selectedDateSignal.value)}</span></Button>
             <Button variant='contained' onClick={getNextDate}>&gt;</Button>
           </ButtonGroup>
         </Box>
       </Box>
 
       <Box css={globalContentWrapperCSS}>
-        {selectedDateActiveEntries.length === 0 && selectedDateInactiveEntries.length === 0 && <EmptyTodoList selectedDate={selectedDate} />}
+        {selectedDateActiveEntries.length === 0 && selectedDateInactiveEntries.length === 0 && <EmptyTodoList />}
         {selectedDateActiveEntries.length > 0 && (
           <DragDropContext onDragEnd={onDragEnd}>
             <Droppable droppableId="droppable">

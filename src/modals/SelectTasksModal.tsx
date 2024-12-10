@@ -1,15 +1,15 @@
 import CheckIcon from '@mui/icons-material/Check'
 import { Box, Button, IconButton, Typography, css } from '@mui/material'
 import { useLiveQuery } from 'dexie-react-hooks'
-import { useCallback, useContext, useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { v4 as uuid4 } from 'uuid'
 
-import { context } from 'Context'
+import { useSignals } from '@preact/signals-react/runtime'
 import database from 'database'
 import { EmptyStateDisplay } from 'sharedComponents'
 import { ETaskStatus, type TTask } from 'types'
 import { getNextSortOrderValue, sortStrings } from 'utilities'
-import { activeModalSignal } from '../signals'
+import { activeModalSignal, selectedDateSignal } from '../signals'
 import Modal, { MODAL_MAX_HEIGHT } from './Modal'
 import { ModalID } from './RenderModal'
 
@@ -19,27 +19,22 @@ interface TaskProps {
 }
 
 const Task = ({ task, isSelected }: TaskProps) => {
-  const { state: { activeWorkspaceId } } = useContext(context)
-
-  // todo resolve
-  const selectedDate = '2024-01-01'
-
+  useSignals()
   const handleSelect = async () => {
-    const nextSortOrder = await getNextSortOrderValue(selectedDate)
+    const nextSortOrder = await getNextSortOrderValue(selectedDateSignal.value)
 
     await database.todoListItems.add({
       taskId: task.id,
       id: uuid4(),
-      todoListDate: selectedDate,
-      sortOrder: nextSortOrder,
-      workspaceId: activeWorkspaceId
+      todoListDate: selectedDateSignal.value,
+      sortOrder: nextSortOrder
     })
   }
 
   const handleDeselect = async () => {
     await database.todoListItems
       .where('taskId').equals(task.id)
-      .and(item => item.todoListDate === selectedDate)
+      .and(item => item.todoListDate === selectedDateSignal.value)
       .delete()
   }
 
@@ -70,12 +65,11 @@ const tasksHeaderCSS = css`
 `
 
 const ManageTodoListItemsModal = () => {
-  // todo resolve
-  const selectedDate = '2024-01-01'
+  useSignals()
 
   const tasks = useLiveQuery(async () => await database.tasks.where('status').anyOf(ETaskStatus.BLOCKED, ETaskStatus.NEW, ETaskStatus.IN_PROGRESS).toArray())
 
-  const todoListItems = useLiveQuery(async () => await database.todoListItems.where({ todoListDate: selectedDate }).toArray(), [selectedDate])
+  const todoListItems = useLiveQuery(async () => await database.todoListItems.where({ todoListDate: selectedDateSignal.value }).toArray())
   const selectedTaskIds = todoListItems?.map(({ taskId }) => taskId)
 
   const showAddNewTaskModal = useCallback(() => {

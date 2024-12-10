@@ -22,15 +22,8 @@ export interface TTask {
 export interface TTodoListItem {
   taskId: string
   todoListDate: TDateISODate
-  workspaceId: string
   id: string
   sortOrder: number
-}
-
-export enum EBackupInterval {
-  DAILY = 'DAILY',
-  WEEKLY = 'WEEKLY',
-  OFF = 'OFF'
 }
 
 export enum EColorTheme {
@@ -42,11 +35,4 @@ export enum EColorTheme {
 
 export interface TSettings {
   colorTheme: EColorTheme
-  backupInterval: EBackupInterval
-  backupDir: string
-}
-
-export interface TWorkspace {
-  name: string
-  id: string
 }

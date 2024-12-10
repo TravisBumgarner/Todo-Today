@@ -4,13 +4,7 @@ import { Icons } from 'sharedComponents'
 
 import database from 'database'
 import { type AppStartIPCFromMain, type AsyncMessageIPCFromRenderer, type ESyncMessageIPC, type SyncMessageIPCFromRenderer } from 'shared/types'
-import { DATE_ISO_DATE_MOMENT_STRING, EBackupInterval, EColorTheme, ETaskStatus, type TDateISODate } from './types'
-
-const backupIntervalLookup: Record<EBackupInterval, string> = {
-  [EBackupInterval.DAILY]: 'Every Day',
-  [EBackupInterval.WEEKLY]: 'Every Week',
-  [EBackupInterval.OFF]: 'Off'
-}
+import { DATE_ISO_DATE_MOMENT_STRING, EColorTheme, ETaskStatus, type TDateISODate } from './types'
 
 export const TASK_STATUS_IS_ACTIVE: Record<ETaskStatus, boolean> = {
   [ETaskStatus.CANCELED]: false,
@@ -68,15 +62,8 @@ const saveFile = async (fileName: string, jsonData: unknown) => {
   })
   a.click()
 }
-
 export interface TLocalStorage {
-  backupDir: string
-  lastBackup: string
-  hasDoneWarmStart: boolean
   colorTheme: EColorTheme
-  backupInterval: EBackupInterval
-  concurrentTodoListItems: number
-  activeWorkspaceId: string
 }
 
 const getLocalStorage = (key: keyof TLocalStorage) => {
@@ -84,6 +71,8 @@ const getLocalStorage = (key: keyof TLocalStorage) => {
   return result ? JSON.parse(result) : ''
 }
 
+// This'll need to be rethought.
+// eslint-disable-next-line
 const setLocalStorage = <T extends TLocalStorage>(key: keyof T, value: T[keyof T]) => {
   localStorage.setItem(key as string, JSON.stringify(value))
 }
@@ -140,7 +129,7 @@ const taskStatusIcon = (taskStatus: ETaskStatus) => {
 }
 
 export {
-  backupIntervalLookup, colorThemeOptionLabels, formatDateDisplayString,
+  colorThemeOptionLabels, formatDateDisplayString,
   formatDateKeyLookup,
   formatDurationDisplayString, getLocalStorage, saveFile, sendAsyncIPCMessage, sendSyncIPCMessage, setLocalStorage, sumArray, taskStatusIcon, taskStatusLookup
 }
