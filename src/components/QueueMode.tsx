@@ -33,8 +33,7 @@ export const emptyTodoListCSS = css`
 const EmptyTodoList = () => {
   useSignals()
   const getPreviousDatesTasks = useCallback(async () => {
-    const lastEntry = (await database.todoListItems.toArray()).filter(entry => entry.todoListDate < selectedDateSignal.value).reverse()[0]
-
+    const lastEntry = await database.todoListItems.where('todoListDate').below(selectedDateSignal.value).reverse().first()
     if (lastEntry) {
       const previousDay = await database.todoListItems
         .where({
