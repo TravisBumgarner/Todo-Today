@@ -16,14 +16,13 @@ export interface TTask {
   id: string
   title: string
   status: ETaskStatus
-  details?: string // Migrated from TTodoListItem. Not every task has details.
+  details: string
 }
 
 export interface TTodoListItem {
   taskId: string
   todoListDate: TDateISODate
   id: string
-  sortOrder: number
 }
 
 export enum EColorTheme {

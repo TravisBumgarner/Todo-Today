@@ -9,7 +9,7 @@ class MySubClassedDexie extends Dexie {
     super('todo-today')
     this.version(14).stores({
       tasks: 'id, title, status, details, createdAt',
-      todoListItems: 'id, taskId, todoListDate, sortOrder, createdAt'
+      todoListItems: 'id, taskId, todoListDate, createdAt'
     })
   }
 }

@@ -90,12 +90,6 @@ const sendSyncIPCMessage = async <T extends SyncMessageIPCFromRenderer>(
   )) as MessageReturnTypeMap[T['type']]
 }
 
-export const getNextSortOrderValue = async (selectedDate: TDateISODate): Promise<number> => {
-  const todoListItems = await database.todoListItems.where('todoListDate').equals(selectedDate).toArray()
-  const lastTodoListItem = todoListItems.sort((a, b) => a.sortOrder - b.sortOrder).pop()
-  return lastTodoListItem?.sortOrder ? lastTodoListItem?.sortOrder + 1 : 0
-}
-
 const sendAsyncIPCMessage = <T extends AsyncMessageIPCFromRenderer>(
   message: T
 ) => {

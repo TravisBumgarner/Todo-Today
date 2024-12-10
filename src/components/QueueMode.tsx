@@ -1,4 +1,3 @@
-import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd'
 import { ChevronRight } from '@mui/icons-material'
 import { Box, Button, ButtonGroup, Stack, ToggleButton, Tooltip, Typography, css } from '@mui/material'
 import { useLiveQuery } from 'dexie-react-hooks'
@@ -12,7 +11,7 @@ import { context } from 'Context'
 import database from 'database'
 import { ModalID } from 'modals'
 import { globalContentWrapperCSS } from 'theme'
-import { DATE_ISO_DATE_MOMENT_STRING, ETaskStatus, type TTask, type TTodoListItem } from 'types'
+import { DATE_ISO_DATE_MOMENT_STRING, ETaskStatus, type TTask } from 'types'
 import { TASK_STATUS_IS_ACTIVE, formatDateDisplayString, formatDateKeyLookup } from 'utilities'
 import { activeModalSignal, selectedDateSignal } from '../signals'
 import QueueItem, { type QueueItemEntry } from './QueueItem'
@@ -30,14 +29,6 @@ export const emptyTodoListCSS = css`
       text-align: center;
     }
 `
-
-const reorder = (list: any[], startIndex: number, endIndex: number) => {
-  const result = Array.from(list)
-  const [removed] = result.splice(startIndex, 1)
-  result.splice(endIndex, 0, removed)
-
-  return result
-}
 
 const EmptyTodoList = () => {
   useSignals()
@@ -58,7 +49,7 @@ const EmptyTodoList = () => {
           body: 'There is nothing to copy from the previous day'
         }
       } else {
-        void previousDay.map(async ({ taskId }, index) => {
+        void previousDay.map(async ({ taskId }) => {
           const task = await database.tasks.where('id').equals(taskId).first()
 
           if (
@@ -69,8 +60,7 @@ const EmptyTodoList = () => {
             await database.todoListItems.add({
               taskId,
               id: uuid4(),
-              todoListDate: selectedDateSignal.value,
-              sortOrder: index
+              todoListDate: selectedDateSignal.value
             })
           }
         })
@@ -172,28 +162,6 @@ const TodoList = () => {
     selectedDateSignal.value = formatDateKeyLookup(moment())
   }, [])
 
-  // Laziness for types lol
-  const onDragEnd = async (result: any) => {
-    // Sorting order gets updated a little weirdly if data goes all the way to Dexie and back.
-    // That's why we call set state at the end of this function.
-    if (!selectedDateActiveEntries || !result.destination) return
-
-    const source = selectedDateActiveEntries[result.source.index]
-    const destination = selectedDateActiveEntries[result.destination.index]
-    if (!source || !destination) {
-      return
-    }
-    const reordered = reorder(selectedDateActiveEntries, result.source.index, result.destination.index)
-    await Promise.all(reordered.map(({ id }, index) => {
-      void database.todoListItems.where('id').equals(id).modify((i: TTodoListItem) => {
-        i.sortOrder = index
-      })
-      return null
-    }))
-
-    setSelectedDateActiveEntries(reordered)
-  }
-
   const toggleShowArchive = useCallback(() => { setShowArchive(prev => !prev) }, [])
 
   if (restoreInProgress) {
@@ -231,57 +199,30 @@ const TodoList = () => {
       <Box css={globalContentWrapperCSS}>
         {selectedDateActiveEntries.length === 0 && selectedDateInactiveEntries.length === 0 && <EmptyTodoList />}
         {selectedDateActiveEntries.length > 0 && (
-          <DragDropContext onDragEnd={onDragEnd}>
-            <Droppable droppableId="droppable">
-              {(provided, snapshot) => (
-                <div
-                  {...provided.droppableProps}
-                  ref={provided.innerRef}
+          selectedDateActiveEntries.map((it) => (
+            <QueueItem key={it.id} {...it} />
+          )))
+        }
+        {
+          (selectedDateInactiveEntries.length > 0) && (
+            <>
+              <Stack direction="row" css={css`margin-bottom: 0.5rem;`}>
+                <Typography variant="h2">Archive</Typography>
+                <ToggleButton
+                  size='small'
+                  value="text"
+                  onChange={toggleShowArchive}
+                  css={{ marginLeft: '0.5rem' }}
                 >
-                  {selectedDateActiveEntries.map((it, index) => (
-                    <Draggable
-                      key={it.id}
-                      draggableId={it.id}
-                      index={index}
-                    >
-                      {(provided) => (
-                        <div
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                          style={dragItemCSS(snapshot.isDraggingOver, provided.draggableProps.style)}
-                        >
-                          <QueueItem {...it}
-                          />
-                        </div>
-                      )}
-                    </Draggable>
-                  ))
-                  }
-                  {provided.placeholder}
-                </div >
-              )}
-            </Droppable >
-          </DragDropContext >
-        )}
-        {(selectedDateInactiveEntries.length > 0) && (
-          <>
-            <Stack direction="row" css={css`margin-bottom: 0.5rem;`}>
-              <Typography variant="h2">Archive</Typography>
-              <ToggleButton
-                size='small'
-                value="text"
-                onChange={toggleShowArchive}
-                css={{ marginLeft: '0.5rem' }}
-              >
-                <Tooltip title="Show archive" >
-                  <ChevronRight fontSize="small" css={{ transform: `rotate(${showArchive ? '90deg' : '0deg'})` }} />
-                </Tooltip>
-              </ToggleButton>
-            </Stack>
-            {showArchive && selectedDateInactiveEntries.map((it) => <QueueItem key={it.id} {...it} />)}
-          </>
-        )}
+                  <Tooltip title="Show archive" >
+                    <ChevronRight fontSize="small" css={{ transform: `rotate(${showArchive ? '90deg' : '0deg'})` }} />
+                  </Tooltip>
+                </ToggleButton>
+              </Stack>
+              {showArchive && selectedDateInactiveEntries.map((it) => <QueueItem key={it.id} {...it} />)}
+            </>
+          )
+        }
       </Box >
     </ >
   )
@@ -292,13 +233,6 @@ export const buttonWrapperCSS = css`
   justify-content: space-between;
   margin-bottom: 1rem;
 `
-
-const dragItemCSS = (_isDragging: boolean, draggableStyle: any) => ({
-  cursor: 'pointer',
-
-  // styles we need to apply on draggables
-  ...draggableStyle
-})
 
 const todayButtonCSS = css`
   width: 220px;

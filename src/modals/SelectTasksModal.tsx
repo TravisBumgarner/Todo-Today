@@ -8,7 +8,7 @@ import { useSignals } from '@preact/signals-react/runtime'
 import database from 'database'
 import { EmptyStateDisplay } from 'sharedComponents'
 import { ETaskStatus, type TTask } from 'types'
-import { getNextSortOrderValue, sortStrings } from 'utilities'
+import { sortStrings } from 'utilities'
 import { activeModalSignal, selectedDateSignal } from '../signals'
 import Modal, { MODAL_MAX_HEIGHT } from './Modal'
 import { ModalID } from './RenderModal'
@@ -21,13 +21,10 @@ interface TaskProps {
 const Task = ({ task, isSelected }: TaskProps) => {
   useSignals()
   const handleSelect = async () => {
-    const nextSortOrder = await getNextSortOrderValue(selectedDateSignal.value)
-
     await database.todoListItems.add({
       taskId: task.id,
       id: uuid4(),
-      todoListDate: selectedDateSignal.value,
-      sortOrder: nextSortOrder
+      todoListDate: selectedDateSignal.value
     })
   }
 

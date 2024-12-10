@@ -7,7 +7,6 @@ import { v4 as uuid4 } from 'uuid'
 import database from 'database'
 import { ButtonWrapper, TaskStatusSelector } from 'sharedComponents'
 import { ETaskStatus, type TTask } from 'types'
-import { getNextSortOrderValue } from 'utilities'
 import { activeModalSignal, selectedDateSignal } from '../signals'
 import Modal from './Modal'
 
@@ -33,12 +32,10 @@ const AddTaskModal = () => {
     await database.tasks.add(newTask)
 
     if (addToSelectedDate === 'yes') {
-      const nextSortOrder = await getNextSortOrderValue(selectedDateSignal.value)
       await database.todoListItems.add({
         taskId,
         id: taskId,
-        todoListDate: selectedDateSignal.value,
-        sortOrder: nextSortOrder
+        todoListDate: selectedDateSignal.value
       })
     }
 
