@@ -2,7 +2,7 @@
 import CssBaseline from '@mui/material/CssBaseline'
 
 import { Box, Experimental_CssVarsProvider, css } from '@mui/material'
-import { useCallback, useState } from 'react'
+import { useState } from 'react'
 
 import RenderModal from 'modals'
 import { baseTheme, beachTheme, highContrastTheme, retroFutureTheme, underTheSeaTheme } from 'theme'
@@ -11,23 +11,12 @@ import { EColorTheme } from './types'
 
 import { useSignalEffect } from '@preact/signals-react'
 import { useSignals } from '@preact/signals-react/runtime'
-import { setLocalStorage } from 'utilities'
 import { useIPCAsyncMessageEffect } from './hooks/useIPCAsyncMessageEffect'
 import { isRestoringSignal, settingsSignal } from './signals'
 
 const App = () => {
   useSignals()
   const [theme, setTheme] = useState(baseTheme)
-
-  const syncSettingsToLocalStorage = useCallback(() => {
-    console.log('I run.')
-    if (settingsSignal.value) {
-      Object.entries(settingsSignal.value).forEach(([key, value]) => {
-        setLocalStorage(key as keyof typeof settingsSignal.value, value)
-      })
-    }
-  }, [])
-  useSignalEffect(syncSettingsToLocalStorage)
 
   useIPCAsyncMessageEffect()
 

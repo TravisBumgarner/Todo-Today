@@ -7,11 +7,13 @@ import { DATE_BACKUP_DATE } from 'shared/utilities'
 import { EColorTheme } from 'types'
 import {
   colorThemeOptionLabels,
-  saveFile
+  saveFile,
+  setLocalStorage
 } from 'utilities'
 import { activeModalSignal, isRestoringSignal, settingsSignal } from '../signals'
 import Modal from './Modal'
 import { ModalID } from './RenderModal'
+import { useSignalEffect } from '@preact/signals-react'
 
 const copyIndexedDBToObject = async () => {
   const data = {
@@ -23,6 +25,15 @@ const copyIndexedDBToObject = async () => {
 
 const Settings = () => {
   const [restoreFile, setRestoreFile] = useState<File | null>(null)
+
+  const syncSettingsToLocalStorage = useCallback(() => {
+    if (settingsSignal.value) {
+      Object.entries(settingsSignal.value).forEach(([key, value]) => {
+        setLocalStorage(key as keyof typeof settingsSignal.value, value)
+      })
+    }
+  }, [])
+  useSignalEffect(syncSettingsToLocalStorage)
 
   const handleBackup = async () => {
     const backupData = await copyIndexedDBToObject()
