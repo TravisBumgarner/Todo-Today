@@ -1,13 +1,13 @@
 import CheckIcon from '@mui/icons-material/Check'
 import { Box, Button, IconButton, Typography, css } from '@mui/material'
-import { useLiveQuery } from 'dexie-react-hooks'
-import { useCallback, useMemo } from 'react'
-import { v4 as uuid4 } from 'uuid'
+import { useCallback, useMemo, useState } from 'react'
 
 import { useSignals } from '@preact/signals-react/runtime'
-import database from 'database'
+import { queries } from 'database'
+import { useLiveQuery } from 'dexie-react-hooks'
 import { SPACING } from 'theme'
-import { ETaskStatus, type TTask } from 'types'
+import { type TTask, type TTodoList } from 'types'
+import { useAsyncEffect } from 'use-async-effect'
 import { sortStrings } from 'utilities'
 import { activeModalSignal, selectedDateSignal } from '../signals'
 import Modal, { MODAL_MAX_HEIGHT } from './Modal'
@@ -20,20 +20,13 @@ interface TaskProps {
 
 const Task = ({ task, isSelected }: TaskProps) => {
   useSignals()
-  const handleSelect = async () => {
-    await database.todoListItems.add({
-      taskId: task.id,
-      id: uuid4(),
-      todoListDate: selectedDateSignal.value
-    })
-  }
+  const handleSelect = useCallback(async () => {
+    await queries.addTaskToTodoList(selectedDateSignal.value, task.id)
+  }, [task.id])
 
-  const handleDeselect = async () => {
-    await database.todoListItems
-      .where('taskId').equals(task.id)
-      .and(item => item.todoListDate === selectedDateSignal.value)
-      .delete()
-  }
+  const handleDeselect = useCallback(async () => {
+    await queries.removeTaskFromTodoList(selectedDateSignal.value, task.id)
+  }, [task.id])
 
   return (
     <Box css={tasksHeaderCSS}>
@@ -42,7 +35,6 @@ const Task = ({ task, isSelected }: TaskProps) => {
         <IconButton color={isSelected ? 'secondary' : 'default'} onClick={isSelected ? handleDeselect : handleSelect}>
           <CheckIcon fontSize="small" />
         </IconButton>
-
       </Box>
     </Box >
   )
@@ -61,13 +53,22 @@ const tasksHeaderCSS = css`
   align-items: center;
 `
 
-const ManageTodoListItemsModal = () => {
+const SelectTasksModal = () => {
   useSignals()
+  const [tasks, setTasks] = useState<Record<string, TTask>>({})
+  const [todoList, setTodoList] = useState<TTodoList | null>(null)
 
-  const tasks = useLiveQuery(async () => await database.tasks.where('status').anyOf(ETaskStatus.BLOCKED, ETaskStatus.NEW, ETaskStatus.IN_PROGRESS).toArray())
+  useAsyncEffect(async (isMounted) => {
+    const tasks = await queries.getActiveTasks()
+    if (isMounted()) {
+      setTasks(tasks)
+    }
+  }, [])
 
-  const todoListItems = useLiveQuery(async () => await database.todoListItems.where({ todoListDate: selectedDateSignal.value }).toArray())
-  const selectedTaskIds = todoListItems?.map(({ taskId }) => taskId)
+  useLiveQuery(async () => {
+    const todoList = await queries.getAndCreateIfNotExistsTodoList(selectedDateSignal.value)
+    setTodoList(todoList)
+  }, [selectedDateSignal.value])
 
   const showAddNewTaskModal = useCallback(() => {
     activeModalSignal.value = { id: ModalID.ADD_TASK_MODAL }
@@ -78,7 +79,7 @@ const ManageTodoListItemsModal = () => {
   }, [])
 
   const content = useMemo(() => {
-    if (!tasks || tasks.length === 0) {
+    if (!tasks || Object.keys(tasks).length === 0) {
       return <Box>
         <Typography padding={`${SPACING.MEDIUM}px 0`} variant="body1">There are no Tasks to Work On</Typography>
         <Button
@@ -95,13 +96,13 @@ const ManageTodoListItemsModal = () => {
       <Box css={wrapperCSS}>
         <Box css={scrollWrapperCSS}>
           {
-            tasks
+            Object.values(tasks)
               .sort((a, b) => sortStrings(a.title, b.title))
               .map(task => (
                 <Task
                   key={task.id}
                   task={task}
-                  isSelected={selectedTaskIds?.includes(task.id) ?? false}
+                  isSelected={todoList?.taskIds.includes(task.id) ?? false}
                 />
               ))
           }
@@ -118,7 +119,7 @@ const ManageTodoListItemsModal = () => {
         </Box>
       </Box>
     )
-  }, [selectedTaskIds, tasks, showAddNewTaskModal, handleClose])
+  }, [tasks, todoList, showAddNewTaskModal, handleClose])
 
   return (
     <Modal
@@ -139,4 +140,4 @@ const wrapperCSS = css`
   height: 100%;
 `
 
-export default ManageTodoListItemsModal
+export default SelectTasksModal

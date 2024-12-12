@@ -24,7 +24,7 @@ export type ActiveModal =
 
 const RenderModal: FC = () => {
   useSignals()
-
+  
   if (!activeModalSignal.value?.id) return null
 
   switch (activeModalSignal.value.id) {

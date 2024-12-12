@@ -19,10 +19,9 @@ export interface TTask {
   details: string
 }
 
-export interface TTodoListItem {
-  taskId: string
-  todoListDate: TDateISODate
-  id: string
+export interface TTodoList {
+  date: TDateISODate
+  taskIds: string[]
 }
 
 export enum EColorTheme {

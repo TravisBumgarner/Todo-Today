@@ -1,8 +1,9 @@
 import { Box, Button, css, FormControl, InputLabel, MenuItem, Select, Typography, type SelectChangeEvent } from '@mui/material'
 import moment from 'moment'
 import { useCallback, useState } from 'react'
+import { useSignalEffect } from '@preact/signals-react'
 
-import database from 'database'
+import { database } from 'database'
 import { DATE_BACKUP_DATE } from 'shared/utilities'
 import { EColorTheme } from 'types'
 import {
@@ -13,7 +14,6 @@ import {
 import { activeModalSignal, isRestoringSignal, settingsSignal } from '../signals'
 import Modal from './Modal'
 import { ModalID } from './RenderModal'
-import { useSignalEffect } from '@preact/signals-react'
 
 const copyIndexedDBToObject = async () => {
   const data = {

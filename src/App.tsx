@@ -6,7 +6,7 @@ import { useState } from 'react'
 
 import RenderModal from 'modals'
 import { baseTheme, beachTheme, highContrastTheme, retroFutureTheme, SPACING, underTheSeaTheme } from 'theme'
-import { Footer, Message, QueueMode } from './components'
+import { Footer, Message, TodoList } from './components'
 import { EColorTheme } from './types'
 
 import { useSignalEffect } from '@preact/signals-react'
@@ -41,7 +41,7 @@ const App = () => {
       <Box css={appWrapperCSS}>
         <Message />
         <Footer />
-        <QueueMode />
+        <TodoList />
       </Box>
       <RenderModal />
     </Experimental_CssVarsProvider>
