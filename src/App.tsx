@@ -1,37 +1,24 @@
 // https://stackoverflow.com/questions/74542488/react-material-ui-createtheme-default-is-not-a-function
 import CssBaseline from '@mui/material/CssBaseline'
 
-import { Box, Experimental_CssVarsProvider, css } from '@mui/material'
-import { useCallback, useContext, useState } from 'react'
+import { Box, css, Experimental_CssVarsProvider } from '@mui/material'
+import { useState } from 'react'
 
-import Context, { context } from 'Context'
 import RenderModal from 'modals'
-import { baseTheme, beachTheme, highContrastTheme, retroFutureTheme, underTheSeaTheme } from 'theme'
-import { Header, Message, QueueMode } from './components'
+import { baseTheme, beachTheme, highContrastTheme, retroFutureTheme, SPACING, underTheSeaTheme } from 'theme'
+import { Footer, Message, QueueMode } from './components'
 import { EColorTheme } from './types'
 
 import { useSignalEffect } from '@preact/signals-react'
 import { useSignals } from '@preact/signals-react/runtime'
-import { setLocalStorage } from 'utilities'
 import { useIPCAsyncMessageEffect } from './hooks/useIPCAsyncMessageEffect'
-import { settingsSignal } from './signals'
+import { isRestoringSignal, settingsSignal } from './signals'
 
 const App = () => {
   useSignals()
   const [theme, setTheme] = useState(baseTheme)
 
-  const syncSettingsToLocalStorage = useCallback(() => {
-    if (settingsSignal.value) {
-      Object.entries(settingsSignal.value).forEach(([key, value]) => {
-        setLocalStorage(key as keyof typeof settingsSignal.value, value)
-      })
-    }
-  }, [])
-  useSignalEffect(() => {
-    syncSettingsToLocalStorage()
-  })
-  const { dispatch } = useContext(context)
-  useIPCAsyncMessageEffect(dispatch)
+  useIPCAsyncMessageEffect()
 
   useSignalEffect(() => {
     const THEME_MAP = {
@@ -44,12 +31,16 @@ const App = () => {
     setTheme(THEME_MAP[settingsSignal.value.colorTheme])
   })
 
+  if (isRestoringSignal.value) {
+    return <p>Loading...</p>
+  }
+
   return (
     <Experimental_CssVarsProvider theme={theme}>
       <CssBaseline />
       <Box css={appWrapperCSS}>
         <Message />
-        <Header />
+        <Footer />
         <QueueMode />
       </Box>
       <RenderModal />
@@ -58,22 +49,11 @@ const App = () => {
 }
 
 const appWrapperCSS = css`
-  padding: 0 0.5rem 0.5rem 0.5rem;
   max-width: 1200px;
   margin:0px auto;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-  height: 100vh;
-  overflow: hidden;
+  height: 100%;
+  box-sizing:  border-box;
+  padding: ${SPACING.MEDIUM}px;
 `
 
-const InjectedApp = () => {
-  return (
-    <Context>
-      <App />
-    </Context>
-  )
-}
-
-export default InjectedApp
+export default App

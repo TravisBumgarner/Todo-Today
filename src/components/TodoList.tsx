@@ -1,31 +1,25 @@
-import { ChevronRight } from '@mui/icons-material'
-import { Box, Button, ButtonGroup, Stack, ToggleButton, Tooltip, Typography, css } from '@mui/material'
+import { Box, Button, ButtonGroup, Typography, css } from '@mui/material'
 import { useLiveQuery } from 'dexie-react-hooks'
-import _ from 'lodash'
 import moment from 'moment'
-import { useCallback, useContext, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { v4 as uuid4 } from 'uuid'
 
 import { useSignals } from '@preact/signals-react/runtime'
-import { context } from 'Context'
 import database from 'database'
 import { ModalID } from 'modals'
-import { globalContentWrapperCSS } from 'theme'
 import { DATE_ISO_DATE_MOMENT_STRING, ETaskStatus, type TTask } from 'types'
-import { TASK_STATUS_IS_ACTIVE, formatDateDisplayString, formatDateKeyLookup } from 'utilities'
+import { formatDateDisplayString, formatDateKeyLookup } from 'utilities'
 import { activeModalSignal, selectedDateSignal } from '../signals'
-import QueueItem, { type QueueItemEntry } from './QueueItem'
+import QueueItem, { type QueueItemEntry } from './TodoItem'
 
 export const emptyTodoListCSS = css`
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    height: 100%;
 
     > div {
       height: 80px;
-      width: 800px;
       text-align: center;
     }
 `
@@ -113,10 +107,7 @@ const EmptyTodoList = () => {
 
 const TodoList = () => {
   useSignals()
-  const { state: { restoreInProgress } } = useContext(context)
-  const [selectedDateActiveEntries, setSelectedDateActiveEntries] = useState<QueueItemEntry[]>([])
-  const [selectedDateInactiveEntries, setSelectedDateInactiveEntries] = useState<QueueItemEntry[]>([])
-  const [showArchive, setShowArchive] = useState(false)
+  const [entries, setEntries] = useState<QueueItemEntry[]>([])
 
   useLiveQuery(
     async () => {
@@ -124,7 +115,7 @@ const TodoList = () => {
         .where({ todoListDate: selectedDateSignal.value })
         .toArray()
 
-      const entries = await Promise.all(todoListItems.map(async todoListItem => {
+      const newEntries = await Promise.all(todoListItems.map(async todoListItem => {
         const task = await database.tasks.where('id').equals(todoListItem.taskId).first() as TTask
 
         return {
@@ -135,9 +126,7 @@ const TodoList = () => {
         }
       }))
 
-      const [activeEntries, inactiveEntries] = _.partition(entries, entry => TASK_STATUS_IS_ACTIVE[entry.taskStatus])
-      setSelectedDateActiveEntries(activeEntries)
-      setSelectedDateInactiveEntries(inactiveEntries)
+      setEntries(newEntries)
     },
     [selectedDateSignal.value]
   )
@@ -161,12 +150,6 @@ const TodoList = () => {
   const getToday = useCallback(() => {
     selectedDateSignal.value = formatDateKeyLookup(moment())
   }, [])
-
-  const toggleShowArchive = useCallback(() => { setShowArchive(prev => !prev) }, [])
-
-  if (restoreInProgress) {
-    return null
-  }
 
   return (
     <>
@@ -196,34 +179,12 @@ const TodoList = () => {
         </Box>
       </Box>
 
-      <Box css={globalContentWrapperCSS}>
-        {selectedDateActiveEntries.length === 0 && selectedDateInactiveEntries.length === 0 && <EmptyTodoList />}
-        {selectedDateActiveEntries.length > 0 && (
-          selectedDateActiveEntries.map((it) => (
-            <QueueItem key={it.id} {...it} />
-          )))
-        }
-        {
-          (selectedDateInactiveEntries.length > 0) && (
-            <>
-              <Stack direction="row" css={css`margin-bottom: 0.5rem;`}>
-                <Typography variant="h2">Archive</Typography>
-                <ToggleButton
-                  size='small'
-                  value="text"
-                  onChange={toggleShowArchive}
-                  css={{ marginLeft: '0.5rem' }}
-                >
-                  <Tooltip title="Show archive" >
-                    <ChevronRight fontSize="small" css={{ transform: `rotate(${showArchive ? '90deg' : '0deg'})` }} />
-                  </Tooltip>
-                </ToggleButton>
-              </Stack>
-              {showArchive && selectedDateInactiveEntries.map((it) => <QueueItem key={it.id} {...it} />)}
-            </>
-          )
-        }
-      </Box >
+      {entries.length === 0 && <EmptyTodoList />}
+      {entries.length > 0 && (
+        entries.map((it) => (
+          <QueueItem key={it.id} {...it} />
+        )))
+      }
     </ >
   )
 }

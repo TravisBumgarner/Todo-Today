@@ -6,7 +6,7 @@ import { v4 as uuid4 } from 'uuid'
 
 import { useSignals } from '@preact/signals-react/runtime'
 import database from 'database'
-import { EmptyStateDisplay } from 'sharedComponents'
+import { SPACING } from 'theme'
 import { ETaskStatus, type TTask } from 'types'
 import { sortStrings } from 'utilities'
 import { activeModalSignal, selectedDateSignal } from '../signals'
@@ -79,13 +79,16 @@ const ManageTodoListItemsModal = () => {
 
   const content = useMemo(() => {
     if (!tasks || tasks.length === 0) {
-      return <EmptyStateDisplay message="There are no Tasks to Work On" callToActionButton={<Button
-        onClick={showAddNewTaskModal}
-        fullWidth
-        variant='contained'
-      >
-        Add New Task
-      </Button>} />
+      return <Box>
+        <Typography padding={`${SPACING.MEDIUM}px 0`} variant="body1">There are no Tasks to Work On</Typography>
+        <Button
+          onClick={showAddNewTaskModal}
+          fullWidth
+          variant='contained'
+        >
+          Add New Task
+        </Button>
+      </Box>
     }
 
     return (

@@ -2,7 +2,6 @@ import { ipcRenderer } from 'electron'
 import moment from 'moment'
 import { Icons } from 'sharedComponents'
 
-import database from 'database'
 import { type AppStartIPCFromMain, type AsyncMessageIPCFromRenderer, type ESyncMessageIPC, type SyncMessageIPCFromRenderer } from 'shared/types'
 import { DATE_ISO_DATE_MOMENT_STRING, EColorTheme, ETaskStatus, type TDateISODate } from './types'
 
@@ -126,4 +125,18 @@ export {
   colorThemeOptionLabels, formatDateDisplayString,
   formatDateKeyLookup,
   formatDurationDisplayString, getLocalStorage, saveFile, sendAsyncIPCMessage, sendSyncIPCMessage, setLocalStorage, sumArray, taskStatusIcon, taskStatusLookup
+}
+
+export const mergeDeep = (target: any, source: any) => {
+  for (const key in source) {
+    if (source[key] && typeof source[key] === 'object') {
+      if (!target[key]) {
+        target[key] = {}
+      }
+      mergeDeep(target[key], source[key])
+    } else {
+      target[key] = source[key]
+    }
+  }
+  return target
 }
