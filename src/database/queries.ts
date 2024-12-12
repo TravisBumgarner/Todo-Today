@@ -55,3 +55,7 @@ export const setPreviousDayTasksForSelectedDate = async (date: TDateISODate) => 
     await getAndCreateIfNotExistsTodoList(date)
     await database.todoList.where('date').equals(date).modify({ taskIds: [...previousDayActiveTasks] })
 }
+
+export const reorderTasks = async (date: TDateISODate, taskIds: string[]) => {
+    await database.todoList.where('date').equals(date).modify({ taskIds })
+}

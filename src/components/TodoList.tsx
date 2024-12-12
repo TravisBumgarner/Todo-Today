@@ -1,10 +1,11 @@
 import { Box, Button, ButtonGroup, css } from '@mui/material'
 import { useLiveQuery } from 'dexie-react-hooks'
+import { Reorder } from 'framer-motion'
 import moment from 'moment'
 import { useCallback, useState } from 'react'
 
 import { useSignals } from '@preact/signals-react/runtime'
-import { database } from 'database'
+import { database, queries } from 'database'
 import { ModalID } from 'modals'
 import { DATE_ISO_DATE_MOMENT_STRING } from 'types'
 import { formatDateDisplayString, formatDateKeyLookup } from 'utilities'
@@ -25,6 +26,10 @@ const TodoList = () => {
     },
     [selectedDateSignal.value]
   )
+
+  const onReorder = useCallback(async (newTaskIds: string[]) => {
+    await queries.reorderTasks(selectedDateSignal.value, newTaskIds)
+  }, [])
 
   const showManagementModal = useCallback(() => {
     activeModalSignal.value = { id: ModalID.SELECT_TASKS_MODAL }
@@ -76,10 +81,14 @@ const TodoList = () => {
 
       {taskIds.length === 0 && <EmptyTodoList />}
       {taskIds.length > 0 && (
-        taskIds.map((taskId) => (
-          <TodoItem key={taskId} taskId={taskId} />
-        )))
-      }
+        <Reorder.Group axis="y" values={taskIds} onReorder={onReorder} style={{ padding: 0 }}>
+          {taskIds.map((taskId) => (
+            <Reorder.Item key={taskId} value={taskId} style={{ listStyle: 'none' }}>
+              <TodoItem key={taskId} taskId={taskId} />
+            </Reorder.Item>
+          ))}
+        </Reorder.Group>
+      )}
     </ >
   )
 }
