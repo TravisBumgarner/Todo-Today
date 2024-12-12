@@ -23,7 +23,7 @@ export default defineConfig(({ command }) => {
         theme: path.resolve(__dirname, 'src/theme.tsx'),
         colors: path.resolve(__dirname, 'src/colors.tsx'),
         utilities: path.resolve(__dirname, 'src/utilities.tsx'),
-        database: path.resolve(__dirname, 'src/database.ts'),
+        database: path.resolve(__dirname, 'src/database/index.ts'),
         shared: path.resolve(__dirname, 'shared/'),
       },
     },

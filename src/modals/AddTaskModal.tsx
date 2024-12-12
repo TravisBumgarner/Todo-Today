@@ -4,7 +4,7 @@ import { Box, Button, InputLabel, TextField, ToggleButton, ToggleButtonGroup, To
 import { useCallback, useState } from 'react'
 import { v4 as uuid4 } from 'uuid'
 
-import database from 'database'
+import { queries } from 'database'
 import { ButtonWrapper, TaskStatusSelector } from 'sharedComponents'
 import { ETaskStatus, type TTask } from 'types'
 import { activeModalSignal, selectedDateSignal } from '../signals'
@@ -29,15 +29,8 @@ const AddTaskModal = () => {
       details
     }
 
-    await database.tasks.add(newTask)
-
-    if (addToSelectedDate === 'yes') {
-      await database.todoListItems.add({
-        taskId,
-        id: taskId,
-        todoListDate: selectedDateSignal.value
-      })
-    }
+    await queries.addTask(newTask)
+    if (addToSelectedDate === 'yes') await queries.addTaskToTodoList(selectedDateSignal.value, taskId)
 
     activeModalSignal.value = null
   }

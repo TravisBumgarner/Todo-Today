@@ -5,24 +5,31 @@ import { Box, Button, Card, IconButton, TextField, Tooltip, Typography, css } fr
 import ToggleButton from '@mui/material/ToggleButton'
 import { useCallback, useState, type ChangeEvent } from 'react'
 
-import database from 'database'
+import { useSignalEffect } from '@preact/signals-react'
+import { database } from 'database'
 import { TaskStatusSelector } from 'sharedComponents'
-import { type ETaskStatus } from 'types'
+import { ETaskStatus } from 'types'
+import { selectedDateSignal } from '../signals'
 
-export interface QueueItemEntry {
-  id: string
+export interface TTodoItem {
   taskId: string
-  todoListDate: string
-  taskTitle: string
-  taskStatus: ETaskStatus
-  taskDetails?: string
 }
 
-const QueueItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTitle }: QueueItemEntry) => {
-  const [showDetails, setShowDetails] = useState(initialDetails ? initialDetails.length > 0 : false)
-  const [details, setDetails] = useState(initialDetails ?? '') // Undo doesn't work if synced directly to DB. Might be a more elegant solution, but for now, this works.
+const TodoItem = ({ taskId }: TTodoItem) => {
+  const [showDetails, setShowDetails] = useState(false)
+  const [details, setDetails] = useState('') // Undo doesn't work if synced directly to DB. Might be a more elegant solution, but for now, this works.
   const [isEditingTitle, setIsEditingTitle] = useState(false)
-  const [tempTitle, setTempTitle] = useState(taskTitle)
+  const [tempTitle, setTempTitle] = useState('')
+  const [status, setStatus] = useState(ETaskStatus.NEW)
+
+  useSignalEffect(() => {
+    void database.tasks.where('id').equals(taskId).first().then((task) => {
+      setTempTitle(task?.title ?? '')
+      setStatus(task?.status ?? ETaskStatus.NEW)
+      setDetails(task?.details ?? '')
+      setShowDetails(!!task?.details)
+    })
+  })
 
   const toggleShowDetails = useCallback(() => { setShowDetails(prev => !prev) }, [])
 
@@ -41,8 +48,9 @@ const QueueItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTi
   }, [taskId])
 
   const handleRemoveFromToday = useCallback(async () => {
-    await database.todoListItems.where({ id }).delete()
-  }, [id])
+    const todoList = await database.todoList.where('date').equals(selectedDateSignal.value).first()
+    await database.todoList.where('date').equals(selectedDateSignal.value).modify({ taskIds: todoList?.taskIds.filter(id => id !== taskId) ?? [] })
+  }, [taskId])
 
   const handleEdit = useCallback(() => {
     setIsEditingTitle(true)
@@ -66,7 +74,7 @@ const QueueItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTi
       <Box css={headerCSS(showDetails)}>
         <Box css={leftHeaderCSS}>
           <Box>
-            <TaskStatusSelector handleStatusChangeCallback={handleStatusChange} taskStatus={taskStatus} showLabel={false} />
+            <TaskStatusSelector handleStatusChangeCallback={handleStatusChange} taskStatus={status} showLabel={false} />
           </Box>
           <Box css={{ marginLeft: '1rem' }}>
             {
@@ -78,7 +86,7 @@ const QueueItem = ({ id, taskId, taskDetails: initialDetails, taskStatus, taskTi
                 </Box>
                 : <>
                   <Button onClick={handleEdit} css={textEditButtonCSS}>
-                    <Typography css={headerTextCSS} variant="h2">{taskTitle}</Typography>
+                    <Typography css={headerTextCSS} variant="h2">{tempTitle}</Typography>
                   </Button>
                 </>
             }
@@ -157,4 +165,4 @@ padding: 0.5rem;
 margin-bottom: 0.5rem;
 `
 
-export default QueueItem
+export default TodoItem

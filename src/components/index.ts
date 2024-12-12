@@ -1,8 +1,8 @@
 import Footer from './Footer'
 import Message from './Message'
-import QueueMode from './TodoList'
+import TodoList from './TodoList'
 
 export {
   Footer,
-  Message, QueueMode
+  Message, TodoList
 }
