@@ -12,3 +12,8 @@
   border: solid 3px var(--mui-palette-background-default);
   border-radius: 10px;
 }
+
+html, body, #root {
+  height: 100%;
+}
+

@@ -1,12 +1,12 @@
 // https://stackoverflow.com/questions/74542488/react-material-ui-createtheme-default-is-not-a-function
 import CssBaseline from '@mui/material/CssBaseline'
 
-import { Box, Experimental_CssVarsProvider, css } from '@mui/material'
+import { Box, css, Experimental_CssVarsProvider } from '@mui/material'
 import { useState } from 'react'
 
 import RenderModal from 'modals'
-import { baseTheme, beachTheme, highContrastTheme, retroFutureTheme, underTheSeaTheme } from 'theme'
-import { Header, Message, QueueMode } from './components'
+import { baseTheme, beachTheme, highContrastTheme, retroFutureTheme, SPACING, underTheSeaTheme } from 'theme'
+import { Footer, Message, QueueMode } from './components'
 import { EColorTheme } from './types'
 
 import { useSignalEffect } from '@preact/signals-react'
@@ -40,7 +40,7 @@ const App = () => {
       <CssBaseline />
       <Box css={appWrapperCSS}>
         <Message />
-        <Header />
+        <Footer />
         <QueueMode />
       </Box>
       <RenderModal />
@@ -49,14 +49,11 @@ const App = () => {
 }
 
 const appWrapperCSS = css`
-  padding: 0 0.5rem 0.5rem 0.5rem;
   max-width: 1200px;
   margin:0px auto;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-  height: 100vh;
-  overflow: hidden;
+  height: 100%;
+  box-sizing:  border-box;
+  padding: ${SPACING.MEDIUM}px;
 `
 
 export default App

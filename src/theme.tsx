@@ -1,6 +1,5 @@
-import { css, experimental_extendTheme as extendTheme, type ThemeOptions } from '@mui/material/styles'
-import _ from 'lodash'
-import { HEADER_HEIGHT } from './components/Header'
+import { experimental_extendTheme as extendTheme, type ThemeOptions } from '@mui/material/styles'
+import { mergeDeep } from 'utilities'
 
 const baseThemeOptions: ThemeOptions = {
   typography: {
@@ -145,15 +144,19 @@ const highContrastThemeOptions = {
 }
 
 export const baseTheme = extendTheme(baseThemeOptions)
-export const beachTheme = extendTheme(_.merge(baseThemeOptions, beachThemeOptions))
-export const highContrastTheme = extendTheme(_.merge(baseThemeOptions, highContrastThemeOptions))
-export const retroFutureTheme = extendTheme(_.merge(baseThemeOptions, retroFutureThemeOptions))
-export const underTheSeaTheme = extendTheme(_.merge(baseThemeOptions, underTheSeaThemeOptions))
+export const beachTheme = extendTheme(mergeDeep(baseThemeOptions, beachThemeOptions))
+export const highContrastTheme = extendTheme(mergeDeep(baseThemeOptions, highContrastThemeOptions))
+export const retroFutureTheme = extendTheme(mergeDeep(baseThemeOptions, retroFutureThemeOptions))
+export const underTheSeaTheme = extendTheme(mergeDeep(baseThemeOptions, underTheSeaThemeOptions))
 
 export const BUTTONS_WRAPPER_HEIGHT = 36
 
-export const globalContentWrapperCSS = css`
-  overflow: auto;
-  height: calc(100vh - ${BUTTONS_WRAPPER_HEIGHT}px - ${HEADER_HEIGHT}px);
-  margin: 0;
-`
+export const SPACING = {
+  XXSMALL: 4,
+  XSMALL: 8,
+  SMALL: 12,
+  MEDIUM: 16,
+  LARGE: 24,
+  XLARGE: 32,
+  XXLARGE: 48
+} as const

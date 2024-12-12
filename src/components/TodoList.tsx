@@ -9,7 +9,6 @@ import { v4 as uuid4 } from 'uuid'
 import { useSignals } from '@preact/signals-react/runtime'
 import database from 'database'
 import { ModalID } from 'modals'
-import { globalContentWrapperCSS } from 'theme'
 import { DATE_ISO_DATE_MOMENT_STRING, ETaskStatus, type TTask } from 'types'
 import { TASK_STATUS_IS_ACTIVE, formatDateDisplayString, formatDateKeyLookup } from 'utilities'
 import { activeModalSignal, selectedDateSignal } from '../signals'
@@ -20,11 +19,9 @@ export const emptyTodoListCSS = css`
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    height: 100%;
 
     > div {
       height: 80px;
-      width: 800px;
       text-align: center;
     }
 `
@@ -190,34 +187,32 @@ const TodoList = () => {
         </Box>
       </Box>
 
-      <Box css={globalContentWrapperCSS}>
-        {selectedDateActiveEntries.length === 0 && selectedDateInactiveEntries.length === 0 && <EmptyTodoList />}
-        {selectedDateActiveEntries.length > 0 && (
-          selectedDateActiveEntries.map((it) => (
-            <QueueItem key={it.id} {...it} />
-          )))
-        }
-        {
-          (selectedDateInactiveEntries.length > 0) && (
-            <>
-              <Stack direction="row" css={css`margin-bottom: 0.5rem;`}>
-                <Typography variant="h2">Archive</Typography>
-                <ToggleButton
-                  size='small'
-                  value="text"
-                  onChange={toggleShowArchive}
-                  css={{ marginLeft: '0.5rem' }}
-                >
-                  <Tooltip title="Show archive" >
-                    <ChevronRight fontSize="small" css={{ transform: `rotate(${showArchive ? '90deg' : '0deg'})` }} />
-                  </Tooltip>
-                </ToggleButton>
-              </Stack>
-              {showArchive && selectedDateInactiveEntries.map((it) => <QueueItem key={it.id} {...it} />)}
-            </>
-          )
-        }
-      </Box >
+      {selectedDateActiveEntries.length === 0 && selectedDateInactiveEntries.length === 0 && <EmptyTodoList />}
+      {selectedDateActiveEntries.length > 0 && (
+        selectedDateActiveEntries.map((it) => (
+          <QueueItem key={it.id} {...it} />
+        )))
+      }
+      {
+        (selectedDateInactiveEntries.length > 0) && (
+          <>
+            <Stack direction="row" css={css`margin-bottom: 0.5rem;`}>
+              <Typography variant="h2">Archive</Typography>
+              <ToggleButton
+                size='small'
+                value="text"
+                onChange={toggleShowArchive}
+                css={{ marginLeft: '0.5rem' }}
+              >
+                <Tooltip title="Show archive" >
+                  <ChevronRight fontSize="small" css={{ transform: `rotate(${showArchive ? '90deg' : '0deg'})` }} />
+                </Tooltip>
+              </ToggleButton>
+            </Stack>
+            {showArchive && selectedDateInactiveEntries.map((it) => <QueueItem key={it.id} {...it} />)}
+          </>
+        )
+      }
     </ >
   )
 }
