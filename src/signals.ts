@@ -14,3 +14,5 @@ const EMPTY_SETTINGS: TSettings = {
 export const settingsSignal = signal<TSettings>(EMPTY_SETTINGS)
 
 export const selectedDateSignal = signal<TDateISODate>(formatDateKeyLookup(moment()))
+
+export const isRestoringSignal = signal<boolean>(false)

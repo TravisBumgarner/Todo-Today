@@ -24,7 +24,6 @@
       "theme": ["src/theme.tsx"],
       "colors": ["src/colors.tsx"],
       "utilities": ["src/utilities.tsx"],
-      "Context": ["src/Context.tsx"],
       "database": ["src/database.ts"]
     },
   },

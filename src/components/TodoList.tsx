@@ -3,18 +3,17 @@ import { Box, Button, ButtonGroup, Stack, ToggleButton, Tooltip, Typography, css
 import { useLiveQuery } from 'dexie-react-hooks'
 import _ from 'lodash'
 import moment from 'moment'
-import { useCallback, useContext, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { v4 as uuid4 } from 'uuid'
 
 import { useSignals } from '@preact/signals-react/runtime'
-import { context } from 'Context'
 import database from 'database'
 import { ModalID } from 'modals'
 import { globalContentWrapperCSS } from 'theme'
 import { DATE_ISO_DATE_MOMENT_STRING, ETaskStatus, type TTask } from 'types'
 import { TASK_STATUS_IS_ACTIVE, formatDateDisplayString, formatDateKeyLookup } from 'utilities'
 import { activeModalSignal, selectedDateSignal } from '../signals'
-import QueueItem, { type QueueItemEntry } from './QueueItem'
+import QueueItem, { type QueueItemEntry } from './TodoItem'
 
 export const emptyTodoListCSS = css`
     display: flex;
@@ -113,7 +112,6 @@ const EmptyTodoList = () => {
 
 const TodoList = () => {
   useSignals()
-  const { state: { restoreInProgress } } = useContext(context)
   const [selectedDateActiveEntries, setSelectedDateActiveEntries] = useState<QueueItemEntry[]>([])
   const [selectedDateInactiveEntries, setSelectedDateInactiveEntries] = useState<QueueItemEntry[]>([])
   const [showArchive, setShowArchive] = useState(false)
@@ -163,10 +161,6 @@ const TodoList = () => {
   }, [])
 
   const toggleShowArchive = useCallback(() => { setShowArchive(prev => !prev) }, [])
-
-  if (restoreInProgress) {
-    return null
-  }
 
   return (
     <>

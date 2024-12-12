@@ -1,8 +1,7 @@
 import { Box, Button, css, FormControl, InputLabel, MenuItem, Select, Typography, type SelectChangeEvent } from '@mui/material'
 import moment from 'moment'
-import { useCallback, useContext, useState } from 'react'
+import { useCallback, useState } from 'react'
 
-import { context } from 'Context'
 import database from 'database'
 import { DATE_BACKUP_DATE } from 'shared/utilities'
 import { EColorTheme } from 'types'
@@ -10,7 +9,7 @@ import {
   colorThemeOptionLabels,
   saveFile
 } from 'utilities'
-import { activeModalSignal, settingsSignal } from '../signals'
+import { activeModalSignal, isRestoringSignal, settingsSignal } from '../signals'
 import Modal from './Modal'
 import { ModalID } from './RenderModal'
 
@@ -23,7 +22,6 @@ const copyIndexedDBToObject = async () => {
 }
 
 const Settings = () => {
-  const { dispatch } = useContext(context)
   const [restoreFile, setRestoreFile] = useState<File | null>(null)
 
   const handleBackup = async () => {
@@ -45,7 +43,7 @@ const Settings = () => {
   }, [])
 
   const restore = useCallback((restoreFile: File | null) => {
-    dispatch({ type: 'RESTORE_STARTED' })
+    isRestoringSignal.value = true
     if (restoreFile) {
       const reader = new FileReader()
       reader.readAsText(restoreFile, 'UTF-8')
@@ -76,11 +74,12 @@ const Settings = () => {
             title: 'Something went Wrong',
             body: 'Please select a valid backup file and try again'
           }
+          isRestoringSignal.value = false
         }
       }
     }
-    dispatch({ type: 'RESTORE_ENDED' })
-  }, [dispatch])
+    isRestoringSignal.value = false
+  }, [])
 
   const handleRestoreClick = useCallback(() => {
     activeModalSignal.value = {
