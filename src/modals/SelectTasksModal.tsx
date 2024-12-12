@@ -4,7 +4,6 @@ import { useCallback, useMemo, useState } from 'react'
 
 import { useSignals } from '@preact/signals-react/runtime'
 import { queries } from 'database'
-import { useLiveQuery } from 'dexie-react-hooks'
 import { SPACING } from 'theme'
 import { type TTask, type TTodoList } from 'types'
 import { useAsyncEffect } from 'use-async-effect'
@@ -65,7 +64,7 @@ const SelectTasksModal = () => {
     }
   }, [])
 
-  useLiveQuery(async () => {
+  useAsyncEffect(async () => {
     const todoList = await queries.getAndCreateIfNotExistsTodoList(selectedDateSignal.value)
     setTodoList(todoList)
   }, [selectedDateSignal.value])

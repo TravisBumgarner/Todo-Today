@@ -4,12 +4,22 @@ import { useCallback } from 'react'
 import { useSignals } from '@preact/signals-react/runtime'
 import { queries } from 'database'
 import { ModalID } from 'modals'
-import { activeModalSignal, selectedDateSignal } from '../signals'
+import { activeModalSignal, messageSignal, selectedDateSignal } from '../signals'
 
 const EmptyTodoList = () => {
     useSignals()
     const getPreviousDatesTasks = useCallback(async () => {
-        await queries.setPreviousDayTasksForSelectedDate(selectedDateSignal.value)
+        const previousDayActiveTasks = await queries.getPreviousDayActiveTasks(selectedDateSignal.value)
+        if (!previousDayActiveTasks || previousDayActiveTasks.length === 0) {
+            messageSignal.value = {
+                severity: 'error',
+                text: 'No tasks to copy from previous day'
+            }
+            return
+        }
+
+        await queries.getAndCreateIfNotExistsTodoList(selectedDateSignal.value)
+        await queries.addTodoList(selectedDateSignal.value, previousDayActiveTasks)
     }, [])
 
     const showManagementModal = useCallback(() => {

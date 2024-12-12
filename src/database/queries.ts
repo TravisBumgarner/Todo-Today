@@ -23,8 +23,8 @@ export const getActiveTasks = async () => {
     }, {})
 }
 
-const addTodoList = async (date: TDateISODate) => {
-    const newTodoList = { date, taskIds: [] }
+export const addTodoList = async (date: TDateISODate, taskIds: string[] = []) => {
+    const newTodoList = { date, taskIds }
     await database.todoList.add(newTodoList)
     return newTodoList
 }
@@ -43,7 +43,7 @@ export const removeTaskFromTodoList = async (date: TDateISODate, taskId: string)
     await database.todoList.where('date').equals(date).modify({ taskIds: todoList?.taskIds.filter(id => id !== taskId) ?? [] })
 }
 
-export const setPreviousDayTasksForSelectedDate = async (date: TDateISODate) => {
+export const getPreviousDayActiveTasks = async (date: TDateISODate) => {
     const lastSelectedDate = (await database.todoList.toArray()).filter(entry => entry.date < date).reverse()[0]
     if (!lastSelectedDate) return
 
@@ -52,8 +52,7 @@ export const setPreviousDayTasksForSelectedDate = async (date: TDateISODate) => 
 
     const previousDayActiveTasks = previousDayTasks?.taskIds.filter(id => activeTasks[id]) ?? []
 
-    await getAndCreateIfNotExistsTodoList(date)
-    await database.todoList.where('date').equals(date).modify({ taskIds: [...previousDayActiveTasks] })
+    return previousDayActiveTasks
 }
 
 export const reorderTasks = async (date: TDateISODate, taskIds: string[]) => {
