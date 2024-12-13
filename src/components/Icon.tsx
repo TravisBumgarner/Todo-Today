@@ -40,8 +40,16 @@ export const ThreeThirdsCircle = createSvgIcon(
   'ThreeThirdsCircle'
 )
 
-export const CanceledIcon = () => <ThreeThirdsCircle css={{ fill: 'var(--mui-palette-error-main)' }} />
-export const BlockedIcon = () => <OneThirdsCircle css={{ fill: 'var(--mui-palette-warning-main)' }} />
-export const CompletedIcon = () => <ThreeThirdsCircle css={{ fill: 'var(--mui-palette-secondary-main)' }} />
-export const InProgressIcon = () => <TwoThirdsCircle css={{ fill: 'var(--mui-palette-secondary-main)' }} />
-export const NewIcon = () => <OneThirdsCircle css={{ fill: 'var(--mui-palette-secondary-main)' }} />
+const CanceledIcon = () => <ThreeThirdsCircle css={{ fill: 'var(--mui-palette-error-main)' }} />
+const BlockedIcon = () => <OneThirdsCircle css={{ fill: 'var(--mui-palette-warning-main)' }} />
+const CompletedIcon = () => <ThreeThirdsCircle css={{ fill: 'var(--mui-palette-secondary-main)' }} />
+const InProgressIcon = () => <TwoThirdsCircle css={{ fill: 'var(--mui-palette-secondary-main)' }} />
+const NewIcon = () => <OneThirdsCircle css={{ fill: 'var(--mui-palette-secondary-main)' }} />
+
+export default {
+  CanceledIcon,
+  BlockedIcon,
+  CompletedIcon,
+  InProgressIcon,
+  NewIcon
+}

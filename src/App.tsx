@@ -4,9 +4,11 @@ import CssBaseline from '@mui/material/CssBaseline'
 import { Box, css, Experimental_CssVarsProvider } from '@mui/material'
 import { useState } from 'react'
 
+import Footer from 'components/Footer'
+import Message from 'components/Message'
+import TodoList from 'components/TodoList'
 import RenderModal from 'modals'
 import { baseTheme, beachTheme, highContrastTheme, retroFutureTheme, SPACING, underTheSeaTheme } from 'theme'
-import { Footer, Message, TodoList } from './components'
 import { EColorTheme } from './types'
 
 import { useSignalEffect } from '@preact/signals-react'

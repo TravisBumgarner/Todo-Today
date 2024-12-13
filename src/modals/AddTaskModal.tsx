@@ -4,8 +4,9 @@ import { Box, Button, InputLabel, TextField, ToggleButton, ToggleButtonGroup, To
 import { useCallback, useState } from 'react'
 import { v4 as uuid4 } from 'uuid'
 
+import ButtonWrapper from 'components/ButtonWrapper'
+import TaskStatusSelector from 'components/TaskStatusSelector'
 import { queries } from 'database'
-import { ButtonWrapper, TaskStatusSelector } from 'sharedComponents'
 import { ETaskStatus, type TTask } from 'types'
 import { activeModalSignal, selectedDateSignal } from '../signals'
 import Modal from './Modal'

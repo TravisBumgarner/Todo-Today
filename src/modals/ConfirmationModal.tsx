@@ -1,7 +1,7 @@
 import { Button, Typography } from '@mui/material'
 import { useCallback } from 'react'
 
-import { ButtonWrapper } from 'sharedComponents'
+import ButtonWrapper from 'components/ButtonWrapper'
 import { activeModalSignal } from '../signals'
 import Modal from './Modal'
 import { type ModalID } from './RenderModal'

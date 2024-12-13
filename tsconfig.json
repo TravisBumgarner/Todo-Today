@@ -20,28 +20,28 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "jsxImportSource": "@emotion/react",
-    "baseUrl": "./",
+    "baseUrl": "./src",
     "paths": {
-      "sharedComponents": [
-        "src/sharedComponents"
+      "components": [
+        "components/"
       ],
       "modals": [
-        "src/modals"
+        "modals"
       ],
       "types": [
-        "src/types.ts"
+        "types.ts"
       ],
       "theme": [
-        "src/theme.tsx"
+        "theme.tsx"
       ],
       "colors": [
-        "src/colors.tsx"
+        "colors.tsx"
       ],
       "utilities": [
-        "src/utilities.tsx"
+        "utilities.tsx"
       ],
       "database": [
-        "src/database/index.ts"
+        "database/index.ts"
       ]
     },
   },

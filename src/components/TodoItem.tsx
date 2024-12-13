@@ -6,8 +6,8 @@ import ToggleButton from '@mui/material/ToggleButton'
 import { useCallback, useState, type ChangeEvent } from 'react'
 
 import { useSignalEffect } from '@preact/signals-react'
+import TaskStatusSelector from 'components/TaskStatusSelector'
 import { database } from 'database'
-import { TaskStatusSelector } from 'sharedComponents'
 import { ETaskStatus } from 'types'
 import { selectedDateSignal } from '../signals'
 

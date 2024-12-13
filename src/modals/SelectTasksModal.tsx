@@ -4,7 +4,6 @@ import { useCallback, useMemo, useState } from 'react'
 
 import { useSignals } from '@preact/signals-react/runtime'
 import { queries } from 'database'
-import { useLiveQuery } from 'dexie-react-hooks'
 import { SPACING } from 'theme'
 import { type TTask, type TTodoList } from 'types'
 import { useAsyncEffect } from 'use-async-effect'
@@ -65,7 +64,7 @@ const SelectTasksModal = () => {
     }
   }, [])
 
-  useLiveQuery(async () => {
+  useAsyncEffect(async () => {
     const todoList = await queries.getAndCreateIfNotExistsTodoList(selectedDateSignal.value)
     setTodoList(todoList)
   }, [selectedDateSignal.value])
@@ -134,10 +133,12 @@ const SelectTasksModal = () => {
 const scrollWrapperCSS = css`
   overflow: auto;
   max-height: ${MODAL_MAX_HEIGHT - 200}px;
+  width: 100%;
 `
 
 const wrapperCSS = css`
   height: 100%;
+  width: 100%;
 `
 
 export default SelectTasksModal
