@@ -133,10 +133,12 @@ const SelectTasksModal = () => {
 const scrollWrapperCSS = css`
   overflow: auto;
   max-height: ${MODAL_MAX_HEIGHT - 200}px;
+  width: 100%;
 `
 
 const wrapperCSS = css`
   height: 100%;
+  width: 100%;
 `
 
 export default SelectTasksModal

@@ -1,9 +1,9 @@
 import { css } from '@emotion/react'
 import { Alert as AlertMUI, Box, Button } from '@mui/material'
+import { useCallback } from 'react'
 
 import { useSignals } from '@preact/signals-react/runtime'
-import { useCallback } from 'react'
-import { ButtonWrapper } from 'sharedComponents'
+import ButtonWrapper from 'components/ButtonWrapper'
 import { messageSignal } from '../signals'
 
 const Alert = () => {

@@ -1,8 +1,10 @@
+import Icon from 'components/Icon'
 import { ipcRenderer } from 'electron'
 import moment from 'moment'
-import { Icons } from 'sharedComponents'
 
-import { type AppStartIPCFromMain, type AsyncMessageIPCFromRenderer, type ESyncMessageIPC, type SyncMessageIPCFromRenderer } from 'shared/types'
+import { type AsyncMessageIPCFromRenderer } from '../shared/async-message-types'
+import { type AppStartIPCFromMain, type ESyncMessageIPC, type SyncMessageIPCFromRenderer } from '../shared/sync-message-types'
+
 import { DATE_ISO_DATE_MOMENT_STRING, EColorTheme, ETaskStatus, type TDateISODate } from './types'
 
 export const TASK_STATUS_IS_ACTIVE: Record<ETaskStatus, boolean> = {
@@ -100,23 +102,23 @@ const taskStatusIcon = (taskStatus: ETaskStatus) => {
   switch (taskStatus) {
     case ETaskStatus.CANCELED:
       return (
-        <Icons.CanceledIcon />
+        <Icon.CanceledIcon />
       )
     case ETaskStatus.BLOCKED:
       return (
-        <Icons.BlockedIcon />
+        <Icon.BlockedIcon />
       )
     case ETaskStatus.NEW:
       return (
-        <Icons.NewIcon />
+        <Icon.NewIcon />
       )
     case ETaskStatus.IN_PROGRESS:
       return (
-        <Icons.InProgressIcon />
+        <Icon.InProgressIcon />
       )
     case ETaskStatus.COMPLETED:
       return (
-        <Icons.CompletedIcon />
+        <Icon.CompletedIcon />
       )
   }
 }

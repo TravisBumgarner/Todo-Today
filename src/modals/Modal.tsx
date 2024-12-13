@@ -3,7 +3,6 @@ import { IconButton, Tooltip, Typography, css } from '@mui/material'
 import Box from '@mui/material/Box'
 import MUIModal from '@mui/material/Modal'
 import { useCallback, type FC } from 'react'
-
 import { activeModalSignal } from '../signals'
 
 interface ActiveModal {

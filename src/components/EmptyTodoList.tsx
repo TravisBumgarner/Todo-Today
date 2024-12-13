@@ -60,15 +60,11 @@ const EmptyTodoList = () => {
 }
 
 const emptyTodoListCSS = css`
+    flex-grow: 1;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-
-    > div {
-      height: 80px;
-      text-align: center;
-    }
 `
 
 export default EmptyTodoList

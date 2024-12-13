@@ -1,10 +1,10 @@
 import { Box, Button, css, FormControl, InputLabel, MenuItem, Select, Typography, type SelectChangeEvent } from '@mui/material'
+import { useSignalEffect } from '@preact/signals-react'
 import moment from 'moment'
 import { useCallback, useState } from 'react'
-import { useSignalEffect } from '@preact/signals-react'
 
 import { database } from 'database'
-import { DATE_BACKUP_DATE } from 'shared/utilities'
+import { DATE_BACKUP_DATE } from '../../shared/utilities'
 import { EColorTheme } from 'types'
 import {
   colorThemeOptionLabels,
@@ -18,7 +18,7 @@ import { ModalID } from './RenderModal'
 const copyIndexedDBToObject = async () => {
   const data = {
     tasks: await database.tasks.toArray(),
-    todoListItems: await database.todoListItems.toArray()
+    todoLists: await database.todoList.toArray()
   }
   return data
 }
@@ -61,16 +61,16 @@ const Settings = () => {
       reader.onload = async function (event) {
         try {
           if (event.target?.result) {
-            const { todoListItems, tasks } = JSON.parse(event.target.result as string)
+            const { todoLists, tasks } = JSON.parse(event.target.result as string)
 
             await Promise.all([
               database.tasks.clear(),
-              database.todoListItems.clear()
+              database.todoList.clear()
             ])
 
             await Promise.all([
               database.tasks.bulkAdd(tasks),
-              database.todoListItems.bulkAdd(todoListItems)
+              database.todoList.bulkAdd(todoLists)
             ])
           } else {
             activeModalSignal.value = {

@@ -52,7 +52,7 @@ const TodoList = () => {
   }, [])
 
   return (
-    <>
+    <Box css={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
       <Box css={buttonWrapperCSS}>
         <Box>
           <ButtonGroup>
@@ -78,18 +78,19 @@ const TodoList = () => {
           </ButtonGroup>
         </Box>
       </Box>
-
-      {taskIds.length === 0 && <EmptyTodoList />}
-      {taskIds.length > 0 && (
-        <Reorder.Group axis="y" values={taskIds} onReorder={onReorder} style={{ padding: 0 }}>
-          {taskIds.map((taskId) => (
-            <Reorder.Item key={taskId} value={taskId} style={{ listStyle: 'none' }}>
-              <TodoItem key={taskId} taskId={taskId} />
-            </Reorder.Item>
-          ))}
-        </Reorder.Group>
-      )}
-    </ >
+      <Box css={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+        {taskIds.length === 0 && <EmptyTodoList />}
+        {taskIds.length > 0 && (
+          <Reorder.Group axis="y" values={taskIds} onReorder={onReorder} style={{ padding: 0 }}>
+            {taskIds.map((taskId) => (
+              <Reorder.Item key={taskId} value={taskId} style={{ listStyle: 'none' }}>
+                <TodoItem key={taskId} taskId={taskId} />
+              </Reorder.Item>
+            ))}
+          </Reorder.Group>
+        )}
+      </Box>
+    </Box>
   )
 }
 

@@ -17,7 +17,7 @@ export default defineConfig(({ command }) => {
   return {
     resolve: {
       alias: {
-        sharedComponents: path.resolve(__dirname, 'src/sharedComponents/'),
+        components: path.resolve(__dirname, 'src/components/'),
         modals: path.resolve(__dirname, 'src/modals/'),
         types: path.resolve(__dirname, 'src/types.ts'),
         theme: path.resolve(__dirname, 'src/theme.tsx'),
