@@ -1,13 +1,14 @@
-import { ChevronRight } from '@mui/icons-material'
+import { ChevronRight, Edit } from '@mui/icons-material'
 import CheckIcon from '@mui/icons-material/Check'
 import CloseIcon from '@mui/icons-material/CloseOutlined'
-import { Box, Button, Card, IconButton, TextField, Tooltip, Typography, css } from '@mui/material'
+import { Box, Card, IconButton, TextField, Tooltip, Typography, css } from '@mui/material'
 import ToggleButton from '@mui/material/ToggleButton'
 import { useCallback, useState, type ChangeEvent } from 'react'
 
-import { useSignalEffect } from '@preact/signals-react'
 import TaskStatusSelector from 'components/TaskStatusSelector'
 import { database } from 'database'
+import { useLiveQuery } from 'dexie-react-hooks'
+import { SPACING } from 'theme'
 import { ETaskStatus } from 'types'
 import { selectedDateSignal } from '../signals'
 
@@ -22,7 +23,7 @@ const TodoItem = ({ taskId }: TTodoItem) => {
   const [tempTitle, setTempTitle] = useState('')
   const [status, setStatus] = useState(ETaskStatus.NEW)
 
-  useSignalEffect(() => {
+  useLiveQuery(() => {
     void database.tasks.where('id').equals(taskId).first().then((task) => {
       setTempTitle(task?.title ?? '')
       setStatus(task?.status ?? ETaskStatus.NEW)
@@ -84,11 +85,10 @@ const TodoItem = ({ taskId }: TTodoItem) => {
                   <IconButton onClick={handleSaveTitle}><CheckIcon fontSize="small" /></IconButton>
                   <IconButton onClick={handleCancel}><CloseIcon fontSize="small" /></IconButton>
                 </Box>
-                : <>
-                  <Button onClick={handleEdit} css={textEditButtonCSS}>
-                    <Typography css={headerTextCSS} variant="h2">{tempTitle}</Typography>
-                  </Button>
-                </>
+                : <Box css={readonlyTextWrapperCSS}>
+                  <Typography css={headerTextCSS} variant="h2">{tempTitle}</Typography>
+                  <IconButton onClick={handleEdit} css={textEditButtonCSS}><Edit fontSize="small" /></IconButton>
+                </Box>
             }
           </Box>
         </Box>
@@ -128,6 +128,21 @@ const textEditButtonCSS = css`
 const textEditWrapperCSS = css`
   display: flex;
   align-items: center;
+`
+
+const readonlyTextWrapperCSS = css`
+  display: flex;
+  align-items: center;
+  button {
+    margin-left: ${SPACING.XSMALL}px;
+    display: none;
+  }
+
+  &:hover {
+    button {
+      display: block;
+    }
+  }
 `
 
 const rightHeaderCSS = css`

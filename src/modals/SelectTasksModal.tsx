@@ -4,6 +4,7 @@ import { useCallback, useMemo, useState } from 'react'
 
 import { useSignals } from '@preact/signals-react/runtime'
 import { queries } from 'database'
+import { useLiveQuery } from 'dexie-react-hooks'
 import { SPACING } from 'theme'
 import { type TTask, type TTodoList } from 'types'
 import { useAsyncEffect } from 'use-async-effect'
@@ -57,17 +58,15 @@ const SelectTasksModal = () => {
   const [tasks, setTasks] = useState<Record<string, TTask>>({})
   const [todoList, setTodoList] = useState<TTodoList | null>(null)
 
-  useAsyncEffect(async (isMounted) => {
+  useLiveQuery(async () => {
     const tasks = await queries.getActiveTasks()
-    if (isMounted()) {
-      setTasks(tasks)
-    }
+    setTasks(tasks)
   }, [])
 
   useAsyncEffect(async () => {
     const todoList = await queries.getAndCreateIfNotExistsTodoList(selectedDateSignal.value)
     setTodoList(todoList)
-  }, [selectedDateSignal.value])
+  })
 
   const showAddNewTaskModal = useCallback(() => {
     activeModalSignal.value = { id: ModalID.ADD_TASK_MODAL }
