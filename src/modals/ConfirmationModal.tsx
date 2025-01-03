@@ -31,8 +31,8 @@ const ConfirmationModal = ({ title, body, confirmationCallback }: ConfirmationMo
     >
       <Typography variant="body1">{body}</Typography>
       <ButtonWrapper>
-        <Button variant='contained'
-          color="secondary" fullWidth onClick={handleCancel}>Cancel</Button>
+        <Button variant='outlined'
+          color="warning" fullWidth onClick={handleCancel}>Cancel</Button>
         <Button variant='contained' fullWidth onClick={handleConfirm}>Ok</Button>
       </ButtonWrapper>
     </Modal >

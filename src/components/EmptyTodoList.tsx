@@ -34,21 +34,18 @@ const EmptyTodoList = () => {
         <Box css={emptyTodoListCSS}>
             <Box>
                 <Typography css={{ marginBottom: '1rem', textAlign: 'center' }} variant='h2'>What will you do today?</Typography>
-                <ButtonGroup>
+                <ButtonGroup variant='outlined' size="small">
                     <Button
-                        variant='contained'
                         onClick={getPreviousDatesTasks}
                     >
                         Copy Previous Day
                     </Button>
                     <Button
-                        variant='contained'
                         onClick={showManagementModal}
                     >
                         Select Tasks
                     </Button>
                     <Button
-                        variant='contained'
                         onClick={showAddNewTaskModal}
                     >
                         Add New Task

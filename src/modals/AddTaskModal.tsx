@@ -87,8 +87,8 @@ const AddTaskModal = () => {
         <Button
           key="cancel"
           fullWidth
-          variant='contained'
-          color='secondary'
+          variant='outlined'
+          color='warning'
           onClick={handleCancel}
         >
           Cancel

@@ -1,10 +1,11 @@
-import { Box, Button, ButtonGroup, css } from '@mui/material'
+import SettingsIcon from '@mui/icons-material/Settings'
+import { Box, Button, ButtonGroup, css, IconButton, Tooltip } from '@mui/material'
+import { useSignals } from '@preact/signals-react/runtime'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { Reorder } from 'framer-motion'
 import moment from 'moment'
 import { useCallback, useState } from 'react'
 
-import { useSignals } from '@preact/signals-react/runtime'
 import { database, queries } from 'database'
 import { ModalID } from 'modals'
 import { DATE_ISO_DATE_MOMENT_STRING, ETaskStatus } from 'types'
@@ -66,31 +67,40 @@ const TodoList = () => {
     selectedDateSignal.value = formatDateKeyLookup(moment())
   }, [])
 
+  const handleSettings = useCallback(() => {
+    activeModalSignal.value = { id: ModalID.SETTINGS_MODAL }
+  }, [])
+
   return (
     <Box css={{ display: 'flex', flexDirection: 'column', flexGrow: 1, height: '100%' }}>
       <Box css={buttonWrapperCSS}>
         <Box>
-          <ButtonGroup>
+          <ButtonGroup size="small" variant='outlined'>
             <Button
-              variant='contained'
               onClick={showAddNewTaskModal}
             >
               Add New Task
             </Button>
             <Button
               onClick={showManagementModal}
-              variant='contained'
             >
               Select Tasks
             </Button>
           </ButtonGroup>
         </Box>
         <Box>
-          <ButtonGroup>
-            <Button variant='contained' onClick={setPreviousDate}>&lt;</Button>
-            <Button variant='contained' css={todayButtonCSS} onClick={getToday}><span>{formatDateDisplayString(selectedDateSignal.value)}</span></Button>
-            <Button variant='contained' onClick={getNextDate}>&gt;</Button>
+          <ButtonGroup size="small" variant='outlined'>
+            <Button onClick={setPreviousDate}>&lt;</Button>
+            <Button css={todayButtonCSS} onClick={getToday}><span>{formatDateDisplayString(selectedDateSignal.value)}</span></Button>
+            <Button onClick={getNextDate}>&gt;</Button>
           </ButtonGroup>
+          <IconButton color="primary"
+            onClick={handleSettings}
+          >
+            <Tooltip title="Settings">
+              <SettingsIcon />
+            </Tooltip>
+          </IconButton>
         </Box>
       </Box>
       <Box css={{ flexGrow: 1, display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -113,10 +123,11 @@ export const buttonWrapperCSS = css`
   display: flex;
   justify-content: space-between;
   margin-bottom: 1rem;
+  align-items: center;
 `
 
 const todayButtonCSS = css`
-  width: 220px;
+  width: 150px;
       &:hover span {
         display: none;
   }

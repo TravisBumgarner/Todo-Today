@@ -4,13 +4,13 @@ import moment from 'moment'
 import { useCallback, useState } from 'react'
 
 import { database } from 'database'
-import { DATE_BACKUP_DATE } from '../../shared/utilities'
 import { EColorTheme } from 'types'
 import {
   colorThemeOptionLabels,
   saveFile,
   setLocalStorage
 } from 'utilities'
+import { DATE_BACKUP_DATE } from '../../shared/utilities'
 import { activeModalSignal, isRestoringSignal, settingsSignal } from '../signals'
 import Modal from './Modal'
 import { ModalID } from './RenderModal'
@@ -126,14 +126,14 @@ const Settings = () => {
         <Box css={sectionHeaderWrapperCSS}>
           <Typography variant="h3">Backup</Typography>
         </Box>
-        <Button fullWidth variant='contained' onClick={handleBackup}>Create Backup</Button>
+        <Button fullWidth variant='outlined' onClick={handleBackup}>Create Backup</Button>
 
       </Box>
 
       <Box css={sectionWrapperCSS}>
         <Typography variant="h3">Restore</Typography>
         <Button
-          variant="contained"
+          variant="outlined"
           component="label"
           fullWidth
         >
@@ -149,7 +149,7 @@ const Settings = () => {
           disabled={!restoreFile}
           onClick={handleRestoreClick}
           fullWidth
-          variant='contained'
+          variant='outlined'
         >
           Restore
         </Button>
