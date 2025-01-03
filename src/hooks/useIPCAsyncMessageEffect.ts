@@ -1,5 +1,5 @@
 import { ipcRenderer } from 'electron'
-import { EAsyncMessageIPCFromMain, type AsyncBackupIPCFromMain } from 'shared/types'
+import { EAsyncMessageIPCFromMain, type AsyncBackupIPCFromMain } from '../../shared/types'
 import { messageSignal } from '../signals'
 
 export const useIPCAsyncMessageEffect = () => {

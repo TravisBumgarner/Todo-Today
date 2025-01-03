@@ -9,7 +9,7 @@ export const getAndCreateIfNotExistsTodoList = async (date: TDateISODate): Promi
     let todoList = await getTodoList(date)
 
     if (!todoList) {
-        todoList = await addTodoList(date)
+        todoList = await upsertTodoList(date)
     }
 
     return todoList
@@ -23,10 +23,17 @@ export const getActiveTasks = async () => {
     }, {})
 }
 
-export const addTodoList = async (date: TDateISODate, taskIds: string[] = []) => {
-    const newTodoList = { date, taskIds }
-    await database.todoList.add(newTodoList)
-    return newTodoList
+export const upsertTodoList = async (date: TDateISODate, taskIds: string[] = []) => {
+    const existingTodoList = await database.todoList.where('date').equals(date).first()
+
+    if (existingTodoList) {
+        await database.todoList.where('date').equals(date).modify({ taskIds })
+        return { ...existingTodoList, taskIds }
+    } else {
+        const newTodoList = { date, taskIds }
+        await database.todoList.add(newTodoList)
+        return newTodoList
+    }
 }
 
 export const addTask = async (task: TTask) => {

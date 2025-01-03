@@ -7,7 +7,7 @@ import { useCallback, useState } from 'react'
 import { useSignals } from '@preact/signals-react/runtime'
 import { database, queries } from 'database'
 import { ModalID } from 'modals'
-import { DATE_ISO_DATE_MOMENT_STRING } from 'types'
+import { DATE_ISO_DATE_MOMENT_STRING, ETaskStatus } from 'types'
 import { formatDateDisplayString, formatDateKeyLookup } from 'utilities'
 import { activeModalSignal, selectedDateSignal } from '../signals'
 import EmptyTodoList from './EmptyTodoList'
@@ -22,7 +22,22 @@ const TodoList = () => {
       setTaskIds(await database.todoList
         .where({ date: selectedDateSignal.value })
         .first()
-        .then(todoList => todoList?.taskIds ?? []))
+        .then(async todoList => {
+          // Sort tasks by status so anything complete or canceled is at the bottom
+          const taskIds = todoList?.taskIds ?? []
+          const tasks = await Promise.all(taskIds.map(async id => await database.tasks.get(id)))
+          return taskIds.sort((a, b) => {
+            const taskA = tasks.find(t => t?.id === a)
+            const taskB = tasks.find(t => t?.id === b)
+            const statusA = taskA?.status
+            const statusB = taskB?.status
+
+            if (statusA === ETaskStatus.CANCELED || statusA === ETaskStatus.COMPLETED) return 1
+            if (statusB === ETaskStatus.CANCELED || statusB === ETaskStatus.COMPLETED) return -1
+            return 0
+          })
+        })
+      )
     },
     [selectedDateSignal.value]
   )
@@ -52,7 +67,7 @@ const TodoList = () => {
   }, [])
 
   return (
-    <Box css={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
+    <Box css={{ display: 'flex', flexDirection: 'column', flexGrow: 1, height: '100%' }}>
       <Box css={buttonWrapperCSS}>
         <Box>
           <ButtonGroup>
@@ -78,7 +93,7 @@ const TodoList = () => {
           </ButtonGroup>
         </Box>
       </Box>
-      <Box css={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+      <Box css={{ flexGrow: 1, display: 'flex', flexDirection: 'column', height: '100%' }}>
         {taskIds.length === 0 && <EmptyTodoList />}
         {taskIds.length > 0 && (
           <Reorder.Group axis="y" values={taskIds} onReorder={onReorder} style={{ padding: 0 }}>

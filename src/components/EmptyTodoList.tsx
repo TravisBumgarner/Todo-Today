@@ -17,9 +17,9 @@ const EmptyTodoList = () => {
             }
             return
         }
-
+        // debugger
         await queries.getAndCreateIfNotExistsTodoList(selectedDateSignal.value)
-        await queries.addTodoList(selectedDateSignal.value, previousDayActiveTasks)
+        await queries.upsertTodoList(selectedDateSignal.value, previousDayActiveTasks)
     }, [])
 
     const showManagementModal = useCallback(() => {
@@ -33,7 +33,7 @@ const EmptyTodoList = () => {
     return (
         <Box css={emptyTodoListCSS}>
             <Box>
-                <Typography css={{ marginBottom: '1rem' }} variant='h2'>What will you do today?</Typography>
+                <Typography css={{ marginBottom: '1rem', textAlign: 'center' }} variant='h2'>What will you do today?</Typography>
                 <ButtonGroup>
                     <Button
                         variant='contained'
@@ -60,6 +60,7 @@ const EmptyTodoList = () => {
 }
 
 const emptyTodoListCSS = css`
+    height: 100%;
     flex-grow: 1;
     display: flex;
     justify-content: center;
