@@ -35,7 +35,7 @@ const formatDateDisplayString = (date: TDateISODate | null): string => {
     return ''
   }
 
-  return moment(date, DATE_ISO_DATE_MOMENT_STRING).format('dddd, MMM Do')
+  return moment(date, DATE_ISO_DATE_MOMENT_STRING).format('ddd, MMM Do')
 }
 
 const formatDateKeyLookup = (date: moment.Moment): TDateISODate => {

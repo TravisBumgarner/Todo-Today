@@ -41,7 +41,7 @@ const beachThemeOptions = {
       main: 'rgb(76, 125, 165)'
     },
     secondary: {
-      main: 'rgb(73, 190, 170)'
+      main: 'rgb(24, 189, 162)'
     },
     text: {
       primary: 'rgb(92, 94, 95)'
@@ -50,14 +50,14 @@ const beachThemeOptions = {
       disabled: 'rgb(97, 96, 96)'
     },
     background: {
-      default: 'rgb(215, 227, 232)',
-      paper: 'rgb(184, 203, 210)'
+      default: 'rgb(234, 249, 255)',
+      paper: 'rgb(206, 228, 236)'
     },
     warning: {
-      main: 'rgb(238, 184, 104)'
+      main: 'rgb(228, 142, 12)'
     },
     error: {
-      main: 'rgb(239, 118, 122)'
+      main: 'rgb(241, 40, 46)'
     }
   }
 }
