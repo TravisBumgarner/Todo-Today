@@ -1,4 +1,4 @@
-import { ETaskStatus, type TDateISODate, type TTask, type TTodoList } from 'types'
+import { ETaskStatus, type TDateISODate, type TSubtask, type TTask, type TTodoList } from 'types'
 import database from './database'
 
 export const getTodoList = async (date: TDateISODate) => {
@@ -64,4 +64,24 @@ export const getPreviousDayActiveTasks = async (date: TDateISODate) => {
 
 export const reorderTasks = async (date: TDateISODate, taskIds: string[]) => {
     await database.todoList.where('date').equals(date).modify({ taskIds })
+}
+
+export const insertSubtask = async (taskId: string, subtask: TSubtask) => {
+    const task = await database.tasks.where('id').equals(taskId).first()
+    await database.tasks.where('id').equals(taskId).modify({ subtasks: [...(task?.subtasks ?? []), subtask] })
+}
+
+export const updateSubtask = async (taskId: string, subtaskId: string, subtaskUpdate: Partial<TSubtask>) => {
+    const task = await database.tasks.where('id').equals(taskId).first()
+    await database.tasks.where('id').equals(taskId).modify({ subtasks: task?.subtasks.map(subtask => subtask.id === subtaskId ? { ...subtask, ...subtaskUpdate } : subtask) })
+}
+
+export const deleteSubtask = async (taskId: string, subtaskId: string) => {
+    const task = await database.tasks.where('id').equals(taskId).first()
+    await database.tasks.where('id').equals(taskId).modify({ subtasks: task?.subtasks.filter(subtask => subtask.id !== subtaskId) })
+}
+
+export const getSubtask = async (taskId: string, subtaskId: string) => {
+    const task = await database.tasks.where('id').equals(taskId).first()
+    return task?.subtasks.find(subtask => subtask.id === subtaskId)
 }

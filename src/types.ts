@@ -12,11 +12,18 @@ export enum ETaskStatus {
   BLOCKED = 'BLOCKED'
 }
 
+export interface TSubtask {
+  id: string
+  title: string
+  checked: boolean
+}
+
 export interface TTask {
   id: string
   title: string
   status: ETaskStatus
   details: string
+  subtasks: TSubtask[]
 }
 
 export interface TTodoList {

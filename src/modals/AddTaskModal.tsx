@@ -27,7 +27,8 @@ const AddTaskModal = () => {
       title,
       status,
       id: taskId,
-      details
+      details,
+      subtasks: []
     }
 
     await queries.addTask(newTask)
