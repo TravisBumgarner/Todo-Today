@@ -1,38 +1,80 @@
-import { ChevronRight, Edit } from '@mui/icons-material'
+import { Add, ChevronRight, Delete, Edit } from '@mui/icons-material'
 import CheckIcon from '@mui/icons-material/Check'
 import CloseIcon from '@mui/icons-material/CloseOutlined'
-import { Box, Card, IconButton, TextField, Tooltip, Typography, css } from '@mui/material'
+import { Box, Card, Checkbox, css, FormControlLabel, IconButton, TextField, Tooltip, Typography } from '@mui/material'
 import ToggleButton from '@mui/material/ToggleButton'
-import { useCallback, useState, type ChangeEvent } from 'react'
-
 import TaskStatusSelector from 'components/TaskStatusSelector'
-import { database } from 'database'
+import { database, queries } from 'database'
 import { useLiveQuery } from 'dexie-react-hooks'
+import { type ChangeEvent, useCallback, useState } from 'react'
 import { SPACING } from 'theme'
 import { ETaskStatus } from 'types'
+import { v4 as uuidv4 } from 'uuid'
 import { selectedDateSignal } from '../signals'
 
 export interface TTodoItem {
   taskId: string
 }
 
+const Subtask = ({ taskId, subtaskId }: { taskId: string, subtaskId: string }) => {
+  const subtask = useLiveQuery(async () => await queries.getSubtask(taskId, subtaskId))
+
+  const handleSubtaskChange = useCallback(async () => {
+    await queries.updateSubtask(taskId, subtaskId, { checked: !subtask?.checked })
+  }, [taskId, subtaskId, subtask])
+
+  const handleDeleteSubtask = useCallback(async () => {
+    await queries.deleteSubtask(taskId, subtaskId)
+  }, [taskId, subtaskId])
+
+  if (!subtask) return null
+
+  return (
+    <Box css={subtaskWrapperCSS}>
+      <FormControlLabel control={
+        <Checkbox
+          checked={subtask?.checked}
+          onChange={handleSubtaskChange}
+          style={{ padding: `${SPACING.XXSMALL}px ${SPACING.SMALL}px` }}
+        />
+      }
+        label={subtask?.title}
+      />
+      <IconButton onClick={handleDeleteSubtask}><Delete fontSize="small" /></IconButton>
+    </Box>
+  )
+}
+
+const subtaskWrapperCSS = css`
+  display: flex;
+  gap: 0.5rem;
+  justify-content: space-between;
+`
+
 const TodoItem = ({ taskId }: TTodoItem) => {
-  const [showDetails, setShowDetails] = useState(false)
+  const [showContent, setShowContent] = useState(false)
   const [details, setDetails] = useState('') // Undo doesn't work if synced directly to DB. Might be a more elegant solution, but for now, this works.
   const [isEditingTitle, setIsEditingTitle] = useState(false)
   const [tempTitle, setTempTitle] = useState('')
   const [status, setStatus] = useState(ETaskStatus.NEW)
+  const [subtaskIds, setSubtaskIds] = useState<string[]>([])
+  const [subtaskTitle, setSubtaskTitle] = useState('')
 
   useLiveQuery(() => {
     void database.tasks.where('id').equals(taskId).first().then((task) => {
       setTempTitle(task?.title ?? '')
       setStatus(task?.status ?? ETaskStatus.NEW)
       setDetails(task?.details ?? '')
-      setShowDetails(!!task?.details)
+      setShowContent(!!task?.details || (task?.subtasks?.length ?? 0) > 0)
+      setSubtaskIds(task?.subtasks?.map(subtask => subtask.id) ?? [])
     })
   })
 
-  const toggleShowDetails = useCallback(() => { setShowDetails(prev => !prev) }, [])
+  const toggleContent = useCallback(() => { setShowContent(prev => !prev) }, [])
+
+  const handleSubtaskTitleChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    setSubtaskTitle(event.target.value)
+  }, [])
 
   const handleStatusChange = useCallback(async (
     status: ETaskStatus
@@ -70,9 +112,14 @@ const TodoItem = ({ taskId }: TTodoItem) => {
     setTempTitle(event.target.value)
   }, [])
 
+  const handleAddSubtask = useCallback(async () => {
+    await queries.insertSubtask(taskId, { id: uuidv4(), title: subtaskTitle, checked: false })
+    setSubtaskTitle('')
+  }, [taskId, subtaskTitle])
+
   return (
     <Card css={wrapperCSS}>
-      <Box css={headerCSS(showDetails)}>
+      <Box css={headerCSS(showContent)}>
         <Box css={leftHeaderCSS}>
           <Box>
             <TaskStatusSelector handleStatusChangeCallback={handleStatusChange} taskStatus={status} showLabel={false} />
@@ -96,11 +143,11 @@ const TodoItem = ({ taskId }: TTodoItem) => {
           <ToggleButton
             size='small'
             value="text"
-            onChange={toggleShowDetails}
+            onChange={toggleContent}
             css={{ marginRight: '0.5rem', backgroundColor: 'css={css`background-color: var(--mui-palette-background-paper)' }}
           >
             <Tooltip title="Show details" >
-              <ChevronRight fontSize="small" css={{ transform: `rotate(${showDetails ? '90deg' : '0deg'})` }} />
+              <ChevronRight fontSize="small" css={{ transform: `rotate(${showContent ? '90deg' : '0deg'})` }} />
             </Tooltip>
           </ToggleButton>
 
@@ -112,10 +159,49 @@ const TodoItem = ({ taskId }: TTodoItem) => {
 
         </Box>
       </Box>
-      {showDetails && <TextField placeholder="Task Notes" css={detailsCSS} fullWidth multiline value={details} onChange={handleDetailsChange} />}
-    </Card >
+      {showContent && <Box css={contentWrapperCSS}>
+        <TextField placeholder="Notes" css={detailsCSS} fullWidth rows={4} multiline value={details} onChange={handleDetailsChange} />
+        <Box>
+          <Box>
+            <Box css={subtaskInputWrapperCSS}>
+              <TextField size='small' fullWidth type="text" placeholder="Subtask" value={subtaskTitle} onChange={handleSubtaskTitleChange} />
+              <Tooltip title="Add subtask">
+                <IconButton disabled={subtaskTitle.length === 0} onClick={handleAddSubtask}><Add fontSize="small" /></IconButton>
+              </Tooltip>
+            </Box>
+          </Box>
+          <Box css={subtaskListCSS}>
+            {subtaskIds.map((subtaskId) => (
+              <Subtask key={subtaskId} taskId={taskId} subtaskId={subtaskId} />
+            ))}
+          </Box>
+        </Box>
+      </Box>}
+    </Card>
   )
 }
+
+const subtaskListCSS = css`
+  display: flex;
+  flex-direction: column;
+`
+
+const subtaskInputWrapperCSS = css`
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  align-items: center;
+`
+
+const contentWrapperCSS = css`
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+
+  & > div {
+    flex: 1;
+  }
+`
 
 const textEditButtonCSS = css`
   background: none;
@@ -134,13 +220,13 @@ const readonlyTextWrapperCSS = css`
   display: flex;
   align-items: center;
   button {
-    margin-left: ${SPACING.XSMALL}px;
-    display: none;
-  }
+  margin-left: ${SPACING.XSMALL}px;
+  display: none;
+}
 
   &:hover {
     button {
-      display: block;
+    display: block;
     }
   }
 `
@@ -174,10 +260,10 @@ const leftHeaderCSS = css`
 `
 
 const wrapperCSS = css`
-background: var(--mui-palette-background-paper);
-border-radius: 0.5rem;
-padding: 0.5rem;
-margin-bottom: 0.5rem;
+  background: var(--mui-palette-background-paper);
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
 `
 
 export default TodoItem

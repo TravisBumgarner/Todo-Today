@@ -7,9 +7,13 @@ class MySubClassedDexie extends Dexie {
 
   constructor() {
     super('todo-today')
-    this.version(1).stores({
-      tasks: 'id, title, status, details',
+    this.version(2).stores({
+      tasks: 'id, title, status, details, subtask',
       todoList: 'date'
+    }).upgrade(async tx => {
+      return await tx.table('tasks').toCollection().modify(task => {
+        task.subtasks = []
+      })
     })
   }
 }
