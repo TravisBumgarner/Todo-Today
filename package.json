@@ -1,7 +1,7 @@
 {
   "name": "todotodaydev",
   "productName": "Todo Today",
-  "version": "1.3.2",
+  "version": "2.0.0",
   "main": "dist-electron/main/index.js",
   "description": "Minimalistic Todo List",
   "license": "MIT",
