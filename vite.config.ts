@@ -1,7 +1,7 @@
+import react from '@vitejs/plugin-react'
 import { rmSync } from 'node:fs'
 import path from 'node:path'
 import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
 import electron from 'vite-plugin-electron'
 import renderer from 'vite-plugin-electron-renderer'
 import pkg from './package.json'
@@ -17,14 +17,13 @@ export default defineConfig(({ command }) => {
   return {
     resolve: {
       alias: {
-        sharedComponents: path.resolve(__dirname, 'src/sharedComponents/'),
+        components: path.resolve(__dirname, 'src/components/'),
         modals: path.resolve(__dirname, 'src/modals/'),
         types: path.resolve(__dirname, 'src/types.ts'),
         theme: path.resolve(__dirname, 'src/theme.tsx'),
         colors: path.resolve(__dirname, 'src/colors.tsx'),
         utilities: path.resolve(__dirname, 'src/utilities.tsx'),
-        Context: path.resolve(__dirname, 'src/Context.tsx'),
-        database: path.resolve(__dirname, 'src/database.ts'),
+        database: path.resolve(__dirname, 'src/database/index.ts'),
         shared: path.resolve(__dirname, 'shared/'),
       },
     },

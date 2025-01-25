@@ -4,26 +4,6 @@ type TDay = `${number}${number}`
 export type TDateISODate = `${TYear}-${TMonth}-${TDay}`
 export const DATE_ISO_DATE_MOMENT_STRING = 'YYYY-MM-DD'
 
-export enum EProjectStatus {
-  ACTIVE = 'ACTIVE',
-  INACTIVE = 'INACTIVE',
-}
-
-export interface TProject {
-  id: string
-  title: string
-  status: EProjectStatus
-  workspaceId: string
-}
-
-export interface TSuccess {
-  id: string
-  description: string
-  date: TDateISODate
-  projectId: TProject['id']
-  workspaceId: string
-}
-
 export enum ETaskStatus {
   NEW = 'NEW',
   IN_PROGRESS = 'IN_PROGRESS',
@@ -32,26 +12,23 @@ export enum ETaskStatus {
   BLOCKED = 'BLOCKED'
 }
 
+export interface TSubtask {
+  id: string
+  title: string
+  checked: boolean
+}
+
 export interface TTask {
   id: string
-  projectId: string
   title: string
   status: ETaskStatus
-  details?: string // Migrated from TTodoListItem. Not every task has details.
+  details: string
+  subtasks: TSubtask[]
 }
 
-export interface TTodoListItem {
-  taskId: string
-  todoListDate: TDateISODate
-  workspaceId: string
-  id: string
-  sortOrder: number
-}
-
-export enum EBackupInterval {
-  DAILY = 'DAILY',
-  WEEKLY = 'WEEKLY',
-  OFF = 'OFF'
+export interface TTodoList {
+  date: TDateISODate
+  taskIds: string[]
 }
 
 export enum EColorTheme {
@@ -63,17 +40,4 @@ export enum EColorTheme {
 
 export interface TSettings {
   colorTheme: EColorTheme
-  backupInterval: EBackupInterval
-  backupDir: string
-}
-
-export enum EActivePage {
-  Home = 'Home',
-  History = 'History',
-  Successes = 'Successes',
-}
-
-export interface TWorkspace {
-  name: string
-  id: string
 }

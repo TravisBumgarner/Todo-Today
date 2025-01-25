@@ -1,29 +1,26 @@
 import { ipcRenderer } from 'electron'
-import { type Action } from 'Context'
-import { type AsyncBackupIPCFromMain, EAsyncMessageIPCFromMain, EAsyncMessageIPCFromRenderer, type AsyncTimerTickIPCFromMain } from 'shared/types'
-import { setLocalStorage } from 'utilities'
+import { EAsyncMessageIPCFromMain, type AsyncBackupIPCFromMain } from '../../shared/types'
+import { messageSignal } from '../signals'
 
-export const useIPCAsyncMessageEffect = (dispatch: React.Dispatch<Action>) => {
+export const useIPCAsyncMessageEffect = () => {
   ipcRenderer.on(EAsyncMessageIPCFromMain.UpdateAvailable, () => {
     ipcRenderer.removeAllListeners(EAsyncMessageIPCFromMain.UpdateAvailable)
-    dispatch({ type: 'ADD_MESSAGE', payload: { text: 'A new update is available. Downloading now...', severity: 'info' } })
+    messageSignal.value = { text: 'A new update is available. Downloading now...', severity: 'info' }
   })
 
   ipcRenderer.on(EAsyncMessageIPCFromMain.UpdateDownloaded, () => {
     ipcRenderer.removeAllListeners(EAsyncMessageIPCFromMain.UpdateDownloaded)
-    dispatch({ type: 'ADD_MESSAGE', payload: { text: 'Update Downloaded. It will be installed on restart. Restart now?', severity: 'info', cancelCallbackText: 'Later', confirmCallbackText: 'Restart', confirmCallback: () => { ipcRenderer.send(EAsyncMessageIPCFromRenderer.RestartApp) } } })
-  })
-
-  ipcRenderer.on(EAsyncMessageIPCFromMain.BackupCompleted, (_event, message: AsyncBackupIPCFromMain['body']) => {
-    if (message.success) {
-      setLocalStorage('lastBackup', message.timestamp)
-      dispatch({ type: 'EDIT_USER_SETTING', payload: { key: 'lastBackup', value: message.timestamp } })
-    } else {
-      dispatch({ type: 'ADD_MESSAGE', payload: { text: 'Backup Failed. Please try again.', severity: 'error' } })
+    messageSignal.value = {
+      text: 'Update Downloaded. It will be installed on restart.',
+      severity: 'info',
+      cancelText: '',
+      confirmText: 'Ok'
     }
   })
 
-  ipcRenderer.on(EAsyncMessageIPCFromMain.TimerTick, (_event, message: AsyncTimerTickIPCFromMain['body']) => {
-    dispatch({ type: 'UPDATE_TIMER', payload: { timerDuration: message.timerDuration } })
+  ipcRenderer.on(EAsyncMessageIPCFromMain.BackupCompleted, (_event, message: AsyncBackupIPCFromMain['body']) => {
+    if (!message.success) {
+      messageSignal.value = { text: 'Backup Failed. Please try again.', severity: 'error' }
+    }
   })
 }

@@ -1,172 +1,105 @@
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 import { Box, Button, css, FormControl, InputLabel, MenuItem, Select, Typography, type SelectChangeEvent } from '@mui/material'
+import { useSignalEffect } from '@preact/signals-react'
 import moment from 'moment'
-import { useCallback, useContext, useState } from 'react'
-import { HtmlTooltip } from 'sharedComponents'
+import { useCallback, useState } from 'react'
 
-import { context } from 'Context'
-import database, { DEFAULT_WORKSPACE } from 'database'
-import { EAsyncMessageIPCFromRenderer } from 'shared/types'
-import { DATE_BACKUP_DATE } from 'shared/utilities'
-import { EBackupInterval, EColorTheme } from 'types'
+import { database } from 'database'
+import { EColorTheme } from 'types'
 import {
-  backupIntervalLookup,
   colorThemeOptionLabels,
   saveFile,
-  sendAsyncIPCMessage,
   setLocalStorage
 } from 'utilities'
+import { DATE_BACKUP_DATE } from '../../shared/utilities'
+import { activeModalSignal, isRestoringSignal, settingsSignal } from '../signals'
 import Modal from './Modal'
 import { ModalID } from './RenderModal'
 
 const copyIndexedDBToObject = async () => {
   const data = {
-    projects: await database.projects.toArray(),
     tasks: await database.tasks.toArray(),
-    todoListItems: await database.todoListItems.toArray(),
-    successes: await database.successes.toArray(),
-    workspaces: await database.workspaces.toArray()
+    todoLists: await database.todoList.toArray()
   }
   return data
 }
 
-const MINUTE_IN_MS = 1000 * 60
-const backupIntervalToMilliseconds = {
-  [EBackupInterval.DAILY]: MINUTE_IN_MS * 60 * 24,
-  [EBackupInterval.WEEKLY]: MINUTE_IN_MS * 60 * 24 * 7
-  // [EBackupInterval.MONTHLY]: MINUTE_IN_MS * 60 * 24 * 30 - Disabling this comment will cause the setInterval call to crash. Don't use it.
-} as const
-
-const runAutomatedBackup = async () => {
-  const backupData = await copyIndexedDBToObject()
-  const payload = {
-    type: EAsyncMessageIPCFromRenderer.CreateBackup,
-    body: {
-      filename: `${moment().format(DATE_BACKUP_DATE)}.json`,
-      data: JSON.stringify(backupData)
-    }
-  } as const
-  sendAsyncIPCMessage(payload)
-}
-
-const setupAutomatedBackup = (backupInterval: EBackupInterval) => {
-  clearInterval(window.automatedBackupIntervalId)
-
-  if (backupInterval === EBackupInterval.OFF) {
-    return
-  }
-  const interval = backupIntervalToMilliseconds[backupInterval]
-  window.automatedBackupIntervalId = setInterval(runAutomatedBackup, interval)
-}
-
 const Settings = () => {
-  const { state, dispatch } = useContext(context)
   const [restoreFile, setRestoreFile] = useState<File | null>(null)
+
+  const syncSettingsToLocalStorage = useCallback(() => {
+    if (settingsSignal.value) {
+      Object.entries(settingsSignal.value).forEach(([key, value]) => {
+        setLocalStorage(key as keyof typeof settingsSignal.value, value)
+      })
+    }
+  }, [])
+  useSignalEffect(syncSettingsToLocalStorage)
 
   const handleBackup = async () => {
     const backupData = await copyIndexedDBToObject()
     if (!backupData) {
-      dispatch({
-        type: 'SET_ACTIVE_MODAL',
-        payload: {
-          id: ModalID.CONFIRMATION_MODAL,
-          title: 'Something went wrong',
-          body: 'There is no data to backup'
-        }
-      })
+      activeModalSignal.value = {
+        id: ModalID.CONFIRMATION_MODAL,
+        title: 'Something went wrong',
+        body: 'There is no data to backup'
+      }
     } else {
       const backupDate = moment().format(DATE_BACKUP_DATE)
       void saveFile(`${backupDate}.json`, backupData)
-      setLocalStorage('lastBackup', backupDate)
-      dispatch({ type: 'EDIT_USER_SETTING', payload: { key: 'lastBackup', value: backupDate } })
     }
   }
 
   const handleThemeChange = useCallback((event: SelectChangeEvent<EColorTheme>) => {
-    dispatch({ type: 'EDIT_USER_SETTING', payload: { key: 'colorTheme', value: event.target.value } })
-  }, [dispatch])
-
-  const handleBackupIntervalChange = useCallback((event: SelectChangeEvent<EBackupInterval>) => {
-    dispatch({ type: 'EDIT_USER_SETTING', payload: { key: 'backupInterval', value: event.target.value } })
-  }, [dispatch])
-
-  const handleConcurrentTodoListItemsChange = useCallback((event: SelectChangeEvent<number>) => {
-    dispatch({ type: 'EDIT_USER_SETTING', payload: { key: 'concurrentTodoListItems', value: event.target.value } })
-  }, [dispatch])
+    settingsSignal.value = { ...settingsSignal.value, colorTheme: event.target.value as EColorTheme }
+  }, [])
 
   const restore = useCallback((restoreFile: File | null) => {
-    dispatch({ type: 'RESTORE_STARTED' })
+    isRestoringSignal.value = true
     if (restoreFile) {
       const reader = new FileReader()
       reader.readAsText(restoreFile, 'UTF-8')
       reader.onload = async function (event) {
         try {
           if (event.target?.result) {
-            let { projects, todoListItems, successes, workspaces, tasks } = JSON.parse(event.target.result as string)
+            const { todoLists, tasks } = JSON.parse(event.target.result as string)
 
             await Promise.all([
-              database.projects.clear(),
               database.tasks.clear(),
-              database.todoListItems.clear(),
-              database.successes.clear(),
-              database.workspaces.clear()
+              database.todoList.clear()
             ])
-
-            // If import does not have any workspaces, we need to add the default workspace
-            let newWorkspaces = workspaces
-            if (!newWorkspaces) {
-              newWorkspaces = [DEFAULT_WORKSPACE]
-
-              projects = projects.map((project: any) => ({ ...project, workspaceId: DEFAULT_WORKSPACE.id }))
-              todoListItems = todoListItems.map((task: any) => ({ ...task, workspaceId: DEFAULT_WORKSPACE.id }))
-              successes = successes.map((success: any) => ({ ...success, workspaceId: DEFAULT_WORKSPACE.id }))
-            }
 
             await Promise.all([
-              database.projects.bulkAdd(projects),
               database.tasks.bulkAdd(tasks),
-              database.todoListItems.bulkAdd(todoListItems),
-              database.successes.bulkAdd(successes),
-              database.workspaces.bulkAdd(newWorkspaces)
+              database.todoList.bulkAdd(todoLists)
             ])
-            setLocalStorage('activeWorkspaceId', newWorkspaces[0].id)
-            dispatch({ type: 'CHANGE_WORKSPACE', payload: { workspaceId: newWorkspaces[0].id } })
           } else {
-            dispatch({
-              type: 'SET_ACTIVE_MODAL',
-              payload: {
-                id: ModalID.CONFIRMATION_MODAL,
-                title: 'Something went Wrong',
-                body: 'Please select a valid backup file and try again'
-              }
-            })
-          }
-        } catch (error) {
-          dispatch({
-            type: 'SET_ACTIVE_MODAL',
-            payload: {
+            activeModalSignal.value = {
               id: ModalID.CONFIRMATION_MODAL,
               title: 'Something went Wrong',
               body: 'Please select a valid backup file and try again'
             }
-          })
+          }
+        } catch (error) {
+          activeModalSignal.value = {
+            id: ModalID.CONFIRMATION_MODAL,
+            title: 'Something went Wrong',
+            body: 'Please select a valid backup file and try again'
+          }
+          isRestoringSignal.value = false
         }
       }
     }
-    dispatch({ type: 'RESTORE_ENDED' })
-  }, [dispatch])
+    isRestoringSignal.value = false
+  }, [])
 
   const handleRestoreClick = useCallback(() => {
-    dispatch({
-      type: 'SET_ACTIVE_MODAL',
-      payload: {
-        id: ModalID.CONFIRMATION_MODAL,
-        title: 'Restore from Backup?',
-        body: 'All current data will be lost.',
-        confirmationCallback: () => { restore(restoreFile) }
-      }
-    })
-  }, [dispatch, restore, restoreFile])
+    activeModalSignal.value = {
+      id: ModalID.CONFIRMATION_MODAL,
+      title: 'Restore from Backup?',
+      body: 'All current data will be lost.',
+      confirmationCallback: () => { restore(restoreFile) }
+    }
+  }, [restore, restoreFile])
 
   return (
     <Modal
@@ -174,41 +107,13 @@ const Settings = () => {
       showModal={true}
     >
       <Box css={sectionWrapperCSS}>
-        <Box css={sectionHeaderWrapperCSS}>
-          <Typography variant="h3">Todo List</Typography>
-          <HtmlTooltip title={
-            <>
-              <Typography variant="body2"><Box component="span" fontWeight={700}>Concurrent Tasks</Box> - How many tasks to show at once when doing focused work.</Typography>
-            </>
-          }>
-            <HelpOutlineIcon color="primary" fontSize='small' />
-          </HtmlTooltip>
-        </Box>
-        <FormControl fullWidth margin='normal'>
-          <InputLabel id="setting-modal-concurrent-tasks">Do Mode Concurrent Tasks</InputLabel>
-          <Select
-            fullWidth
-            labelId="setting-modal-concurrent-tasks"
-            type="number"
-            value={state.settings.concurrentTodoListItems}
-            label="Do Mode Concurrent Tasks"
-            onChange={handleConcurrentTodoListItemsChange}
-          >
-            <MenuItem value={1}>1</MenuItem>
-            <MenuItem value={2}>2</MenuItem>
-            <MenuItem value={3}>3</MenuItem>
-          </Select>
-        </FormControl>
-      </Box>
-
-      <Box css={sectionWrapperCSS}>
         <Typography variant="h3">Theme</Typography>
         <FormControl fullWidth margin='normal'>
           <InputLabel id="setting-modal-color-theme">Color Theme</InputLabel>
           <Select
             fullWidth
             labelId="setting-modal-color-theme"
-            value={state.settings.colorTheme}
+            value={settingsSignal.value.colorTheme}
             label="Color Theme"
             onChange={handleThemeChange}
           >
@@ -220,36 +125,15 @@ const Settings = () => {
       <Box css={sectionWrapperCSS}>
         <Box css={sectionHeaderWrapperCSS}>
           <Typography variant="h3">Backup</Typography>
-          <HtmlTooltip title={
-            <>
-              <Typography variant="body2"><Box component="span" fontWeight={700}>Last Backup<br /></Box> {state.settings.lastBackup ?? 'No backups yet'}</Typography>
-              <Typography variant="body2"><Box component="span" fontWeight={700}>Location<br /></Box> {state.settings.backupDir}</Typography></>
-          }>
-            <HelpOutlineIcon color="primary" fontSize='small' />
-          </HtmlTooltip>
         </Box>
-        <Button fullWidth variant='contained' onClick={handleBackup}>Create Manual Backup</Button>
-        <FormControl fullWidth margin='normal'>
-          <InputLabel id="setting-modal-backup-interval">Automated Backup Interval</InputLabel>
-          <Select
-            margin='dense'
-            fullWidth
-            labelId="setting-modal-backup-interval"
-            value={state.settings.backupInterval}
-            label="Automated Backup Interval"
-            onChange={handleBackupIntervalChange}
-          >
-            {Object.keys(EBackupInterval).map(key => <MenuItem key={key} value={key}>{backupIntervalLookup[key as EBackupInterval]}</MenuItem>)}
-          </Select>
-        </FormControl>
+        <Button fullWidth variant='outlined' onClick={handleBackup}>Create Backup</Button>
 
       </Box>
 
       <Box css={sectionWrapperCSS}>
-
         <Typography variant="h3">Restore</Typography>
         <Button
-          variant="contained"
+          variant="outlined"
           component="label"
           fullWidth
         >
@@ -265,7 +149,7 @@ const Settings = () => {
           disabled={!restoreFile}
           onClick={handleRestoreClick}
           fullWidth
-          variant='contained'
+          variant='outlined'
         >
           Restore
         </Button>
@@ -291,4 +175,3 @@ const sectionHeaderWrapperCSS = css`
 `
 
 export default Settings
-export { setupAutomatedBackup }

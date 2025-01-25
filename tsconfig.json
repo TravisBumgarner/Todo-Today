@@ -2,7 +2,11 @@
   "compilerOptions": {
     "target": "ESNext",
     "useDefineForClassFields": true,
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ESNext"
+    ],
     "allowJs": false,
     "skipLibCheck": true,
     "esModuleInterop": false,
@@ -16,18 +20,39 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "jsxImportSource": "@emotion/react",
-    "baseUrl": "./",
+    "baseUrl": "./src",
     "paths": {
-      "sharedComponents": ["src/sharedComponents"],
-      "modals": ["src/modals"],
-      "types": ["src/types.ts"],
-      "theme": ["src/theme.tsx"],
-      "colors": ["src/colors.tsx"],
-      "utilities": ["src/utilities.tsx"],
-      "Context": ["src/Context.tsx"],
-      "database": ["src/database.ts"]
+      "components": [
+        "components/"
+      ],
+      "modals": [
+        "modals"
+      ],
+      "types": [
+        "types.ts"
+      ],
+      "theme": [
+        "theme.tsx"
+      ],
+      "colors": [
+        "colors.tsx"
+      ],
+      "utilities": [
+        "utilities.tsx"
+      ],
+      "database": [
+        "database/index.ts"
+      ]
     },
   },
-  "include": ["src", "electron", "shared"], // shared doesn't seem to work in Electron
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "include": [
+    "src",
+    "electron",
+    "shared"
+  ], // shared doesn't seem to work in Electron
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    }
+  ]
 }
