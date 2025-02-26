@@ -32,7 +32,7 @@ const baseThemeOptions: ThemeOptions = {
   }
 }
 
-const beachThemeOptions = {
+const lightThemeOptions = {
   palette: {
     info: {
       main: 'rgb(184, 203, 210)'
@@ -62,92 +62,38 @@ const beachThemeOptions = {
   }
 }
 
-const retroFutureThemeOptions = {
+const darkThemeOptions = {
   palette: {
+    info: {
+      main: 'rgb(234, 249, 255)'
+    },
     primary: {
-      main: 'rgb(123, 195, 255)'
+      main: 'rgb(51, 255, 218)'
     },
     secondary: {
-      main: 'rgb(123, 255, 127)'
+      main: 'rgb(78, 204, 236)'
     },
     text: {
-      primary: 'rgb(239, 239, 239)'
+      primary: 'rgb(211, 244, 255)'
     },
     action: {
-      disabled: 'rgb(118, 118, 118)'
+      disabled: 'rgb(172, 172, 172)'
     },
     background: {
-      default: 'rgb(41, 21, 67)',
-      paper: 'rgb(113, 42, 107)'
+      default: 'rgb(27, 45, 59)',
+      paper: 'rgb(34, 56, 74)'
     },
     warning: {
-      main: 'rgb(239, 233, 63)'
+      main: 'rgb(228, 142, 12)'
     },
     error: {
-      main: 'rgb(255, 63, 133)'
+      main: 'rgb(241, 40, 46)'
     }
   }
 }
 
-const underTheSeaThemeOptions = {
-  palette: {
-    primary: {
-      main: 'rgb(153, 197, 197)'
-    },
-    secondary: {
-      main: 'rgb(133, 255, 199)'
-    },
-    text: {
-      primary: 'rgb(222, 222, 222)'
-    },
-    action: {
-      disabled: 'rgb(234, 226, 183)'
-    },
-    background: {
-      default: 'rgb(57, 58, 58)',
-      paper: 'rgb(62, 118, 111)'
-    },
-    warning: {
-      main: 'rgb(255, 160, 82)'
-    },
-    error: {
-      main: 'rgb(255, 197, 82)'
-    }
-  }
-}
-
-const highContrastThemeOptions = {
-  palette: {
-    primary: {
-      main: 'rgb(86, 105, 188)'
-    },
-    secondary: {
-      main: 'rgb(74, 171, 100)'
-    },
-    text: {
-      primary: 'rgb(0, 0, 0)'
-    },
-    action: {
-      disabled: 'rgb(126, 126, 126)'
-    },
-    background: {
-      default: 'rgb(255, 255, 255)',
-      paper: 'rgb(232, 232, 232)'
-    },
-    warning: {
-      main: 'rgb(238, 184, 104)'
-    },
-    error: {
-      main: 'rgb(239, 118, 122)'
-    }
-  }
-}
-
-export const baseTheme = extendTheme(baseThemeOptions)
-export const beachTheme = extendTheme(mergeDeep(baseThemeOptions, beachThemeOptions))
-export const highContrastTheme = extendTheme(mergeDeep(baseThemeOptions, highContrastThemeOptions))
-export const retroFutureTheme = extendTheme(mergeDeep(baseThemeOptions, retroFutureThemeOptions))
-export const underTheSeaTheme = extendTheme(mergeDeep(baseThemeOptions, underTheSeaThemeOptions))
+export const lightTheme = extendTheme(mergeDeep(baseThemeOptions, lightThemeOptions))
+export const darkTheme = extendTheme(mergeDeep(baseThemeOptions, darkThemeOptions))
 
 export const BUTTONS_WRAPPER_HEIGHT = 36
 

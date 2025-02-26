@@ -5,7 +5,7 @@ import moment from 'moment'
 import { type AsyncMessageIPCFromRenderer } from '../shared/async-message-types'
 import { type AppStartIPCFromMain, type ESyncMessageIPC, type SyncMessageIPCFromRenderer } from '../shared/sync-message-types'
 
-import { DATE_ISO_DATE_MOMENT_STRING, EColorTheme, ETaskStatus, type TDateISODate } from './types'
+import { DATE_ISO_DATE_MOMENT_STRING, ETaskStatus, type TDateISODate } from './types'
 
 export const TASK_STATUS_IS_ACTIVE: Record<ETaskStatus, boolean> = {
   [ETaskStatus.CANCELED]: false,
@@ -21,13 +21,6 @@ const taskStatusLookup: Record<ETaskStatus, string> = {
   [ETaskStatus.IN_PROGRESS]: 'In Progress',
   [ETaskStatus.NEW]: 'Queued',
   [ETaskStatus.BLOCKED]: 'Blocked'
-}
-
-const colorThemeOptionLabels: Record<EColorTheme, string> = {
-  [EColorTheme.BEACH]: 'Beach',
-  [EColorTheme.RETRO_FUTURE]: 'Retro Future',
-  [EColorTheme.UNDER_THE_SEA]: 'Under the Sea',
-  [EColorTheme.CONTRAST]: 'High Contrast'
 }
 
 const formatDateDisplayString = (date: TDateISODate | null): string => {
@@ -62,20 +55,6 @@ const saveFile = async (fileName: string, jsonData: unknown) => {
     setTimeout(() => { URL.revokeObjectURL(a.href) }, 30 * 1000)
   })
   a.click()
-}
-export interface TLocalStorage {
-  colorTheme: EColorTheme
-}
-
-const getLocalStorage = (key: keyof TLocalStorage) => {
-  const result = localStorage.getItem(key)
-  return result ? JSON.parse(result) : ''
-}
-
-// This'll need to be rethought.
-// eslint-disable-next-line
-const setLocalStorage = <T extends TLocalStorage>(key: keyof T, value: T[keyof T]) => {
-  localStorage.setItem(key as string, JSON.stringify(value))
 }
 
 interface MessageReturnTypeMap {
@@ -124,9 +103,9 @@ const taskStatusIcon = (taskStatus: ETaskStatus) => {
 }
 
 export {
-  colorThemeOptionLabels, formatDateDisplayString,
+  formatDateDisplayString,
   formatDateKeyLookup,
-  formatDurationDisplayString, getLocalStorage, saveFile, sendAsyncIPCMessage, sendSyncIPCMessage, setLocalStorage, sumArray, taskStatusIcon, taskStatusLookup
+  formatDurationDisplayString, saveFile, sendAsyncIPCMessage, sendSyncIPCMessage, sumArray, taskStatusIcon, taskStatusLookup
 }
 
 export const mergeDeep = (target: any, source: any) => {

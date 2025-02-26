@@ -2,35 +2,36 @@
 import CssBaseline from '@mui/material/CssBaseline'
 
 import { Box, css, Experimental_CssVarsProvider } from '@mui/material'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import Message from 'components/Message'
 import TodoList from 'components/TodoList'
 import RenderModal from 'modals'
-import { baseTheme, beachTheme, highContrastTheme, retroFutureTheme, SPACING, underTheSeaTheme } from 'theme'
-import { EColorTheme } from './types'
+import { darkTheme, lightTheme, SPACING } from 'theme'
 
-import { useSignalEffect } from '@preact/signals-react'
 import { useSignals } from '@preact/signals-react/runtime'
 import { useIPCAsyncMessageEffect } from './hooks/useIPCAsyncMessageEffect'
-import { isRestoringSignal, settingsSignal } from './signals'
+import { isRestoringSignal } from './signals'
 
 const App = () => {
   useSignals()
-  const [theme, setTheme] = useState(baseTheme)
+  const [theme, setTheme] = useState(lightTheme)
 
-  useIPCAsyncMessageEffect()
-
-  useSignalEffect(() => {
-    const THEME_MAP = {
-      [EColorTheme.BEACH]: beachTheme,
-      [EColorTheme.RETRO_FUTURE]: retroFutureTheme,
-      [EColorTheme.UNDER_THE_SEA]: underTheSeaTheme,
-      [EColorTheme.CONTRAST]: highContrastTheme
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+    const handleChange = () => {
+      setTheme(mediaQuery.matches ? darkTheme : lightTheme)
     }
 
-    setTheme(THEME_MAP[settingsSignal.value.colorTheme])
-  })
+    handleChange() // Set initial theme
+    mediaQuery.addEventListener('change', handleChange)
+
+    return () => {
+      mediaQuery.removeEventListener('change', handleChange)
+    }
+  }, [])
+
+  useIPCAsyncMessageEffect()
 
   if (isRestoringSignal.value) {
     return <p>Loading...</p>

@@ -35,7 +35,7 @@ const Modal: FC<ActiveModal> = ({ children, title, disableEscapeKeyDown, disable
           <Typography variant="h2">{title}</Typography>
           <Tooltip title="Close">
             <IconButton onClick={handleClose}>
-              <CloseIcon />
+              <CloseIcon sx={{ color: 'var(--mui-palette-text-primary)' }} />
             </IconButton>
           </Tooltip>
         </Box>

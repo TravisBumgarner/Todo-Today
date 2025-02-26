@@ -1,17 +1,13 @@
-import { Box, Button, css, FormControl, InputLabel, MenuItem, Select, Typography, type SelectChangeEvent } from '@mui/material'
-import { useSignalEffect } from '@preact/signals-react'
+import { Box, Button, css, Typography } from '@mui/material'
 import moment from 'moment'
 import { useCallback, useState } from 'react'
 
 import { database } from 'database'
-import { EColorTheme } from 'types'
 import {
-  colorThemeOptionLabels,
-  saveFile,
-  setLocalStorage
+  saveFile
 } from 'utilities'
 import { DATE_BACKUP_DATE } from '../../shared/utilities'
-import { activeModalSignal, isRestoringSignal, settingsSignal } from '../signals'
+import { activeModalSignal, isRestoringSignal } from '../signals'
 import Modal from './Modal'
 import { ModalID } from './RenderModal'
 
@@ -26,15 +22,6 @@ const copyIndexedDBToObject = async () => {
 const Settings = () => {
   const [restoreFile, setRestoreFile] = useState<File | null>(null)
 
-  const syncSettingsToLocalStorage = useCallback(() => {
-    if (settingsSignal.value) {
-      Object.entries(settingsSignal.value).forEach(([key, value]) => {
-        setLocalStorage(key as keyof typeof settingsSignal.value, value)
-      })
-    }
-  }, [])
-  useSignalEffect(syncSettingsToLocalStorage)
-
   const handleBackup = async () => {
     const backupData = await copyIndexedDBToObject()
     if (!backupData) {
@@ -48,10 +35,6 @@ const Settings = () => {
       void saveFile(`${backupDate}.json`, backupData)
     }
   }
-
-  const handleThemeChange = useCallback((event: SelectChangeEvent<EColorTheme>) => {
-    settingsSignal.value = { ...settingsSignal.value, colorTheme: event.target.value as EColorTheme }
-  }, [])
 
   const restore = useCallback((restoreFile: File | null) => {
     isRestoringSignal.value = true
@@ -106,22 +89,6 @@ const Settings = () => {
       title="Settings"
       showModal={true}
     >
-      <Box css={sectionWrapperCSS}>
-        <Typography variant="h3">Theme</Typography>
-        <FormControl fullWidth margin='normal'>
-          <InputLabel id="setting-modal-color-theme">Color Theme</InputLabel>
-          <Select
-            fullWidth
-            labelId="setting-modal-color-theme"
-            value={settingsSignal.value.colorTheme}
-            label="Color Theme"
-            onChange={handleThemeChange}
-          >
-            {Object.keys(EColorTheme).map(key => <MenuItem key={key} value={key}>{colorThemeOptionLabels[key as EColorTheme]}</MenuItem>)}
-          </Select>
-        </FormControl>
-      </Box>
-
       <Box css={sectionWrapperCSS}>
         <Box css={sectionHeaderWrapperCSS}>
           <Typography variant="h3">Backup</Typography>

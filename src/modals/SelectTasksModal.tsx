@@ -32,7 +32,7 @@ const Task = ({ task, isSelected }: TaskProps) => {
     <Box css={tasksHeaderCSS}>
       <Typography variant="body1">{task.title}</Typography>
       <Box css={rightHeaderCSS}>
-        <IconButton color={isSelected ? 'secondary' : 'default'} onClick={isSelected ? handleDeselect : handleSelect}>
+        <IconButton color={isSelected ? 'primary' : 'info'} onClick={isSelected ? handleDeselect : handleSelect}>
           <CheckIcon fontSize="small" />
         </IconButton>
       </Box>
