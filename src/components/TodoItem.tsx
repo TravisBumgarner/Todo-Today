@@ -33,6 +33,12 @@ const Subtask = ({ taskId, subtaskId }: { taskId: string, subtaskId: string }) =
     <Box css={subtaskWrapperCSS}>
       <FormControlLabel control={
         <Checkbox
+          sx={{
+            color: 'var(--mui-palette-info)',
+            '&.Mui-checked': {
+              color: 'var(--mui-palette-info)'
+            }
+          }}
           checked={subtask?.checked}
           onChange={handleSubtaskChange}
           style={{ padding: `${SPACING.XXSMALL}px ${SPACING.SMALL}px` }}
@@ -40,7 +46,7 @@ const Subtask = ({ taskId, subtaskId }: { taskId: string, subtaskId: string }) =
       }
         label={subtask?.title}
       />
-      <IconButton onClick={handleDeleteSubtask}><Delete fontSize="small" /></IconButton>
+      <IconButton onClick={handleDeleteSubtask}><Delete color='info' fontSize="small" /></IconButton>
     </Box>
   )
 }
@@ -65,7 +71,9 @@ const TodoItem = ({ taskId }: TTodoItem) => {
       setTempTitle(task?.title ?? '')
       setStatus(task?.status ?? ETaskStatus.NEW)
       setDetails(task?.details ?? '')
-      setShowContent(!!task?.details || (task?.subtasks?.length ?? 0) > 0)
+      const hasTasksOrDetails = !!task?.details || (task?.subtasks?.length ?? 0) > 0
+      const isActive = [ETaskStatus.IN_PROGRESS, ETaskStatus.NEW, ETaskStatus.BLOCKED].includes(task?.status ?? ETaskStatus.NEW)
+      setShowContent(hasTasksOrDetails && isActive)
       setSubtaskIds(task?.subtasks?.map(subtask => subtask.id) ?? [])
     })
   })
@@ -147,13 +155,13 @@ const TodoItem = ({ taskId }: TTodoItem) => {
             css={{ marginRight: '0.5rem', backgroundColor: 'css={css`background-color: var(--mui-palette-background-paper)' }}
           >
             <Tooltip title="Show details" >
-              <ChevronRight fontSize="small" css={{ transform: `rotate(${showContent ? '90deg' : '0deg'})` }} />
+              <ChevronRight color={showContent ? 'primary' : 'info'} fontSize="small" css={{ transform: `rotate(${showContent ? '90deg' : '0deg'})` }} />
             </Tooltip>
           </ToggleButton>
 
           <Tooltip title="Remove from today">
             <IconButton onClick={handleRemoveFromToday} css={{ marginLeft: '0.5rem' }}>
-              <CloseIcon fontSize="small" />
+              <CloseIcon color='warning' fontSize="small" />
             </IconButton>
           </Tooltip>
 
@@ -166,7 +174,9 @@ const TodoItem = ({ taskId }: TTodoItem) => {
             <Box css={subtaskInputWrapperCSS}>
               <TextField size='small' fullWidth type="text" placeholder="Subtask" value={subtaskTitle} onChange={handleSubtaskTitleChange} />
               <Tooltip title="Add subtask">
-                <IconButton disabled={subtaskTitle.length === 0} onClick={handleAddSubtask}><Add fontSize="small" /></IconButton>
+                <span>
+                  <IconButton color={subtaskTitle.length === 0 ? 'info' : 'primary'} disabled={subtaskTitle.length === 0} onClick={handleAddSubtask}><Add fontSize="small" /></IconButton>
+                </span>
               </Tooltip>
             </Box>
           </Box>

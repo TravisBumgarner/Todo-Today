@@ -74,12 +74,12 @@ const AddTaskModal = () => {
         <ToggleButtonGroup value={addToSelectedDate} exclusive onChange={handleAddToTodayChange}>
           <ToggleButton color="primary" value='no' >
             <Tooltip title="Do not add to today">
-              <CancelIcon />
+              <CancelIcon color={addToSelectedDate === 'no' ? 'primary' : 'info'} />
             </Tooltip>
           </ToggleButton>
           <ToggleButton color="primary" value='yes'>
             <Tooltip title="Add to today">
-              <CheckCircleOutlineIcon />
+              <CheckCircleOutlineIcon color={addToSelectedDate === 'yes' ? 'primary' : 'info'} />
             </Tooltip>
           </ToggleButton>
         </ToggleButtonGroup>

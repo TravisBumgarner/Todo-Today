@@ -1,7 +1,7 @@
 {
   "name": "todotodaydev",
   "productName": "Todo Today",
-  "version": "2.0.0",
+  "version": "2.0.2",
   "main": "dist-electron/main/index.js",
   "description": "Minimalistic Todo List",
   "license": "MIT",
@@ -18,7 +18,7 @@
   },
   "scripts": {
     "bootstrap": "./scripts/bootstrap.sh",
-    "start": "vite --force",
+    "dev": "vite --force",
     "build-react": "tsc && vite build",
     "setup-dev-mac": "rm -rf ./release && export CSC_IDENTITY_AUTO_DISCOVERY=false",
     "setup-prod-mac": "rm -rf ./release && export CSC_IDENTITY_AUTO_DISCOVERY=true",
