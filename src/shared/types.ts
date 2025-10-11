@@ -16,3 +16,5 @@ export type Invokes = {
     result: { success: boolean };
   };
 };
+export * from "./sync-message-types";
+export * from "./async-message-types";

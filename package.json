@@ -55,15 +55,20 @@
     "@emotion/styled": "^11.14.1",
     "@fontsource/comfortaa": "^5.2.8",
     "@libsql/client": "^0.15.15",
+    "@mui/icons-material": "^7.3.4",
     "@mui/material": "^7.3.4",
     "@preact/signals-react": "^3.3.1",
     "better-sqlite3": "^12.4.1",
+    "dexie": "^4.2.1",
+    "dexie-react-hooks": "^4.2.0",
     "dotenv": "^17.2.3",
     "electron-log": "^5.4.3",
     "electron-squirrel-startup": "^1.0.1",
     "esbuild-register": "^3.6.0",
     "lodash": "^4.17.21",
+    "moment": "^2.30.1",
     "react-router-dom": "^7.9.4",
-    "update-electron-app": "^3.1.1"
+    "update-electron-app": "^3.1.1",
+    "uuid": "^13.0.0"
   }
 }
