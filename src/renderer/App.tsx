@@ -55,6 +55,13 @@ import { darkTheme, lightTheme, SPACING } from './theme'
 import { useSignals } from '@preact/signals-react/runtime'
 import { useIPCAsyncMessageEffect } from './hooks/useIPCAsyncMessageEffect'
 import { isRestoringSignal } from './signals'
+import type { ElectronHandler } from '../main/preload'
+
+declare global {
+  interface Window {
+    electron: ElectronHandler
+  }
+}
 
 const App = () => {
   useSignals()

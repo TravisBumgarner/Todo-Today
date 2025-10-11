@@ -1,15 +1,15 @@
 import Icon from './components/Icon'
-import { ipcRenderer } from 'electron'
 import moment from 'moment'
 
-import log from 'electron-log/renderer'
+// import log from 'electron-log/renderer'
 
 export const logMessage = (message: string) => {
-  if (import.meta.env.VITE_API_URL) {
-    console.log(message)
-  } else {
-    log.info(message)
-  }
+  console.log(message)
+  // if (import.meta.env.DEV) {
+  //   console.log(message)
+  // } else {
+  //   log.info(message)
+  // }
 }
 
 import { type AsyncMessageIPCFromRenderer } from '../shared/async-message-types'
@@ -88,7 +88,7 @@ interface MessageReturnTypeMap {
 const sendSyncIPCMessage = async <T extends SyncMessageIPCFromRenderer>(
   message: T,
 ): Promise<MessageReturnTypeMap[T['type']]> => {
-  return (await ipcRenderer.invoke(
+  return (await window.electron.ipcRenderer.invoke(
     message.type,
     message.body,
   )) as MessageReturnTypeMap[T['type']]
@@ -98,7 +98,7 @@ const sendAsyncIPCMessage = <T extends AsyncMessageIPCFromRenderer>(
   message: T,
 ) => {
   // Responses end up in useIPCRendererEffect.ts
-  ipcRenderer.send(message.type, message.body)
+  window.electron.ipcRenderer.send(message.type, message.body)
 }
 
 const taskStatusIcon = (taskStatus: ETaskStatus) => {

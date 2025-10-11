@@ -14,13 +14,10 @@ const electronHandler = {
     },
     // Main → Renderer (one-time listen)
     once(channel, listener) {
-      electron.ipcRenderer.once(
-        channel,
-        (_event, params) => listener(params)
-      );
+      electron.ipcRenderer.once(channel, (_event, params) => listener(params));
     },
     // Renderer → Main (invoke / handle roundtrip)
-    invoke(channel, args = void 0) {
+    invoke(channel, args) {
       return electron.ipcRenderer.invoke(channel, args);
     }
   }

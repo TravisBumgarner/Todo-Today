@@ -1,19 +1,20 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron'
-import { FromRenderer, FromMain, Invokes } from '../shared/types'
+import {
+  ESyncMessageIPC,
+  EAsyncMessageIPCFromRenderer,
+  EAsyncMessageIPCFromMain,
+} from '../shared/types'
 
 const electronHandler = {
   ipcRenderer: {
     // Renderer → Main (fire and forget)
-    send<T extends keyof FromRenderer>(channel: T, params: FromRenderer[T]) {
+    send(channel: EAsyncMessageIPCFromRenderer, params: unknown) {
       ipcRenderer.send(channel, params)
     },
 
     // Main → Renderer (listen)
-    on<T extends keyof FromMain>(
-      channel: T,
-      listener: (params: FromMain[T]) => void,
-    ) {
-      const subscription = (_event: IpcRendererEvent, params: FromMain[T]) =>
+    on(channel: EAsyncMessageIPCFromMain, listener: (params: unknown) => void) {
+      const subscription = (_event: IpcRendererEvent, params: unknown) =>
         listener(params)
 
       ipcRenderer.on(channel, subscription)
@@ -21,20 +22,15 @@ const electronHandler = {
     },
 
     // Main → Renderer (one-time listen)
-    once<T extends keyof FromMain>(
-      channel: T,
-      listener: (params: FromMain[T]) => void,
+    once(
+      channel: EAsyncMessageIPCFromMain,
+      listener: (params: unknown) => void,
     ) {
-      ipcRenderer.once(channel, (_event, params: FromMain[T]) =>
-        listener(params),
-      )
+      ipcRenderer.once(channel, (_event, params: unknown) => listener(params))
     },
 
     // Renderer → Main (invoke / handle roundtrip)
-    invoke<T extends keyof Invokes>(
-      channel: T,
-      args: Invokes[T]['args'] | undefined = undefined,
-    ): Promise<Invokes[T]['result']> {
+    invoke(channel: ESyncMessageIPC, args?: unknown): Promise<unknown> {
       return ipcRenderer.invoke(channel, args)
     },
   },
