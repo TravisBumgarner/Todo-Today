@@ -35,6 +35,7 @@
     "@electron/fuses": "^1.8.0",
     "@types/better-sqlite3": "^7.6.13",
     "@types/electron-squirrel-startup": "^1.0.2",
+    "@types/lodash": "^4.17.20",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.1",
     "@typescript-eslint/eslint-plugin": "^5.62.0",
@@ -50,12 +51,18 @@
     "vite": "^7.1.9"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@fontsource/comfortaa": "^5.2.8",
     "@libsql/client": "^0.15.15",
+    "@mui/material": "^7.3.4",
+    "@preact/signals-react": "^3.3.1",
     "better-sqlite3": "^12.4.1",
     "dotenv": "^17.2.3",
     "electron-log": "^5.4.3",
     "electron-squirrel-startup": "^1.0.1",
     "esbuild-register": "^3.6.0",
+    "lodash": "^4.17.21",
     "react-router-dom": "^7.9.4",
     "update-electron-app": "^3.1.1"
   }

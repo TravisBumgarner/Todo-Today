@@ -1,7 +1,18 @@
 import { MemoryRouter as Router, Routes, Route } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { CHANNEL } from "../shared/types";
 import type { ElectronHandler } from "../main/preload";
+import CssBaseline from "@mui/material/CssBaseline";
+import { Box, css, ThemeProvider } from "@mui/material";
+
+// import Message from "components/Message";
+// import TodoList from "components/TodoList";
+// import RenderModal from "modals";
+import { darkTheme, lightTheme, SPACING } from "./Theme";
+
+import { useSignals } from "@preact/signals-react/runtime";
+// import { useIPCAsyncMessageEffect } from "./hooks/useIPCAsyncMessageEffect";
+// import { isRestoringSignal } from "./signals";
 
 declare global {
   interface Window {
@@ -10,21 +21,50 @@ declare global {
 }
 
 function App() {
+  useSignals();
+  const [theme, setTheme] = useState(lightTheme);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const handleChange = () => {
+      setTheme(mediaQuery.matches ? darkTheme : lightTheme);
+    };
+
+    handleChange(); // Set initial theme
+    mediaQuery.addEventListener("change", handleChange);
+
+    return () => {
+      mediaQuery.removeEventListener("change", handleChange);
+    };
+  }, []);
+
+  // useIPCAsyncMessageEffect();
+
   useEffect(() => {
     window.electron.ipcRenderer.invoke(CHANNEL.WEE_WOO);
   });
 
-  const handleAddUser = async () => {
-    const response = await window.electron.ipcRenderer.invoke(CHANNEL.WEE_WOO, {
-      payload: { name: "Travis" },
-    });
-    alert(response.success);
-  };
+  // const handleAddUser = async () => {
+  //   const response = await window.electron.ipcRenderer.invoke(CHANNEL.WEE_WOO, {
+  //     payload: { name: "Travis" },
+  //   });
+  //   alert(response.success);
+  // };
+
+  // if (isRestoringSignal.value) {
+  //   return <p>Loading...</p>;
+  // }
 
   return (
-    <div>
-      <button onClick={handleAddUser}>Add User</button>
-    </div>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Box sx={appWrapperCSS}>
+        {/* <Message />
+        <TodoList /> */}
+        <p>Hi</p>
+      </Box>
+      {/* <RenderModal /> */}
+    </ThemeProvider>
   );
 }
 
@@ -37,3 +77,11 @@ export default function AppWrapper() {
     </Router>
   );
 }
+
+const appWrapperCSS = css`
+  max-width: 1200px;
+  margin: 0px auto;
+  height: 100%;
+  box-sizing: border-box;
+  padding: ${SPACING.MEDIUM}px;
+`;
