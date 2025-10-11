@@ -10,7 +10,7 @@
 # Dev Notes
 
 **Deploy**
-
-1. Bump the version (patch | minor | major) `npm version patch`
+1. From the root:
+1. Bump the version (patch | minor | major) `npm --prefix app version patch`
 1. Commit
 1. Push commit and tag to GitHub (triggers CI build + publish) `git push && git push --tags`
