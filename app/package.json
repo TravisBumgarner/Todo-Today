@@ -1,8 +1,8 @@
 {
-  "name": "menu-engineering",
-  "productName": "Menu Engineering",
-  "version": "1.0.4",
-  "description": "My Electron application description",
+  "name": "todo-today",
+  "productName": "Todo Today",
+  "version": "3.0.0",
+  "description": "The todo List for the easily distracted",
   "main": ".vite/build/main.js",
   "scripts": {
     "start": "electron-forge start",
@@ -14,7 +14,7 @@
   "keywords": [],
   "repository": {
     "type": "git",
-    "url": "https://github.com/TravisBumgarner/menu-engineering.git"
+    "url": "https://github.com/TravisBumgarner/todo-today.git"
   },
   "author": {
     "name": "Travis Bumgarner",
