@@ -1,11 +1,12 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, SxProps, Typography } from "@mui/material";
 import moment from "moment";
 import { useCallback, useState } from "react";
 
-import { database } from "../database";
-import { saveFile } from "../utilities";
 import { DATE_BACKUP_DATE } from "../../shared/utilities";
+import { database } from "../database";
 import { activeModalSignal, isRestoringSignal } from "../signals";
+import { BORDER_RADIUS, SPACING } from "../styles/consts";
+import { saveFile } from "../utilities";
 import Modal from "./Modal";
 import { ModalID } from "./RenderModal";
 
@@ -88,14 +89,7 @@ const Settings = () => {
 
   return (
     <Modal title="Settings" showModal={true}>
-      <Box
-        sx={{
-          borderRadius: "1rem",
-          padding: "1rem",
-          margin: "1rem 0",
-          bgcolor: "background.paper",
-        }}
-      >
+      <Box sx={sectionSx}>
         <Box
           sx={{
             display: "flex",
@@ -109,14 +103,7 @@ const Settings = () => {
         </Button>
       </Box>
 
-      <Box
-        sx={{
-          borderRadius: "1rem",
-          padding: "1rem",
-          margin: "1rem 0",
-          bgcolor: "background.paper",
-        }}
-      >
+      <Box sx={sectionSx}>
         <Typography variant="h3">Restore</Typography>
         <Button variant="outlined" component="label" fullWidth>
           Choose File
@@ -147,6 +134,13 @@ const Settings = () => {
       </Box>
     </Modal>
   );
+};
+
+const sectionSx: SxProps = {
+  borderRadius: BORDER_RADIUS.ZERO.PX,
+  padding: SPACING.MEDIUM.PX,
+  margin: `${SPACING.MEDIUM.PX} 0`,
+  bgcolor: "background.paper",
 };
 
 export default Settings;

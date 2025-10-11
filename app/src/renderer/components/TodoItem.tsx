@@ -1,26 +1,24 @@
-import { Add, ChevronRight, Delete, Edit } from "@mui/icons-material";
+import { Add, CheckBox, ChevronRight, Delete, Edit } from "@mui/icons-material";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/CloseOutlined";
 import {
   Box,
   Card,
-  Checkbox,
   css,
-  FormControlLabel,
   IconButton,
   TextField,
   Tooltip,
   Typography,
 } from "@mui/material";
 import ToggleButton from "@mui/material/ToggleButton";
-import TaskStatusSelector from "./TaskStatusSelector";
-import { database, queries } from "../database";
 import { useLiveQuery } from "dexie-react-hooks";
 import { type ChangeEvent, useCallback, useState } from "react";
-import { SPACING } from "../Theme";
-import { ETaskStatus } from "../types";
 import { v4 as uuidv4 } from "uuid";
+import { database, queries } from "../database";
 import { selectedDateSignal } from "../signals";
+import { BORDER_RADIUS, SPACING } from "../styles/consts";
+import { ETaskStatus } from "../types";
+import TaskStatusSelector from "./TaskStatusSelector";
 
 export interface TTodoItem {
   taskId: string;
@@ -51,33 +49,36 @@ const Subtask = ({
 
   return (
     <Box sx={subtaskWrapperCSS}>
-      <FormControlLabel
-        control={
-          <Checkbox
-            sx={{
-              color: "info.main",
-              "&.Mui-checked": {
-                color: "info.main",
-              },
-            }}
-            checked={subtask?.checked}
-            onChange={handleSubtaskChange}
-            style={{ padding: `${SPACING.XXSMALL}px ${SPACING.SMALL}px` }}
-          />
-        }
-        label={subtask?.title}
-      />
-      <IconButton onClick={handleDeleteSubtask}>
-        <Delete color="info" fontSize="small" />
-      </IconButton>
+      <Typography>
+        {subtask.checked ? <s>{subtask.title}</s> : subtask.title}
+      </Typography>
+      <Box>
+        <IconButton onClick={handleDeleteSubtask}>
+          <Delete color="info" fontSize="small" />
+        </IconButton>
+        {subtask.checked ? (
+          <Tooltip title="Mark as incomplete">
+            <IconButton onClick={handleSubtaskChange}>
+              <CheckBox fontSize="small" />
+            </IconButton>
+          </Tooltip>
+        ) : (
+          <Tooltip title="Mark as complete">
+            <IconButton onClick={handleSubtaskChange}>
+              <CheckIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+        )}
+      </Box>
     </Box>
   );
 };
 
 const subtaskWrapperCSS = css`
   display: flex;
-  gap: 0.5rem;
+  gap: ${SPACING.TINY.PX};
   justify-content: space-between;
+  align-items: center;
 `;
 
 const TodoItem = ({ taskId }: TTodoItem) => {
@@ -304,22 +305,19 @@ const TodoItem = ({ taskId }: TTodoItem) => {
   );
 };
 
-const subtaskListCSS = css`
-  display: flex;
-  flex-direction: column;
-`;
+const subtaskListCSS = css``;
 
 const subtaskInputWrapperCSS = css`
   display: flex;
   flex-direction: row;
-  gap: 0.5rem;
+  gap: ${SPACING.MEDIUM.PX};
   align-items: center;
 `;
 
 const contentWrapperCSS = css`
   display: flex;
   flex-direction: row;
-  gap: 0.5rem;
+  gap: ${SPACING.MEDIUM.PX};
 
   & > div {
     flex: 1;
@@ -343,7 +341,7 @@ const readonlyTextWrapperCSS = css`
   display: flex;
   align-items: center;
   button {
-    margin-left: ${SPACING.XSMALL}px;
+    margin-left: ${SPACING.TINY.PX};
     display: none;
   }
 
@@ -355,7 +353,7 @@ const readonlyTextWrapperCSS = css`
 `;
 
 const rightHeaderCSS = css`
-  margin-left: 1rem;
+  margin-left: ${SPACING.MEDIUM.PX};
   display: flex;
   align-items: center;
   flex-shrink: 0;
@@ -365,7 +363,7 @@ const headerCSS = (showDetails: boolean) => css`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: ${showDetails ? "0.5rem" : "0"};
+  margin-bottom: ${showDetails ? SPACING.SMALL.PX : "0"};
 `;
 
 const detailsCSS = {
@@ -384,9 +382,9 @@ const leftHeaderCSS = css`
 
 const wrapperCSS = {
   bgcolor: "background.paper",
-  borderRadius: "0.5rem",
-  padding: "0.5rem",
-  marginBottom: "0.5rem",
+  borderRadius: BORDER_RADIUS.ZERO.PX,
+  padding: SPACING.MEDIUM.PX,
+  marginBottom: SPACING.SMALL.PX,
 };
 
 export default TodoItem;

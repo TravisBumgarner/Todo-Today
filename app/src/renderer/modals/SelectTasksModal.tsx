@@ -3,12 +3,12 @@ import { Box, Button, IconButton, Typography } from "@mui/material";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { useSignals } from "@preact/signals-react/runtime";
-import { queries } from "../database";
 import { useLiveQuery } from "dexie-react-hooks";
-import { SPACING } from "../Theme";
+import { queries } from "../database";
+import { activeModalSignal, selectedDateSignal } from "../signals";
+import { SPACING } from "../styles/consts";
 import { type TTask, type TTodoList } from "../types";
 import { sortStrings } from "../utilities";
-import { activeModalSignal, selectedDateSignal } from "../signals";
 import Modal, { MODAL_MAX_HEIGHT } from "./Modal";
 import { ModalID } from "./RenderModal";
 

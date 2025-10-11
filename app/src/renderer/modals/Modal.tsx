@@ -4,6 +4,7 @@ import Box from "@mui/material/Box";
 import MUIModal from "@mui/material/Modal";
 import { useCallback, type FC } from "react";
 import { activeModalSignal } from "../signals";
+import { BORDER_RADIUS } from "../styles/consts";
 
 interface ActiveModal {
   children: React.ReactNode;
@@ -47,7 +48,7 @@ const Modal: FC<ActiveModal> = ({
         sx={{
           width: 600,
           bgcolor: "background.default",
-          borderRadius: "1rem",
+          borderRadius: BORDER_RADIUS.ZERO.PX,
           boxShadow: 24,
           overflow: "auto",
           padding: "2rem",

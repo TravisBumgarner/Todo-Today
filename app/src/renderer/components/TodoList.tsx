@@ -15,9 +15,10 @@ import { useCallback, useState } from "react";
 
 import { database, queries } from "../database";
 import { ModalID } from "../modals";
+import { activeModalSignal, selectedDateSignal } from "../signals";
+import { SPACING } from "../styles/consts";
 import { DATE_ISO_DATE_MOMENT_STRING, ETaskStatus } from "../types";
 import { formatDateDisplayString, formatDateKeyLookup } from "../utilities";
-import { activeModalSignal, selectedDateSignal } from "../signals";
 import EmptyTodoList from "./EmptyTodoList";
 import TodoItem from "./TodoItem";
 
@@ -162,7 +163,7 @@ const TodoList = () => {
 export const buttonWrapperCSS = css`
   display: flex;
   justify-content: space-between;
-  margin-bottom: 1rem;
+  margin-bottom: ${SPACING.MEDIUM};
   align-items: center;
 `;
 
