@@ -107,14 +107,16 @@ const TodoList = () => {
       }}
     >
       <Box sx={buttonWrapperCSS}>
-        <Box>
-          <ButtonGroup size="small" variant="outlined">
-            <Button onClick={showAddNewTaskModal}>Add New Task</Button>
-            <Button onClick={showManagementModal}>Select Tasks</Button>
-          </ButtonGroup>
+        <Box sx={{ display: "flex", gap: SPACING.TINY.PX }}>
+          <Button variant="outlined" onClick={showAddNewTaskModal}>
+            Add New Task
+          </Button>
+          <Button variant="outlined" onClick={showManagementModal}>
+            Select Tasks
+          </Button>
         </Box>
         <Box>
-          <ButtonGroup size="small" variant="outlined">
+          <ButtonGroup variant="outlined">
             <Button onClick={setPreviousDate}>&lt;</Button>
             <Button sx={todayButtonCSS} onClick={getToday}>
               <span>{formatDateDisplayString(selectedDateSignal.value)}</span>

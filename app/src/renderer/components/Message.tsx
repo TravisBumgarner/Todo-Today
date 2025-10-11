@@ -1,10 +1,9 @@
-import { css } from "@emotion/react";
-import { Alert as AlertMUI, Box, Button } from "@mui/material";
+import { Alert as AlertMUI, Box, Button, SxProps } from "@mui/material";
 import { useCallback } from "react";
 
 import { useSignals } from "@preact/signals-react/runtime";
-import ButtonWrapper from "./ButtonWrapper";
 import { messageSignal } from "../signals";
+import { BORDER_RADIUS, SPACING } from "../styles/consts";
 
 const Alert = () => {
   useSignals();
@@ -24,7 +23,7 @@ const Alert = () => {
         variant="filled"
         sx={AlertMuiCSS}
         action={
-          <ButtonWrapper>
+          <>
             {messageSignal.value.cancelText ? (
               <Button
                 color="secondary"
@@ -47,7 +46,7 @@ const Alert = () => {
                 ? messageSignal.value.confirmText
                 : "Close"}
             </Button>
-          </ButtonWrapper>
+          </>
         }
         color="info"
       >
@@ -59,17 +58,19 @@ const Alert = () => {
 
 export default Alert;
 
-const AlertMuiCSS = css`
-  display: flex;
-  align-items: center;
-`;
+const AlertMuiCSS: SxProps = {
+  display: "flex",
+  alignItems: "center",
+  borderRadius: BORDER_RADIUS.ZERO.PX,
+  backgroundColor: "background.paper",
+};
 
-const AlertPositionerCSS = css`
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  margin-bottom: 1rem;
-`;
+const AlertPositionerCSS: SxProps = {
+  position: "fixed",
+  left: 0,
+  bottom: 0,
+  width: "100%",
+  display: "flex",
+  justifyContent: "center",
+  marginBottom: SPACING.MEDIUM.PX,
+};

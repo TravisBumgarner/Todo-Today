@@ -36,21 +36,13 @@ const Task = ({ task, isSelected }: TaskProps) => {
       }}
     >
       <Typography variant="body1">{task.title}</Typography>
-      <Box
-        sx={{
-          marginLeft: "1rem",
-          display: "flex",
-          alignItems: "center",
-          flexShrink: 0,
-        }}
+
+      <IconButton
+        color={isSelected ? "primary" : "info"}
+        onClick={isSelected ? handleDeselect : handleSelect}
       >
-        <IconButton
-          color={isSelected ? "primary" : "info"}
-          onClick={isSelected ? handleDeselect : handleSelect}
-        >
-          <CheckIcon fontSize="small" />
-        </IconButton>
-      </Box>
+        <CheckIcon fontSize="small" />
+      </IconButton>
     </Box>
   );
 };
@@ -86,13 +78,21 @@ const SelectTasksModal = () => {
   const content = useMemo(() => {
     if (!tasks || Object.keys(tasks).length === 0) {
       return (
-        <Box>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: SPACING.MEDIUM.PX,
+          }}
+        >
           <Typography padding={`${SPACING.MEDIUM}px 0`} variant="body1">
             There are no Tasks to Work On
           </Typography>
-          <Button onClick={showAddNewTaskModal} fullWidth variant="contained">
-            Add New Task
-          </Button>
+          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+            <Button onClick={showAddNewTaskModal} variant="contained">
+              Add New Task
+            </Button>
+          </Box>
         </Box>
       );
     }
@@ -109,6 +109,9 @@ const SelectTasksModal = () => {
             overflow: "auto",
             maxHeight: `${MODAL_MAX_HEIGHT - 200}px`,
             width: "100%",
+            display: "flex",
+            flexDirection: "column",
+            gap: SPACING.SMALL.PX,
           }}
         >
           {Object.values(tasks)
@@ -120,15 +123,16 @@ const SelectTasksModal = () => {
                 isSelected={todoList?.taskIds.includes(task.id) ?? false}
               />
             ))}
-          <Button
-            fullWidth
-            type="button"
-            variant="contained"
-            key="save"
-            onClick={handleClose}
-          >
-            Done
-          </Button>
+          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+            <Button
+              type="button"
+              variant="contained"
+              key="save"
+              onClick={handleClose}
+            >
+              Done
+            </Button>
+          </Box>
         </Box>
       </Box>
     );

@@ -12,10 +12,10 @@ import {
 import { useCallback, useState } from "react";
 import { v4 as uuid4 } from "uuid";
 
-import ButtonWrapper from "../components/ButtonWrapper";
 import TaskStatusSelector from "../components/TaskStatusSelector";
 import { queries } from "../database";
 import { activeModalSignal, selectedDateSignal } from "../signals";
+import { SPACING } from "../styles/consts";
 import { ETaskStatus, type TTask } from "../types";
 import Modal from "./Modal";
 
@@ -59,85 +59,96 @@ const AddTaskModal = () => {
 
   return (
     <Modal title="Add New Task" showModal={true}>
-      <TextField
-        autoFocus
-        multiline
-        fullWidth
-        label="Task"
-        name="title"
-        value={title}
-        margin="normal"
-        onChange={(event) => {
-          setTitle(event.target.value);
-        }}
-      />
-      <TaskStatusSelector
-        taskStatus={status}
-        handleStatusChangeCallback={setStatus}
-        showLabel
-      />
-      <TextField
-        multiline
-        fullWidth
-        label="Details"
-        name="details"
-        value={details}
-        margin="normal"
-        onChange={(event) => {
-          setDetails(event.target.value);
-        }}
-      />
       <Box
         sx={{
           display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
+          flexDirection: "column",
+          gap: SPACING.MEDIUM.PX,
         }}
       >
-        <InputLabel>Add to Today?</InputLabel>
+        <TextField
+          fullWidth
+          label="Task"
+          name="title"
+          value={title}
+          margin="none"
+          onChange={(event) => {
+            setTitle(event.target.value);
+          }}
+        />
+        <TaskStatusSelector
+          taskStatus={status}
+          handleStatusChangeCallback={setStatus}
+          showLabel
+        />
+        <TextField
+          multiline
+          fullWidth
+          label="Details"
+          name="details"
+          value={details}
+          rows={2}
+          margin="none"
+          onChange={(event) => {
+            setDetails(event.target.value);
+          }}
+        />
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <InputLabel>Add to Today?</InputLabel>
 
-        <ToggleButtonGroup
-          value={addToSelectedDate}
-          exclusive
-          onChange={handleAddToTodayChange}
+          <ToggleButtonGroup
+            value={addToSelectedDate}
+            exclusive
+            onChange={handleAddToTodayChange}
+          >
+            <ToggleButton size="small" color="primary" value="no">
+              <Tooltip title="Do not add to today">
+                <CancelIcon
+                  color={addToSelectedDate === "no" ? "primary" : "info"}
+                />
+              </Tooltip>
+            </ToggleButton>
+            <ToggleButton size="small" color="primary" value="yes">
+              <Tooltip title="Add to today">
+                <CheckCircleOutlineIcon
+                  color={addToSelectedDate === "yes" ? "primary" : "info"}
+                />
+              </Tooltip>
+            </ToggleButton>
+          </ToggleButtonGroup>
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "flex-end",
+            gap: SPACING.SMALL.PX,
+          }}
         >
-          <ToggleButton color="primary" value="no">
-            <Tooltip title="Do not add to today">
-              <CancelIcon
-                color={addToSelectedDate === "no" ? "primary" : "info"}
-              />
-            </Tooltip>
-          </ToggleButton>
-          <ToggleButton color="primary" value="yes">
-            <Tooltip title="Add to today">
-              <CheckCircleOutlineIcon
-                color={addToSelectedDate === "yes" ? "primary" : "info"}
-              />
-            </Tooltip>
-          </ToggleButton>
-        </ToggleButtonGroup>
+          <Button
+            key="cancel"
+            variant="outlined"
+            color="warning"
+            onClick={handleCancel}
+          >
+            Cancel
+          </Button>
+          <Button
+            type="button"
+            variant="contained"
+            disabled={title.length === 0}
+            key="save"
+            onClick={handleSubmit}
+          >
+            Save
+          </Button>
+        </Box>
       </Box>
-      <ButtonWrapper>
-        <Button
-          key="cancel"
-          fullWidth
-          variant="outlined"
-          color="warning"
-          onClick={handleCancel}
-        >
-          Cancel
-        </Button>
-        <Button
-          fullWidth
-          type="button"
-          variant="contained"
-          disabled={title.length === 0}
-          key="save"
-          onClick={handleSubmit}
-        >
-          Save
-        </Button>
-      </ButtonWrapper>
     </Modal>
   );
 };

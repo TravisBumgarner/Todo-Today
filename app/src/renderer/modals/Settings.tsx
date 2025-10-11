@@ -89,48 +89,52 @@ const Settings = () => {
 
   return (
     <Modal title="Settings" showModal={true}>
-      <Box sx={sectionSx}>
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-          }}
-        >
-          <Typography variant="h3">Backup</Typography>
-        </Box>
-        <Button fullWidth variant="outlined" onClick={handleBackup}>
-          Create Backup
-        </Button>
-      </Box>
-
-      <Box sx={sectionSx}>
-        <Typography variant="h3">Restore</Typography>
-        <Button variant="outlined" component="label" fullWidth>
-          Choose File
-          <input
-            onChange={(event) => {
-              event.target.files && setRestoreFile(event.target.files[0]);
+      <Box
+        sx={{ display: "flex", flexDirection: "column", gap: SPACING.SMALL.PX }}
+      >
+        <Box sx={sectionSx}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
             }}
-            type="file"
-            hidden
-          />
-        </Button>
-        <Typography
-          sx={{
-            margin: "0.5rem 0",
-          }}
-          variant="body1"
-        >
-          Filename: {restoreFile ? restoreFile.name : ""}
-        </Typography>
-        <Button
-          disabled={!restoreFile}
-          onClick={handleRestoreClick}
-          fullWidth
-          variant="outlined"
-        >
-          Restore
-        </Button>
+          >
+            <Typography variant="h3">Backup</Typography>
+          </Box>
+          <Button fullWidth variant="outlined" onClick={handleBackup}>
+            Create Backup
+          </Button>
+        </Box>
+
+        <Box sx={sectionSx}>
+          <Typography variant="h3">Restore</Typography>
+          <Button variant="outlined" component="label" fullWidth>
+            Choose File
+            <input
+              onChange={(event) => {
+                event.target.files && setRestoreFile(event.target.files[0]);
+              }}
+              type="file"
+              hidden
+            />
+          </Button>
+          <Typography
+            sx={{
+              margin: "0.5rem 0",
+            }}
+            variant="body1"
+          >
+            Filename: {restoreFile ? restoreFile.name : ""}
+          </Typography>
+          <Button
+            disabled={!restoreFile}
+            onClick={handleRestoreClick}
+            fullWidth
+            variant="outlined"
+          >
+            Restore
+          </Button>
+        </Box>
       </Box>
     </Modal>
   );
@@ -139,7 +143,6 @@ const Settings = () => {
 const sectionSx: SxProps = {
   borderRadius: BORDER_RADIUS.ZERO.PX,
   padding: SPACING.MEDIUM.PX,
-  margin: `${SPACING.MEDIUM.PX} 0`,
   bgcolor: "background.paper",
 };
 

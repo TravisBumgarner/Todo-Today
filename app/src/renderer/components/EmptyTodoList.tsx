@@ -1,4 +1,4 @@
-import { Box, Button, ButtonGroup, css, Typography } from "@mui/material";
+import { Box, Button, css, Typography } from "@mui/material";
 import { useCallback } from "react";
 
 import { useSignals } from "@preact/signals-react/runtime";
@@ -9,6 +9,7 @@ import {
   messageSignal,
   selectedDateSignal,
 } from "../signals";
+import { SPACING } from "../styles/consts";
 
 const EmptyTodoList = () => {
   useSignals();
@@ -48,11 +49,23 @@ const EmptyTodoList = () => {
         >
           What will you do today?
         </Typography>
-        <ButtonGroup variant="outlined" size="small">
-          <Button onClick={getPreviousDatesTasks}>Copy Previous Day</Button>
-          <Button onClick={showManagementModal}>Select Tasks</Button>
-          <Button onClick={showAddNewTaskModal}>Add New Task</Button>
-        </ButtonGroup>
+        <Box
+          sx={{
+            display: "flex",
+            gap: SPACING.TINY.PX,
+            justifyContent: "center",
+          }}
+        >
+          <Button variant="outlined" onClick={getPreviousDatesTasks}>
+            Copy Previous Day
+          </Button>
+          <Button variant="outlined" onClick={showManagementModal}>
+            Select Tasks
+          </Button>
+          <Button variant="outlined" onClick={showAddNewTaskModal}>
+            Add New Task
+          </Button>
+        </Box>
       </Box>
     </Box>
   );

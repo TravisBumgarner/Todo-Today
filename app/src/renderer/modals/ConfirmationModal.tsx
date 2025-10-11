@@ -1,7 +1,6 @@
 import { Button, Typography } from "@mui/material";
 import { useCallback } from "react";
 
-import ButtonWrapper from "../components/ButtonWrapper";
 import { activeModalSignal } from "../signals";
 import Modal from "./Modal";
 import { type ModalID } from "./RenderModal";
@@ -31,7 +30,7 @@ const ConfirmationModal = ({
   return (
     <Modal title={title} showModal={true}>
       <Typography variant="body1">{body}</Typography>
-      <ButtonWrapper>
+      <>
         <Button
           variant="outlined"
           color="warning"
@@ -43,7 +42,7 @@ const ConfirmationModal = ({
         <Button variant="contained" fullWidth onClick={handleConfirm}>
           Ok
         </Button>
-      </ButtonWrapper>
+      </>
     </Modal>
   );
 };

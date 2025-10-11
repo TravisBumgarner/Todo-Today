@@ -13,6 +13,7 @@ import {
   css,
 } from "@mui/material";
 import { useCallback, useState } from "react";
+import { SPACING } from "../styles/consts";
 import { ETaskStatus } from "../types";
 import { taskStatusIcon, taskStatusLookup } from "../utilities";
 
@@ -72,7 +73,7 @@ const TaskDropdown = ({ taskStatus, handleStatusChangeCallback }: Props) => {
 const TaskSelect = ({ handleStatusChangeCallback, taskStatus }: Props) => {
   return (
     <>
-      <FormControl fullWidth margin="normal">
+      <FormControl fullWidth margin="none">
         <InputLabel id="task-status-selector">Status</InputLabel>
         <Select
           label={"Status"}
@@ -130,7 +131,7 @@ const selectRenderValueCSS = css`
   display: flex;
   align-items: center;
   > * {
-    margin-right: 0.5rem;
+    margin-right: ${SPACING.SMALL.PX};
   }
 `;
 

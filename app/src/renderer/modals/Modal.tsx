@@ -4,7 +4,7 @@ import Box from "@mui/material/Box";
 import MUIModal from "@mui/material/Modal";
 import { useCallback, type FC } from "react";
 import { activeModalSignal } from "../signals";
-import { BORDER_RADIUS } from "../styles/consts";
+import { BORDER_RADIUS, SPACING } from "../styles/consts";
 
 interface ActiveModal {
   children: React.ReactNode;
@@ -51,7 +51,7 @@ const Modal: FC<ActiveModal> = ({
           borderRadius: BORDER_RADIUS.ZERO.PX,
           boxShadow: 24,
           overflow: "auto",
-          padding: "2rem",
+          padding: SPACING.MEDIUM.PX,
           boxSizing: "border-box",
           maxHeight: "100%",
         }}
@@ -60,6 +60,8 @@ const Modal: FC<ActiveModal> = ({
           sx={{
             display: "flex",
             justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: SPACING.MEDIUM.PX,
           }}
         >
           <Typography variant="h2">{title}</Typography>
