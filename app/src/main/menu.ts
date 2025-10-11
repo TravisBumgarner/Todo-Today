@@ -80,7 +80,7 @@ const template = [
     label: "Support",
     submenu: [
       {
-        label: "Changelog",
+        label: "Release Notes",
         click: async () => {
           await shell.openExternal(
             "http://todo.sillysideprojects.com/changelog"
