@@ -19,6 +19,7 @@ jobs:
           node-version: 20
       - run: npm ci
         working-directory: app
+      - run: rm -rf out dist build *.app
       - run: npm run publish:github
         working-directory: app
         env:

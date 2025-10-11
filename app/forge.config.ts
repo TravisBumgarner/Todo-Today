@@ -11,6 +11,7 @@ import type { ForgeConfig } from "@electron-forge/shared-types";
 
 const config: ForgeConfig = {
   packagerConfig: {
+    overwrite: true,
     asar: true,
     icon: "public/icons/icon", // Electron Forge will automatically append .icns/.ico/.png based on platform
     osxSign: {},
