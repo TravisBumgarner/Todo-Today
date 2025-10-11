@@ -2,7 +2,7 @@ import { Box, Button, ButtonGroup, css, Typography } from "@mui/material";
 import { useCallback } from "react";
 
 import { useSignals } from "@preact/signals-react/runtime";
-import { queries } from "database";
+import { queries } from "../database";
 import { ModalID } from "../modals";
 import {
   activeModalSignal,

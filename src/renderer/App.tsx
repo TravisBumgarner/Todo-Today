@@ -6,7 +6,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { Box, css, ThemeProvider } from "@mui/material";
 
 import Message from "./components/Message";
-// import TodoList from "./components/TodoList";
+import TodoList from "./components/TodoList";
 import RenderModal from "./modals";
 import { darkTheme, lightTheme, SPACING } from "./Theme";
 
@@ -53,7 +53,7 @@ function App() {
       <CssBaseline />
       <Box sx={appWrapperCSS}>
         <Message />
-        {/* <TodoList /> */}
+        <TodoList />
         <p>Hi</p>
       </Box>
       <RenderModal />
