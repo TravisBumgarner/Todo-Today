@@ -8,7 +8,8 @@
     "start": "electron-forge start",
     "package": "dotenv -e .env -- electron-forge package",
     "make": "electron-forge make",
-    "publish": "dotenv -e .env -- electron-forge publish",
+    "publish:local": "dotenv -e .env -- electron-forge publish",
+    "publish:github": "electron-forge publish",
     "lint": "eslint --ext .ts,.tsx ."
   },
   "keywords": [],

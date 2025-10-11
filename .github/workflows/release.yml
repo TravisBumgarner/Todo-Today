@@ -19,7 +19,7 @@ jobs:
           node-version: 20
       - run: npm ci
         working-directory: app
-      - run: npm run publish
+      - run: npm run publish:github
         working-directory: app
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -36,7 +36,7 @@ jobs:
           node-version: 20
       - run: npm ci
         working-directory: app
-      - run: npm run publish
+      - run: npm run publish:github
         working-directory: app
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
