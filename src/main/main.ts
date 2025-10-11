@@ -1,11 +1,13 @@
 import { updateElectronApp } from "update-electron-app";
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, Menu } from "electron";
 import path from "node:path";
 import started from "electron-squirrel-startup";
 import log from "electron-log/main";
 import "./messages/messages";
+import menu from "./menu";
 
 log.initialize();
+Menu.setApplicationMenu(menu);
 
 updateElectronApp({
   logger: {
@@ -22,9 +24,20 @@ if (started) {
 }
 
 const createWindow = () => {
+  // Platform-specific icon paths
+  let iconPath: string;
+  if (process.platform === "darwin") {
+    iconPath = path.join(__dirname, "../../public/icons/icon.icns");
+  } else if (process.platform === "win32") {
+    iconPath = path.join(__dirname, "../../public/icons/icon.ico");
+  } else {
+    iconPath = path.join(__dirname, "../../public/icons/icon.png");
+  }
+
   const mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
+    icon: iconPath,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
     },

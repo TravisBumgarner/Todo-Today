@@ -12,6 +12,7 @@ import { MakerDMG } from "@electron-forge/maker-dmg";
 const config: ForgeConfig = {
   packagerConfig: {
     asar: true,
+    icon: "public/icons/icon", // Electron Forge will automatically append .icns/.ico/.png based on platform
     osxSign: {},
     osxNotarize: {
       appleId: process.env.APPLE_ID,
@@ -22,11 +23,23 @@ const config: ForgeConfig = {
 
   rebuildConfig: {},
   makers: [
-    new MakerSquirrel({}),
-    new MakerDMG({}),
+    new MakerSquirrel({
+      iconUrl: "https://example.com/icon.ico", // URL to your .ico file for Squirrel (Windows)
+    }),
+    new MakerDMG({
+      icon: "public/icons/icon.icns", // For macOS DMG
+    }),
     new MakerZIP({}, ["darwin"]),
-    new MakerRpm({}),
-    new MakerDeb({}),
+    new MakerRpm({
+      options: {
+        icon: "public/icons/icon.png", // For RPM packages
+      },
+    }),
+    new MakerDeb({
+      options: {
+        icon: "public/icons/icon.png", // For DEB packages
+      },
+    }),
   ],
   plugins: [
     new VitePlugin({
