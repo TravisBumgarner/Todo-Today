@@ -2,7 +2,6 @@
 
 1. `npm install` dependencies
 1. `npm run start` local run
-1. `npm run db:studio` to browse SQL lite 
 
 # Gotchas
 
@@ -10,8 +9,12 @@
 
 # Dev Notes
 
-**Migrations**
+**Deploy**
 
-1. Add to `src/main/database/schema.ts`
-1. Generate migration `npm run db:generate`
-1. Push migration `npm run db:push`
+```
+npm version patch --workspace app --git-tag-version=false
+git add package.json app/package.json package-lock.json app/package-lock.json
+git commit -m "chore: bump version"
+git tag v$(node -p "require('./app/package.json').version")
+git push origin HEAD --tags
+```
