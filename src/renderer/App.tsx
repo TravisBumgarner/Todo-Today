@@ -9,6 +9,7 @@ import Message from "./components/Message";
 import TodoList from "./components/TodoList";
 import RenderModal from "./modals";
 import { darkTheme, lightTheme, SPACING } from "./Theme";
+import { AppGlobalStyles } from "./GlobalStyles";
 
 import { useSignals } from "@preact/signals-react/runtime";
 // import { useIPCAsyncMessageEffect } from "./hooks/useIPCAsyncMessageEffect";
@@ -51,10 +52,10 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
+      <AppGlobalStyles />
       <Box sx={appWrapperCSS}>
         <Message />
         <TodoList />
-        <p>Hi</p>
       </Box>
       <RenderModal />
     </ThemeProvider>

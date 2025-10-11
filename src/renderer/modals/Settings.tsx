@@ -1,4 +1,4 @@
-import { Box, Button, css, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import moment from "moment";
 import { useCallback, useState } from "react";
 
@@ -88,8 +88,20 @@ const Settings = () => {
 
   return (
     <Modal title="Settings" showModal={true}>
-      <Box sx={sectionWrapperCSS}>
-        <Box sx={sectionHeaderWrapperCSS}>
+      <Box
+        sx={{
+          borderRadius: "1rem",
+          padding: "1rem",
+          margin: "1rem 0",
+          bgcolor: "background.paper",
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+        >
           <Typography variant="h3">Backup</Typography>
         </Box>
         <Button fullWidth variant="outlined" onClick={handleBackup}>
@@ -97,7 +109,14 @@ const Settings = () => {
         </Button>
       </Box>
 
-      <Box sx={sectionWrapperCSS}>
+      <Box
+        sx={{
+          borderRadius: "1rem",
+          padding: "1rem",
+          margin: "1rem 0",
+          bgcolor: "background.paper",
+        }}
+      >
         <Typography variant="h3">Restore</Typography>
         <Button variant="outlined" component="label" fullWidth>
           Choose File
@@ -109,7 +128,12 @@ const Settings = () => {
             hidden
           />
         </Button>
-        <Typography sx={fileNameCSS} variant="body1">
+        <Typography
+          sx={{
+            margin: "0.5rem 0",
+          }}
+          variant="body1"
+        >
           Filename: {restoreFile ? restoreFile.name : ""}
         </Typography>
         <Button
@@ -124,21 +148,5 @@ const Settings = () => {
     </Modal>
   );
 };
-
-const sectionWrapperCSS = css`
-  border-radius: 1rem;
-  padding: 1rem;
-  margin: 1rem 0;
-  background-color: var(--mui-palette-background-paper);
-`;
-
-const fileNameCSS = css`
-  margin: 0.5rem 0;
-`;
-
-const sectionHeaderWrapperCSS = css`
-  display: flex;
-  justify-content: space-between;
-`;
 
 export default Settings;

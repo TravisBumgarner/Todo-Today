@@ -1,4 +1,4 @@
-import { experimental_extendTheme as extendTheme, type ThemeOptions } from '@mui/material/styles'
+import { experimental_extendTheme  type ThemeOptions } from '@mui/material/styles'
 import { mergeDeep } from 'utilities'
 
 const baseThemeOptions: ThemeOptions = {

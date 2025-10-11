@@ -1,5 +1,5 @@
 import CloseIcon from "@mui/icons-material/CloseOutlined";
-import { IconButton, Tooltip, Typography, css } from "@mui/material";
+import { IconButton, Tooltip, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import MUIModal from "@mui/material/Modal";
 import { useCallback, type FC } from "react";
@@ -35,15 +35,36 @@ const Modal: FC<ActiveModal> = ({
       onClose={handleClose}
       disableEscapeKeyDown={disableEscapeKeyDown}
       disableRestoreFocus={true}
-      style={{ backgroundColor: "var(--mui-palette-background-default)" }}
-      sx={muiModalCSSWrapper}
+      sx={{
+        maxHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "2rem",
+      }}
     >
-      <Box sx={wrapperCSS}>
-        <Box sx={headerWrapperCSS}>
+      <Box
+        sx={{
+          width: 600,
+          bgcolor: "background.default",
+          borderRadius: "1rem",
+          boxShadow: 24,
+          overflow: "auto",
+          padding: "2rem",
+          boxSizing: "border-box",
+          maxHeight: "100%",
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+        >
           <Typography variant="h2">{title}</Typography>
           <Tooltip title="Close">
             <IconButton onClick={handleClose}>
-              <CloseIcon sx={{ color: "var(--mui-palette-text-primary)" }} />
+              <CloseIcon sx={{ color: "text.primary" }} />
             </IconButton>
           </Tooltip>
         </Box>
@@ -52,30 +73,5 @@ const Modal: FC<ActiveModal> = ({
     </MUIModal>
   );
 };
-
-const wrapperCSS = css`
-  width: 600px;
-  background-color: var(--mui-palette-background-default);
-  border-radius: 1rem;
-  box-shadow: 24;
-  overflow: auto;
-  padding: 2rem;
-  box-sizing: border-box;
-  max-height: 100%;
-  overflow: auto;
-`;
-
-const headerWrapperCSS = css`
-  display: flex;
-  justify-content: space-between;
-`;
-
-const muiModalCSSWrapper = css`
-  max-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem;
-`;
 
 export default Modal;

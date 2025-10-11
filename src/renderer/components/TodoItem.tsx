@@ -55,9 +55,9 @@ const Subtask = ({
         control={
           <Checkbox
             sx={{
-              color: "var(--mui-palette-info)",
+              color: "info.main",
               "&.Mui-checked": {
-                color: "var(--mui-palette-info)",
+                color: "info.main",
               },
             }}
             checked={subtask?.checked}
@@ -231,8 +231,7 @@ const TodoItem = ({ taskId }: TTodoItem) => {
             onChange={toggleContent}
             sx={{
               marginRight: "0.5rem",
-              backgroundColor:
-                "sx={css`background-color: var(--mui-palette-background-paper)",
+              backgroundColor: "background.paper",
             }}
           >
             <Tooltip title="Show details">
@@ -369,25 +368,25 @@ const headerCSS = (showDetails: boolean) => css`
   margin-bottom: ${showDetails ? "0.5rem" : "0"};
 `;
 
-const detailsCSS = css`
-  background: var(--mui-palette-background-paper);
-`;
+const detailsCSS = {
+  bgcolor: "background.paper",
+};
 
-const headerTextCSS = css`
-  font-size: 1.5rem;
-  color: var(--mui-palette-text-primary);
-`;
+const headerTextCSS = {
+  fontSize: "1.5rem",
+  color: "text.primary",
+};
 
 const leftHeaderCSS = css`
   display: flex;
   align-items: center;
 `;
 
-const wrapperCSS = css`
-  background: var(--mui-palette-background-paper);
-  border-radius: 0.5rem;
-  padding: 0.5rem;
-  margin-bottom: 0.5rem;
-`;
+const wrapperCSS = {
+  bgcolor: "background.paper",
+  borderRadius: "0.5rem",
+  padding: "0.5rem",
+  marginBottom: "0.5rem",
+};
 
 export default TodoItem;

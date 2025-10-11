@@ -1,5 +1,5 @@
 import CheckIcon from "@mui/icons-material/Check";
-import { Box, Button, IconButton, Typography, css } from "@mui/material";
+import { Box, Button, IconButton, Typography } from "@mui/material";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { useSignals } from "@preact/signals-react/runtime";
@@ -28,9 +28,22 @@ const Task = ({ task, isSelected }: TaskProps) => {
   }, [task.id]);
 
   return (
-    <Box sx={tasksHeaderCSS}>
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+      }}
+    >
       <Typography variant="body1">{task.title}</Typography>
-      <Box sx={rightHeaderCSS}>
+      <Box
+        sx={{
+          marginLeft: "1rem",
+          display: "flex",
+          alignItems: "center",
+          flexShrink: 0,
+        }}
+      >
         <IconButton
           color={isSelected ? "primary" : "info"}
           onClick={isSelected ? handleDeselect : handleSelect}
@@ -41,19 +54,6 @@ const Task = ({ task, isSelected }: TaskProps) => {
     </Box>
   );
 };
-
-const rightHeaderCSS = css`
-  margin-left: 1rem;
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-`;
-
-const tasksHeaderCSS = css`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
 
 const SelectTasksModal = () => {
   useSignals();
@@ -98,8 +98,19 @@ const SelectTasksModal = () => {
     }
 
     return (
-      <Box sx={wrapperCSS}>
-        <Box sx={scrollWrapperCSS}>
+      <Box
+        sx={{
+          height: "100%",
+          width: "100%",
+        }}
+      >
+        <Box
+          sx={{
+            overflow: "auto",
+            maxHeight: `${MODAL_MAX_HEIGHT - 200}px`,
+            width: "100%",
+          }}
+        >
           {Object.values(tasks)
             .sort((a, b) => sortStrings(a.title, b.title))
             .map((task) => (
@@ -129,16 +140,5 @@ const SelectTasksModal = () => {
     </Modal>
   );
 };
-
-const scrollWrapperCSS = css`
-  overflow: auto;
-  max-height: ${MODAL_MAX_HEIGHT - 200}px;
-  width: 100%;
-`;
-
-const wrapperCSS = css`
-  height: 100%;
-  width: 100%;
-`;
 
 export default SelectTasksModal;
