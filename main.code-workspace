@@ -1,0 +1,16 @@
+{
+  "folders": [
+    {
+      "name": "app",
+      "path": "./app"
+    },
+    {
+      "name": "escape-hatch",
+      "path": "./"
+    },
+    {
+      "name": "website",
+      "path": "./website"
+    }
+  ]
+}

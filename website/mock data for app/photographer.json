@@ -1,0 +1,148 @@
+{
+  "projects": [
+    {
+      "id": "e14fda5b-d748-46f9-8ad1-35f3d53333fb",
+      "title": "Wedding Shoot",
+      "status": "ACTIVE"
+    },
+    {
+      "id": "f25gfe4c-e877-492b-9e85-f3a8d2e26df6",
+      "title": "Portrait Sessions",
+      "status": "ACTIVE"
+    },
+    {
+      "id": "g36hfd9fd-9e33-4a12-8ec8-88b1f4a623dc",
+      "title": "Nature Photography",
+      "status": "ACTIVE"
+    },
+    {
+      "id": "h47ige010-1024-4b57-8f97-93a7a4b733ec",
+      "title": "Event Coverage",
+      "status": "ACTIVE"
+    }
+  ],
+  "tasks": [
+    {
+      "title": "Scout Wedding Location",
+      "status": "NEW",
+      "id": "t1p034f8-ab5a-43b7-90dd-6d6620990f15",
+      "projectId": "e14fda5b-d748-46f9-8ad1-35f3d53333fb",
+      "details": "Visit the wedding venue to plan shot locations."
+    },
+    {
+      "title": "Edit Portrait Photos",
+      "status": "IN_PROGRESS",
+      "id": "t2q445g8-cd9a-48e1-9292-6a7321830f16",
+      "projectId": "f25gfe4c-e877-492b-9e85-f3a8d2e26df6",
+      "details": "Retouch and enhance portrait session photos."
+    },
+    {
+      "title": "Capture Sunset at Beach",
+      "status": "NEW",
+      "id": "t3r556h8-de1b-49f3-b3c2-7b812a194f17",
+      "projectId": "g36hfd9fd-9e33-4a12-8ec8-88b1f4a623dc",
+      "details": "Photograph the sunset at the beach for the nature collection."
+    },
+    {
+      "title": "Upload Wedding Album",
+      "status": "COMPLETED",
+      "id": "t4s667i8-ef2c-50f4-c4d3-8c912b205f18",
+      "projectId": "e14fda5b-d748-46f9-8ad1-35f3d53333fb",
+      "details": "Upload edited wedding photos to the online album."
+    },
+    {
+      "title": "Prepare Equipment for Event",
+      "status": "NEW",
+      "id": "t5t778j8-001d-61f5-d5e4-9d912c316f19",
+      "projectId": "h47ige010-1024-4b57-8f97-93a7a4b733ec",
+      "details": "Check and pack all necessary equipment for event coverage."
+    },
+    {
+      "title": "Select Best Portraits",
+      "status": "IN_PROGRESS",
+      "id": "t6u889k8-112e-72g6-e6f5-0ea923427f20",
+      "projectId": "f25gfe4c-e877-492b-9e85-f3a8d2e26df6",
+      "details": "Choose the best photos from the portrait session for editing."
+    },
+    {
+      "title": "Plan Nature Photography Trip",
+      "status": "NEW",
+      "id": "t7v990l8-223f-83h7-f7g6-1fb934538f21",
+      "projectId": "g36hfd9fd-9e33-4a12-8ec8-88b1f4a623dc",
+      "details": "Organize a trip to a national park for nature photography."
+    },
+    {
+      "title": "Deliver Event Photos",
+      "status": "COMPLETED",
+      "id": "t8w101m8-334g-94i8-g8h7-2fc945649f22",
+      "projectId": "h47ige010-1024-4b57-8f97-93a7a4b733ec",
+      "details": "Deliver edited photos to the event organizer."
+    },
+    {
+      "title": "Edit Nature Photos",
+      "status": "IN_PROGRESS",
+      "id": "t9x212n8-445h-05j9-h9i8-3gd95675af23",
+      "projectId": "g36hfd9fd-9e33-4a12-8ec8-88b1f4a623dc",
+      "details": "Retouch and enhance photos from the nature trip."
+    },
+    {
+      "title": "Update Portfolio",
+      "status": "NEW",
+      "id": "t10y323o8-556i-16k0-i0j9-4he06786bf24",
+      "projectId": "f25gfe4c-e877-492b-9e85-f3a8d2e26df6",
+      "details": "Add the latest portrait and event photos to the online portfolio."
+    }
+  ],
+  "todoListItems": [
+    {
+      "taskId": "t1p034f8-ab5a-43b7-90dd-6d6620990f15",
+      "id": "tl1p034f8-ab5a-43b7-90dd-6d6620990f15",
+      "todoListDate": "2024-07-06",
+      "sortOrder": 0
+    },
+    {
+      "taskId": "t3r556h8-de1b-49f3-b3c2-7b812a194f17",
+      "id": "tl2q445g8-cd9a-48e1-9292-6a7321830f16",
+      "todoListDate": "2024-07-06",
+      "sortOrder": 1
+    },
+    {
+      "taskId": "t5t778j8-001d-61f5-d5e4-9d912c316f19",
+      "id": "tl3r556h8-de1b-49f3-b3c2-7b812a194f17",
+      "todoListDate": "2024-07-06",
+      "sortOrder": 2
+    },
+    {
+      "taskId": "t7v990l8-223f-83h7-f7g6-1fb934538f21",
+      "id": "tl4s667i8-ef2c-50f4-c4d3-8c912b205f18",
+      "todoListDate": "2024-07-06",
+      "sortOrder": 3
+    },
+    {
+      "taskId": "t9x212n8-445h-05j9-h9i8-3gd95675af23",
+      "id": "tl5t778j8-001d-61f5-d5e4-9d912c316f19",
+      "todoListDate": "2024-07-06",
+      "sortOrder": 4
+    }
+  ],
+  "successes": [
+    {
+      "description": "Captured stunning wedding photos",
+      "id": "s1d765af1-4491-4805-bac1-4a899528e86d",
+      "projectId": "e14fda5b-d748-46f9-8ad1-35f3d53333fb",
+      "date": "2024-06-25"
+    },
+    {
+      "description": "Completed portrait retouching",
+      "id": "s2e876bg1-5502-5816-cbd2-5ab938649f34",
+      "projectId": "f25gfe4c-e877-492b-9e85-f3a8d2e26df6",
+      "date": "2024-07-01"
+    },
+    {
+      "description": "Published nature photos in magazine",
+      "id": "s3f987ch2-6613-6927-dce3-6bc04975af45",
+      "projectId": "g36hfd9fd-9e33-4a12-8ec8-88b1f4a623dc",
+      "date": "2024-07-02"
+    }
+  ]
+}
