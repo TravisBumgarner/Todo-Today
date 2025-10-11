@@ -12,4 +12,5 @@
 **Deploy**
 
 1. Bump the version (patch | minor | major) `npm version patch`
+1. Commit
 1. Push commit and tag to GitHub (triggers CI build + publish) `git push && git push --tags`
