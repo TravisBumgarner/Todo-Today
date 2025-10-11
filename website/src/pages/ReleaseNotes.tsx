@@ -33,7 +33,7 @@ const UpdateComponent = ({ title, date, updates }: Update) => {
       </Typography>
       <List>
         {flatUpdates.map((item, idx) => (
-          <ListItem key={item.type + item.text + idx}>
+          <ListItem sx={{ p: '0.25rem 0' }} key={item.type + item.text + idx}>
             {LABELS[item.type]}: {item.text}
           </ListItem>
         ))}
@@ -44,11 +44,23 @@ const UpdateComponent = ({ title, date, updates }: Update) => {
 
 const UPDATES: Update[] = [
   {
+    title: 'Oh hey, another almost full rewrite',
+    date: '2025-10-11',
+    updates: {
+      add: [],
+      update: ['Update all dependencies and deployments to latest versions'],
+      fix: []
+    }
+  },
+  {
     title: 'Full Rewrite',
     date: '2025-01-26',
     updates: {
       add: ['Complete rewrite of Todo Today from the ground up'],
-      update: ['Simplified focus on daily task management'],
+      update: [
+        'Simplified focus on daily task management',
+        'Removed timers, history, successes, workspaces, and other distracting features'
+      ],
       fix: ['Removed timers, history, successes, workspaces, and other distracting features']
     }
   },
