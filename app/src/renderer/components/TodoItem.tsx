@@ -249,7 +249,7 @@ const TodoItem = ({ taskId }: TTodoItem) => {
               onClick={handleRemoveFromToday}
               sx={{ marginLeft: "0.5rem" }}
             >
-              <CloseIcon color="warning" fontSize="small" />
+              <CloseIcon fontSize="small" />
             </IconButton>
           </Tooltip>
         </Box>
@@ -383,7 +383,7 @@ const leftHeaderCSS = css`
 const wrapperCSS = {
   bgcolor: "background.paper",
   borderRadius: BORDER_RADIUS.ZERO.PX,
-  padding: SPACING.MEDIUM.PX,
+  padding: SPACING.SMALL.PX,
   marginBottom: SPACING.SMALL.PX,
 };
 

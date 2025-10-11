@@ -1,6 +1,6 @@
 import { GlobalStyles } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { BORDER_RADIUS, SPACING } from "../styles/consts";
+import { BORDER_RADIUS, SCROLLBAR_WIDTH_PX } from "../styles/consts";
 
 export const AppGlobalStyles = () => {
   const theme = useTheme();
@@ -8,11 +8,21 @@ export const AppGlobalStyles = () => {
   return (
     <GlobalStyles
       styles={{
+        html: {
+          height: "100%",
+          scrollbarGutter: "stable",
+        },
         body: {
-          padding: `${SPACING.MEDIUM.PX}`,
+          height: "100%",
+          overflowY: "scroll", // ✅ Always show vertical scrollbar
+          padding: `${SCROLLBAR_WIDTH_PX} 0 ${SCROLLBAR_WIDTH_PX} ${SCROLLBAR_WIDTH_PX}`,
+          margin: 0,
+        },
+        "#root": {
+          height: "100%",
         },
         "*::-webkit-scrollbar": {
-          width: "1em",
+          width: SCROLLBAR_WIDTH_PX,
         },
         "*::-webkit-scrollbar-track": {
           border: `solid 3px ${theme.palette.background.default}`,
@@ -22,9 +32,6 @@ export const AppGlobalStyles = () => {
           backgroundColor: theme.palette.primary.main,
           border: `solid 3px ${theme.palette.background.default}`,
           borderRadius: BORDER_RADIUS.ZERO.PX,
-        },
-        "html, body, #root": {
-          height: "100%",
         },
       }}
     />

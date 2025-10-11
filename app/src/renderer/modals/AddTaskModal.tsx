@@ -130,12 +130,7 @@ const AddTaskModal = () => {
             gap: SPACING.SMALL.PX,
           }}
         >
-          <Button
-            key="cancel"
-            variant="outlined"
-            color="warning"
-            onClick={handleCancel}
-          >
+          <Button key="cancel" variant="outlined" onClick={handleCancel}>
             Cancel
           </Button>
           <Button

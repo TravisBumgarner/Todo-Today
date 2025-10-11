@@ -5,6 +5,7 @@ import {
   ButtonGroup,
   css,
   IconButton,
+  SxProps,
   Tooltip,
 } from "@mui/material";
 import { useSignals } from "@preact/signals-react/runtime";
@@ -136,6 +137,7 @@ const TodoList = () => {
           display: "flex",
           flexDirection: "column",
           height: "100%",
+          padding: SPACING.SMALL.PX,
         }}
       >
         {taskIds.length === 0 && <EmptyTodoList />}
@@ -144,7 +146,7 @@ const TodoList = () => {
             axis="y"
             values={taskIds}
             onReorder={onReorder}
-            style={{ padding: 0 }}
+            style={{ padding: 0, margin: 0 }}
           >
             {taskIds.map((taskId) => (
               <Reorder.Item
@@ -162,12 +164,17 @@ const TodoList = () => {
   );
 };
 
-export const buttonWrapperCSS = css`
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: ${SPACING.MEDIUM};
-  align-items: center;
-`;
+export const buttonWrapperCSS: SxProps = {
+  zIndex: 999,
+  display: "flex",
+  position: "sticky",
+  backgroundColor: "background.default",
+  padding: `${SPACING.SMALL.PX}`,
+  top: 0,
+  justifyContent: "space-between",
+  marginBottom: SPACING.SMALL.PX,
+  alignItems: "center",
+};
 
 const todayButtonCSS = css`
   width: 150px;

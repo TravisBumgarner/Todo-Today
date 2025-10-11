@@ -1,10 +1,11 @@
-import { updateElectronApp } from "update-electron-app";
 import { app, BrowserWindow, Menu } from "electron";
-import path from "node:path";
-import started from "electron-squirrel-startup";
 import log from "electron-log/main";
-import "./messages/messages";
+import started from "electron-squirrel-startup";
+import path from "node:path";
+import { updateElectronApp } from "update-electron-app";
+import { isDev } from "./config";
 import menu from "./menu";
+import "./messages/messages";
 
 log.initialize();
 Menu.setApplicationMenu(menu);
@@ -51,7 +52,9 @@ const createWindow = () => {
     );
   }
 
-  mainWindow.webContents.openDevTools();
+  if (isDev) {
+    mainWindow.webContents.openDevTools();
+  }
 };
 
 app.on("ready", createWindow);

@@ -89,3 +89,5 @@ export const BORDER_RADIUS = {
     INT: 10,
   },
 };
+
+export const SCROLLBAR_WIDTH_PX = "12px";

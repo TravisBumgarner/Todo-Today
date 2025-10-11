@@ -1,4 +1,4 @@
-import { LinkProps, createTheme, css, type PaletteOptions } from '@mui/material'
+import { createTheme, css, type LinkProps, type PaletteOptions } from '@mui/material'
 import { forwardRef } from 'react'
 import { Link as RouterLink, type LinkProps as RouterLinkProps } from 'react-router-dom'
 
