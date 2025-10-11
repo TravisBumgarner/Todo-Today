@@ -1,10 +1,10 @@
-import type { ForgeConfig } from "@electron-forge/shared-types";
+import { MakerDeb } from "@electron-forge/maker-deb";
+import { MakerDMG } from "@electron-forge/maker-dmg";
+import { MakerRpm } from "@electron-forge/maker-rpm";
 import { MakerSquirrel } from "@electron-forge/maker-squirrel";
 import { MakerZIP } from "@electron-forge/maker-zip";
-import { MakerDeb } from "@electron-forge/maker-deb";
-import { MakerRpm } from "@electron-forge/maker-rpm";
 import { VitePlugin } from "@electron-forge/plugin-vite";
-import { MakerDMG } from "@electron-forge/maker-dmg";
+import type { ForgeConfig } from "@electron-forge/shared-types";
 
 // import { FusesPlugin } from "@electron-forge/plugin-fuses";
 // import { FuseV1Options, FuseVersion } from "@electron/fuses";
@@ -82,7 +82,7 @@ const config: ForgeConfig = {
     {
       name: "@electron-forge/publisher-github",
       config: {
-        repository: { owner: "travisbumgarner", name: "menu-engineering" },
+        repository: { owner: "travisbumgarner", name: "todo-today" },
         prerelease: false,
         draft: true,
       },

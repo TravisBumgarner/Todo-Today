@@ -6,7 +6,7 @@
   "main": ".vite/build/main.js",
   "scripts": {
     "start": "electron-forge start",
-    "package": "electron-forge package",
+    "package": "dotenv -e .env -- electron-forge package",
     "make": "electron-forge make",
     "publish": "dotenv -e .env -- electron-forge publish",
     "lint": "eslint --ext .ts,.tsx ."
