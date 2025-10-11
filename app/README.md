@@ -11,10 +11,7 @@
 
 **Deploy**
 
-```
-npm version patch --workspace app --git-tag-version=false
-git add package.json app/package.json package-lock.json app/package-lock.json
-git commit -m "chore: bump version"
-git tag v$(node -p "require('./app/package.json').version")
-git push origin HEAD --tags
-```
+Maybe one day I'll deal with GitHub actions and get this working for Windows.
+
+1. `npm run publish`
+1. Share release on GitHub.
