@@ -1,6 +1,52 @@
-import { createRoot } from "react-dom/client";
-import App from "./App";
+import '@fontsource/comfortaa'
 
-const container = document.getElementById("root") as HTMLElement;
-const root = createRoot(container);
-root.render(<App />);
+import { createRoot } from 'react-dom/client'
+import App from './App'
+import { Component, StrictMode } from 'react'
+import './main.css'
+
+class ErrorBoundary extends Component<
+  { children: React.ReactNode },
+  { hasError: boolean; error: string }
+> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props)
+    this.state = {
+      hasError: false,
+      error: '',
+    }
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true }
+  }
+
+  componentDidCatch(error: Error, errorInfo: unknown) {
+    this.setState({
+      error: `${JSON.stringify(error.message)}\n${JSON.stringify(errorInfo)} `,
+    })
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <>
+          <h1>Something went wrong.</h1>
+          <p>Message: ${this.state.error}</p>
+        </>
+      )
+    }
+
+    return this.props.children
+  }
+}
+
+createRoot(document.getElementById('root') as HTMLElement).render(
+  <StrictMode>
+    <ErrorBoundary>
+      <App />
+    </ErrorBoundary>
+  </StrictMode>,
+)
+
+postMessage({ payload: 'removeLoading' }, '*')

@@ -69,7 +69,7 @@ const config: ForgeConfig = {
     {
       name: "@electron-forge/publisher-github",
       config: {
-        repository: { owner: "travisbumgarner", name: "menu-engineering" },
+        repository: { owner: "travisbumgarner", name: "todo-today" },
         prerelease: false,
         draft: true,
       },

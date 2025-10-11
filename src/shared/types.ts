@@ -1,25 +1,21 @@
-// export const CHANNEL = {
-//   DB: {
-//     ADD_USER: "DB_ADD_USER",
-//     GET_USERS: "DB_GET_USERS",
-//   },
-// } as const;
+export const CHANNEL = {
+  WEE_WOO: 'wee-woo',
+} as const
 
-// export type FromRenderer = {
-//   // [CHANNEL.WEE_WOO]: { id: number };
-// };
+export type FromRenderer = {
+  [CHANNEL.WEE_WOO]: { id: number }
+}
 
-// export type FromMain = {
-//   // [CHANNEL.WEE_WOO]: { ok: boolean; id: number };
-// };
+export type FromMain = {
+  [CHANNEL.WEE_WOO]: { ok: boolean; id: number }
+}
 
-// export type Invokes = {
-//   [CHANNEL.DB.ADD_USER]: {
-//     args: { payload: { name: string } };
-//     result: { success: boolean };
-//   };
-//   [CHANNEL.DB.GET_USERS]: {
-//     args: undefined;
-//     result: { users: Array<{ id: number; name: string }> };
-//   };
-// };
+export type Invokes = {
+  [CHANNEL.WEE_WOO]: {
+    args: { payload: { name: string } }
+    result: { success: boolean }
+  }
+}
+
+export * from './sync-message-types'
+export * from './async-message-types'

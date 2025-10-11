@@ -1,948 +1,30 @@
 "use strict";
-const require$$2 = require("node:assert");
+const require$$0$5 = require("electron");
+const require$$2 = require("path");
+const require$$0$1 = require("child_process");
+const require$$1 = require("os");
+const require$$0 = require("fs");
+const require$$0$2 = require("util");
+const require$$0$3 = require("events");
+const require$$0$4 = require("http");
+const require$$1$1 = require("https");
+const require$$0$6 = require("tty");
+const require$$4 = require("net");
 const require$$3 = require("node:fs");
-const require$$4 = require("node:os");
 const path = require("node:path");
+const require$$2$1 = require("node:assert");
+const require$$4$1 = require("node:os");
 const require$$6 = require("node:util");
-const require$$7 = require("electron");
-const require$$2$1 = require("path");
-const require$$1$1 = require("child_process");
-const require$$0 = require("tty");
-const require$$1 = require("util");
-const require$$0$1 = require("fs");
-const require$$4$1 = require("net");
-const require$$1$2 = require("os");
-const require$$0$2 = require("events");
-const require$$0$3 = require("http");
-const require$$1$3 = require("https");
 function getDefaultExportFromCjs(x) {
   return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, "default") ? x["default"] : x;
 }
-var dist = {};
-var ms$1;
-var hasRequiredMs$1;
-function requireMs$1() {
-  if (hasRequiredMs$1) return ms$1;
-  hasRequiredMs$1 = 1;
-  var s = 1e3;
-  var m = s * 60;
-  var h = m * 60;
-  var d = h * 24;
-  var w = d * 7;
-  var y = d * 365.25;
-  ms$1 = function(val, options) {
-    options = options || {};
-    var type = typeof val;
-    if (type === "string" && val.length > 0) {
-      return parse(val);
-    } else if (type === "number" && isFinite(val)) {
-      return options.long ? fmtLong(val) : fmtShort(val);
-    }
-    throw new Error(
-      "val is not a non-empty string or a valid number. val=" + JSON.stringify(val)
-    );
-  };
-  function parse(str) {
-    str = String(str);
-    if (str.length > 100) {
-      return;
-    }
-    var match = /^(-?(?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|weeks?|w|years?|yrs?|y)?$/i.exec(
-      str
-    );
-    if (!match) {
-      return;
-    }
-    var n = parseFloat(match[1]);
-    var type = (match[2] || "ms").toLowerCase();
-    switch (type) {
-      case "years":
-      case "year":
-      case "yrs":
-      case "yr":
-      case "y":
-        return n * y;
-      case "weeks":
-      case "week":
-      case "w":
-        return n * w;
-      case "days":
-      case "day":
-      case "d":
-        return n * d;
-      case "hours":
-      case "hour":
-      case "hrs":
-      case "hr":
-      case "h":
-        return n * h;
-      case "minutes":
-      case "minute":
-      case "mins":
-      case "min":
-      case "m":
-        return n * m;
-      case "seconds":
-      case "second":
-      case "secs":
-      case "sec":
-      case "s":
-        return n * s;
-      case "milliseconds":
-      case "millisecond":
-      case "msecs":
-      case "msec":
-      case "ms":
-        return n;
-      default:
-        return void 0;
-    }
-  }
-  function fmtShort(ms2) {
-    var msAbs = Math.abs(ms2);
-    if (msAbs >= d) {
-      return Math.round(ms2 / d) + "d";
-    }
-    if (msAbs >= h) {
-      return Math.round(ms2 / h) + "h";
-    }
-    if (msAbs >= m) {
-      return Math.round(ms2 / m) + "m";
-    }
-    if (msAbs >= s) {
-      return Math.round(ms2 / s) + "s";
-    }
-    return ms2 + "ms";
-  }
-  function fmtLong(ms2) {
-    var msAbs = Math.abs(ms2);
-    if (msAbs >= d) {
-      return plural(ms2, msAbs, d, "day");
-    }
-    if (msAbs >= h) {
-      return plural(ms2, msAbs, h, "hour");
-    }
-    if (msAbs >= m) {
-      return plural(ms2, msAbs, m, "minute");
-    }
-    if (msAbs >= s) {
-      return plural(ms2, msAbs, s, "second");
-    }
-    return ms2 + " ms";
-  }
-  function plural(ms2, msAbs, n, name2) {
-    var isPlural = msAbs >= n * 1.5;
-    return Math.round(ms2 / n) + " " + name2 + (isPlural ? "s" : "");
-  }
-  return ms$1;
-}
-var isUrl_1;
-var hasRequiredIsUrl;
-function requireIsUrl() {
-  if (hasRequiredIsUrl) return isUrl_1;
-  hasRequiredIsUrl = 1;
-  isUrl_1 = isUrl;
-  var protocolAndDomainRE = /^(?:\w+:)?\/\/(\S+)$/;
-  var localhostDomainRE = /^localhost[\:?\d]*(?:[^\:?\d]\S*)?$/;
-  var nonLocalhostDomainRE = /^[^\s\.]+\.\S{2,}$/;
-  function isUrl(string) {
-    if (typeof string !== "string") {
-      return false;
-    }
-    var match = string.match(protocolAndDomainRE);
-    if (!match) {
-      return false;
-    }
-    var everythingAfterProtocol = match[1];
-    if (!everythingAfterProtocol) {
-      return false;
-    }
-    if (localhostDomainRE.test(everythingAfterProtocol) || nonLocalhostDomainRE.test(everythingAfterProtocol)) {
-      return true;
-    }
-    return false;
-  }
-  return isUrl_1;
-}
-var commonjs;
-var hasRequiredCommonjs;
-function requireCommonjs() {
-  if (hasRequiredCommonjs) return commonjs;
-  hasRequiredCommonjs = 1;
-  var isUrl = requireIsUrl();
-  var laxUrlRegex = /(?:(?:[^:]+:)?[/][/])?(?:.+@)?([^/]+)([/][^?#]+)/;
-  commonjs = function(repoUrl, opts) {
-    var obj = {};
-    opts = opts || {};
-    if (!repoUrl) {
-      return null;
-    }
-    if (repoUrl.url) {
-      repoUrl = repoUrl.url;
-    }
-    if (typeof repoUrl !== "string") {
-      return null;
-    }
-    var shorthand = repoUrl.match(/^([\w-_]+)\/([\w-_\.]+)(?:#([\w-_\.]+))?$/);
-    var mediumhand = repoUrl.match(/^github:([\w-_]+)\/([\w-_\.]+)(?:#([\w-_\.]+))?$/);
-    var antiquated = repoUrl.match(/^git@[\w-_\.]+:([\w-_]+)\/([\w-_\.]+)$/);
-    if (shorthand) {
-      obj.user = shorthand[1];
-      obj.repo = shorthand[2];
-      obj.branch = shorthand[3] || "master";
-      obj.host = "github.com";
-    } else if (mediumhand) {
-      obj.user = mediumhand[1];
-      obj.repo = mediumhand[2];
-      obj.branch = mediumhand[3] || "master";
-      obj.host = "github.com";
-    } else if (antiquated) {
-      obj.user = antiquated[1];
-      obj.repo = antiquated[2].replace(/\.git$/i, "");
-      obj.branch = "master";
-      obj.host = "github.com";
-    } else {
-      repoUrl = repoUrl.replace(/^git\+/, "");
-      if (!isUrl(repoUrl)) {
-        return null;
-      }
-      var ref = repoUrl.match(laxUrlRegex) || [];
-      var hostname = ref[1];
-      var pathname = ref[2];
-      if (!hostname) {
-        return null;
-      }
-      if (hostname !== "github.com" && hostname !== "www.github.com" && !opts.enterprise) {
-        return null;
-      }
-      var parts = pathname.match(/^\/([\w-_]+)\/([\w-_\.]+)(\/tree\/[\%\w-_\.\/]+)?(\/blob\/[\%\w-_\.\/]+)?/);
-      if (!parts) {
-        return null;
-      }
-      obj.user = parts[1];
-      obj.repo = parts[2].replace(/\.git$/i, "");
-      obj.host = hostname || "github.com";
-      if (parts[3] && /^\/tree\/master\//.test(parts[3])) {
-        obj.branch = "master";
-        obj.path = parts[3].replace(/\/$/, "");
-      } else if (parts[3]) {
-        var branchMatch = parts[3].replace(/^\/tree\//, "").match(/[\%\w-_.]*\/?[\%\w-_]+/);
-        obj.branch = branchMatch && branchMatch[0];
-      } else if (parts[4]) {
-        var branchMatch = parts[4].replace(/^\/blob\//, "").match(/[\%\w-_.]*\/?[\%\w-_]+/);
-        obj.branch = branchMatch && branchMatch[0];
-      } else {
-        obj.branch = "master";
-      }
-    }
-    if (obj.host === "github.com") {
-      obj.apiHost = "api.github.com";
-    } else {
-      obj.apiHost = obj.host + "/api/v3";
-    }
-    obj.tarball_url = "https://" + obj.apiHost + "/repos/" + obj.user + "/" + obj.repo + "/tarball/" + obj.branch;
-    obj.clone_url = "https://" + obj.host + "/" + obj.user + "/" + obj.repo;
-    if (obj.branch === "master") {
-      obj.https_url = "https://" + obj.host + "/" + obj.user + "/" + obj.repo;
-      obj.travis_url = "https://travis-ci.org/" + obj.user + "/" + obj.repo;
-      obj.zip_url = "https://" + obj.host + "/" + obj.user + "/" + obj.repo + "/archive/master.zip";
-    } else {
-      obj.https_url = "https://" + obj.host + "/" + obj.user + "/" + obj.repo + "/blob/" + obj.branch;
-      obj.travis_url = "https://travis-ci.org/" + obj.user + "/" + obj.repo + "?branch=" + obj.branch;
-      obj.zip_url = "https://" + obj.host + "/" + obj.user + "/" + obj.repo + "/archive/" + obj.branch + ".zip";
-    }
-    if (obj.path) {
-      obj.https_url += obj.path;
-    }
-    obj.api_url = "https://" + obj.apiHost + "/repos/" + obj.user + "/" + obj.repo;
-    return obj;
-  };
-  return commonjs;
-}
-const name = "update-electron-app";
-const version = "3.1.1";
-const require$$8 = {
-  name,
-  version
-};
-var hasRequiredDist;
-function requireDist() {
-  if (hasRequiredDist) return dist;
-  hasRequiredDist = 1;
-  var __importDefault = dist && dist.__importDefault || function(mod) {
-    return mod && mod.__esModule ? mod : { "default": mod };
-  };
-  Object.defineProperty(dist, "__esModule", { value: true });
-  dist.UpdateSourceType = void 0;
-  dist.updateElectronApp = updateElectronApp;
-  dist.makeUserNotifier = makeUserNotifier;
-  const ms_1 = __importDefault(requireMs$1());
-  const github_url_to_object_1 = __importDefault(requireCommonjs());
-  const node_assert_1 = __importDefault(require$$2);
-  const node_fs_1 = __importDefault(require$$3);
-  const node_os_1 = __importDefault(require$$4);
-  const node_path_1 = __importDefault(path);
-  const node_util_1 = require$$6;
-  const electron_1 = require$$7;
-  var UpdateSourceType;
-  (function(UpdateSourceType2) {
-    UpdateSourceType2[UpdateSourceType2["ElectronPublicUpdateService"] = 0] = "ElectronPublicUpdateService";
-    UpdateSourceType2[UpdateSourceType2["StaticStorage"] = 1] = "StaticStorage";
-  })(UpdateSourceType || (dist.UpdateSourceType = UpdateSourceType = {}));
-  const pkg = require$$8;
-  const userAgent = (0, node_util_1.format)("%s/%s (%s: %s)", pkg.name, pkg.version, node_os_1.default.platform(), node_os_1.default.arch());
-  const supportedPlatforms = ["darwin", "win32"];
-  const isHttpsUrl = (maybeURL) => {
-    try {
-      const { protocol } = new URL(maybeURL);
-      return protocol === "https:";
-    } catch (_a) {
-      return false;
-    }
-  };
-  function updateElectronApp(opts = {}) {
-    const safeOpts = validateInput(opts);
-    if (!electron_1.app.isPackaged) {
-      const message = "update-electron-app config looks good; aborting updates since app is in development mode";
-      if (opts.logger) {
-        opts.logger.log(message);
-      } else {
-        console.log(message);
-      }
-      return;
-    }
-    if (electron_1.app.isReady()) {
-      initUpdater(safeOpts);
-    } else {
-      electron_1.app.on("ready", () => initUpdater(safeOpts));
-    }
-  }
-  function initUpdater(opts) {
-    const { updateSource, updateInterval, logger } = opts;
-    if (!supportedPlatforms.includes(process === null || process === void 0 ? void 0 : process.platform)) {
-      log2(`Electron's autoUpdater does not support the '${process.platform}' platform. Ref: https://www.electronjs.org/docs/latest/api/auto-updater#platform-notices`);
-      return;
-    }
-    let feedURL;
-    let serverType = "default";
-    switch (updateSource.type) {
-      case UpdateSourceType.ElectronPublicUpdateService: {
-        feedURL = `${updateSource.host}/${updateSource.repo}/${process.platform}-${process.arch}/${electron_1.app.getVersion()}`;
-        break;
-      }
-      case UpdateSourceType.StaticStorage: {
-        feedURL = updateSource.baseUrl;
-        if (process.platform === "darwin") {
-          feedURL += "/RELEASES.json";
-          serverType = "json";
-        }
-        break;
-      }
-    }
-    const requestHeaders = { "User-Agent": userAgent };
-    function log2(...args) {
-      logger.log(...args);
-    }
-    log2("feedURL", feedURL);
-    log2("requestHeaders", requestHeaders);
-    electron_1.autoUpdater.setFeedURL({
-      url: feedURL,
-      headers: requestHeaders,
-      serverType
-    });
-    electron_1.autoUpdater.on("error", (err) => {
-      log2("updater error");
-      log2(err);
-    });
-    electron_1.autoUpdater.on("checking-for-update", () => {
-      log2("checking-for-update");
-    });
-    electron_1.autoUpdater.on("update-available", () => {
-      log2("update-available; downloading...");
-    });
-    electron_1.autoUpdater.on("update-not-available", () => {
-      log2("update-not-available");
-    });
-    if (opts.notifyUser) {
-      electron_1.autoUpdater.on("update-downloaded", (event, releaseNotes, releaseName, releaseDate, updateURL) => {
-        log2("update-downloaded", [event, releaseNotes, releaseName, releaseDate, updateURL]);
-        if (typeof opts.onNotifyUser !== "function") {
-          (0, node_assert_1.default)(opts.onNotifyUser === void 0, "onNotifyUser option must be a callback function or undefined");
-          log2("update-downloaded: notifyUser is true, opening default dialog");
-          opts.onNotifyUser = makeUserNotifier();
-        } else {
-          log2("update-downloaded: notifyUser is true, running custom onNotifyUser callback");
-        }
-        opts.onNotifyUser({
-          event,
-          releaseNotes,
-          releaseDate,
-          releaseName,
-          updateURL
-        });
-      });
-    }
-    electron_1.autoUpdater.checkForUpdates();
-    setInterval(() => {
-      electron_1.autoUpdater.checkForUpdates();
-    }, (0, ms_1.default)(updateInterval));
-  }
-  function makeUserNotifier(dialogProps) {
-    const defaultDialogMessages = {
-      title: "Application Update",
-      detail: "A new version has been downloaded. Restart the application to apply the updates.",
-      restartButtonText: "Restart",
-      laterButtonText: "Later"
-    };
-    const assignedDialog = Object.assign({}, defaultDialogMessages, dialogProps);
-    return (info) => {
-      const { releaseNotes, releaseName } = info;
-      const { title, restartButtonText, laterButtonText, detail } = assignedDialog;
-      const dialogOpts = {
-        type: "info",
-        buttons: [restartButtonText, laterButtonText],
-        title,
-        message: process.platform === "win32" ? releaseNotes : releaseName,
-        detail
-      };
-      electron_1.dialog.showMessageBox(dialogOpts).then(({ response }) => {
-        if (response === 0) {
-          electron_1.autoUpdater.quitAndInstall();
-        }
-      });
-    };
-  }
-  function guessRepo() {
-    var _a;
-    const pkgBuf = node_fs_1.default.readFileSync(node_path_1.default.join(electron_1.app.getAppPath(), "package.json"));
-    const pkg2 = JSON.parse(pkgBuf.toString());
-    const repoString = ((_a = pkg2.repository) === null || _a === void 0 ? void 0 : _a.url) || pkg2.repository;
-    const repoObject = (0, github_url_to_object_1.default)(repoString);
-    (0, node_assert_1.default)(repoObject, "repo not found. Add repository string to your app's package.json file");
-    return `${repoObject.user}/${repoObject.repo}`;
-  }
-  function validateInput(opts) {
-    var _a;
-    const defaults = {
-      host: "https://update.electronjs.org",
-      updateInterval: "10 minutes",
-      logger: console,
-      notifyUser: true
-    };
-    const { host, updateInterval, logger, notifyUser, onNotifyUser } = Object.assign({}, defaults, opts);
-    let updateSource = opts.updateSource;
-    if (!updateSource) {
-      updateSource = {
-        type: UpdateSourceType.ElectronPublicUpdateService,
-        repo: opts.repo || guessRepo(),
-        host
-      };
-    }
-    switch (updateSource.type) {
-      case UpdateSourceType.ElectronPublicUpdateService: {
-        (0, node_assert_1.default)((_a = updateSource.repo) === null || _a === void 0 ? void 0 : _a.includes("/"), "repo is required and should be in the format `owner/repo`");
-        if (!updateSource.host) {
-          updateSource.host = host;
-        }
-        (0, node_assert_1.default)(updateSource.host && isHttpsUrl(updateSource.host), "host must be a valid HTTPS URL");
-        break;
-      }
-      case UpdateSourceType.StaticStorage: {
-        (0, node_assert_1.default)(updateSource.baseUrl && isHttpsUrl(updateSource.baseUrl), "baseUrl must be a valid HTTPS URL");
-        break;
-      }
-    }
-    (0, node_assert_1.default)(typeof updateInterval === "string" && updateInterval.match(/^\d+/), "updateInterval must be a human-friendly string interval like `20 minutes`");
-    (0, node_assert_1.default)((0, ms_1.default)(updateInterval) >= 5 * 60 * 1e3, "updateInterval must be `5 minutes` or more");
-    (0, node_assert_1.default)(logger && typeof logger.log, "function");
-    return { updateSource, updateInterval, logger, notifyUser, onNotifyUser };
-  }
-  return dist;
-}
-var distExports = requireDist();
-var src = { exports: {} };
-var browser = { exports: {} };
-var debug = { exports: {} };
-var ms;
-var hasRequiredMs;
-function requireMs() {
-  if (hasRequiredMs) return ms;
-  hasRequiredMs = 1;
-  var s = 1e3;
-  var m = s * 60;
-  var h = m * 60;
-  var d = h * 24;
-  var y = d * 365.25;
-  ms = function(val, options) {
-    options = options || {};
-    var type = typeof val;
-    if (type === "string" && val.length > 0) {
-      return parse(val);
-    } else if (type === "number" && isNaN(val) === false) {
-      return options.long ? fmtLong(val) : fmtShort(val);
-    }
-    throw new Error(
-      "val is not a non-empty string or a valid number. val=" + JSON.stringify(val)
-    );
-  };
-  function parse(str) {
-    str = String(str);
-    if (str.length > 100) {
-      return;
-    }
-    var match = /^((?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|years?|yrs?|y)?$/i.exec(
-      str
-    );
-    if (!match) {
-      return;
-    }
-    var n = parseFloat(match[1]);
-    var type = (match[2] || "ms").toLowerCase();
-    switch (type) {
-      case "years":
-      case "year":
-      case "yrs":
-      case "yr":
-      case "y":
-        return n * y;
-      case "days":
-      case "day":
-      case "d":
-        return n * d;
-      case "hours":
-      case "hour":
-      case "hrs":
-      case "hr":
-      case "h":
-        return n * h;
-      case "minutes":
-      case "minute":
-      case "mins":
-      case "min":
-      case "m":
-        return n * m;
-      case "seconds":
-      case "second":
-      case "secs":
-      case "sec":
-      case "s":
-        return n * s;
-      case "milliseconds":
-      case "millisecond":
-      case "msecs":
-      case "msec":
-      case "ms":
-        return n;
-      default:
-        return void 0;
-    }
-  }
-  function fmtShort(ms2) {
-    if (ms2 >= d) {
-      return Math.round(ms2 / d) + "d";
-    }
-    if (ms2 >= h) {
-      return Math.round(ms2 / h) + "h";
-    }
-    if (ms2 >= m) {
-      return Math.round(ms2 / m) + "m";
-    }
-    if (ms2 >= s) {
-      return Math.round(ms2 / s) + "s";
-    }
-    return ms2 + "ms";
-  }
-  function fmtLong(ms2) {
-    return plural(ms2, d, "day") || plural(ms2, h, "hour") || plural(ms2, m, "minute") || plural(ms2, s, "second") || ms2 + " ms";
-  }
-  function plural(ms2, n, name2) {
-    if (ms2 < n) {
-      return;
-    }
-    if (ms2 < n * 1.5) {
-      return Math.floor(ms2 / n) + " " + name2;
-    }
-    return Math.ceil(ms2 / n) + " " + name2 + "s";
-  }
-  return ms;
-}
-var hasRequiredDebug;
-function requireDebug() {
-  if (hasRequiredDebug) return debug.exports;
-  hasRequiredDebug = 1;
-  (function(module, exports) {
-    exports = module.exports = createDebug.debug = createDebug["default"] = createDebug;
-    exports.coerce = coerce;
-    exports.disable = disable;
-    exports.enable = enable;
-    exports.enabled = enabled;
-    exports.humanize = requireMs();
-    exports.names = [];
-    exports.skips = [];
-    exports.formatters = {};
-    var prevTime;
-    function selectColor(namespace) {
-      var hash = 0, i;
-      for (i in namespace) {
-        hash = (hash << 5) - hash + namespace.charCodeAt(i);
-        hash |= 0;
-      }
-      return exports.colors[Math.abs(hash) % exports.colors.length];
-    }
-    function createDebug(namespace) {
-      function debug2() {
-        if (!debug2.enabled) return;
-        var self = debug2;
-        var curr = +/* @__PURE__ */ new Date();
-        var ms2 = curr - (prevTime || curr);
-        self.diff = ms2;
-        self.prev = prevTime;
-        self.curr = curr;
-        prevTime = curr;
-        var args = new Array(arguments.length);
-        for (var i = 0; i < args.length; i++) {
-          args[i] = arguments[i];
-        }
-        args[0] = exports.coerce(args[0]);
-        if ("string" !== typeof args[0]) {
-          args.unshift("%O");
-        }
-        var index = 0;
-        args[0] = args[0].replace(/%([a-zA-Z%])/g, function(match, format2) {
-          if (match === "%%") return match;
-          index++;
-          var formatter = exports.formatters[format2];
-          if ("function" === typeof formatter) {
-            var val = args[index];
-            match = formatter.call(self, val);
-            args.splice(index, 1);
-            index--;
-          }
-          return match;
-        });
-        exports.formatArgs.call(self, args);
-        var logFn = debug2.log || exports.log || console.log.bind(console);
-        logFn.apply(self, args);
-      }
-      debug2.namespace = namespace;
-      debug2.enabled = exports.enabled(namespace);
-      debug2.useColors = exports.useColors();
-      debug2.color = selectColor(namespace);
-      if ("function" === typeof exports.init) {
-        exports.init(debug2);
-      }
-      return debug2;
-    }
-    function enable(namespaces) {
-      exports.save(namespaces);
-      exports.names = [];
-      exports.skips = [];
-      var split = (typeof namespaces === "string" ? namespaces : "").split(/[\s,]+/);
-      var len = split.length;
-      for (var i = 0; i < len; i++) {
-        if (!split[i]) continue;
-        namespaces = split[i].replace(/\*/g, ".*?");
-        if (namespaces[0] === "-") {
-          exports.skips.push(new RegExp("^" + namespaces.substr(1) + "$"));
-        } else {
-          exports.names.push(new RegExp("^" + namespaces + "$"));
-        }
-      }
-    }
-    function disable() {
-      exports.enable("");
-    }
-    function enabled(name2) {
-      var i, len;
-      for (i = 0, len = exports.skips.length; i < len; i++) {
-        if (exports.skips[i].test(name2)) {
-          return false;
-        }
-      }
-      for (i = 0, len = exports.names.length; i < len; i++) {
-        if (exports.names[i].test(name2)) {
-          return true;
-        }
-      }
-      return false;
-    }
-    function coerce(val) {
-      if (val instanceof Error) return val.stack || val.message;
-      return val;
-    }
-  })(debug, debug.exports);
-  return debug.exports;
-}
-var hasRequiredBrowser;
-function requireBrowser() {
-  if (hasRequiredBrowser) return browser.exports;
-  hasRequiredBrowser = 1;
-  (function(module, exports) {
-    exports = module.exports = requireDebug();
-    exports.log = log2;
-    exports.formatArgs = formatArgs;
-    exports.save = save;
-    exports.load = load;
-    exports.useColors = useColors;
-    exports.storage = "undefined" != typeof chrome && "undefined" != typeof chrome.storage ? chrome.storage.local : localstorage();
-    exports.colors = [
-      "lightseagreen",
-      "forestgreen",
-      "goldenrod",
-      "dodgerblue",
-      "darkorchid",
-      "crimson"
-    ];
-    function useColors() {
-      if (typeof window !== "undefined" && window.process && window.process.type === "renderer") {
-        return true;
-      }
-      return typeof document !== "undefined" && document.documentElement && document.documentElement.style && document.documentElement.style.WebkitAppearance || // is firebug? http://stackoverflow.com/a/398120/376773
-      typeof window !== "undefined" && window.console && (window.console.firebug || window.console.exception && window.console.table) || // is firefox >= v31?
-      // https://developer.mozilla.org/en-US/docs/Tools/Web_Console#Styling_messages
-      typeof navigator !== "undefined" && navigator.userAgent && navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/) && parseInt(RegExp.$1, 10) >= 31 || // double check webkit in userAgent just in case we are in a worker
-      typeof navigator !== "undefined" && navigator.userAgent && navigator.userAgent.toLowerCase().match(/applewebkit\/(\d+)/);
-    }
-    exports.formatters.j = function(v) {
-      try {
-        return JSON.stringify(v);
-      } catch (err) {
-        return "[UnexpectedJSONParseError]: " + err.message;
-      }
-    };
-    function formatArgs(args) {
-      var useColors2 = this.useColors;
-      args[0] = (useColors2 ? "%c" : "") + this.namespace + (useColors2 ? " %c" : " ") + args[0] + (useColors2 ? "%c " : " ") + "+" + exports.humanize(this.diff);
-      if (!useColors2) return;
-      var c = "color: " + this.color;
-      args.splice(1, 0, c, "color: inherit");
-      var index = 0;
-      var lastC = 0;
-      args[0].replace(/%[a-zA-Z%]/g, function(match) {
-        if ("%%" === match) return;
-        index++;
-        if ("%c" === match) {
-          lastC = index;
-        }
-      });
-      args.splice(lastC, 0, c);
-    }
-    function log2() {
-      return "object" === typeof console && console.log && Function.prototype.apply.call(console.log, console, arguments);
-    }
-    function save(namespaces) {
-      try {
-        if (null == namespaces) {
-          exports.storage.removeItem("debug");
-        } else {
-          exports.storage.debug = namespaces;
-        }
-      } catch (e) {
-      }
-    }
-    function load() {
-      var r;
-      try {
-        r = exports.storage.debug;
-      } catch (e) {
-      }
-      if (!r && typeof process !== "undefined" && "env" in process) {
-        r = process.env.DEBUG;
-      }
-      return r;
-    }
-    exports.enable(load());
-    function localstorage() {
-      try {
-        return window.localStorage;
-      } catch (e) {
-      }
-    }
-  })(browser, browser.exports);
-  return browser.exports;
-}
-var node = { exports: {} };
-var hasRequiredNode;
-function requireNode() {
-  if (hasRequiredNode) return node.exports;
-  hasRequiredNode = 1;
-  (function(module, exports) {
-    var tty = require$$0;
-    var util = require$$1;
-    exports = module.exports = requireDebug();
-    exports.init = init;
-    exports.log = log2;
-    exports.formatArgs = formatArgs;
-    exports.save = save;
-    exports.load = load;
-    exports.useColors = useColors;
-    exports.colors = [6, 2, 3, 4, 5, 1];
-    exports.inspectOpts = Object.keys(process.env).filter(function(key) {
-      return /^debug_/i.test(key);
-    }).reduce(function(obj, key) {
-      var prop = key.substring(6).toLowerCase().replace(/_([a-z])/g, function(_, k) {
-        return k.toUpperCase();
-      });
-      var val = process.env[key];
-      if (/^(yes|on|true|enabled)$/i.test(val)) val = true;
-      else if (/^(no|off|false|disabled)$/i.test(val)) val = false;
-      else if (val === "null") val = null;
-      else val = Number(val);
-      obj[prop] = val;
-      return obj;
-    }, {});
-    var fd = parseInt(process.env.DEBUG_FD, 10) || 2;
-    if (1 !== fd && 2 !== fd) {
-      util.deprecate(function() {
-      }, "except for stderr(2) and stdout(1), any other usage of DEBUG_FD is deprecated. Override debug.log if you want to use a different log function (https://git.io/debug_fd)")();
-    }
-    var stream = 1 === fd ? process.stdout : 2 === fd ? process.stderr : createWritableStdioStream(fd);
-    function useColors() {
-      return "colors" in exports.inspectOpts ? Boolean(exports.inspectOpts.colors) : tty.isatty(fd);
-    }
-    exports.formatters.o = function(v) {
-      this.inspectOpts.colors = this.useColors;
-      return util.inspect(v, this.inspectOpts).split("\n").map(function(str) {
-        return str.trim();
-      }).join(" ");
-    };
-    exports.formatters.O = function(v) {
-      this.inspectOpts.colors = this.useColors;
-      return util.inspect(v, this.inspectOpts);
-    };
-    function formatArgs(args) {
-      var name2 = this.namespace;
-      var useColors2 = this.useColors;
-      if (useColors2) {
-        var c = this.color;
-        var prefix = "  \x1B[3" + c + ";1m" + name2 + " \x1B[0m";
-        args[0] = prefix + args[0].split("\n").join("\n" + prefix);
-        args.push("\x1B[3" + c + "m+" + exports.humanize(this.diff) + "\x1B[0m");
-      } else {
-        args[0] = (/* @__PURE__ */ new Date()).toUTCString() + " " + name2 + " " + args[0];
-      }
-    }
-    function log2() {
-      return stream.write(util.format.apply(util, arguments) + "\n");
-    }
-    function save(namespaces) {
-      if (null == namespaces) {
-        delete process.env.DEBUG;
-      } else {
-        process.env.DEBUG = namespaces;
-      }
-    }
-    function load() {
-      return process.env.DEBUG;
-    }
-    function createWritableStdioStream(fd2) {
-      var stream2;
-      var tty_wrap = process.binding("tty_wrap");
-      switch (tty_wrap.guessHandleType(fd2)) {
-        case "TTY":
-          stream2 = new tty.WriteStream(fd2);
-          stream2._type = "tty";
-          if (stream2._handle && stream2._handle.unref) {
-            stream2._handle.unref();
-          }
-          break;
-        case "FILE":
-          var fs = require$$0$1;
-          stream2 = new fs.SyncWriteStream(fd2, { autoClose: false });
-          stream2._type = "fs";
-          break;
-        case "PIPE":
-        case "TCP":
-          var net = require$$4$1;
-          stream2 = new net.Socket({
-            fd: fd2,
-            readable: false,
-            writable: true
-          });
-          stream2.readable = false;
-          stream2.read = null;
-          stream2._type = "pipe";
-          if (stream2._handle && stream2._handle.unref) {
-            stream2._handle.unref();
-          }
-          break;
-        default:
-          throw new Error("Implement me. Unknown stream file type!");
-      }
-      stream2.fd = fd2;
-      stream2._isStdio = true;
-      return stream2;
-    }
-    function init(debug2) {
-      debug2.inspectOpts = {};
-      var keys = Object.keys(exports.inspectOpts);
-      for (var i = 0; i < keys.length; i++) {
-        debug2.inspectOpts[keys[i]] = exports.inspectOpts[keys[i]];
-      }
-    }
-    exports.enable(load());
-  })(node, node.exports);
-  return node.exports;
-}
-var hasRequiredSrc;
-function requireSrc() {
-  if (hasRequiredSrc) return src.exports;
-  hasRequiredSrc = 1;
-  if (typeof process !== "undefined" && process.type === "renderer") {
-    src.exports = requireBrowser();
-  } else {
-    src.exports = requireNode();
-  }
-  return src.exports;
-}
-var electronSquirrelStartup;
-var hasRequiredElectronSquirrelStartup;
-function requireElectronSquirrelStartup() {
-  if (hasRequiredElectronSquirrelStartup) return electronSquirrelStartup;
-  hasRequiredElectronSquirrelStartup = 1;
-  var path2 = require$$2$1;
-  var spawn = require$$1$1.spawn;
-  var debug2 = requireSrc()("electron-squirrel-startup");
-  var app = require$$7.app;
-  var run = function(args, done) {
-    var updateExe = path2.resolve(path2.dirname(process.execPath), "..", "Update.exe");
-    debug2("Spawning `%s` with args `%s`", updateExe, args);
-    spawn(updateExe, args, {
-      detached: true
-    }).on("close", done);
-  };
-  var check = function() {
-    if (process.platform === "win32") {
-      var cmd = process.argv[1];
-      debug2("processing squirrel command `%s`", cmd);
-      var target = path2.basename(process.execPath);
-      if (cmd === "--squirrel-install" || cmd === "--squirrel-updated") {
-        run(["--createShortcut=" + target], app.quit);
-        return true;
-      }
-      if (cmd === "--squirrel-uninstall") {
-        run(["--removeShortcut=" + target], app.quit);
-        return true;
-      }
-      if (cmd === "--squirrel-obsolete") {
-        app.quit();
-        return true;
-      }
-    }
-    return false;
-  };
-  electronSquirrelStartup = check();
-  return electronSquirrelStartup;
-}
-var electronSquirrelStartupExports = requireElectronSquirrelStartup();
-const started = /* @__PURE__ */ getDefaultExportFromCjs(electronSquirrelStartupExports);
 var packageJson;
 var hasRequiredPackageJson;
 function requirePackageJson() {
   if (hasRequiredPackageJson) return packageJson;
   hasRequiredPackageJson = 1;
-  const fs = require$$0$1;
-  const path2 = require$$2$1;
+  const fs = require$$0;
+  const path2 = require$$2;
   packageJson = {
     findAndReadPackageJson,
     tryReadJsonAt
@@ -1012,9 +94,9 @@ var hasRequiredNodeExternalApi;
 function requireNodeExternalApi() {
   if (hasRequiredNodeExternalApi) return NodeExternalApi_1;
   hasRequiredNodeExternalApi = 1;
-  const childProcess = require$$1$1;
-  const os = require$$1$2;
-  const path2 = require$$2$1;
+  const childProcess = require$$0$1;
+  const os = require$$1;
+  const path2 = require$$2;
   const packageJson2 = requirePackageJson();
   class NodeExternalApi {
     appName = void 0;
@@ -1190,7 +272,7 @@ var hasRequiredElectronExternalApi;
 function requireElectronExternalApi() {
   if (hasRequiredElectronExternalApi) return ElectronExternalApi_1;
   hasRequiredElectronExternalApi = 1;
-  const path2 = require$$2$1;
+  const path2 = require$$2;
   const NodeExternalApi = requireNodeExternalApi();
   class ElectronExternalApi extends NodeExternalApi {
     /**
@@ -1421,9 +503,9 @@ var hasRequiredInitialize;
 function requireInitialize() {
   if (hasRequiredInitialize) return initialize;
   hasRequiredInitialize = 1;
-  const fs = require$$0$1;
-  const os = require$$1$2;
-  const path2 = require$$2$1;
+  const fs = require$$0;
+  const os = require$$1;
+  const path2 = require$$2;
   const preloadInitializeFn = requireElectronLogPreload();
   let preloadInitialized = false;
   let spyConsoleInitialized = false;
@@ -1613,7 +695,7 @@ function requireLogger() {
       errorHandler,
       eventLogger,
       initializeFn,
-      isDev = false,
+      isDev: isDev2 = false,
       levels = ["error", "warn", "info", "verbose", "debug", "silly"],
       logId,
       transportFactories = {},
@@ -1628,7 +710,7 @@ function requireLogger() {
       this.buffering = new Buffering(this);
       this.dependencies = dependencies;
       this.initializeFn = initializeFn;
-      this.isDev = isDev;
+      this.isDev = isDev2;
       this.levels = levels;
       this.logId = logId;
       this.scope = scopeFactory(this);
@@ -2165,7 +1247,7 @@ function requireFormat() {
   }
   function formatScope({ data, logger, message }) {
     const { defaultLabel, labelLength } = logger?.scope || {};
-    const template = data[0];
+    const template2 = data[0];
     let label = message.scope;
     if (!label) {
       label = defaultLabel;
@@ -2178,17 +1260,17 @@ function requireFormat() {
     } else {
       scopeText = "";
     }
-    data[0] = template.replace("{scope}", scopeText);
+    data[0] = template2.replace("{scope}", scopeText);
     return data;
   }
   function formatVariables({ data, message }) {
-    let template = data[0];
-    if (typeof template !== "string") {
+    let template2 = data[0];
+    if (typeof template2 !== "string") {
       return data;
     }
-    template = template.replace("{level}]", `${message.level}]`.padEnd(6, " "));
+    template2 = template2.replace("{level}]", `${message.level}]`.padEnd(6, " "));
     const date = message.date || /* @__PURE__ */ new Date();
-    data[0] = template.replace(/\{(\w+)}/g, (substring, name2) => {
+    data[0] = template2.replace(/\{(\w+)}/g, (substring, name2) => {
       switch (name2) {
         case "level":
           return message.level || "info";
@@ -2220,19 +1302,19 @@ function requireFormat() {
     return data;
   }
   function formatText({ data }) {
-    const template = data[0];
-    if (typeof template !== "string") {
+    const template2 = data[0];
+    if (typeof template2 !== "string") {
       return data;
     }
-    const textTplPosition = template.lastIndexOf("{text}");
-    if (textTplPosition === template.length - 6) {
-      data[0] = template.replace(/\s?{text}/, "");
+    const textTplPosition = template2.lastIndexOf("{text}");
+    if (textTplPosition === template2.length - 6) {
+      data[0] = template2.replace(/\s?{text}/, "");
       if (data[0] === "") {
         data.shift();
       }
       return data;
     }
-    const templatePieces = template.split("{text}");
+    const templatePieces = template2.split("{text}");
     let result = [];
     if (templatePieces[0] !== "") {
       result.push(templatePieces[0]);
@@ -2251,7 +1333,7 @@ function requireObject() {
   if (hasRequiredObject) return object.exports;
   hasRequiredObject = 1;
   (function(module) {
-    const util = require$$1;
+    const util = require$$0$2;
     module.exports = {
       serialize,
       maxDepth({ data, transport, depth = transport?.depth ?? 6 }) {
@@ -2510,9 +1592,9 @@ var hasRequiredFile$1;
 function requireFile$1() {
   if (hasRequiredFile$1) return File_1;
   hasRequiredFile$1 = 1;
-  const EventEmitter = require$$0$2;
-  const fs = require$$0$1;
-  const os = require$$1$2;
+  const EventEmitter = require$$0$3;
+  const fs = require$$0;
+  const os = require$$1;
   class File extends EventEmitter {
     asyncWriteQueue = [];
     bytesWritten = 0;
@@ -2669,9 +1751,9 @@ var hasRequiredFileRegistry;
 function requireFileRegistry() {
   if (hasRequiredFileRegistry) return FileRegistry_1;
   hasRequiredFileRegistry = 1;
-  const EventEmitter = require$$0$2;
-  const fs = require$$0$1;
-  const path2 = require$$2$1;
+  const EventEmitter = require$$0$3;
+  const fs = require$$0;
+  const path2 = require$$2;
   const File = requireFile$1();
   const NullFile = requireNullFile();
   class FileRegistry extends EventEmitter {
@@ -2740,9 +1822,9 @@ var hasRequiredFile;
 function requireFile() {
   if (hasRequiredFile) return file;
   hasRequiredFile = 1;
-  const fs = require$$0$1;
-  const os = require$$1$2;
-  const path2 = require$$2$1;
+  const fs = require$$0;
+  const os = require$$1;
+  const path2 = require$$2;
   const FileRegistry = requireFileRegistry();
   const { transform } = requireTransform();
   const { removeStyles } = requireStyle();
@@ -2905,8 +1987,8 @@ var hasRequiredRemote;
 function requireRemote() {
   if (hasRequiredRemote) return remote;
   hasRequiredRemote = 1;
-  const http = require$$0$3;
-  const https = require$$1$3;
+  const http = require$$0$4;
+  const https = require$$1$1;
   const { transform } = requireTransform();
   const { removeStyles } = requireStyle();
   const { toJSON, maxDepth } = requireObject();
@@ -3028,7 +2110,7 @@ var hasRequiredMain$1;
 function requireMain$1() {
   if (hasRequiredMain$1) return main;
   hasRequiredMain$1 = 1;
-  const electron = require$$7;
+  const electron = require$$0$5;
   const ElectronExternalApi = requireElectronExternalApi();
   const { initialize: initialize2 } = requireInitialize();
   const createDefaultLogger = requireCreateDefaultLogger();
@@ -3079,6 +2161,1064 @@ function requireMain() {
 }
 var mainExports = requireMain();
 const log = /* @__PURE__ */ getDefaultExportFromCjs(mainExports);
+var src = { exports: {} };
+var browser = { exports: {} };
+var debug = { exports: {} };
+var ms$1;
+var hasRequiredMs$1;
+function requireMs$1() {
+  if (hasRequiredMs$1) return ms$1;
+  hasRequiredMs$1 = 1;
+  var s = 1e3;
+  var m = s * 60;
+  var h = m * 60;
+  var d = h * 24;
+  var y = d * 365.25;
+  ms$1 = function(val, options) {
+    options = options || {};
+    var type = typeof val;
+    if (type === "string" && val.length > 0) {
+      return parse(val);
+    } else if (type === "number" && isNaN(val) === false) {
+      return options.long ? fmtLong(val) : fmtShort(val);
+    }
+    throw new Error(
+      "val is not a non-empty string or a valid number. val=" + JSON.stringify(val)
+    );
+  };
+  function parse(str) {
+    str = String(str);
+    if (str.length > 100) {
+      return;
+    }
+    var match = /^((?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|years?|yrs?|y)?$/i.exec(
+      str
+    );
+    if (!match) {
+      return;
+    }
+    var n = parseFloat(match[1]);
+    var type = (match[2] || "ms").toLowerCase();
+    switch (type) {
+      case "years":
+      case "year":
+      case "yrs":
+      case "yr":
+      case "y":
+        return n * y;
+      case "days":
+      case "day":
+      case "d":
+        return n * d;
+      case "hours":
+      case "hour":
+      case "hrs":
+      case "hr":
+      case "h":
+        return n * h;
+      case "minutes":
+      case "minute":
+      case "mins":
+      case "min":
+      case "m":
+        return n * m;
+      case "seconds":
+      case "second":
+      case "secs":
+      case "sec":
+      case "s":
+        return n * s;
+      case "milliseconds":
+      case "millisecond":
+      case "msecs":
+      case "msec":
+      case "ms":
+        return n;
+      default:
+        return void 0;
+    }
+  }
+  function fmtShort(ms2) {
+    if (ms2 >= d) {
+      return Math.round(ms2 / d) + "d";
+    }
+    if (ms2 >= h) {
+      return Math.round(ms2 / h) + "h";
+    }
+    if (ms2 >= m) {
+      return Math.round(ms2 / m) + "m";
+    }
+    if (ms2 >= s) {
+      return Math.round(ms2 / s) + "s";
+    }
+    return ms2 + "ms";
+  }
+  function fmtLong(ms2) {
+    return plural(ms2, d, "day") || plural(ms2, h, "hour") || plural(ms2, m, "minute") || plural(ms2, s, "second") || ms2 + " ms";
+  }
+  function plural(ms2, n, name2) {
+    if (ms2 < n) {
+      return;
+    }
+    if (ms2 < n * 1.5) {
+      return Math.floor(ms2 / n) + " " + name2;
+    }
+    return Math.ceil(ms2 / n) + " " + name2 + "s";
+  }
+  return ms$1;
+}
+var hasRequiredDebug;
+function requireDebug() {
+  if (hasRequiredDebug) return debug.exports;
+  hasRequiredDebug = 1;
+  (function(module, exports) {
+    exports = module.exports = createDebug.debug = createDebug["default"] = createDebug;
+    exports.coerce = coerce;
+    exports.disable = disable;
+    exports.enable = enable;
+    exports.enabled = enabled;
+    exports.humanize = requireMs$1();
+    exports.names = [];
+    exports.skips = [];
+    exports.formatters = {};
+    var prevTime;
+    function selectColor(namespace) {
+      var hash = 0, i;
+      for (i in namespace) {
+        hash = (hash << 5) - hash + namespace.charCodeAt(i);
+        hash |= 0;
+      }
+      return exports.colors[Math.abs(hash) % exports.colors.length];
+    }
+    function createDebug(namespace) {
+      function debug2() {
+        if (!debug2.enabled) return;
+        var self = debug2;
+        var curr = +/* @__PURE__ */ new Date();
+        var ms2 = curr - (prevTime || curr);
+        self.diff = ms2;
+        self.prev = prevTime;
+        self.curr = curr;
+        prevTime = curr;
+        var args = new Array(arguments.length);
+        for (var i = 0; i < args.length; i++) {
+          args[i] = arguments[i];
+        }
+        args[0] = exports.coerce(args[0]);
+        if ("string" !== typeof args[0]) {
+          args.unshift("%O");
+        }
+        var index = 0;
+        args[0] = args[0].replace(/%([a-zA-Z%])/g, function(match, format2) {
+          if (match === "%%") return match;
+          index++;
+          var formatter = exports.formatters[format2];
+          if ("function" === typeof formatter) {
+            var val = args[index];
+            match = formatter.call(self, val);
+            args.splice(index, 1);
+            index--;
+          }
+          return match;
+        });
+        exports.formatArgs.call(self, args);
+        var logFn = debug2.log || exports.log || console.log.bind(console);
+        logFn.apply(self, args);
+      }
+      debug2.namespace = namespace;
+      debug2.enabled = exports.enabled(namespace);
+      debug2.useColors = exports.useColors();
+      debug2.color = selectColor(namespace);
+      if ("function" === typeof exports.init) {
+        exports.init(debug2);
+      }
+      return debug2;
+    }
+    function enable(namespaces) {
+      exports.save(namespaces);
+      exports.names = [];
+      exports.skips = [];
+      var split = (typeof namespaces === "string" ? namespaces : "").split(/[\s,]+/);
+      var len = split.length;
+      for (var i = 0; i < len; i++) {
+        if (!split[i]) continue;
+        namespaces = split[i].replace(/\*/g, ".*?");
+        if (namespaces[0] === "-") {
+          exports.skips.push(new RegExp("^" + namespaces.substr(1) + "$"));
+        } else {
+          exports.names.push(new RegExp("^" + namespaces + "$"));
+        }
+      }
+    }
+    function disable() {
+      exports.enable("");
+    }
+    function enabled(name2) {
+      var i, len;
+      for (i = 0, len = exports.skips.length; i < len; i++) {
+        if (exports.skips[i].test(name2)) {
+          return false;
+        }
+      }
+      for (i = 0, len = exports.names.length; i < len; i++) {
+        if (exports.names[i].test(name2)) {
+          return true;
+        }
+      }
+      return false;
+    }
+    function coerce(val) {
+      if (val instanceof Error) return val.stack || val.message;
+      return val;
+    }
+  })(debug, debug.exports);
+  return debug.exports;
+}
+var hasRequiredBrowser;
+function requireBrowser() {
+  if (hasRequiredBrowser) return browser.exports;
+  hasRequiredBrowser = 1;
+  (function(module, exports) {
+    exports = module.exports = requireDebug();
+    exports.log = log2;
+    exports.formatArgs = formatArgs;
+    exports.save = save;
+    exports.load = load;
+    exports.useColors = useColors;
+    exports.storage = "undefined" != typeof chrome && "undefined" != typeof chrome.storage ? chrome.storage.local : localstorage();
+    exports.colors = [
+      "lightseagreen",
+      "forestgreen",
+      "goldenrod",
+      "dodgerblue",
+      "darkorchid",
+      "crimson"
+    ];
+    function useColors() {
+      if (typeof window !== "undefined" && window.process && window.process.type === "renderer") {
+        return true;
+      }
+      return typeof document !== "undefined" && document.documentElement && document.documentElement.style && document.documentElement.style.WebkitAppearance || // is firebug? http://stackoverflow.com/a/398120/376773
+      typeof window !== "undefined" && window.console && (window.console.firebug || window.console.exception && window.console.table) || // is firefox >= v31?
+      // https://developer.mozilla.org/en-US/docs/Tools/Web_Console#Styling_messages
+      typeof navigator !== "undefined" && navigator.userAgent && navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/) && parseInt(RegExp.$1, 10) >= 31 || // double check webkit in userAgent just in case we are in a worker
+      typeof navigator !== "undefined" && navigator.userAgent && navigator.userAgent.toLowerCase().match(/applewebkit\/(\d+)/);
+    }
+    exports.formatters.j = function(v) {
+      try {
+        return JSON.stringify(v);
+      } catch (err) {
+        return "[UnexpectedJSONParseError]: " + err.message;
+      }
+    };
+    function formatArgs(args) {
+      var useColors2 = this.useColors;
+      args[0] = (useColors2 ? "%c" : "") + this.namespace + (useColors2 ? " %c" : " ") + args[0] + (useColors2 ? "%c " : " ") + "+" + exports.humanize(this.diff);
+      if (!useColors2) return;
+      var c = "color: " + this.color;
+      args.splice(1, 0, c, "color: inherit");
+      var index = 0;
+      var lastC = 0;
+      args[0].replace(/%[a-zA-Z%]/g, function(match) {
+        if ("%%" === match) return;
+        index++;
+        if ("%c" === match) {
+          lastC = index;
+        }
+      });
+      args.splice(lastC, 0, c);
+    }
+    function log2() {
+      return "object" === typeof console && console.log && Function.prototype.apply.call(console.log, console, arguments);
+    }
+    function save(namespaces) {
+      try {
+        if (null == namespaces) {
+          exports.storage.removeItem("debug");
+        } else {
+          exports.storage.debug = namespaces;
+        }
+      } catch (e) {
+      }
+    }
+    function load() {
+      var r;
+      try {
+        r = exports.storage.debug;
+      } catch (e) {
+      }
+      if (!r && typeof process !== "undefined" && "env" in process) {
+        r = process.env.DEBUG;
+      }
+      return r;
+    }
+    exports.enable(load());
+    function localstorage() {
+      try {
+        return window.localStorage;
+      } catch (e) {
+      }
+    }
+  })(browser, browser.exports);
+  return browser.exports;
+}
+var node = { exports: {} };
+var hasRequiredNode;
+function requireNode() {
+  if (hasRequiredNode) return node.exports;
+  hasRequiredNode = 1;
+  (function(module, exports) {
+    var tty = require$$0$6;
+    var util = require$$0$2;
+    exports = module.exports = requireDebug();
+    exports.init = init;
+    exports.log = log2;
+    exports.formatArgs = formatArgs;
+    exports.save = save;
+    exports.load = load;
+    exports.useColors = useColors;
+    exports.colors = [6, 2, 3, 4, 5, 1];
+    exports.inspectOpts = Object.keys(process.env).filter(function(key) {
+      return /^debug_/i.test(key);
+    }).reduce(function(obj, key) {
+      var prop = key.substring(6).toLowerCase().replace(/_([a-z])/g, function(_, k) {
+        return k.toUpperCase();
+      });
+      var val = process.env[key];
+      if (/^(yes|on|true|enabled)$/i.test(val)) val = true;
+      else if (/^(no|off|false|disabled)$/i.test(val)) val = false;
+      else if (val === "null") val = null;
+      else val = Number(val);
+      obj[prop] = val;
+      return obj;
+    }, {});
+    var fd = parseInt(process.env.DEBUG_FD, 10) || 2;
+    if (1 !== fd && 2 !== fd) {
+      util.deprecate(function() {
+      }, "except for stderr(2) and stdout(1), any other usage of DEBUG_FD is deprecated. Override debug.log if you want to use a different log function (https://git.io/debug_fd)")();
+    }
+    var stream = 1 === fd ? process.stdout : 2 === fd ? process.stderr : createWritableStdioStream(fd);
+    function useColors() {
+      return "colors" in exports.inspectOpts ? Boolean(exports.inspectOpts.colors) : tty.isatty(fd);
+    }
+    exports.formatters.o = function(v) {
+      this.inspectOpts.colors = this.useColors;
+      return util.inspect(v, this.inspectOpts).split("\n").map(function(str) {
+        return str.trim();
+      }).join(" ");
+    };
+    exports.formatters.O = function(v) {
+      this.inspectOpts.colors = this.useColors;
+      return util.inspect(v, this.inspectOpts);
+    };
+    function formatArgs(args) {
+      var name2 = this.namespace;
+      var useColors2 = this.useColors;
+      if (useColors2) {
+        var c = this.color;
+        var prefix = "  \x1B[3" + c + ";1m" + name2 + " \x1B[0m";
+        args[0] = prefix + args[0].split("\n").join("\n" + prefix);
+        args.push("\x1B[3" + c + "m+" + exports.humanize(this.diff) + "\x1B[0m");
+      } else {
+        args[0] = (/* @__PURE__ */ new Date()).toUTCString() + " " + name2 + " " + args[0];
+      }
+    }
+    function log2() {
+      return stream.write(util.format.apply(util, arguments) + "\n");
+    }
+    function save(namespaces) {
+      if (null == namespaces) {
+        delete process.env.DEBUG;
+      } else {
+        process.env.DEBUG = namespaces;
+      }
+    }
+    function load() {
+      return process.env.DEBUG;
+    }
+    function createWritableStdioStream(fd2) {
+      var stream2;
+      var tty_wrap = process.binding("tty_wrap");
+      switch (tty_wrap.guessHandleType(fd2)) {
+        case "TTY":
+          stream2 = new tty.WriteStream(fd2);
+          stream2._type = "tty";
+          if (stream2._handle && stream2._handle.unref) {
+            stream2._handle.unref();
+          }
+          break;
+        case "FILE":
+          var fs = require$$0;
+          stream2 = new fs.SyncWriteStream(fd2, { autoClose: false });
+          stream2._type = "fs";
+          break;
+        case "PIPE":
+        case "TCP":
+          var net = require$$4;
+          stream2 = new net.Socket({
+            fd: fd2,
+            readable: false,
+            writable: true
+          });
+          stream2.readable = false;
+          stream2.read = null;
+          stream2._type = "pipe";
+          if (stream2._handle && stream2._handle.unref) {
+            stream2._handle.unref();
+          }
+          break;
+        default:
+          throw new Error("Implement me. Unknown stream file type!");
+      }
+      stream2.fd = fd2;
+      stream2._isStdio = true;
+      return stream2;
+    }
+    function init(debug2) {
+      debug2.inspectOpts = {};
+      var keys = Object.keys(exports.inspectOpts);
+      for (var i = 0; i < keys.length; i++) {
+        debug2.inspectOpts[keys[i]] = exports.inspectOpts[keys[i]];
+      }
+    }
+    exports.enable(load());
+  })(node, node.exports);
+  return node.exports;
+}
+var hasRequiredSrc;
+function requireSrc() {
+  if (hasRequiredSrc) return src.exports;
+  hasRequiredSrc = 1;
+  if (typeof process !== "undefined" && process.type === "renderer") {
+    src.exports = requireBrowser();
+  } else {
+    src.exports = requireNode();
+  }
+  return src.exports;
+}
+var electronSquirrelStartup;
+var hasRequiredElectronSquirrelStartup;
+function requireElectronSquirrelStartup() {
+  if (hasRequiredElectronSquirrelStartup) return electronSquirrelStartup;
+  hasRequiredElectronSquirrelStartup = 1;
+  var path2 = require$$2;
+  var spawn = require$$0$1.spawn;
+  var debug2 = requireSrc()("electron-squirrel-startup");
+  var app = require$$0$5.app;
+  var run = function(args, done) {
+    var updateExe = path2.resolve(path2.dirname(process.execPath), "..", "Update.exe");
+    debug2("Spawning `%s` with args `%s`", updateExe, args);
+    spawn(updateExe, args, {
+      detached: true
+    }).on("close", done);
+  };
+  var check = function() {
+    if (process.platform === "win32") {
+      var cmd = process.argv[1];
+      debug2("processing squirrel command `%s`", cmd);
+      var target = path2.basename(process.execPath);
+      if (cmd === "--squirrel-install" || cmd === "--squirrel-updated") {
+        run(["--createShortcut=" + target], app.quit);
+        return true;
+      }
+      if (cmd === "--squirrel-uninstall") {
+        run(["--removeShortcut=" + target], app.quit);
+        return true;
+      }
+      if (cmd === "--squirrel-obsolete") {
+        app.quit();
+        return true;
+      }
+    }
+    return false;
+  };
+  electronSquirrelStartup = check();
+  return electronSquirrelStartup;
+}
+var electronSquirrelStartupExports = requireElectronSquirrelStartup();
+const started = /* @__PURE__ */ getDefaultExportFromCjs(electronSquirrelStartupExports);
+var dist = {};
+var ms;
+var hasRequiredMs;
+function requireMs() {
+  if (hasRequiredMs) return ms;
+  hasRequiredMs = 1;
+  var s = 1e3;
+  var m = s * 60;
+  var h = m * 60;
+  var d = h * 24;
+  var w = d * 7;
+  var y = d * 365.25;
+  ms = function(val, options) {
+    options = options || {};
+    var type = typeof val;
+    if (type === "string" && val.length > 0) {
+      return parse(val);
+    } else if (type === "number" && isFinite(val)) {
+      return options.long ? fmtLong(val) : fmtShort(val);
+    }
+    throw new Error(
+      "val is not a non-empty string or a valid number. val=" + JSON.stringify(val)
+    );
+  };
+  function parse(str) {
+    str = String(str);
+    if (str.length > 100) {
+      return;
+    }
+    var match = /^(-?(?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|weeks?|w|years?|yrs?|y)?$/i.exec(
+      str
+    );
+    if (!match) {
+      return;
+    }
+    var n = parseFloat(match[1]);
+    var type = (match[2] || "ms").toLowerCase();
+    switch (type) {
+      case "years":
+      case "year":
+      case "yrs":
+      case "yr":
+      case "y":
+        return n * y;
+      case "weeks":
+      case "week":
+      case "w":
+        return n * w;
+      case "days":
+      case "day":
+      case "d":
+        return n * d;
+      case "hours":
+      case "hour":
+      case "hrs":
+      case "hr":
+      case "h":
+        return n * h;
+      case "minutes":
+      case "minute":
+      case "mins":
+      case "min":
+      case "m":
+        return n * m;
+      case "seconds":
+      case "second":
+      case "secs":
+      case "sec":
+      case "s":
+        return n * s;
+      case "milliseconds":
+      case "millisecond":
+      case "msecs":
+      case "msec":
+      case "ms":
+        return n;
+      default:
+        return void 0;
+    }
+  }
+  function fmtShort(ms2) {
+    var msAbs = Math.abs(ms2);
+    if (msAbs >= d) {
+      return Math.round(ms2 / d) + "d";
+    }
+    if (msAbs >= h) {
+      return Math.round(ms2 / h) + "h";
+    }
+    if (msAbs >= m) {
+      return Math.round(ms2 / m) + "m";
+    }
+    if (msAbs >= s) {
+      return Math.round(ms2 / s) + "s";
+    }
+    return ms2 + "ms";
+  }
+  function fmtLong(ms2) {
+    var msAbs = Math.abs(ms2);
+    if (msAbs >= d) {
+      return plural(ms2, msAbs, d, "day");
+    }
+    if (msAbs >= h) {
+      return plural(ms2, msAbs, h, "hour");
+    }
+    if (msAbs >= m) {
+      return plural(ms2, msAbs, m, "minute");
+    }
+    if (msAbs >= s) {
+      return plural(ms2, msAbs, s, "second");
+    }
+    return ms2 + " ms";
+  }
+  function plural(ms2, msAbs, n, name2) {
+    var isPlural = msAbs >= n * 1.5;
+    return Math.round(ms2 / n) + " " + name2 + (isPlural ? "s" : "");
+  }
+  return ms;
+}
+var isUrl_1;
+var hasRequiredIsUrl;
+function requireIsUrl() {
+  if (hasRequiredIsUrl) return isUrl_1;
+  hasRequiredIsUrl = 1;
+  isUrl_1 = isUrl;
+  var protocolAndDomainRE = /^(?:\w+:)?\/\/(\S+)$/;
+  var localhostDomainRE = /^localhost[\:?\d]*(?:[^\:?\d]\S*)?$/;
+  var nonLocalhostDomainRE = /^[^\s\.]+\.\S{2,}$/;
+  function isUrl(string) {
+    if (typeof string !== "string") {
+      return false;
+    }
+    var match = string.match(protocolAndDomainRE);
+    if (!match) {
+      return false;
+    }
+    var everythingAfterProtocol = match[1];
+    if (!everythingAfterProtocol) {
+      return false;
+    }
+    if (localhostDomainRE.test(everythingAfterProtocol) || nonLocalhostDomainRE.test(everythingAfterProtocol)) {
+      return true;
+    }
+    return false;
+  }
+  return isUrl_1;
+}
+var commonjs;
+var hasRequiredCommonjs;
+function requireCommonjs() {
+  if (hasRequiredCommonjs) return commonjs;
+  hasRequiredCommonjs = 1;
+  var isUrl = requireIsUrl();
+  var laxUrlRegex = /(?:(?:[^:]+:)?[/][/])?(?:.+@)?([^/]+)([/][^?#]+)/;
+  commonjs = function(repoUrl, opts) {
+    var obj = {};
+    opts = opts || {};
+    if (!repoUrl) {
+      return null;
+    }
+    if (repoUrl.url) {
+      repoUrl = repoUrl.url;
+    }
+    if (typeof repoUrl !== "string") {
+      return null;
+    }
+    var shorthand = repoUrl.match(/^([\w-_]+)\/([\w-_\.]+)(?:#([\w-_\.]+))?$/);
+    var mediumhand = repoUrl.match(/^github:([\w-_]+)\/([\w-_\.]+)(?:#([\w-_\.]+))?$/);
+    var antiquated = repoUrl.match(/^git@[\w-_\.]+:([\w-_]+)\/([\w-_\.]+)$/);
+    if (shorthand) {
+      obj.user = shorthand[1];
+      obj.repo = shorthand[2];
+      obj.branch = shorthand[3] || "master";
+      obj.host = "github.com";
+    } else if (mediumhand) {
+      obj.user = mediumhand[1];
+      obj.repo = mediumhand[2];
+      obj.branch = mediumhand[3] || "master";
+      obj.host = "github.com";
+    } else if (antiquated) {
+      obj.user = antiquated[1];
+      obj.repo = antiquated[2].replace(/\.git$/i, "");
+      obj.branch = "master";
+      obj.host = "github.com";
+    } else {
+      repoUrl = repoUrl.replace(/^git\+/, "");
+      if (!isUrl(repoUrl)) {
+        return null;
+      }
+      var ref = repoUrl.match(laxUrlRegex) || [];
+      var hostname = ref[1];
+      var pathname = ref[2];
+      if (!hostname) {
+        return null;
+      }
+      if (hostname !== "github.com" && hostname !== "www.github.com" && !opts.enterprise) {
+        return null;
+      }
+      var parts = pathname.match(/^\/([\w-_]+)\/([\w-_\.]+)(\/tree\/[\%\w-_\.\/]+)?(\/blob\/[\%\w-_\.\/]+)?/);
+      if (!parts) {
+        return null;
+      }
+      obj.user = parts[1];
+      obj.repo = parts[2].replace(/\.git$/i, "");
+      obj.host = hostname || "github.com";
+      if (parts[3] && /^\/tree\/master\//.test(parts[3])) {
+        obj.branch = "master";
+        obj.path = parts[3].replace(/\/$/, "");
+      } else if (parts[3]) {
+        var branchMatch = parts[3].replace(/^\/tree\//, "").match(/[\%\w-_.]*\/?[\%\w-_]+/);
+        obj.branch = branchMatch && branchMatch[0];
+      } else if (parts[4]) {
+        var branchMatch = parts[4].replace(/^\/blob\//, "").match(/[\%\w-_.]*\/?[\%\w-_]+/);
+        obj.branch = branchMatch && branchMatch[0];
+      } else {
+        obj.branch = "master";
+      }
+    }
+    if (obj.host === "github.com") {
+      obj.apiHost = "api.github.com";
+    } else {
+      obj.apiHost = obj.host + "/api/v3";
+    }
+    obj.tarball_url = "https://" + obj.apiHost + "/repos/" + obj.user + "/" + obj.repo + "/tarball/" + obj.branch;
+    obj.clone_url = "https://" + obj.host + "/" + obj.user + "/" + obj.repo;
+    if (obj.branch === "master") {
+      obj.https_url = "https://" + obj.host + "/" + obj.user + "/" + obj.repo;
+      obj.travis_url = "https://travis-ci.org/" + obj.user + "/" + obj.repo;
+      obj.zip_url = "https://" + obj.host + "/" + obj.user + "/" + obj.repo + "/archive/master.zip";
+    } else {
+      obj.https_url = "https://" + obj.host + "/" + obj.user + "/" + obj.repo + "/blob/" + obj.branch;
+      obj.travis_url = "https://travis-ci.org/" + obj.user + "/" + obj.repo + "?branch=" + obj.branch;
+      obj.zip_url = "https://" + obj.host + "/" + obj.user + "/" + obj.repo + "/archive/" + obj.branch + ".zip";
+    }
+    if (obj.path) {
+      obj.https_url += obj.path;
+    }
+    obj.api_url = "https://" + obj.apiHost + "/repos/" + obj.user + "/" + obj.repo;
+    return obj;
+  };
+  return commonjs;
+}
+const name = "update-electron-app";
+const version = "3.1.1";
+const require$$8 = {
+  name,
+  version
+};
+var hasRequiredDist;
+function requireDist() {
+  if (hasRequiredDist) return dist;
+  hasRequiredDist = 1;
+  var __importDefault = dist && dist.__importDefault || function(mod) {
+    return mod && mod.__esModule ? mod : { "default": mod };
+  };
+  Object.defineProperty(dist, "__esModule", { value: true });
+  dist.UpdateSourceType = void 0;
+  dist.updateElectronApp = updateElectronApp;
+  dist.makeUserNotifier = makeUserNotifier;
+  const ms_1 = __importDefault(requireMs());
+  const github_url_to_object_1 = __importDefault(requireCommonjs());
+  const node_assert_1 = __importDefault(require$$2$1);
+  const node_fs_1 = __importDefault(require$$3);
+  const node_os_1 = __importDefault(require$$4$1);
+  const node_path_1 = __importDefault(path);
+  const node_util_1 = require$$6;
+  const electron_1 = require$$0$5;
+  var UpdateSourceType;
+  (function(UpdateSourceType2) {
+    UpdateSourceType2[UpdateSourceType2["ElectronPublicUpdateService"] = 0] = "ElectronPublicUpdateService";
+    UpdateSourceType2[UpdateSourceType2["StaticStorage"] = 1] = "StaticStorage";
+  })(UpdateSourceType || (dist.UpdateSourceType = UpdateSourceType = {}));
+  const pkg = require$$8;
+  const userAgent = (0, node_util_1.format)("%s/%s (%s: %s)", pkg.name, pkg.version, node_os_1.default.platform(), node_os_1.default.arch());
+  const supportedPlatforms = ["darwin", "win32"];
+  const isHttpsUrl = (maybeURL) => {
+    try {
+      const { protocol } = new URL(maybeURL);
+      return protocol === "https:";
+    } catch (_a) {
+      return false;
+    }
+  };
+  function updateElectronApp(opts = {}) {
+    const safeOpts = validateInput(opts);
+    if (!electron_1.app.isPackaged) {
+      const message = "update-electron-app config looks good; aborting updates since app is in development mode";
+      if (opts.logger) {
+        opts.logger.log(message);
+      } else {
+        console.log(message);
+      }
+      return;
+    }
+    if (electron_1.app.isReady()) {
+      initUpdater(safeOpts);
+    } else {
+      electron_1.app.on("ready", () => initUpdater(safeOpts));
+    }
+  }
+  function initUpdater(opts) {
+    const { updateSource, updateInterval, logger } = opts;
+    if (!supportedPlatforms.includes(process === null || process === void 0 ? void 0 : process.platform)) {
+      log2(`Electron's autoUpdater does not support the '${process.platform}' platform. Ref: https://www.electronjs.org/docs/latest/api/auto-updater#platform-notices`);
+      return;
+    }
+    let feedURL;
+    let serverType = "default";
+    switch (updateSource.type) {
+      case UpdateSourceType.ElectronPublicUpdateService: {
+        feedURL = `${updateSource.host}/${updateSource.repo}/${process.platform}-${process.arch}/${electron_1.app.getVersion()}`;
+        break;
+      }
+      case UpdateSourceType.StaticStorage: {
+        feedURL = updateSource.baseUrl;
+        if (process.platform === "darwin") {
+          feedURL += "/RELEASES.json";
+          serverType = "json";
+        }
+        break;
+      }
+    }
+    const requestHeaders = { "User-Agent": userAgent };
+    function log2(...args) {
+      logger.log(...args);
+    }
+    log2("feedURL", feedURL);
+    log2("requestHeaders", requestHeaders);
+    electron_1.autoUpdater.setFeedURL({
+      url: feedURL,
+      headers: requestHeaders,
+      serverType
+    });
+    electron_1.autoUpdater.on("error", (err) => {
+      log2("updater error");
+      log2(err);
+    });
+    electron_1.autoUpdater.on("checking-for-update", () => {
+      log2("checking-for-update");
+    });
+    electron_1.autoUpdater.on("update-available", () => {
+      log2("update-available; downloading...");
+    });
+    electron_1.autoUpdater.on("update-not-available", () => {
+      log2("update-not-available");
+    });
+    if (opts.notifyUser) {
+      electron_1.autoUpdater.on("update-downloaded", (event, releaseNotes, releaseName, releaseDate, updateURL) => {
+        log2("update-downloaded", [event, releaseNotes, releaseName, releaseDate, updateURL]);
+        if (typeof opts.onNotifyUser !== "function") {
+          (0, node_assert_1.default)(opts.onNotifyUser === void 0, "onNotifyUser option must be a callback function or undefined");
+          log2("update-downloaded: notifyUser is true, opening default dialog");
+          opts.onNotifyUser = makeUserNotifier();
+        } else {
+          log2("update-downloaded: notifyUser is true, running custom onNotifyUser callback");
+        }
+        opts.onNotifyUser({
+          event,
+          releaseNotes,
+          releaseDate,
+          releaseName,
+          updateURL
+        });
+      });
+    }
+    electron_1.autoUpdater.checkForUpdates();
+    setInterval(() => {
+      electron_1.autoUpdater.checkForUpdates();
+    }, (0, ms_1.default)(updateInterval));
+  }
+  function makeUserNotifier(dialogProps) {
+    const defaultDialogMessages = {
+      title: "Application Update",
+      detail: "A new version has been downloaded. Restart the application to apply the updates.",
+      restartButtonText: "Restart",
+      laterButtonText: "Later"
+    };
+    const assignedDialog = Object.assign({}, defaultDialogMessages, dialogProps);
+    return (info) => {
+      const { releaseNotes, releaseName } = info;
+      const { title, restartButtonText, laterButtonText, detail } = assignedDialog;
+      const dialogOpts = {
+        type: "info",
+        buttons: [restartButtonText, laterButtonText],
+        title,
+        message: process.platform === "win32" ? releaseNotes : releaseName,
+        detail
+      };
+      electron_1.dialog.showMessageBox(dialogOpts).then(({ response }) => {
+        if (response === 0) {
+          electron_1.autoUpdater.quitAndInstall();
+        }
+      });
+    };
+  }
+  function guessRepo() {
+    var _a;
+    const pkgBuf = node_fs_1.default.readFileSync(node_path_1.default.join(electron_1.app.getAppPath(), "package.json"));
+    const pkg2 = JSON.parse(pkgBuf.toString());
+    const repoString = ((_a = pkg2.repository) === null || _a === void 0 ? void 0 : _a.url) || pkg2.repository;
+    const repoObject = (0, github_url_to_object_1.default)(repoString);
+    (0, node_assert_1.default)(repoObject, "repo not found. Add repository string to your app's package.json file");
+    return `${repoObject.user}/${repoObject.repo}`;
+  }
+  function validateInput(opts) {
+    var _a;
+    const defaults = {
+      host: "https://update.electronjs.org",
+      updateInterval: "10 minutes",
+      logger: console,
+      notifyUser: true
+    };
+    const { host, updateInterval, logger, notifyUser, onNotifyUser } = Object.assign({}, defaults, opts);
+    let updateSource = opts.updateSource;
+    if (!updateSource) {
+      updateSource = {
+        type: UpdateSourceType.ElectronPublicUpdateService,
+        repo: opts.repo || guessRepo(),
+        host
+      };
+    }
+    switch (updateSource.type) {
+      case UpdateSourceType.ElectronPublicUpdateService: {
+        (0, node_assert_1.default)((_a = updateSource.repo) === null || _a === void 0 ? void 0 : _a.includes("/"), "repo is required and should be in the format `owner/repo`");
+        if (!updateSource.host) {
+          updateSource.host = host;
+        }
+        (0, node_assert_1.default)(updateSource.host && isHttpsUrl(updateSource.host), "host must be a valid HTTPS URL");
+        break;
+      }
+      case UpdateSourceType.StaticStorage: {
+        (0, node_assert_1.default)(updateSource.baseUrl && isHttpsUrl(updateSource.baseUrl), "baseUrl must be a valid HTTPS URL");
+        break;
+      }
+    }
+    (0, node_assert_1.default)(typeof updateInterval === "string" && updateInterval.match(/^\d+/), "updateInterval must be a human-friendly string interval like `20 minutes`");
+    (0, node_assert_1.default)((0, ms_1.default)(updateInterval) >= 5 * 60 * 1e3, "updateInterval must be `5 minutes` or more");
+    (0, node_assert_1.default)(logger && typeof logger.log, "function");
+    return { updateSource, updateInterval, logger, notifyUser, onNotifyUser };
+  }
+  return dist;
+}
+var distExports = requireDist();
+const typedIpcMain = {
+  // Renderer → Main (fire and forget)
+  on(channel, listener) {
+    require$$0$5.ipcMain.on(
+      channel,
+      (event, params) => listener(wrapEvent(event), params)
+    );
+  },
+  // Main handles invoke() calls (Renderer → Main request/response)
+  handle(channel, handler) {
+    require$$0$5.ipcMain.handle(
+      channel,
+      (event, args) => handler(event, args)
+    );
+  },
+  send(channel, params) {
+    require$$0$5.ipcMain.emit(channel, params);
+  },
+  // Helper for replying to renderer
+  reply(event, channel, params) {
+    event.reply(channel, params);
+  }
+};
+function wrapEvent(event) {
+  return {
+    ...event,
+    reply: (channel, params) => event.reply(channel, params)
+  };
+}
+var ESyncMessageIPC = /* @__PURE__ */ ((ESyncMessageIPC2) => {
+  ESyncMessageIPC2["AppStart"] = "app-start";
+  return ESyncMessageIPC2;
+})(ESyncMessageIPC || {});
+const CHANNEL = {
+  WEE_WOO: "wee-woo"
+};
+typedIpcMain.handle(CHANNEL.WEE_WOO, async (_event, params) => {
+  console.log("msg received in main:", params);
+  return {
+    type: "add_user",
+    success: true
+  };
+});
+const isDev = process.env.NODE_ENV === "development";
+const isMac = process.platform === "darwin";
+const template = [
+  // { role: 'appMenu' }
+  ...isMac ? [
+    {
+      label: require$$0$5.app.name,
+      submenu: [
+        { role: "about" },
+        { type: "separator" },
+        { type: "separator" },
+        { role: "hide" },
+        { role: "quit" }
+      ]
+    }
+  ] : [],
+  {
+    label: "File",
+    submenu: [
+      ...!isMac ? [{ role: "about" }] : [],
+      isMac ? { role: "close" } : { role: "quit" }
+    ]
+  },
+  {
+    label: "Edit",
+    submenu: [
+      { role: "undo" },
+      { role: "redo" },
+      { type: "separator" },
+      { role: "cut" },
+      { role: "copy" },
+      { role: "paste" },
+      ...isMac ? [
+        { role: "pasteAndMatchStyle" },
+        { role: "delete" },
+        { role: "selectAll" },
+        { type: "separator" },
+        {
+          label: "Speech",
+          submenu: [{ role: "startSpeaking" }, { role: "stopSpeaking" }]
+        }
+      ] : [{ role: "delete" }, { type: "separator" }, { role: "selectAll" }]
+    ]
+  },
+  {
+    label: "View",
+    submenu: [
+      { role: "resetZoom" },
+      { role: "zoomIn" },
+      { role: "zoomOut" },
+      { type: "separator" },
+      { role: "togglefullscreen" },
+      { type: "separator" },
+      { role: "forceReload" },
+      { role: "toggleDevTools" }
+    ]
+  },
+  {
+    label: "Window",
+    submenu: [
+      { role: "minimize" },
+      { role: "zoom" },
+      ...isMac ? [
+        { type: "separator" },
+        { role: "front" },
+        { type: "separator" },
+        { role: "window" }
+      ] : [{ role: "close" }]
+    ]
+  },
+  {
+    label: "Support",
+    submenu: [
+      {
+        label: "Changelog",
+        click: async () => {
+          await require$$0$5.shell.openExternal(
+            "http://todo.sillysideprojects.com/changelog"
+          );
+        }
+      },
+      {
+        label: "Contact",
+        click: async () => {
+          await require$$0$5.shell.openExternal("http://todo.sillysideprojects.com/contact");
+        }
+      },
+      {
+        label: "Website",
+        click: async () => {
+          await require$$0$5.shell.openExternal("http://todo.sillysideprojects.com/");
+        }
+      }
+    ]
+  }
+];
+const menu = require$$0$5.Menu.buildFromTemplate(template);
 log.initialize();
 distExports.updateElectronApp({
   logger: {
@@ -3089,12 +3229,14 @@ distExports.updateElectronApp({
   }
 });
 if (started) {
-  require$$7.app.quit();
+  require$$0$5.app.quit();
 }
 const createWindow = () => {
-  const mainWindow = new require$$7.BrowserWindow({
+  const mainWindow = new require$$0$5.BrowserWindow({
     width: 800,
     height: 600,
+    title: isDev ? "DEV MODE" : "Todo Today",
+    // icon: join(process.env.VITE_PUBLIC, 'icon.icns'),
     webPreferences: {
       preload: path.join(__dirname, "preload.js")
     }
@@ -3104,14 +3246,27 @@ const createWindow = () => {
   }
   mainWindow.webContents.openDevTools();
 };
-require$$7.app.on("ready", createWindow);
-require$$7.app.on("window-all-closed", () => {
+require$$0$5.app.on("ready", createWindow);
+require$$0$5.app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
-    require$$7.app.quit();
+    require$$0$5.app.quit();
   }
 });
-require$$7.app.on("activate", () => {
-  if (require$$7.BrowserWindow.getAllWindows().length === 0) {
+require$$0$5.app.on("activate", () => {
+  if (require$$0$5.BrowserWindow.getAllWindows().length === 0) {
     createWindow();
   }
 });
+require$$0$5.Menu.setApplicationMenu(menu);
+const BACKUPS_DIR = path.resolve(require$$0$5.app.getPath("documents"), require$$0$5.app.name, "backups");
+if (!require$$3.existsSync(BACKUPS_DIR)) {
+  require$$3.mkdirSync(BACKUPS_DIR, { recursive: true });
+}
+require$$0$5.ipcMain.handle(
+  ESyncMessageIPC.AppStart,
+  async () => {
+    return {
+      backupDir: BACKUPS_DIR
+    };
+  }
+);
