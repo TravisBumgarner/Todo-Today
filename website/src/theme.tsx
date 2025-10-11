@@ -1,14 +1,6 @@
-import {
-  LinkProps,
-  createTheme,
-  css,
-  type PaletteOptions
-} from '@mui/material'
+import { LinkProps, createTheme, css, type PaletteOptions } from '@mui/material'
 import { forwardRef } from 'react'
-import {
-  Link as RouterLink,
-  type LinkProps as RouterLinkProps
-} from 'react-router-dom'
+import { Link as RouterLink, type LinkProps as RouterLinkProps } from 'react-router-dom'
 
 const paletteBase: Partial<PaletteOptions> = {
   primary: {
@@ -35,13 +27,12 @@ const paletteBase: Partial<PaletteOptions> = {
   }
 }
 
-const LinkBehavior = forwardRef<
-  HTMLAnchorElement,
-  Omit<RouterLinkProps, 'to'> & { href: RouterLinkProps['to'] }
->((props, ref) => {
-  const { href, ...other } = props
-  return <RouterLink ref={ref} to={href} {...other} />
-})
+const LinkBehavior = forwardRef<HTMLAnchorElement, Omit<RouterLinkProps, 'to'> & { href: RouterLinkProps['to'] }>(
+  (props, ref) => {
+    const { href, ...other } = props
+    return <RouterLink ref={ref} to={href} {...other} />
+  }
+)
 LinkBehavior.displayName = 'LinkBehavior'
 
 export const theme = createTheme({
@@ -56,8 +47,8 @@ export const theme = createTheme({
       fontWeight: 700
     },
     h4: {
-      fontSize: '1.25rem',
-    },
+      fontSize: '1.25rem'
+    }
   },
   components: {
     MuiLink: {
@@ -76,10 +67,9 @@ export const theme = createTheme({
 export const pageWrapperCSS = css`
   box-sizing: border-box;
   overflow-y: auto;
-  max-width: 1200px !important;
+  max-width: 800px;
   display: flex;
-  align-items: center;
   flex-direction: column;
-  margin-top: 2rem;
-  margin-bottom: 2rem;
+  margin: 2rem auto;
+  padding: 0 1rem;
 `

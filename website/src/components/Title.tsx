@@ -19,14 +19,14 @@ const titleSx = {
     whiteSpace: 'nowrap',
     opacity: 0.9,
     letterSpacing: '6px',
-    fontSize: '10rem',
+    fontSize: '5rem',
     color: (theme: Theme) => theme.palette.primary.main,
     '@media (max-width: 1000px)': {
-      fontSize: '5rem',
+      fontSize: '3rem'
     },
     '@media (max-width: 600px)': {
-      fontSize: '3rem',
-    },
+      fontSize: '2rem'
+    }
   },
   '& h1:nth-of-type(1)': {
     position: 'absolute',

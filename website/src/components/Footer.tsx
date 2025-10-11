@@ -68,7 +68,7 @@ const Footer = () => {
           </Link>
         </Grid>
         <Grid item>
-          <Link href="https://sillysideprojects.com" target="_blank" color="inherit" underline="hover">
+          <Link href="https://travisbumgarner.dev" target="_blank" color="inherit" underline="hover">
             <LightbulbIcon sx={{ verticalAlign: 'middle', mr: 1 }} />
             <Typography variant="body1" component="span">
               More from the Creator

@@ -1,7 +1,7 @@
-import Changelog from './ChangeLog'
 import Contact from './Contact'
 import Error from './Error'
 import LandingPage from './LandingPage'
 import NotFound from './NotFound'
+import ReleaseNotes from './ReleaseNotes'
 
-export { Changelog, Contact, Error, LandingPage, NotFound }
+export { ReleaseNotes as Changelog, Contact, Error, LandingPage, NotFound }
