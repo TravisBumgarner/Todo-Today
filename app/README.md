@@ -11,7 +11,10 @@
 
 **Deploy**
 
-1. From the root:
-1. Bump the version (patch | minor | major) `npm version patch --workspace app`
-1. Commit
-1. Push commit and tag to GitHub (triggers CI build + publish) `git push && git push --tags`
+```
+npm version patch --workspace app --git-tag-version=false
+git add package.json app/package.json package-lock.json app/package-lock.json
+git commit -m "chore: bump version"
+git tag v$(node -p "require('./app/package.json').version")
+git push origin HEAD --tags
+```
