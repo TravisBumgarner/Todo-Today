@@ -1,5 +1,5 @@
 export const lightPalette = {
-  info: { main: "rgb(184, 203, 210)" },
+  info: { main: "rgba(74, 83, 86, 1)" },
   primary: { main: "rgb(76, 125, 165)" },
   secondary: { main: "rgb(24, 189, 162)" },
   text: { primary: "rgb(92, 94, 95)" },
@@ -25,6 +25,24 @@ export const darkPalette = {
   },
   warning: { main: "rgb(228, 142, 12)" },
   error: { main: "rgb(241, 40, 46)" },
+};
+
+export const PALETTE = {
+  grayscale: {
+    0: "hsl(0 0% 100%)",
+    50: "hsl(0 0% 95%)",
+    100: "hsl(0 0% 90%)",
+    200: "hsl(0 0% 80%)",
+    300: "hsl(0 0% 70%)",
+    400: "hsl(0 0% 60%)",
+    500: "hsl(0 0% 50%)",
+    600: "hsl(0 0% 40%)",
+    700: "hsl(0 0% 30%)",
+    800: "hsl(0 0% 20%)",
+    850: "hsl(0 0% 15%)",
+    900: "hsl(0 0% 10%)",
+    1000: "hsl(0 0% 0%)",
+  },
 };
 
 export const BUTTONS_WRAPPER_HEIGHT = 36;
@@ -88,6 +106,18 @@ export const BORDER_RADIUS = {
     PX: "10px",
     INT: 10,
   },
+};
+
+export const LIGHT_BUTTON_STYLES = {
+  color: PALETTE.grayscale[50],
+  background: PALETTE.grayscale[800],
+  hoverBackground: PALETTE.grayscale[800],
+};
+
+export const DARK_BUTTON_STYLES = {
+  color: PALETTE.grayscale[900],
+  background: PALETTE.grayscale[200],
+  hoverBackground: PALETTE.grayscale[100],
 };
 
 export const SCROLLBAR_WIDTH_PX = "12px";

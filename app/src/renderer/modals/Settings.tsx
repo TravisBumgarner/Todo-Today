@@ -99,7 +99,9 @@ const Settings = () => {
               justifyContent: "space-between",
             }}
           >
-            <Typography variant="h3">Backup</Typography>
+            <Typography variant="h3" sx={{ marginBottom: SPACING.SMALL.PX }}>
+              Backup
+            </Typography>
           </Box>
           <Button fullWidth variant="outlined" onClick={handleBackup}>
             Create Backup
@@ -107,7 +109,9 @@ const Settings = () => {
         </Box>
 
         <Box sx={sectionSx}>
-          <Typography variant="h3">Restore</Typography>
+          <Typography variant="h3" sx={{ marginBottom: SPACING.SMALL.PX }}>
+            Restore
+          </Typography>
           <Button variant="outlined" component="label" fullWidth>
             Choose File
             <input

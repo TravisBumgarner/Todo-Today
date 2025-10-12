@@ -1,4 +1,9 @@
-import { Add, CheckBox, ChevronRight, Delete } from "@mui/icons-material";
+import {
+  Add,
+  CheckBox,
+  ChevronRight,
+  DeleteOutline,
+} from "@mui/icons-material";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/CloseOutlined";
 import { Box, css, IconButton, TextField, Tooltip } from "@mui/material";
@@ -57,11 +62,25 @@ const Subtask = ({
 
   return (
     <Box sx={subtaskWrapperCSS}>
+      {subtask.checked ? (
+        <Tooltip title="Mark as incomplete">
+          <IconButton size="small" onClick={handleSubtaskChange}>
+            <CheckBox fontSize="small" />
+          </IconButton>
+        </Tooltip>
+      ) : (
+        <Tooltip title="Mark as complete">
+          <IconButton size="small" onClick={handleSubtaskChange}>
+            <CheckIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+      )}
       <TextField
         onChange={handleTitleChange}
         onBlur={handleSaveTitle}
         value={localTitle}
         sx={{
+          flexGrow: 1,
           textDecoration: subtask.checked ? "line-through" : "none",
           "& .MuiOutlinedInput-root": {
             padding: 0,
@@ -75,22 +94,11 @@ const Subtask = ({
         }}
       />
       <Box sx={{ display: "flex" }}>
-        {subtask.checked ? (
-          <Tooltip title="Mark as incomplete">
-            <IconButton size="small" onClick={handleSubtaskChange}>
-              <CheckBox fontSize="small" />
-            </IconButton>
-          </Tooltip>
-        ) : (
-          <Tooltip title="Mark as complete">
-            <IconButton size="small" onClick={handleSubtaskChange}>
-              <CheckIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-        )}
-        <IconButton size="small" onClick={handleDeleteSubtask}>
-          <Delete color="info" fontSize="small" />
-        </IconButton>
+        <Tooltip title="Delete subtask">
+          <IconButton size="small" onClick={handleDeleteSubtask}>
+            <DeleteOutline color="info" fontSize="small" />
+          </IconButton>
+        </Tooltip>
       </Box>
     </Box>
   );
@@ -225,11 +233,13 @@ const TodoItem = ({ taskId }: TTodoItem) => {
             sx={{
               "& .MuiOutlinedInput-root": {
                 padding: 0,
+                pointerEvents: "auto",
                 "& fieldset": {
                   border: "none",
                 },
                 "& input": {
                   fontSize: "24px",
+                  pointerEvents: "auto",
                   padding: 0,
                 },
               },
@@ -245,9 +255,9 @@ const TodoItem = ({ taskId }: TTodoItem) => {
               backgroundColor: "background.paper",
             }}
           >
-            <Tooltip title="Show details">
+            <Tooltip title={showContent ? "Hide Details" : "Show details"}>
               <ChevronRight
-                color={showContent ? "primary" : "info"}
+                color="info"
                 fontSize="small"
                 sx={{ transform: `rotate(${showContent ? "90deg" : "0deg"})` }}
               />
@@ -267,8 +277,7 @@ const TodoItem = ({ taskId }: TTodoItem) => {
       {showContent && (
         <Box sx={contentWrapperCSS}>
           <TextField
-            placeholder="Notes"
-            sx={detailsCSS}
+            placeholder="Add notes"
             fullWidth
             multiline
             size="small"
@@ -280,10 +289,11 @@ const TodoItem = ({ taskId }: TTodoItem) => {
             <Box>
               <Box sx={subtaskInputWrapperCSS}>
                 <TextField
+                  sx={{ flexGrow: 1 }}
                   size="small"
                   fullWidth
                   type="text"
-                  placeholder="Subtask"
+                  placeholder="Add subtask"
                   value={subtaskTitle}
                   onChange={handleSubtaskTitleChange}
                   onKeyDown={(e) => {
@@ -297,6 +307,7 @@ const TodoItem = ({ taskId }: TTodoItem) => {
                 <Tooltip title="Add subtask">
                   <span>
                     <IconButton
+                      sx={{ cursor: "pointer" }}
                       color={subtaskTitle.length === 0 ? "info" : "primary"}
                       disabled={subtaskTitle.length === 0}
                       onClick={handleAddSubtask}
@@ -355,10 +366,6 @@ const headerCSS = (showDetails: boolean) => css`
   margin-bottom: ${showDetails ? SPACING.SMALL.PX : "0"};
 `;
 
-const detailsCSS = {
-  bgcolor: "background.paper",
-};
-
 const leftHeaderCSS = css`
   display: flex;
   flex-grow: 1;
@@ -370,6 +377,14 @@ const wrapperCSS = {
   borderRadius: BORDER_RADIUS.ZERO.PX,
   padding: SPACING.SMALL.PX,
   marginBottom: SPACING.SMALL.PX,
+  cursor: "grab",
+  "& input, & textarea": {
+    cursor: "text",
+    pointerEvents: "auto",
+  },
+  "&:active": {
+    cursor: "grabbing",
+  },
 };
 
 export default TodoItem;

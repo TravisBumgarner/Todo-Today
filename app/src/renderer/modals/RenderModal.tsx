@@ -1,4 +1,5 @@
 import { useSignals } from "@preact/signals-react/runtime";
+import { AnimatePresence } from "framer-motion";
 import { type FC } from "react";
 import { activeModalSignal } from "../signals";
 import AddTaskModal from "./AddTaskModal";
@@ -27,28 +28,38 @@ export type ActiveModal =
 const RenderModal: FC = () => {
   useSignals();
 
-  if (!activeModalSignal.value?.id) return null;
-
-  switch (activeModalSignal.value.id) {
-    case ModalID.ADD_TASK_MODAL:
-      return <AddTaskModal />;
-    case ModalID.SELECT_TASKS_MODAL:
-      return <SelectTasksModal />;
-    case ModalID.SETTINGS_MODAL:
-      return <SettingsModal />;
-    case ModalID.CONFIRMATION_MODAL:
-      return (
-        <ConfirmationModal
-          id={activeModalSignal.value.id}
-          title={activeModalSignal.value.title}
-          body={activeModalSignal.value.body}
-          cancelCallback={activeModalSignal.value.cancelCallback}
-          confirmationCallback={activeModalSignal.value.confirmationCallback}
-        />
-      );
-    default:
-      return null;
-  }
+  return (
+    <AnimatePresence mode="wait">
+      {activeModalSignal.value?.id && (
+        <div key={activeModalSignal.value.id}>
+          {(() => {
+            switch (activeModalSignal.value.id) {
+              case ModalID.ADD_TASK_MODAL:
+                return <AddTaskModal />;
+              case ModalID.SELECT_TASKS_MODAL:
+                return <SelectTasksModal />;
+              case ModalID.SETTINGS_MODAL:
+                return <SettingsModal />;
+              case ModalID.CONFIRMATION_MODAL:
+                return (
+                  <ConfirmationModal
+                    id={activeModalSignal.value.id}
+                    title={activeModalSignal.value.title}
+                    body={activeModalSignal.value.body}
+                    cancelCallback={activeModalSignal.value.cancelCallback}
+                    confirmationCallback={
+                      activeModalSignal.value.confirmationCallback
+                    }
+                  />
+                );
+              default:
+                return null;
+            }
+          })()}
+        </div>
+      )}
+    </AnimatePresence>
+  );
 };
 
 export default RenderModal;
