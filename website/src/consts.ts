@@ -1,4 +1,2 @@
-export const WINDOWS_DOWNLOAD =
-  'https://github.com/TravisBumgarner/Todo-Today-Releases/releases/download/v2.0.0/Todo-Today_2.0.0.exe'
 export const MAC_DOWNLOAD =
-  'https://github.com/TravisBumgarner/Todo-Today-Releases/releases/download/v2.0.0/Todo-Today_2.0.0.dmg'
+  'https://github.com/TravisBumgarner/Todo-Today/releases/download/v3.0.0/Todo.Today-3.0.0-arm64.dmg'

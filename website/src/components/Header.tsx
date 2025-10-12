@@ -1,8 +1,8 @@
 import { Box, Link, Tooltip } from '@mui/material'
-import { FaApple, FaWindows } from 'react-icons/fa'
+import { FaApple } from 'react-icons/fa'
 import { useLocation } from 'react-router'
 import { Link as ReactRouterLink } from 'react-router-dom'
-import { MAC_DOWNLOAD, WINDOWS_DOWNLOAD } from '../consts'
+import { MAC_DOWNLOAD } from '../consts'
 
 const Header = () => {
   const location = useLocation()
@@ -17,11 +17,6 @@ const Header = () => {
         )}
       </Box>
       <Box>
-        <Tooltip title="Download for Windows">
-          <Link component={ReactRouterLink} sx={{ marginRight: '16px' }} to={WINDOWS_DOWNLOAD} download>
-            <FaWindows size={40} />
-          </Link>
-        </Tooltip>
         <Tooltip title="Download for Mac">
           <Link component={ReactRouterLink} to={MAC_DOWNLOAD} download>
             <FaApple size={40} />

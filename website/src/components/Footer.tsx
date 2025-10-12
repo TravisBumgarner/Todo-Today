@@ -7,7 +7,7 @@ import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
-import { MAC_DOWNLOAD, WINDOWS_DOWNLOAD } from '../consts'
+import { MAC_DOWNLOAD } from '../consts'
 
 const Footer = () => {
   return (
@@ -21,14 +21,6 @@ const Footer = () => {
       }}
     >
       <Grid container justifyContent="center" spacing={4}>
-        <Grid item>
-          <Link href={WINDOWS_DOWNLOAD} download color="inherit" underline="hover">
-            <GetAppIcon sx={{ verticalAlign: 'middle', mr: 1 }} />
-            <Typography variant="body1" component="span">
-              Windows
-            </Typography>
-          </Link>
-        </Grid>
         <Grid item>
           <Link href={MAC_DOWNLOAD} download color="inherit" underline="hover">
             <GetAppIcon sx={{ verticalAlign: 'middle', mr: 1 }} />

@@ -128,10 +128,8 @@ const ContactForm = ({ fieldsToHide }: { fieldsToHide?: ('name' | 'email')[] }) 
             {buttonMessage}
           </Button>
         </form>
-        {success && <Message includeVerticalMargin message="Thank you for your feedback!" color="success" />}
-        {failure && (
-          <Message includeVerticalMargin message="Failed to send feedback. Please try again later." color="error" />
-        )}
+        {success && <Message message="Thank you for your feedback!" color="success" />}
+        {failure && <Message message="Failed to send feedback. Please try again later." color="error" />}
       </Box>
     </>
   )

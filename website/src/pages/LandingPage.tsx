@@ -49,7 +49,7 @@ const LandingPage = () => {
           </Typography>
           <Typography>Set your tasks, order them, and add notes or subtasks. Nothing more, nothing less.</Typography>
         </Box>
-        <Image src="/public/main_page.png" alt="Main page" />
+        <Image src="/main_page.png" alt="Main page" />
       </Section>
     </Container>
   )

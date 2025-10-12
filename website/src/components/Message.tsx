@@ -12,14 +12,12 @@ const Message = ({
   message,
   color,
   callback,
-  callbackText,
-  includeVerticalMargin
+  callbackText
 }: {
   message: string
   color: 'info' | 'error' | 'success'
   callback?: () => void
   callbackText?: string
-  includeVerticalMargin?: boolean
 }) => {
   const theme = useTheme()
 
