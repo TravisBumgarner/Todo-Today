@@ -1,6 +1,19 @@
 import { Menu, app, shell, type MenuItemConstructorOptions } from "electron";
+import log from "electron-log/main";
+import { updateElectronApp } from "update-electron-app";
 
 import { isMac } from "./config";
+
+const checkForUpdates = () => {
+  updateElectronApp({
+    logger: {
+      log: log.log,
+      info: log.info,
+      warn: log.warn,
+      error: log.error,
+    },
+  });
+};
 
 const template = [
   // { role: 'appMenu' }
@@ -79,6 +92,13 @@ const template = [
   {
     label: "Support",
     submenu: [
+      {
+        label: "Check for Updates",
+        click: () => {
+          checkForUpdates();
+        },
+      },
+      { type: "separator" },
       {
         label: "Release Notes",
         click: async () => {
