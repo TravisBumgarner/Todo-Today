@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo } from "react";
 
 import { useSignals } from "@preact/signals-react/runtime";
 import { useLiveQuery } from "dexie-react-hooks";
-import { queries } from "../database";
+import { database, queries } from "../database";
 import { activeModalSignal, selectedDateSignal } from "../signals";
 import { SPACING } from "../styles/consts";
 import { type TTask } from "../types";
@@ -65,10 +65,10 @@ const SelectTasksModal = () => {
     queries.getAndCreateIfNotExistsTodoList(selectedDateSignal.value);
   }, []);
 
-  // Then use useLiveQuery for read-only operations
-  const todoList = useLiveQuery(async () => {
-    return await queries.getTodoList(selectedDateSignal.value);
-  });
+  // Use useLiveQuery directly on the database table
+  const todoList = useLiveQuery(() =>
+    database.todoList.where("date").equals(selectedDateSignal.value).first()
+  );
 
   const showAddNewTaskModal = useCallback(() => {
     activeModalSignal.value = { id: ModalID.ADD_TASK_MODAL };
