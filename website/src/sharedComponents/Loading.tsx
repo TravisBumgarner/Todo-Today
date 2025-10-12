@@ -3,17 +3,9 @@ import { Container, IconButton, css } from '@mui/material'
 
 const Loading = () => {
   return (
-    <Container
-      css={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-    >
-      <IconButton
-        size="large"
-        edge="start"
-        color="inherit"
-        aria-label="menu"
-        sx={{ mr: 2 }}
-      >
-        <LoopIcon css={iconCSS} />
+    <Container sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <IconButton size="large" edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }}>
+        <LoopIcon sx={iconCSS} />
       </IconButton>
     </Container>
   )

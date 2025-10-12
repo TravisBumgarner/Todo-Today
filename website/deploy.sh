@@ -1,6 +1,6 @@
 #!/bin/bash
 
-LOCAL_DIR="build/"
+LOCAL_DIR="dist/"
 REMOTE_HOST="nfs_todotoday" # This value comes from ~/.ssh/config
 REMOTE_DIR="/home/public"
 
