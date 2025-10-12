@@ -245,9 +245,9 @@ const TodoItem = ({ taskId }: TTodoItem) => {
               backgroundColor: "background.paper",
             }}
           >
-            <Tooltip title="Show details">
+            <Tooltip title={showContent ? "Hide Details" : "Show details"}>
               <ChevronRight
-                color={showContent ? "primary" : "info"}
+                color="info"
                 fontSize="small"
                 sx={{ transform: `rotate(${showContent ? "90deg" : "0deg"})` }}
               />
@@ -267,8 +267,7 @@ const TodoItem = ({ taskId }: TTodoItem) => {
       {showContent && (
         <Box sx={contentWrapperCSS}>
           <TextField
-            placeholder="Notes"
-            sx={detailsCSS}
+            placeholder="Add notes"
             fullWidth
             multiline
             size="small"
@@ -283,7 +282,7 @@ const TodoItem = ({ taskId }: TTodoItem) => {
                   size="small"
                   fullWidth
                   type="text"
-                  placeholder="Subtask"
+                  placeholder="Add subtask"
                   value={subtaskTitle}
                   onChange={handleSubtaskTitleChange}
                   onKeyDown={(e) => {
@@ -354,10 +353,6 @@ const headerCSS = (showDetails: boolean) => css`
   align-items: center;
   margin-bottom: ${showDetails ? SPACING.SMALL.PX : "0"};
 `;
-
-const detailsCSS = {
-  bgcolor: "background.paper",
-};
 
 const leftHeaderCSS = css`
   display: flex;

@@ -42,11 +42,12 @@ const Modal: FC<ActiveModal> = ({
         alignItems: "center",
         justifyContent: "center",
         padding: "2rem",
+        backgroundColor: "background.default",
       }}
     >
       <Box
         sx={{
-          width: 600,
+          width: 500,
           bgcolor: "background.default",
           borderRadius: BORDER_RADIUS.ZERO.PX,
           boxShadow: 24,

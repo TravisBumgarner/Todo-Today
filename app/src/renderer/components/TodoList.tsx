@@ -116,7 +116,9 @@ const TodoList = () => {
             Select Tasks
           </Button>
         </Box>
-        <Box>
+        <Box
+          sx={{ display: "flex", alignItems: "center", gap: SPACING.SMALL.PX }}
+        >
           <ButtonGroup variant="outlined">
             <Button onClick={setPreviousDate}>&lt;</Button>
             <Button sx={todayButtonCSS} onClick={getToday}>
@@ -124,7 +126,7 @@ const TodoList = () => {
             </Button>
             <Button onClick={getNextDate}>&gt;</Button>
           </ButtonGroup>
-          <IconButton color="primary" onClick={handleSettings}>
+          <IconButton size="small" onClick={handleSettings}>
             <Tooltip title="Settings">
               <SettingsIcon />
             </Tooltip>

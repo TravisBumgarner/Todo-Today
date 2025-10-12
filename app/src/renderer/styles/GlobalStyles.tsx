@@ -1,6 +1,6 @@
 import { GlobalStyles } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import { BORDER_RADIUS, SCROLLBAR_WIDTH_PX } from "../styles/consts";
+import { BORDER_RADIUS, SCROLLBAR_WIDTH_PX, SPACING } from "../styles/consts";
 
 export const AppGlobalStyles = () => {
   const theme = useTheme();
@@ -20,6 +20,10 @@ export const AppGlobalStyles = () => {
         },
         "#root": {
           height: "100%",
+          maxWidth: "700px",
+          margin: "0px auto",
+          boxSizing: "border-box",
+          padding: SPACING.MEDIUM.PX,
         },
         "*::-webkit-scrollbar": {
           width: SCROLLBAR_WIDTH_PX,
