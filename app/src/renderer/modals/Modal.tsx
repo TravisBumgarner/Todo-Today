@@ -2,6 +2,7 @@ import CloseIcon from "@mui/icons-material/CloseOutlined";
 import { IconButton, Tooltip, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import MUIModal from "@mui/material/Modal";
+import { motion } from "framer-motion";
 import { useCallback, type FC } from "react";
 import { activeModalSignal } from "../signals";
 import { BORDER_RADIUS, SPACING } from "../styles/consts";
@@ -23,7 +24,7 @@ const Modal: FC<ActiveModal> = ({
   disableBackdropClick,
 }) => {
   const handleClose = useCallback(
-    (event?: any, reason?: "backdropClick" | "escapeKeyDown") => {
+    (event: unknown, reason?: "backdropClick" | "escapeKeyDown") => {
       if (reason === "backdropClick" && disableBackdropClick) return;
       activeModalSignal.value = null;
     },
@@ -42,38 +43,48 @@ const Modal: FC<ActiveModal> = ({
         alignItems: "center",
         justifyContent: "center",
         padding: "2rem",
-        backgroundColor: "background.default",
       }}
     >
-      <Box
-        sx={{
+      <motion.div
+        initial={{ opacity: 0, scale: 0.8, y: -50 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.8, y: -50 }}
+        transition={{ duration: 0.1, ease: "easeOut" }}
+        style={{
           width: 500,
-          bgcolor: "background.default",
-          borderRadius: BORDER_RADIUS.ZERO.PX,
-          boxShadow: 24,
+          borderRadius: 0,
+          boxShadow:
+            "0px 11px 15px -7px rgba(0,0,0,0.2), 0px 24px 38px 3px rgba(0,0,0,0.14), 0px 9px 46px 8px rgba(0,0,0,0.12)",
           overflow: "auto",
-          padding: SPACING.MEDIUM.PX,
           boxSizing: "border-box",
           maxHeight: "100%",
         }}
       >
         <Box
           sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: SPACING.MEDIUM.PX,
+            padding: SPACING.MEDIUM.PX,
+            bgcolor: "background.default",
+            borderRadius: BORDER_RADIUS.ZERO.PX,
           }}
         >
-          <Typography variant="h2">{title}</Typography>
-          <Tooltip title="Close">
-            <IconButton onClick={handleClose}>
-              <CloseIcon sx={{ color: "text.primary" }} />
-            </IconButton>
-          </Tooltip>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: SPACING.MEDIUM.PX,
+            }}
+          >
+            <Typography variant="h2">{title}</Typography>
+            <Tooltip title="Close">
+              <IconButton onClick={handleClose}>
+                <CloseIcon sx={{ color: "text.primary" }} />
+              </IconButton>
+            </Tooltip>
+          </Box>
+          {children}
         </Box>
-        {children}
-      </Box>
+      </motion.div>
     </MUIModal>
   );
 };

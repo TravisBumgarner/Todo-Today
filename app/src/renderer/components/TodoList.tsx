@@ -110,7 +110,7 @@ const TodoList = () => {
       <Box sx={buttonWrapperCSS}>
         <Box sx={{ display: "flex", gap: SPACING.TINY.PX }}>
           <Button variant="outlined" onClick={showAddNewTaskModal}>
-            Add New Task
+            Add
           </Button>
           <Button variant="outlined" onClick={showManagementModal}>
             Select Tasks
@@ -155,6 +155,16 @@ const TodoList = () => {
                 key={taskId}
                 value={taskId}
                 style={{ listStyle: "none" }}
+                onPointerDownCapture={(e) => {
+                  const target = e.target as HTMLElement;
+                  if (
+                    target.tagName === "INPUT" ||
+                    target.tagName === "TEXTAREA" ||
+                    target.closest(".MuiTextField-root")
+                  ) {
+                    e.stopPropagation();
+                  }
+                }}
               >
                 <TodoItem key={taskId} taskId={taskId} />
               </Reorder.Item>

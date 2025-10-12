@@ -1,0 +1,127 @@
+{
+  "tasks": [
+    {
+      "title": "Make coffee",
+      "status": "NEW",
+      "id": "61f2d6b1-1c7d-4f8a-89f0-bd3c7abf31c8",
+      "details": "",
+      "subtasks": []
+    },
+    {
+      "title": "Import and back up yesterday’s photos",
+      "status": "BLOCKED",
+      "id": "a7b2c3d4-5e6f-4a7b-8c9d-1e2f3a4b5c6d",
+      "details": "Get all photos imported into Lightroom and backed up safely\n\nBlocked until I get to photos from John",
+      "subtasks": [
+        {
+          "id": "f1e2d3c4-6b7a-4b8c-9d1e-2f3a4b5c6d7e",
+          "title": "Import RAW files into Lightroom",
+          "checked": true
+        },
+        {
+          "id": "e7d6c5b4-3a2f-4b1e-8c9d-1f2e3d4c5b6a",
+          "title": "Back up to external drive",
+          "checked": false
+        },
+        {
+          "id": "d9c8b7a6-5e4f-4a3b-9c1d-2b3a4f5e6c7d",
+          "title": "Sync cloud backup",
+          "checked": false
+        }
+      ]
+    },
+    {
+      "title": "Cull and rate favorite shots",
+      "status": "NEW",
+      "id": "b8c9d0e1-2f3a-4b5c-8d9e-1f2a3b4c5d6e",
+      "details": "Go through the latest shoot and tag your best images.",
+      "subtasks": [
+        {
+          "id": "f2a3b4c5-d6e7-48f9-812a-3b4c5d6e7f8a",
+          "title": "Flag obvious keepers",
+          "checked": false
+        },
+        {
+          "id": "e3b4c5d6-f7a8-49b0-923b-4c5d6e7f8a9b",
+          "title": "Rate top 10 shots",
+          "checked": false
+        },
+        {
+          "id": "d4c5e6f7-a8b9-40c1-934c-5d6e7f8a9b0c",
+          "title": "Move rejects to archive",
+          "checked": false
+        }
+      ]
+    },
+    {
+      "title": "Edit one portrait series",
+      "status": "NEW",
+      "id": "c9d0e1f2-3a4b-4c5d-8e9f-0a1b2c3d4e5f",
+      "details": "Focus edits on color, tone, and consistency",
+      "subtasks": []
+    },
+    {
+      "title": "Clean lenses and camera body",
+      "status": "NEW",
+      "id": "d0e1f2a3-4b5c-4d6e-9f0a-1b2c3d4e5f6a",
+      "details": "Quickly clean and check your equipment for dust or smudges.",
+      "subtasks": [
+        {
+          "id": "f3a4b5c6-d7e8-44f9-978a-3b4c5d6e7f9a",
+          "title": "Wipe lenses with microfiber cloth",
+          "checked": false
+        },
+        {
+          "id": "e5c6d7f8-a9b0-45c1-989b-4c5d6e7f8a0b",
+          "title": "Check sensor and viewfinder",
+          "checked": false
+        }
+      ]
+    },
+    {
+      "title": "Reply to client messages",
+      "status": "IN_PROGRESS",
+      "id": "e1f2a3b4-5c6d-4e7f-9a0b-1c2d3e4f5a6b",
+      "details": "",
+      "subtasks": [
+        {
+          "id": "c7d68f86-e15b-4c8e-9894-f376e79d2e1b",
+          "title": "Reply to Bob",
+          "checked": false
+        },
+        {
+          "id": "eff992ee-d187-412b-8114-e2b1146e1285",
+          "title": "Reply to Mike",
+          "checked": false
+        }
+      ]
+    },
+    {
+      "title": "Post one photo on Instagram",
+      "status": "COMPLETED",
+      "id": "f2a3b4c5-6d7e-4f8a-9b0c-1d2e3f4a5b6c",
+      "details": "",
+      "subtasks": []
+    },
+    {
+      "title": "Take a photo walk at sunset",
+      "status": "NEW",
+      "id": "g3h4i5j6-7k8l-49m0-9n1o-2p3q4r5s6t7u",
+      "details": "",
+      "subtasks": []
+    }
+  ],
+  "todoLists": [
+    {
+      "date": "2025-10-11",
+      "taskIds": [
+        "61f2d6b1-1c7d-4f8a-89f0-bd3c7abf31c8",
+        "a7b2c3d4-5e6f-4a7b-8c9d-1e2f3a4b5c6d",
+        "c9d0e1f2-3a4b-4c5d-8e9f-0a1b2c3d4e5f",
+        "e1f2a3b4-5c6d-4e7f-9a0b-1c2d3e4f5a6b",
+        "f2a3b4c5-6d7e-4f8a-9b0c-1d2e3f4a5b6c",
+        "g3h4i5j6-7k8l-49m0-9n1o-2p3q4r5s6t7u"
+      ]
+    }
+  ]
+}

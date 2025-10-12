@@ -1,13 +1,13 @@
 import CheckIcon from "@mui/icons-material/Check";
-import { Box, Button, IconButton, Typography } from "@mui/material";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { Box, Button, IconButton, Tooltip, Typography } from "@mui/material";
+import { useCallback, useEffect, useMemo } from "react";
 
 import { useSignals } from "@preact/signals-react/runtime";
 import { useLiveQuery } from "dexie-react-hooks";
-import { queries } from "../database";
+import { database, queries } from "../database";
 import { activeModalSignal, selectedDateSignal } from "../signals";
 import { SPACING } from "../styles/consts";
-import { type TTask, type TTodoList } from "../types";
+import { type TTask } from "../types";
 import { sortStrings } from "../utilities";
 import Modal, { MODAL_MAX_HEIGHT } from "./Modal";
 import { ModalID } from "./RenderModal";
@@ -19,6 +19,7 @@ interface TaskProps {
 
 const Task = ({ task, isSelected }: TaskProps) => {
   useSignals();
+
   const handleSelect = useCallback(async () => {
     await queries.addTaskToTodoList(selectedDateSignal.value, task.id);
   }, [task.id]);
@@ -33,39 +34,41 @@ const Task = ({ task, isSelected }: TaskProps) => {
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
+        backgroundColor: isSelected ? "action.selected" : undefined,
       }}
     >
-      <Typography variant="body1">{task.title}</Typography>
-
-      <IconButton
-        color={isSelected ? "primary" : "info"}
-        onClick={isSelected ? handleDeselect : handleSelect}
+      <Typography variant="body1" sx={{ paddingLeft: SPACING.SMALL.PX }}>
+        {task.title}
+      </Typography>
+      <Tooltip
+        placement="left"
+        title={isSelected ? "Deselect Task" : "Select Task"}
       >
-        <CheckIcon fontSize="small" />
-      </IconButton>
+        <IconButton onClick={isSelected ? handleDeselect : handleSelect}>
+          <CheckIcon fontSize="small" />
+        </IconButton>
+      </Tooltip>
     </Box>
   );
 };
 
 const SelectTasksModal = () => {
   useSignals();
-  const [tasks, setTasks] = useState<Record<string, TTask>>({});
-  const [todoList, setTodoList] = useState<TTodoList | null>(null);
 
-  useLiveQuery(async () => {
-    const tasks = await queries.getActiveTasks();
-    setTasks(tasks);
-  }, []);
+  const tasks =
+    useLiveQuery(async () => {
+      return await queries.getActiveTasks();
+    }) ?? {};
 
+  // Ensure todoList exists on mount
   useEffect(() => {
-    const fetchTodoList = async () => {
-      const todoList = await queries.getAndCreateIfNotExistsTodoList(
-        selectedDateSignal.value
-      );
-      setTodoList(todoList);
-    };
-    fetchTodoList();
+    queries.getAndCreateIfNotExistsTodoList(selectedDateSignal.value);
   }, []);
+
+  // Use useLiveQuery directly on the database table
+  const todoList = useLiveQuery(() =>
+    database.todoList.where("date").equals(selectedDateSignal.value).first()
+  );
 
   const showAddNewTaskModal = useCallback(() => {
     activeModalSignal.value = { id: ModalID.ADD_TASK_MODAL };
