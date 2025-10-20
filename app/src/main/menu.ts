@@ -80,23 +80,11 @@ const template = [
     label: "Support",
     submenu: [
       {
-        label: "Release Notes",
-        click: async () => {
-          await shell.openExternal(
-            "http://todo.sillysideprojects.com/changelog"
-          );
-        },
-      },
-      {
-        label: "Contact",
-        click: async () => {
-          await shell.openExternal("http://todo.sillysideprojects.com/contact");
-        },
-      },
-      {
         label: "Website",
         click: async () => {
-          await shell.openExternal("http://todo.sillysideprojects.com/");
+          await shell.openExternal(
+            "https://travisbumgarner.dev/marketing/ideas"
+          );
         },
       },
     ],
