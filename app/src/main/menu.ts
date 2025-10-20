@@ -83,7 +83,7 @@ const template = [
         label: "Website",
         click: async () => {
           await shell.openExternal(
-            "https://travisbumgarner.dev/marketing/ideas"
+            "https://travisbumgarner.dev/marketing/todo"
           );
         },
       },
