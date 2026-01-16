@@ -97,8 +97,6 @@ const TodoList = () => {
     activeModalSignal.value = { id: ModalID.SETTINGS_MODAL };
   }, []);
 
-  console.log('returning taskIds', taskIds, 'type:', typeof taskIds)
-
   if (!taskIds) {
     return null; // or a loading spinner
   }

@@ -76,6 +76,7 @@ const Subtask = ({
         </Tooltip>
       )}
       <TextField
+        multiline
         onChange={handleTitleChange}
         onBlur={handleSaveTitle}
         value={localTitle}
@@ -295,9 +296,9 @@ const TodoItem = ({ taskId }: TTodoItem) => {
                   type="text"
                   placeholder="Add subtask"
                   value={subtaskTitle}
+                  multiline
                   onChange={handleSubtaskTitleChange}
                   onKeyDown={(e) => {
-                    console.log("e.key:", e.key);
                     if (e.key === "Enter" && !e.shiftKey) {
                       e.preventDefault();
                       handleAddSubtask();
