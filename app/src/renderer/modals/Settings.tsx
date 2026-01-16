@@ -93,6 +93,10 @@ const Settings = () => {
         sx={{ display: "flex", flexDirection: "column", gap: SPACING.SMALL.PX }}
       >
         <Box sx={sectionSx}>
+          <Button fullWidth variant="outlined" onClick={() => activeModalSignal.value = { id: ModalID.CHANGELOG_MODAL }}>Open Changelog</Button>
+        </Box>
+
+        <Box sx={sectionSx}>
           <Box
             sx={{
               display: "flex",
@@ -146,7 +150,7 @@ const Settings = () => {
 
 const sectionSx: SxProps = {
   borderRadius: BORDER_RADIUS.ZERO.PX,
-  padding: SPACING.MEDIUM.PX,
+  padding: SPACING.SMALL.PX,
   bgcolor: "background.paper",
 };
 

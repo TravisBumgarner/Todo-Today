@@ -4,7 +4,7 @@ import { useCallback } from "react";
 import { activeModalSignal } from "../signals";
 import { SPACING } from "../styles/consts";
 import Modal from "./Modal";
-import { type ModalID } from "./RenderModal";
+import type { ModalID } from "./RenderModal";
 
 export interface ConfirmationModalProps {
   id: ModalID;

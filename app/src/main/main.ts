@@ -1,14 +1,14 @@
-import { app, BrowserWindow, Menu } from "electron";
-import log from "electron-log/main";
-import started from "electron-squirrel-startup";
-import path from "node:path";
-import { updateElectronApp } from "update-electron-app";
-import { isDev } from "./config";
-import menu from "./menu";
-import "./messages/messages";
+import { app, BrowserWindow, Menu } from 'electron'
+import log from 'electron-log/main'
+import started from 'electron-squirrel-startup'
+import path from 'node:path'
+import { updateElectronApp } from 'update-electron-app'
+import { isDev } from './config'
+import menu from './menu'
+import './messages/messages'
 
-log.initialize();
-Menu.setApplicationMenu(menu);
+log.initialize()
+Menu.setApplicationMenu(menu)
 
 updateElectronApp({
   logger: {
@@ -17,22 +17,22 @@ updateElectronApp({
     warn: log.warn,
     error: log.error,
   },
-});
+})
 
 // Something something Windows. Not currently supported, will just leave it.
 if (started) {
-  app.quit();
+  app.quit()
 }
 
 const createWindow = () => {
   // Platform-specific icon paths
-  let iconPath: string;
-  if (process.platform === "darwin") {
-    iconPath = path.join(__dirname, "../../public/icons/icon.icns");
-  } else if (process.platform === "win32") {
-    iconPath = path.join(__dirname, "../../public/icons/icon.ico");
+  let iconPath: string
+  if (process.platform === 'darwin') {
+    iconPath = path.join(__dirname, '../../public/icons/icon.icns')
+  } else if (process.platform === 'win32') {
+    iconPath = path.join(__dirname, '../../public/icons/icon.ico')
   } else {
-    iconPath = path.join(__dirname, "../../public/icons/icon.png");
+    iconPath = path.join(__dirname, '../../public/icons/icon.png')
   }
 
   const mainWindow = new BrowserWindow({
@@ -40,33 +40,31 @@ const createWindow = () => {
     height: 600,
     icon: iconPath,
     webPreferences: {
-      preload: path.join(__dirname, "preload.js"),
+      preload: path.join(__dirname, 'preload.js'),
     },
-  });
+  })
 
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
-    mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
+    mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL)
   } else {
-    mainWindow.loadFile(
-      path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`)
-    );
+    mainWindow.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`))
   }
 
   if (isDev) {
-    mainWindow.webContents.openDevTools();
+    mainWindow.webContents.openDevTools()
   }
-};
+}
 
-app.on("ready", createWindow);
+app.on('ready', createWindow)
 
-app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") {
-    app.quit();
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') {
+    app.quit()
   }
-});
+})
 
-app.on("activate", () => {
+app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow();
+    createWindow()
   }
-});
+})

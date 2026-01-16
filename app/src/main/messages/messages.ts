@@ -1,10 +1,14 @@
-import { typedIpcMain } from "./index";
-import { CHANNEL } from "../../shared/types";
+import { CHANNEL_INVOKES } from '../../shared/types'
+import store, { getStore } from '../store'
+import { typedIpcMain } from './ipcMain'
 
-typedIpcMain.handle(CHANNEL.WEE_WOO, async (_event, params) => {
-  console.log("WEE WOO", params);
-  return {
-    success: true,
-    data: "WEE WOO RECEIVED",
-  };
-});
+typedIpcMain.handle(CHANNEL_INVOKES.STORE.GET, async () => {
+  return getStore()
+})
+
+typedIpcMain.handle(CHANNEL_INVOKES.STORE.SET, async (_event, params) => {
+  for (const [key, value] of Object.entries(params)) {
+    store.set(key as keyof typeof params, value)
+  }
+  return { type: 'store_set', success: true }
+})

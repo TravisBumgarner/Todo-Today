@@ -1,14 +1,11 @@
-import { useEffect } from "react";
 import { Route, MemoryRouter as Router, Routes } from "react-router-dom";
 import type { ElectronHandler } from "../main/preload";
-import { CHANNEL } from "../shared/types";
-
 import Message from "./components/Message";
 import TodoList from "./components/TodoList";
 import RenderModal from "./modals";
 import AppThemeProvider from "./styles/Theme";
-
 import { useSignals } from "@preact/signals-react/runtime";
+import useShowChangelog from "./hooks/useShowChangelog";
 import { isRestoringSignal } from "./signals";
 
 declare global {
@@ -19,10 +16,7 @@ declare global {
 
 function App() {
   useSignals();
-
-  useEffect(() => {
-    window.electron.ipcRenderer.invoke(CHANNEL.WEE_WOO);
-  });
+  useShowChangelog()
 
   if (isRestoringSignal.value) {
     return <p>Loading...</p>;

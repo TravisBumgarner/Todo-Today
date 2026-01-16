@@ -49,7 +49,7 @@ const AddTaskModal = () => {
   };
 
   const handleAddToTodayChange = useCallback(
-    (event: React.MouseEvent<HTMLElement>, newValue: "yes" | "no") => {
+    (_event: React.MouseEvent<HTMLElement>, newValue: "yes" | "no") => {
       if (newValue === null) return;
 
       setAddToSelectedDate(newValue);

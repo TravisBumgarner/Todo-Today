@@ -1,13 +1,12 @@
 import CheckIcon from "@mui/icons-material/Check";
 import { Box, Button, IconButton, Tooltip, Typography } from "@mui/material";
-import { useCallback, useEffect, useMemo } from "react";
-
 import { useSignals } from "@preact/signals-react/runtime";
 import { useLiveQuery } from "dexie-react-hooks";
+import { useCallback, useEffect, useMemo } from "react";
 import { database, queries } from "../database";
 import { activeModalSignal, selectedDateSignal } from "../signals";
 import { SPACING } from "../styles/consts";
-import { type TTask } from "../types";
+import type { TTask } from "../types";
 import { sortStrings } from "../utilities";
 import Modal, { MODAL_MAX_HEIGHT } from "./Modal";
 import { ModalID } from "./RenderModal";

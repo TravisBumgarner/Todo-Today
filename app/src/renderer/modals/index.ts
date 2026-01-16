@@ -1,4 +1,4 @@
-import RenderModal, { ModalID } from "./RenderModal";
+import RenderModal, { ModalID } from './RenderModal'
 
-export default RenderModal;
-export { ModalID };
+export default RenderModal
+export { ModalID }

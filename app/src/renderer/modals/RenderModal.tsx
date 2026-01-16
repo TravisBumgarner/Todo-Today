@@ -1,8 +1,9 @@
 import { useSignals } from "@preact/signals-react/runtime";
 import { AnimatePresence } from "framer-motion";
-import { type FC } from "react";
+import type { FC } from "react";
 import { activeModalSignal } from "../signals";
 import AddTaskModal from "./AddTaskModal";
+import ChangelogModal, { type ChangelogModalProps } from "./ChangelogModal";
 import ConfirmationModal, {
   type ConfirmationModalProps,
 } from "./ConfirmationModal";
@@ -16,6 +17,7 @@ export enum ModalID {
   BACKUP_FAILURE_MODAL = "BACKUP_FAILURE_MODAL",
   SETTINGS_MODAL = "SETTINGS_MODAL",
   CONFIRMATION_MODAL = "CONFIRMATION_MODAL",
+  CHANGELOG_MODAL = "CHANGELOG_MODAL",
 }
 
 export type ActiveModal =
@@ -23,6 +25,7 @@ export type ActiveModal =
   | { id: ModalID.SELECT_TASKS_MODAL }
   | { id: ModalID.BACKUP_FAILURE_MODAL }
   | { id: ModalID.SETTINGS_MODAL }
+  | ({ id: ModalID.CHANGELOG_MODAL } & ChangelogModalProps)
   | ({ id: ModalID.CONFIRMATION_MODAL } & ConfirmationModalProps);
 
 const RenderModal: FC = () => {
@@ -34,6 +37,8 @@ const RenderModal: FC = () => {
         <div key={activeModalSignal.value.id}>
           {(() => {
             switch (activeModalSignal.value.id) {
+              case ModalID.CHANGELOG_MODAL:
+                return <ChangelogModal {...activeModalSignal.value} />;
               case ModalID.ADD_TASK_MODAL:
                 return <AddTaskModal />;
               case ModalID.SELECT_TASKS_MODAL:

@@ -1,4 +1,5 @@
-// import log from "electron-log/renderer";
+import moment from "moment";
+import Icon from "./components/Icon";
 
 export const logMessage = (message: string) => {
   console.log(message);
@@ -8,16 +9,6 @@ export const logMessage = (message: string) => {
   //   log.info(message);
   // }
 };
-
-import Icon from "./components/Icon";
-import moment from "moment";
-
-// import { type AsyncMessageIPCFromRenderer } from "../shared/async-message-types";
-import {
-  type AppStartIPCFromMain,
-  type ESyncMessageIPC,
-  // type SyncMessageIPCFromRenderer,
-} from "../shared/sync-message-types";
 
 import {
   DATE_ISO_DATE_MOMENT_STRING,
@@ -81,26 +72,6 @@ const saveFile = async (fileName: string, jsonData: unknown) => {
   a.click();
 };
 
-interface MessageReturnTypeMap {
-  [ESyncMessageIPC.AppStart]: AppStartIPCFromMain["body"];
-}
-
-// const sendSyncIPCMessage = async <T extends SyncMessageIPCFromRenderer>(
-//   message: T
-// ): Promise<MessageReturnTypeMap[T["type"]]> => {
-//   return (await ipcRenderer.invoke(
-//     message.type,
-//     message.body
-//   )) as MessageReturnTypeMap[T["type"]];
-// };
-
-// const sendAsyncIPCMessage = <T extends AsyncMessageIPCFromRenderer>(
-//   message: T
-// ) => {
-//   // Responses end up in useIPCRendererEffect.ts
-//   ipcRenderer.send(message.type, message.body);
-// };
-
 const taskStatusIcon = (taskStatus: ETaskStatus) => {
   switch (taskStatus) {
     case ETaskStatus.CANCELED:
@@ -125,5 +96,6 @@ export {
   // sendSyncIPCMessage,
   sumArray,
   taskStatusIcon,
-  taskStatusLookup,
+  taskStatusLookup
 };
+
