@@ -3,6 +3,7 @@ import {
   CheckBox,
   ChevronRight,
   DeleteOutline,
+  DragIndicator,
 } from "@mui/icons-material";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/CloseOutlined";
@@ -16,6 +17,7 @@ import { selectedDateSignal } from "../signals";
 import { BORDER_RADIUS, SPACING } from "../styles/consts";
 import { ETaskStatus } from "../types";
 import TaskStatusSelector from "./TaskStatusSelector";
+
 
 export interface TTodoItem {
   taskId: string;
@@ -214,123 +216,126 @@ const TodoItem = ({ taskId }: TTodoItem) => {
   }, [taskId, subtaskTitle]);
 
   return (
-    <Box sx={wrapperCSS}>
-      <Box sx={headerCSS(showContent)}>
-        <Box sx={leftHeaderCSS}>
-          <Box>
-            <TaskStatusSelector
-              handleStatusChangeCallback={handleStatusChange}
-              taskStatus={status}
-              showLabel={false}
+    <Box sx={{ display: "flex", alignItems: "center", gap: SPACING.SMALL.PX }}>
+      <DragIndicator style={{ cursor: "grab" }} />
+      <Box sx={wrapperCSS}>
+        <Box sx={headerCSS(showContent)}>
+          <Box sx={leftHeaderCSS}>
+            <Box>
+              <TaskStatusSelector
+                handleStatusChangeCallback={handleStatusChange}
+                taskStatus={status}
+                showLabel={false}
+              />
+            </Box>
+            <TextField
+              size="small"
+              fullWidth
+              placeholder="Task"
+              value={localTitle}
+              onBlur={handleSaveTitle}
+              onChange={handleTitleChange}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  padding: 0,
+                  pointerEvents: "auto",
+                  "& fieldset": {
+                    border: "none",
+                  },
+                  "& input": {
+                    fontSize: "24px",
+                    pointerEvents: "auto",
+                    padding: 0,
+                  },
+                },
+              }}
             />
           </Box>
-          <TextField
-            size="small"
-            fullWidth
-            placeholder="Task"
-            value={localTitle}
-            onBlur={handleSaveTitle}
-            onChange={handleTitleChange}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                padding: 0,
-                pointerEvents: "auto",
-                "& fieldset": {
-                  border: "none",
-                },
-                "& input": {
-                  fontSize: "24px",
-                  pointerEvents: "auto",
-                  padding: 0,
-                },
-              },
-            }}
-          />
-        </Box>
-        <Box sx={rightHeaderCSS}>
-          <ToggleButton
-            size="small"
-            value="text"
-            onChange={toggleContent}
-            sx={{
-              backgroundColor: "background.paper",
-            }}
-          >
-            <Tooltip title={showContent ? "Hide Details" : "Show details"}>
-              <ChevronRight
-                color="info"
-                fontSize="small"
-                sx={{ transform: `rotate(${showContent ? "90deg" : "0deg"})` }}
-              />
-            </Tooltip>
-          </ToggleButton>
-
-          <Tooltip title="Remove from today">
-            <IconButton
-              onClick={handleRemoveFromToday}
-              sx={{ marginLeft: "0.5rem" }}
+          <Box sx={rightHeaderCSS}>
+            <ToggleButton
+              size="small"
+              value="text"
+              onChange={toggleContent}
+              sx={{
+                backgroundColor: "background.paper",
+              }}
             >
-              <CloseIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
-        </Box>
-      </Box>
-      {showContent && (
-        <Box sx={contentWrapperCSS}>
-          <TextField
-            placeholder="Add notes"
-            fullWidth
-            multiline
-            size="small"
-            value={localDetails}
-            onBlur={handleSaveDetails}
-            onChange={handleDetailsChange}
-          />
-          <Box>
-            <Box>
-              <Box sx={subtaskInputWrapperCSS}>
-                <TextField
-                  sx={{ flexGrow: 1 }}
-                  size="small"
-                  fullWidth
-                  type="text"
-                  placeholder="Add subtask"
-                  value={subtaskTitle}
-                  multiline
-                  onChange={handleSubtaskTitleChange}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && !e.shiftKey) {
-                      e.preventDefault();
-                      handleAddSubtask();
-                    }
-                  }}
+              <Tooltip title={showContent ? "Hide Details" : "Show details"}>
+                <ChevronRight
+                  color="info"
+                  fontSize="small"
+                  sx={{ transform: `rotate(${showContent ? "90deg" : "0deg"})` }}
                 />
-                <Tooltip title="Add subtask">
-                  <span>
-                    <IconButton
-                      sx={{ cursor: "pointer" }}
-                      color={subtaskTitle.length === 0 ? "info" : "primary"}
-                      disabled={subtaskTitle.length === 0}
-                      onClick={handleAddSubtask}
-                    >
-                      <Add fontSize="small" />
-                    </IconButton>
-                  </span>
-                </Tooltip>
-              </Box>
-            </Box>
-            <Box sx={subtaskListCSS}>
-              {subtaskIds.map((subtaskId) => (
-                <Subtask
-                  key={subtaskId}
-                  taskId={taskId}
-                  subtaskId={subtaskId}
-                />
-              ))}
-            </Box>
+              </Tooltip>
+            </ToggleButton>
+
+            <Tooltip title="Remove from today">
+              <IconButton
+                onClick={handleRemoveFromToday}
+                sx={{ marginLeft: "0.5rem" }}
+              >
+                <CloseIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
           </Box>
         </Box>
-      )}
+        {showContent && (
+          <Box sx={contentWrapperCSS}>
+            <TextField
+              placeholder="Add notes"
+              fullWidth
+              multiline
+              size="small"
+              value={localDetails}
+              onBlur={handleSaveDetails}
+              onChange={handleDetailsChange}
+            />
+            <Box>
+              <Box>
+                <Box sx={subtaskInputWrapperCSS}>
+                  <TextField
+                    sx={{ flexGrow: 1 }}
+                    size="small"
+                    fullWidth
+                    type="text"
+                    placeholder="Add subtask"
+                    value={subtaskTitle}
+                    multiline
+                    onChange={handleSubtaskTitleChange}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && !e.shiftKey) {
+                        e.preventDefault();
+                        handleAddSubtask();
+                      }
+                    }}
+                  />
+                  <Tooltip title="Add subtask">
+                    <span>
+                      <IconButton
+                        sx={{ cursor: "pointer" }}
+                        color={subtaskTitle.length === 0 ? "info" : "primary"}
+                        disabled={subtaskTitle.length === 0}
+                        onClick={handleAddSubtask}
+                      >
+                        <Add fontSize="small" />
+                      </IconButton>
+                    </span>
+                  </Tooltip>
+                </Box>
+              </Box>
+              <Box sx={subtaskListCSS}>
+                {subtaskIds.map((subtaskId) => (
+                  <Subtask
+                    key={subtaskId}
+                    taskId={taskId}
+                    subtaskId={subtaskId}
+                  />
+                ))}
+              </Box>
+            </Box>
+          </Box>
+        )}
+      </Box>
     </Box>
   );
 };
@@ -338,43 +343,44 @@ const TodoItem = ({ taskId }: TTodoItem) => {
 const subtaskListCSS = css``;
 
 const subtaskInputWrapperCSS = css`
-  display: flex;
-  flex-direction: row;
-  gap: ${SPACING.TINY.PX};
-  align-items: center;
-`;
+      display: flex;
+      flex-direction: row;
+      gap: ${SPACING.TINY.PX};
+      align-items: center;
+      `;
 
 const contentWrapperCSS = css`
-  display: flex;
-  flex-direction: row;
-  gap: ${SPACING.SMALL.PX};
+      display: flex;
+      flex-direction: row;
+      gap: ${SPACING.SMALL.PX};
 
   & > div {
-    flex: 1;
+        flex: 1;
   }
-`;
+      `;
 
 const rightHeaderCSS = css`
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-`;
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+      `;
 
 const headerCSS = (showDetails: boolean) => css`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: ${showDetails ? SPACING.SMALL.PX : "0"};
-`;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: ${showDetails ? SPACING.SMALL.PX : "0"};
+      `;
 
 const leftHeaderCSS = css`
-  display: flex;
-  flex-grow: 1;
-  align-items: center;
-`;
+      display: flex;
+      flex-grow: 1;
+      align-items: center;
+      `;
 
 const wrapperCSS = {
   bgcolor: "background.paper",
+  flexGrow: 1,
   borderRadius: BORDER_RADIUS.ZERO.PX,
   padding: SPACING.SMALL.PX,
   marginBottom: SPACING.SMALL.PX,
