@@ -3,7 +3,7 @@ import { AnimatePresence } from "framer-motion";
 import type { FC } from "react";
 import { activeModalSignal } from "../signals";
 import AddTaskModal from "./AddTaskModal";
-import ChangelogModal from "./ChangelogModal";
+import ChangelogModal, { type ChangelogModalProps } from "./ChangelogModal";
 import ConfirmationModal, {
   type ConfirmationModalProps,
 } from "./ConfirmationModal";
@@ -25,7 +25,7 @@ export type ActiveModal =
   | { id: ModalID.SELECT_TASKS_MODAL }
   | { id: ModalID.BACKUP_FAILURE_MODAL }
   | { id: ModalID.SETTINGS_MODAL }
-  | { id: ModalID.CHANGELOG_MODAL }
+  | ({ id: ModalID.CHANGELOG_MODAL } & ChangelogModalProps)
   | ({ id: ModalID.CONFIRMATION_MODAL } & ConfirmationModalProps);
 
 const RenderModal: FC = () => {
@@ -38,7 +38,7 @@ const RenderModal: FC = () => {
           {(() => {
             switch (activeModalSignal.value.id) {
               case ModalID.CHANGELOG_MODAL:
-                return <ChangelogModal />;
+                return <ChangelogModal {...activeModalSignal.value} />;
               case ModalID.ADD_TASK_MODAL:
                 return <AddTaskModal />;
               case ModalID.SELECT_TASKS_MODAL:

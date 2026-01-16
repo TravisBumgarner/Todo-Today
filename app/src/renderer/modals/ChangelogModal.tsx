@@ -3,10 +3,12 @@ import { CHANGELOG, type ChangelogEntry } from '../../shared/changelog'
 import { activeModalSignal } from '../signals'
 import { SPACING } from '../styles/consts'
 import Modal from "./Modal";
+import type { ModalID } from './RenderModal';
 
 
 export interface ChangelogModalProps {
     showLatestOnly?: boolean
+    id: ModalID;
 }
 
 const ChangelogModal = (props: ChangelogModalProps) => {
