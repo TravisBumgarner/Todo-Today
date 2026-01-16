@@ -1,6 +1,6 @@
 import { useSignalEffect, useSignals } from '@preact/signals-react/runtime'
 import { CURRENT_VERSION } from '../../shared/changelog'
-import { CHANNEL_INVOKES } from '../../shared/types/messages.invokes'
+import { CHANNEL_INVOKES } from '../../shared/types'
 import ipcMessenger from '../ipcMessenger'
 import { ModalID } from '../modals/index'
 import { activeModalSignal } from '../signals'

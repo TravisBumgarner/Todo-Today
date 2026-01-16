@@ -1,4 +1,4 @@
-import { CHANNEL_INVOKES } from '../../shared/types/messages.invokes'
+import { CHANNEL_INVOKES } from '../../shared/types'
 import store, { getStore } from '../store'
 import { typedIpcMain } from './ipcMain'
 

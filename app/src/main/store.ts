@@ -1,5 +1,5 @@
 import Store from 'electron-store'
-import type { StoreSchema } from '../shared/types'
+import type { StoreSchema } from '../shared/types/store'
 
 const defaults: StoreSchema = {
   changelogLastSeenVersion: null,
