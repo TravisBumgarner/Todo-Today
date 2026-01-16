@@ -16,12 +16,6 @@ const invoke: typeof window.electron.ipcRenderer.invoke = (...args) => {
   return window.electron.ipcRenderer.invoke(...args)
 }
 
-const on: typeof window.electron.ipcRenderer.on = (...args) => {
-  return window.electron.ipcRenderer.on(...args)
-}
-
 export default {
   invoke,
-  on,
-  // send
 }

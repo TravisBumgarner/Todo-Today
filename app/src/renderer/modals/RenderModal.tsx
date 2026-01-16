@@ -1,14 +1,14 @@
 import { useSignals } from "@preact/signals-react/runtime";
 import { AnimatePresence } from "framer-motion";
-import { type FC } from "react";
+import type { FC } from "react";
 import { activeModalSignal } from "../signals";
 import AddTaskModal from "./AddTaskModal";
+import ChangelogModal from "./ChangelogModal";
 import ConfirmationModal, {
   type ConfirmationModalProps,
 } from "./ConfirmationModal";
 import SelectTasksModal from "./SelectTasksModal";
 import SettingsModal from "./Settings";
-import ChangelogModal from "./ChangelogModal";
 
 export enum ModalID {
   ADD_TASK_MODAL = "ADD_TASK_MODAL",

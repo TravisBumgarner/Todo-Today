@@ -5,14 +5,14 @@ import {
   ButtonGroup,
   css,
   IconButton,
-  SxProps,
+  type SxProps,
   Tooltip,
 } from "@mui/material";
 import { useSignals } from "@preact/signals-react/runtime";
 import { useLiveQuery } from "dexie-react-hooks";
 import { Reorder } from "framer-motion";
 import moment from "moment";
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 
 import { database, queries } from "../database";
 import { ModalID } from "../modals";

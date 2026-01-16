@@ -24,7 +24,7 @@ const Modal: FC<ActiveModal> = ({
   disableBackdropClick,
 }) => {
   const handleClose = useCallback(
-    (event: unknown, reason?: "backdropClick" | "escapeKeyDown") => {
+    (_event: unknown, reason?: "backdropClick" | "escapeKeyDown") => {
       if (reason === "backdropClick" && disableBackdropClick) return;
       activeModalSignal.value = null;
     },

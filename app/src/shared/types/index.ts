@@ -1,4 +1,4 @@
-import { StoreSchema } from "./store"
+import type { StoreSchema } from './store'
 
 export const CHANNEL_INVOKES = {
   STORE: {

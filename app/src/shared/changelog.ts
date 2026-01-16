@@ -15,17 +15,16 @@ export const CHANGELOG: ChangelogEntry[] = [
         category: 'Fixed',
         description: 'Modifying a todo list item would not sort it correctly in the list',
       },
-            {
+      {
         category: 'Fixed',
         description: 'Subtasks now support multiline text input',
       },
-                  {
+      {
         category: 'New',
         description: 'Added a changelog',
       },
     ],
   },
-  
 ]
 
 export const CURRENT_VERSION = CHANGELOG[0].version

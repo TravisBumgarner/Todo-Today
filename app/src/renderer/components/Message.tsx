@@ -1,4 +1,4 @@
-import { Alert as AlertMUI, Box, Button, SxProps } from "@mui/material";
+import { Alert as AlertMUI, Box, Button, type SxProps } from "@mui/material";
 import { useCallback } from "react";
 
 import { useSignals } from "@preact/signals-react/runtime";

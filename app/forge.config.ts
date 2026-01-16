@@ -1,10 +1,10 @@
-import { MakerDeb } from "@electron-forge/maker-deb";
-import { MakerDMG } from "@electron-forge/maker-dmg";
-import { MakerRpm } from "@electron-forge/maker-rpm";
-import { MakerSquirrel } from "@electron-forge/maker-squirrel";
-import { MakerZIP } from "@electron-forge/maker-zip";
-import { VitePlugin } from "@electron-forge/plugin-vite";
-import type { ForgeConfig } from "@electron-forge/shared-types";
+import { MakerDeb } from '@electron-forge/maker-deb'
+import { MakerDMG } from '@electron-forge/maker-dmg'
+import { MakerRpm } from '@electron-forge/maker-rpm'
+import { MakerSquirrel } from '@electron-forge/maker-squirrel'
+import { MakerZIP } from '@electron-forge/maker-zip'
+import { VitePlugin } from '@electron-forge/plugin-vite'
+import type { ForgeConfig } from '@electron-forge/shared-types'
 
 // import { FusesPlugin } from "@electron-forge/plugin-fuses";
 // import { FuseV1Options, FuseVersion } from "@electron/fuses";
@@ -12,7 +12,7 @@ import type { ForgeConfig } from "@electron-forge/shared-types";
 const config: ForgeConfig = {
   packagerConfig: {
     asar: true,
-    icon: "public/icons/icon", // Electron Forge will automatically append .icns/.ico/.png based on platform
+    icon: 'public/icons/icon', // Electron Forge will automatically append .icns/.ico/.png based on platform
     osxSign: {},
     osxNotarize: {
       appleId: process.env.APPLE_ID,
@@ -24,20 +24,20 @@ const config: ForgeConfig = {
   rebuildConfig: {},
   makers: [
     new MakerSquirrel({
-      iconUrl: "https://example.com/icon.ico", // URL to your .ico file for Squirrel (Windows)
+      iconUrl: 'https://example.com/icon.ico', // URL to your .ico file for Squirrel (Windows)
     }),
     new MakerDMG({
-      icon: "public/icons/icon.icns", // For macOS DMG
+      icon: 'public/icons/icon.icns', // For macOS DMG
     }),
-    new MakerZIP({}, ["darwin"]),
+    new MakerZIP({}, ['darwin']),
     new MakerRpm({
       options: {
-        icon: "public/icons/icon.png", // For RPM packages
+        icon: 'public/icons/icon.png', // For RPM packages
       },
     }),
     new MakerDeb({
       options: {
-        icon: "public/icons/icon.png", // For DEB packages
+        icon: 'public/icons/icon.png', // For DEB packages
       },
     }),
   ],
@@ -48,20 +48,20 @@ const config: ForgeConfig = {
       build: [
         {
           // `entry` is just an alias for `build.lib.entry` in the corresponding file of `config`.
-          entry: "src/main/main.ts",
-          config: "vite.main.config.ts",
-          target: "main",
+          entry: 'src/main/main.ts',
+          config: 'vite.main.config.ts',
+          target: 'main',
         },
         {
-          entry: "src/main/preload.ts",
-          config: "vite.preload.config.ts",
-          target: "preload",
+          entry: 'src/main/preload.ts',
+          config: 'vite.preload.config.ts',
+          target: 'preload',
         },
       ],
       renderer: [
         {
-          name: "main_window",
-          config: "vite.renderer.config.ts",
+          name: 'main_window',
+          config: 'vite.renderer.config.ts',
         },
       ],
     }),
@@ -80,14 +80,14 @@ const config: ForgeConfig = {
   ],
   publishers: [
     {
-      name: "@electron-forge/publisher-github",
+      name: '@electron-forge/publisher-github',
       config: {
-        repository: { owner: "travisbumgarner", name: "todo-today" },
+        repository: { owner: 'travisbumgarner', name: 'todo-today' },
         prerelease: false,
         draft: true,
       },
     },
   ],
-};
+}
 
-export default config;
+export default config

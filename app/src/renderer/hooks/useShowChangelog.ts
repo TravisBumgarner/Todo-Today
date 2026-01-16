@@ -13,7 +13,7 @@ const useShowChangelog = () => {
         // Show changelog modal after a short delay to let the app render
         activeModalSignal.value = {
           id: ModalID.CHANGELOG_MODAL,
-        //   showLatestOnly: true,
+          //   showLatestOnly: true,
         }
         // Update the last seen version
         ipcMessenger.invoke(CHANNEL_INVOKES.STORE.SET, {
