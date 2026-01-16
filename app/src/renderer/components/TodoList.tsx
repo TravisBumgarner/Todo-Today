@@ -25,40 +25,39 @@ import TodoItem from "./TodoItem";
 
 const TodoList = () => {
   useSignals();
-  const [taskIds, setTaskIds] = useState<string[]>([]);
 
-  useLiveQuery(async () => {
-    setTaskIds(
-      await database.todoList
-        .where({ date: selectedDateSignal.value })
-        .first()
-        .then(async (todoList) => {
-          // Sort tasks by status so anything complete or canceled is at the bottom
-          const taskIds = todoList?.taskIds ?? [];
-          const tasks = await Promise.all(
-            taskIds.map(async (id) => await database.tasks.get(id))
-          );
-          return taskIds.sort((a, b) => {
-            const taskA = tasks.find((t) => t?.id === a);
-            const taskB = tasks.find((t) => t?.id === b);
-            const statusA = taskA?.status;
-            const statusB = taskB?.status;
+  const taskIds = useLiveQuery(async () => {
+    const todoList = await database.todoList
+      .where({ date: selectedDateSignal.value })
+      .first();
 
-            if (
-              statusA === ETaskStatus.CANCELED ||
-              statusA === ETaskStatus.COMPLETED
-            )
-              return 1;
-            if (
-              statusB === ETaskStatus.CANCELED ||
-              statusB === ETaskStatus.COMPLETED
-            )
-              return -1;
-            return 0;
-          });
-        })
+    // Sort tasks by status so anything complete or canceled is at the bottom
+    const taskIdsList = todoList?.taskIds ?? [];
+    const tasks = await Promise.all(
+      taskIdsList.map(async (id) => await database.tasks.get(id))
     );
-  }, [selectedDateSignal.value]);
+
+    const sortedTaskIds = [...taskIdsList].sort((a, b) => {
+      const taskA = tasks.find((t) => t?.id === a);
+      const taskB = tasks.find((t) => t?.id === b);
+      const statusA = taskA?.status;
+      const statusB = taskB?.status;
+
+      if (
+        statusA === ETaskStatus.CANCELED ||
+        statusA === ETaskStatus.COMPLETED
+      )
+        return 1;
+      if (
+        statusB === ETaskStatus.CANCELED ||
+        statusB === ETaskStatus.COMPLETED
+      )
+        return -1;
+      return 0;
+    });
+
+    return sortedTaskIds
+  }, [selectedDateSignal.value], [] as string[]);
 
   const onReorder = useCallback(async (newTaskIds: string[]) => {
     await queries.reorderTasks(selectedDateSignal.value, newTaskIds);
@@ -97,6 +96,12 @@ const TodoList = () => {
   const handleSettings = useCallback(() => {
     activeModalSignal.value = { id: ModalID.SETTINGS_MODAL };
   }, []);
+
+  console.log('returning taskIds', taskIds, 'type:', typeof taskIds)
+
+  if (!taskIds) {
+    return null; // or a loading spinner
+  }
 
   return (
     <Box
