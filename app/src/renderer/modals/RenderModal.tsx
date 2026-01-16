@@ -8,6 +8,7 @@ import ConfirmationModal, {
 } from "./ConfirmationModal";
 import SelectTasksModal from "./SelectTasksModal";
 import SettingsModal from "./Settings";
+import ChangelogModal from "./ChangelogModal";
 
 export enum ModalID {
   ADD_TASK_MODAL = "ADD_TASK_MODAL",
@@ -16,6 +17,7 @@ export enum ModalID {
   BACKUP_FAILURE_MODAL = "BACKUP_FAILURE_MODAL",
   SETTINGS_MODAL = "SETTINGS_MODAL",
   CONFIRMATION_MODAL = "CONFIRMATION_MODAL",
+  CHANGELOG_MODAL = "CHANGELOG_MODAL",
 }
 
 export type ActiveModal =
@@ -23,6 +25,7 @@ export type ActiveModal =
   | { id: ModalID.SELECT_TASKS_MODAL }
   | { id: ModalID.BACKUP_FAILURE_MODAL }
   | { id: ModalID.SETTINGS_MODAL }
+  | { id: ModalID.CHANGELOG_MODAL }
   | ({ id: ModalID.CONFIRMATION_MODAL } & ConfirmationModalProps);
 
 const RenderModal: FC = () => {
@@ -34,6 +37,8 @@ const RenderModal: FC = () => {
         <div key={activeModalSignal.value.id}>
           {(() => {
             switch (activeModalSignal.value.id) {
+              case ModalID.CHANGELOG_MODAL:
+                return <ChangelogModal />;
               case ModalID.ADD_TASK_MODAL:
                 return <AddTaskModal />;
               case ModalID.SELECT_TASKS_MODAL:
