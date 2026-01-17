@@ -67,6 +67,10 @@ const TodoList = () => {
     activeModalSignal.value = { id: ModalID.SELECT_TASKS_MODAL };
   }, []);
 
+  const showRecurringTasksModal = useCallback(() => {
+    activeModalSignal.value = { id: ModalID.RECURRING_TASKS_MODAL };
+  }, []);
+
   const showAddNewTaskModal = useCallback(() => {
     activeModalSignal.value = { id: ModalID.ADD_TASK_MODAL };
   }, []);
@@ -117,6 +121,9 @@ const TodoList = () => {
           </Button>
           <Button variant="outlined" onClick={showManagementModal}>
             Select Tasks
+          </Button>
+          <Button variant="outlined" onClick={showRecurringTasksModal}>
+            Manage Reoccurring
           </Button>
         </Box>
         <Box

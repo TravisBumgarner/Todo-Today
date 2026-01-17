@@ -20,7 +20,7 @@ export const AppGlobalStyles = () => {
         },
         "#root": {
           height: "100%",
-          maxWidth: "700px",
+          maxWidth: "800px",
           margin: "0px auto",
           boxSizing: "border-box",
           padding: SPACING.MEDIUM.PX,
