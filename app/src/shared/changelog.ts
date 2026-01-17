@@ -12,16 +12,20 @@ export const CHANGELOG: ChangelogEntry[] = [
     date: '2026-01-16',
     changes: [
       {
+        category: 'New',
+        description: 'Added option to set recurring tasks on specific days of the week',
+      },
+      {
+        category: 'New',
+        description: 'Added a changelog',
+      },
+      {
         category: 'Fixed',
         description: 'Modifying a todo list item would not sort it correctly in the list',
       },
       {
         category: 'Fixed',
         description: 'Subtasks now support multiline text input',
-      },
-      {
-        category: 'New',
-        description: 'Added a changelog',
       },
     ],
   },
