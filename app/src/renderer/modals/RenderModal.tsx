@@ -7,6 +7,7 @@ import ChangelogModal, { type ChangelogModalProps } from "./ChangelogModal";
 import ConfirmationModal, {
   type ConfirmationModalProps,
 } from "./ConfirmationModal";
+import RecurringTasksModal from "./RecurringTasksModal";
 import SelectTasksModal from "./SelectTasksModal";
 import SettingsModal from "./Settings";
 
@@ -18,6 +19,7 @@ export enum ModalID {
   SETTINGS_MODAL = "SETTINGS_MODAL",
   CONFIRMATION_MODAL = "CONFIRMATION_MODAL",
   CHANGELOG_MODAL = "CHANGELOG_MODAL",
+  RECURRING_TASKS_MODAL = "RECURRING_TASKS_MODAL",
 }
 
 export type ActiveModal =
@@ -25,6 +27,7 @@ export type ActiveModal =
   | { id: ModalID.SELECT_TASKS_MODAL }
   | { id: ModalID.BACKUP_FAILURE_MODAL }
   | { id: ModalID.SETTINGS_MODAL }
+  | { id: ModalID.RECURRING_TASKS_MODAL }
   | ({ id: ModalID.CHANGELOG_MODAL } & ChangelogModalProps)
   | ({ id: ModalID.CONFIRMATION_MODAL } & ConfirmationModalProps);
 
@@ -43,6 +46,8 @@ const RenderModal: FC = () => {
                 return <AddTaskModal />;
               case ModalID.SELECT_TASKS_MODAL:
                 return <SelectTasksModal />;
+              case ModalID.RECURRING_TASKS_MODAL:
+                return <RecurringTasksModal />;
               case ModalID.SETTINGS_MODAL:
                 return <SettingsModal />;
               case ModalID.CONFIRMATION_MODAL:

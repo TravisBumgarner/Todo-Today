@@ -3,7 +3,7 @@ import { IconButton, Tooltip, Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import MUIModal from "@mui/material/Modal";
 import { motion } from "framer-motion";
-import { useCallback, type FC } from "react";
+import React, { useCallback, type FC } from "react";
 import { activeModalSignal } from "../signals";
 import { BORDER_RADIUS, SPACING } from "../styles/consts";
 
@@ -13,6 +13,7 @@ interface ActiveModal {
   title: string;
   disableEscapeKeyDown?: boolean;
   disableBackdropClick?: boolean;
+  styles: React.CSSProperties;
 }
 
 export const MODAL_MAX_HEIGHT = 800;
@@ -22,6 +23,7 @@ const Modal: FC<ActiveModal> = ({
   title,
   disableEscapeKeyDown,
   disableBackdropClick,
+  styles
 }) => {
   const handleClose = useCallback(
     (_event: unknown, reason?: "backdropClick" | "escapeKeyDown") => {
@@ -58,6 +60,7 @@ const Modal: FC<ActiveModal> = ({
           overflow: "auto",
           boxSizing: "border-box",
           maxHeight: "100%",
+          ...styles,
         }}
       >
         <Box

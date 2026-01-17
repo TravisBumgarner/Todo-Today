@@ -6,6 +6,7 @@ import RenderModal from "./modals";
 import AppThemeProvider from "./styles/Theme";
 import { useSignals } from "@preact/signals-react/runtime";
 import useShowChangelog from "./hooks/useShowChangelog";
+import { useProcessRecurringTasks } from "./hooks/useProcessRecurringTasks";
 import { isRestoringSignal } from "./signals";
 
 declare global {
@@ -17,6 +18,7 @@ declare global {
 function App() {
   useSignals();
   useShowChangelog()
+  useProcessRecurringTasks()
 
   if (isRestoringSignal.value) {
     return <p>Loading...</p>;
