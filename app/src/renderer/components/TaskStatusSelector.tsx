@@ -1,5 +1,6 @@
 import {
   Box,
+  css,
   FormControl,
   IconButton,
   InputLabel,
@@ -10,7 +11,6 @@ import {
   Select,
   SvgIcon,
   Tooltip,
-  css,
 } from "@mui/material";
 import { useCallback, useState } from "react";
 import { SPACING } from "../styles/consts";
@@ -18,9 +18,9 @@ import { ETaskStatus } from "../types";
 import { taskStatusIcon, taskStatusLookup } from "../utilities";
 
 const TaskDropdown = ({ taskStatus, handleStatusChangeCallback }: Props) => {
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
-  const handleOpenMenu = useCallback((event: any) => {
+  const handleOpenMenu = useCallback((event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   }, []);
 
@@ -72,45 +72,43 @@ const TaskDropdown = ({ taskStatus, handleStatusChangeCallback }: Props) => {
 
 const TaskSelect = ({ handleStatusChangeCallback, taskStatus }: Props) => {
   return (
-    <>
-      <FormControl fullWidth margin="none">
-        <InputLabel id="task-status-selector">Status</InputLabel>
-        <Select
-          label={"Status"}
-          labelId="task-status-selector"
-          fullWidth
-          value={taskStatus}
-          sx={css`
+    <FormControl fullWidth margin="none">
+      <InputLabel id="task-status-selector">Status</InputLabel>
+      <Select
+        label={"Status"}
+        labelId="task-status-selector"
+        fullWidth
+        value={taskStatus}
+        sx={css`
             flex-direction: row;
             display: flex;
           `}
-          onChange={(event) => {
-            handleStatusChangeCallback(event.target.value as ETaskStatus);
-          }}
-          renderValue={(value) => {
-            return (
-              <Box sx={selectRenderValueCSS}>
-                <SvgIcon color="primary">{taskStatusIcon(value)}</SvgIcon>
-                {taskStatusLookup[value]}
-              </Box>
-            );
-          }}
-        >
-          {Object.keys(ETaskStatus).map((taskStatus) => {
-            return (
-              <MenuItem key={taskStatus} value={taskStatus}>
-                <ListItemIcon>
-                  {taskStatusIcon(taskStatus as ETaskStatus)}
-                </ListItemIcon>
-                <ListItemText>
-                  {taskStatusLookup[taskStatus as ETaskStatus]}
-                </ListItemText>
-              </MenuItem>
-            );
-          })}
-        </Select>
-      </FormControl>
-    </>
+        onChange={(event) => {
+          handleStatusChangeCallback(event.target.value as ETaskStatus);
+        }}
+        renderValue={(value) => {
+          return (
+            <Box sx={selectRenderValueCSS}>
+              <SvgIcon color="primary">{taskStatusIcon(value)}</SvgIcon>
+              {taskStatusLookup[value]}
+            </Box>
+          );
+        }}
+      >
+        {Object.keys(ETaskStatus).map((taskStatus) => {
+          return (
+            <MenuItem key={taskStatus} value={taskStatus}>
+              <ListItemIcon>
+                {taskStatusIcon(taskStatus as ETaskStatus)}
+              </ListItemIcon>
+              <ListItemText>
+                {taskStatusLookup[taskStatus as ETaskStatus]}
+              </ListItemText>
+            </MenuItem>
+          );
+        })}
+      </Select>
+    </FormControl>
   );
 };
 

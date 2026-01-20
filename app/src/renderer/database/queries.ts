@@ -1,7 +1,7 @@
 import moment from 'moment'
 import { v4 as uuid } from 'uuid'
 import { DATE_ISO_DATE_MOMENT_STRING, EDayOfWeek, ERecurringFrequency, ETaskStatus } from '../types'
-import type { TDateISODate, TSubtask, TTask, TTodoList } from '../types'
+import type { TDateISODate, TRecurringTask, TSubtask, TTask, TTodoList } from '../types'
 import database from './database'
 
 export const getTodoList = async (date: TDateISODate) => {
@@ -23,10 +23,12 @@ export const getActiveTasks = async () => {
     .where('status')
     .anyOf(ETaskStatus.BLOCKED, ETaskStatus.NEW, ETaskStatus.IN_PROGRESS)
     .toArray()
-  return tasks.reduce<Record<string, TTask>>((acc, task) => {
-    acc[task.id] = task
-    return acc
-  }, {})
+  return tasks
+    .filter((task) => task.type !== 'recurring')
+    .reduce<Record<string, TTask>>((acc, task) => {
+      acc[task.id] = task
+      return acc
+    }, {})
 }
 
 export const upsertTodoList = async (date: TDateISODate, taskIds: string[] = []) => {
@@ -113,12 +115,13 @@ export const getSubtask = async (taskId: string, subtaskId: string) => {
   return task?.subtasks.find((subtask) => subtask.id === subtaskId)
 }
 
-export const processRecurringTasksForToday = async () => {
+export const processRecurringTasksForToday = async (recurringTaskId?: string) => {
   const today = moment().format(DATE_ISO_DATE_MOMENT_STRING) as TDateISODate
   const todoList = await getAndCreateIfNotExistsTodoList(today)
 
-  // Only process if we haven't already processed today
-  if (todoList.processedRecurringTasks) {
+  // If processing a specific task, skip the processedRecurringTasks check
+  // Otherwise, only process if we haven't already processed today
+  if (!recurringTaskId && todoList.processedRecurringTasks) {
     return
   }
 
@@ -126,8 +129,10 @@ export const processRecurringTasksForToday = async () => {
   const currentWeekOfYear = moment().week()
   const currentDayOfMonth = moment().date()
 
-  // Get all recurring tasks
-  const recurringTasks = await database.recurringTasks.toArray()
+  // Get all recurring tasks or just the specific one
+  const recurringTasks = recurringTaskId
+    ? [await database.recurringTasks.get(recurringTaskId)].filter((task): task is TRecurringTask => task !== undefined)
+    : await database.recurringTasks.toArray()
 
   const tasksToCreate: TTask[] = []
 
@@ -183,6 +188,8 @@ export const processRecurringTasksForToday = async () => {
     await addTaskToTodoList(today, task.id)
   }
 
-  // Mark today as processed
-  await database.todoList.where('date').equals(today).modify({ processedRecurringTasks: true })
+  // Mark today as processed only if processing all recurring tasks
+  if (!recurringTaskId) {
+    await database.todoList.where('date').equals(today).modify({ processedRecurringTasks: true })
+  }
 }

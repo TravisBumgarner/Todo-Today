@@ -13,37 +13,32 @@ import {
     TableHead,
     TableRow,
     TextField,
-    Tooltip,
     Typography,
 } from "@mui/material";
 import { useLiveQuery } from "dexie-react-hooks";
 import { useCallback, useState } from "react";
 import { v4 as uuid4 } from "uuid";
 
+import { queries } from "../database";
 import db from "../database/database";
 import { activeModalSignal } from "../signals";
+import { SPACING } from "../styles/consts";
 import type {
     EDayOfWeek,
     ERecurringFrequency,
     TRecurringTask,
 } from "../types";
-import { ERecurringFrequency as RecurringFrequency, ETaskStatus } from "../types";
+import { ETaskStatus, ERecurringFrequency as RecurringFrequency } from "../types";
 import Modal from "./Modal";
-import { SPACING } from "../styles/consts";
 
 const DAY_ABBREV = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 
 const FREQUENCY_LABELS = {
     [RecurringFrequency.EVERY_WEEK]: "Weekly",
-    [RecurringFrequency.EVERY_OTHER_WEEK]: "Bi-weekly",
-    [RecurringFrequency.MONTHLY]: "Monthly",
+    [RecurringFrequency.EVERY_OTHER_WEEK]: "Bi-weekly (1st / 3rd week)",
+    [RecurringFrequency.MONTHLY]: "Monthly (1st week of month)",
 };
 
-const FREQUENCY_TOOLTIPS = {
-    [RecurringFrequency.EVERY_WEEK]: "Every week",
-    [RecurringFrequency.EVERY_OTHER_WEEK]: "Every other week (even weeks)",
-    [RecurringFrequency.MONTHLY]: "First week of each month",
-};
 
 const RecurringTasksModal = () => {
     const recurringTasks = useLiveQuery(() => db.recurringTasks.toArray()) || [];
@@ -70,6 +65,10 @@ const RecurringTasksModal = () => {
         };
 
         await db.recurringTasks.add(task);
+
+        // Process this recurring task immediately to add it to today if applicable
+        await queries.processRecurringTasksForToday(task.id);
+
         setNewTitle("");
         setNewDays(new Set());
     };
@@ -106,25 +105,6 @@ const RecurringTasksModal = () => {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {recurringTasks.map((task) => (
-                        <TableRow key={task.id}>
-                            <TableCell sx={{ p: SPACING.TINY.PX }}>{task.title}</TableCell>
-                            <TableCell sx={{ p: SPACING.TINY.PX }}>
-                                <Tooltip title={FREQUENCY_TOOLTIPS[task.frequency]}>
-                                    <span>{FREQUENCY_LABELS[task.frequency]}</span>
-                                </Tooltip>
-                            </TableCell >
-                            <TableCell sx={{ p: SPACING.TINY.PX }}>{formatDays(task.daysOfWeek)}</TableCell>
-                            <TableCell sx={{ p: SPACING.TINY.PX }}>
-                                <IconButton
-                                    size="small"
-                                    onClick={() => handleDeleteTask(task.id)}
-                                >
-                                    <DeleteIcon fontSize="small" />
-                                </IconButton>
-                            </TableCell>
-                        </TableRow>
-                    ))}
                     <TableRow>
                         <TableCell sx={{ p: SPACING.TINY.PX }}>
                             <TextField
@@ -148,13 +128,13 @@ const RecurringTasksModal = () => {
                                 }
                             >
                                 <MenuItem value={RecurringFrequency.EVERY_WEEK}>
-                                    Weekly
+                                    {FREQUENCY_LABELS[RecurringFrequency.EVERY_WEEK]}
                                 </MenuItem>
                                 <MenuItem value={RecurringFrequency.EVERY_OTHER_WEEK}>
-                                    Bi-weekly
+                                    {FREQUENCY_LABELS[RecurringFrequency.EVERY_OTHER_WEEK]}
                                 </MenuItem>
                                 <MenuItem value={RecurringFrequency.MONTHLY}>
-                                    Monthly
+                                    {FREQUENCY_LABELS[RecurringFrequency.MONTHLY]}
                                 </MenuItem>
                             </Select>
                         </TableCell>
@@ -184,10 +164,28 @@ const RecurringTasksModal = () => {
                                 disabled={newTitle.trim() === "" || newDays.size === 0}
                                 color="primary"
                             >
-                                <AddIcon fontSize="small" />
+                                <AddIcon fontSize="medium" />
                             </IconButton>
                         </TableCell>
                     </TableRow>
+                    {recurringTasks.map((task) => (
+                        <TableRow key={task.id}>
+                            <TableCell sx={{ p: SPACING.TINY.PX }}>{task.title}</TableCell>
+                            <TableCell sx={{ p: SPACING.TINY.PX }}>
+                                <span>{FREQUENCY_LABELS[task.frequency]}</span>
+                            </TableCell >
+                            <TableCell sx={{ p: SPACING.TINY.PX }}>{formatDays(task.daysOfWeek)}</TableCell>
+                            <TableCell sx={{ p: SPACING.TINY.PX }}>
+                                <IconButton
+                                    size="small"
+                                    onClick={() => handleDeleteTask(task.id)}
+                                >
+                                    <DeleteIcon fontSize="small" />
+                                </IconButton>
+                            </TableCell>
+                        </TableRow>
+                    ))}
+
                 </TableBody>
             </Table>
 
