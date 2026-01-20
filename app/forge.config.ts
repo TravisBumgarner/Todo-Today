@@ -3,6 +3,7 @@ import { MakerDMG } from '@electron-forge/maker-dmg'
 import { MakerRpm } from '@electron-forge/maker-rpm'
 import { MakerSquirrel } from '@electron-forge/maker-squirrel'
 import { MakerZIP } from '@electron-forge/maker-zip'
+import { AutoUnpackNativesPlugin } from '@electron-forge/plugin-auto-unpack-natives'
 import { VitePlugin } from '@electron-forge/plugin-vite'
 import type { ForgeConfig } from '@electron-forge/shared-types'
 
@@ -13,12 +14,18 @@ const config: ForgeConfig = {
   packagerConfig: {
     asar: true,
     icon: 'public/icons/icon', // Electron Forge will automatically append .icns/.ico/.png based on platform
-    osxSign: {},
-    osxNotarize: {
-      appleId: process.env.APPLE_ID,
-      appleIdPassword: process.env.APPLE_PASSWORD,
-      teamId: process.env.APPLE_TEAM_ID,
-    },
+    osxSign:
+      process.env.SHOULD_APPLE_SIGN === '1'
+        ? {
+            identity: process.env.APPLE_IDENTITY,
+            optionsForFile: () => {
+              return {
+                hardenedRuntime: true,
+                entitlements: 'entitlements.plist',
+              }
+            },
+          }
+        : undefined,
   },
 
   rebuildConfig: {},
@@ -42,6 +49,7 @@ const config: ForgeConfig = {
     }),
   ],
   plugins: [
+    ...(process.env.SHOULD_APPLE_SIGN === '1' ? [new AutoUnpackNativesPlugin({})] : []),
     new VitePlugin({
       // `build` can specify multiple entry builds, which can be Main process, Preload scripts, Worker process, etc.
       // If you are familiar with Vite configuration, it will look really familiar.
@@ -78,6 +86,21 @@ const config: ForgeConfig = {
     //   [FuseV1Options.OnlyLoadAppFromAsar]: true,
     // }),
   ],
+  hooks: {
+    postPackage: async (_forgeConfig, options: { outputPaths: string[]; platform: string; arch: string }) => {
+      if (options.platform === 'darwin' && process.env.SHOULD_APPLE_SIGN === '1') {
+        const { notarize } = await import('@electron/notarize')
+        const appPath = `${options.outputPaths[0]}/Todo Today.app`
+
+        await notarize({
+          appPath,
+          appleId: process.env.APPLE_ID!,
+          appleIdPassword: process.env.APPLE_PASSWORD!,
+          teamId: process.env.APPLE_TEAM_ID!,
+        })
+      }
+    },
+  },
   publishers: [
     {
       name: '@electron-forge/publisher-github',

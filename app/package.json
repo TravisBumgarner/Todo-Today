@@ -6,9 +6,10 @@
   "main": ".vite/build/main.js",
   "scripts": {
     "dev": "electron-forge start",
-    "package": "npm run check-version && dotenv -e .env -- electron-forge package",
-    "make": "electron-forge make",
-    "publish": "npm run check-version && dotenv -e .env -- electron-forge publish",
+    "package": "SHOULD_APPLE_SIGN=0 electron-forge package && open ./out",
+    "make": "npm run check-version && SHOULD_APPLE_SIGN=1 dotenv -e .env -- electron-forge make && open ./out",
+    "publish-mac": "npm run check-version && SHOULD_APPLE_SIGN=1 dotenv -e .env -- electron-forge publish && open ./out",
+    "publish": "npm run check-version && electron-forge publish",
     "lint": "npx biome check .",
     "check-version": "node --no-warnings ./scripts/check-version.js"
   },
