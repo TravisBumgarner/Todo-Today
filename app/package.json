@@ -8,7 +8,7 @@
     "dev": "electron-forge start",
     "package": "npm run check-version && dotenv -e .env -- electron-forge package",
     "make": "electron-forge make",
-    "publish": "dotenv -e .env -- electron-forge publish",
+    "publish": "npm run check-version && dotenv -e .env -- electron-forge publish",
     "lint": "npx biome check .",
     "check-version": "node --no-warnings ./scripts/check-version.js"
   },
