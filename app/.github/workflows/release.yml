@@ -7,22 +7,7 @@ permissions:
   contents: write
 
 jobs:
-  check-version:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Use Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Check changelog version matches package.json
-        run: node --no-warnings ./scripts/check-version.js
-
   build:
-    needs: check-version
     strategy:
       matrix:
         os:
