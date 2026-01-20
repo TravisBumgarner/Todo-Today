@@ -13,7 +13,7 @@ interface ActiveModal {
   title: string;
   disableEscapeKeyDown?: boolean;
   disableBackdropClick?: boolean;
-  styles: React.CSSProperties;
+  styles?: React.CSSProperties;
 }
 
 export const MODAL_MAX_HEIGHT = 800;

@@ -6,10 +6,11 @@ import { useCallback, useEffect, useMemo } from "react";
 import { database, queries } from "../database";
 import { activeModalSignal, selectedDateSignal } from "../signals";
 import { SPACING } from "../styles/consts";
-import type { TTask } from "../types";
+import type { ETaskStatus, TTask } from "../types";
 import { sortStrings } from "../utilities";
 import Modal, { MODAL_MAX_HEIGHT } from "./Modal";
 import { ModalID } from "./RenderModal";
+import TaskStatusSelector from "../components/TaskStatusSelector";
 
 interface TaskProps {
   task: TTask;
@@ -27,16 +28,24 @@ const Task = ({ task, isSelected }: TaskProps) => {
     await queries.removeTaskFromTodoList(selectedDateSignal.value, task.id);
   }, [task.id]);
 
+  const handleStatusChange = useCallback(
+    async (status: ETaskStatus) => {
+      if (status === null) return;
+      await database.tasks.where("id").equals(task.id).modify({ status });
+    },
+    [task.id]
+  );
+
   return (
     <Box
       sx={{
         display: "flex",
-        justifyContent: "space-between",
         alignItems: "center",
         backgroundColor: isSelected ? "action.selected" : undefined,
       }}
     >
-      <Typography variant="body1" sx={{ paddingLeft: SPACING.SMALL.PX }}>
+      <TaskStatusSelector taskStatus={task.status} handleStatusChangeCallback={handleStatusChange} />
+      <Typography variant="body1" sx={{ paddingLeft: SPACING.SMALL.PX, flexGrow: 1 }}>
         {task.title}
       </Typography>
       <Tooltip

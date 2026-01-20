@@ -123,7 +123,7 @@ const TodoList = () => {
             Select Tasks
           </Button>
           <Button variant="outlined" onClick={showRecurringTasksModal}>
-            Manage Reoccurring
+            Manage Recurring
           </Button>
         </Box>
         <Box
