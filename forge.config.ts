@@ -6,6 +6,8 @@ import { MakerZIP } from '@electron-forge/maker-zip'
 import { AutoUnpackNativesPlugin } from '@electron-forge/plugin-auto-unpack-natives'
 import { VitePlugin } from '@electron-forge/plugin-vite'
 import type { ForgeConfig } from '@electron-forge/shared-types'
+import * as fs from 'fs'
+import * as path from 'path'
 
 // import { FusesPlugin } from "@electron-forge/plugin-fuses";
 // import { FuseV1Options, FuseVersion } from "@electron/fuses";
@@ -33,19 +35,26 @@ const config: ForgeConfig = {
   makers: [
     new MakerSquirrel({
       iconUrl: 'https://example.com/icon.ico', // URL to your .ico file for Squirrel (Windows)
+      name: 'todo-today',
+      setupExe: 'Todo-Today-win32-x64-setup.exe',
     }),
     new MakerDMG({
       icon: 'public/icons/icon.icns', // For macOS DMG
+      name: 'Todo-Today-darwin',
     }),
     new MakerZIP({}, ['darwin']),
     new MakerRpm({
       options: {
         icon: 'public/icons/icon.png', // For RPM packages
+        name: 'todo-today',
+        productName: 'Todo Today',
       },
     }),
     new MakerDeb({
       options: {
         icon: 'public/icons/icon.png', // For DEB packages
+        name: 'todo-today',
+        productName: 'Todo Today',
       },
     }),
   ],
@@ -101,6 +110,31 @@ const config: ForgeConfig = {
         })
       }
     },
+    postMake: async (_forgeConfig, makeResults) => {
+      for (const result of makeResults) {
+        for (let i = 0; i < result.artifacts.length; i++) {
+          const artifact = result.artifacts[i]
+          const dir = path.dirname(artifact)
+          const ext = path.extname(artifact)
+
+          let newName: string | null = null
+          if (ext === '.deb') {
+            newName = `todo-today-linux-${result.arch}.deb`
+          } else if (ext === '.rpm') {
+            newName = `todo-today-linux-${result.arch}.rpm`
+          } else if (ext === '.zip' && result.platform === 'darwin') {
+            newName = `Todo-Today-darwin-${result.arch}.zip`
+          }
+
+          if (newName) {
+            const newPath = path.join(dir, newName)
+            fs.renameSync(artifact, newPath)
+            result.artifacts[i] = newPath
+          }
+        }
+      }
+      return makeResults
+    },
   },
   publishers: [
     {
@@ -108,7 +142,7 @@ const config: ForgeConfig = {
       config: {
         repository: { owner: 'travisbumgarner', name: 'todo-today' },
         prerelease: false,
-        draft: true,
+        draft: false,
       },
     },
   ],
