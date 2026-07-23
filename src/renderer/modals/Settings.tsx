@@ -1,9 +1,11 @@
-import { Box, Button, SxProps, Typography } from "@mui/material";
+import { Box, Button, FormControlLabel, Switch, SxProps, Typography } from "@mui/material";
 import moment from "moment";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
+import { CHANNEL_INVOKES } from "../../shared/types";
 import { DATE_BACKUP_DATE } from "../../shared/utilities";
 import { database } from "../database";
+import ipcMessenger from "../ipcMessenger";
 import { activeModalSignal, isRestoringSignal } from "../signals";
 import { BORDER_RADIUS, SPACING } from "../styles/consts";
 import { saveFile } from "../utilities";
@@ -20,6 +22,22 @@ const copyIndexedDBToObject = async () => {
 
 const Settings = () => {
   const [restoreFile, setRestoreFile] = useState<File | null>(null);
+  const [minimizeToTray, setMinimizeToTray] = useState(false);
+
+  useEffect(() => {
+    ipcMessenger
+      .invoke(CHANNEL_INVOKES.STORE.GET, undefined)
+      .then(({ minimizeToTray }) => {
+        setMinimizeToTray(minimizeToTray);
+      });
+  }, []);
+
+  const handleMinimizeToTrayChange = useCallback((value: boolean) => {
+    setMinimizeToTray(value);
+    void ipcMessenger.invoke(CHANNEL_INVOKES.STORE.SET, {
+      minimizeToTray: value,
+    });
+  }, []);
 
   const handleBackup = async () => {
     const backupData = await copyIndexedDBToObject();
@@ -94,6 +112,27 @@ const Settings = () => {
       >
         <Box sx={sectionSx}>
           <Button fullWidth variant="outlined" onClick={() => activeModalSignal.value = { id: ModalID.CHANGELOG_MODAL }}>Open Changelog</Button>
+        </Box>
+
+        <Box sx={sectionSx}>
+          <Typography variant="h3" sx={{ marginBottom: SPACING.SMALL.PX }}>
+            Window
+          </Typography>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={minimizeToTray}
+                onChange={(event) =>
+                  handleMinimizeToTrayChange(event.target.checked)
+                }
+              />
+            }
+            label="Minimize to status bar"
+          />
+          <Typography variant="body1">
+            Closing the window keeps Todo Today running in the status bar instead
+            of the dock.
+          </Typography>
         </Box>
 
         <Box sx={sectionSx}>
