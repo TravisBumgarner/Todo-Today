@@ -6,7 +6,7 @@ import { updateElectronApp } from 'update-electron-app'
 import { isDev, isMac } from './config'
 import menu from './menu'
 import './messages/messages'
-import { getStore } from './store'
+import store, { getStore } from './store'
 
 log.initialize()
 Menu.setApplicationMenu(menu)
@@ -27,66 +27,79 @@ if (started) {
 
 let mainWindow: BrowserWindow | null = null
 let tray: Tray | null = null
-// Set to true only when the user genuinely wants to exit, so the tray "close"
-// interception below can distinguish a real quit from a hide-to-tray.
-let isQuitting = false
+// Set while we're recreating the window to switch modes, so window-all-closed
+// doesn't misread the brief windowless moment as the app being done.
+let isSwitchingMode = false
+// Timestamp of the last blur-triggered hide. When the user clicks the tray
+// icon on a focused popover, the blur fires *first* and hides it; without this
+// guard the click handler would immediately reopen it (flicker + no dismiss).
+let lastBlurHideAt = 0
 
-app.on('before-quit', () => {
-  isQuitting = true
-})
+// Menu-bar popover mode is macOS-only; elsewhere the setting is a no-op and
+// the app stays a normal window.
+const isPopoverMode = () => isMac && getStore().showInMenuBar
 
-// Reveal the window and (on macOS) the dock icon, tearing down the tray.
-const showMainWindow = () => {
-  if (mainWindow) {
-    mainWindow.show()
-    mainWindow.focus()
-  }
-  if (isMac) {
-    void app.dock?.show()
-  }
-  if (tray) {
-    tray.destroy()
-    tray = null
-  }
+const trayIconPath = () => path.join(__dirname, '../../public/icons/icon.png')
+
+// Position the popover horizontally centred under the tray icon, just below
+// the menu bar.
+const positionPopover = () => {
+  if (!mainWindow || !tray) return
+  const trayBounds = tray.getBounds()
+  const winBounds = mainWindow.getBounds()
+  const x = Math.round(trayBounds.x + trayBounds.width / 2 - winBounds.width / 2)
+  const y = Math.round(trayBounds.y + trayBounds.height)
+  mainWindow.setPosition(x, y, false)
 }
 
-// Hide the window into the status bar (system tray) instead of closing.
-const hideToTray = () => {
-  if (mainWindow) {
+const showPopover = () => {
+  if (!mainWindow) return
+  positionPopover()
+  mainWindow.show()
+  mainWindow.focus()
+}
+
+// Tray-icon click: dismiss if open, otherwise open — with a guard so the blur
+// that this same click triggered doesn't cause an immediate reopen.
+const togglePopover = () => {
+  if (!mainWindow) return
+  if (mainWindow.isVisible()) {
     mainWindow.hide()
-  }
-  // Dropping the dock icon is what makes this a true "status bar only" mode.
-  if (isMac) {
-    void app.dock?.hide()
-  }
-  if (tray) {
     return
   }
+  if (Date.now() - lastBlurHideAt < 250) return
+  showPopover()
+}
 
-  const trayIconPath = path.join(__dirname, '../../public/icons/icon.png')
-  const trayImage = nativeImage.createFromPath(trayIconPath).resize({ width: 16, height: 16 })
+const ensureTray = () => {
+  if (tray) return
+  const image = nativeImage.createFromPath(trayIconPath()).resize({ width: 16, height: 16 })
   // Template images adapt to light/dark menu bars on macOS.
-  if (isMac) {
-    trayImage.setTemplateImage(true)
-  }
-
-  tray = new Tray(trayImage)
+  image.setTemplateImage(true)
+  tray = new Tray(image)
   tray.setToolTip('Todo Today')
-  tray.setContextMenu(
-    Menu.buildFromTemplate([
-      { label: 'Show Todo Today', click: showMainWindow },
-      { type: 'separator' },
-      {
-        label: 'Quit',
-        click: () => {
-          isQuitting = true
-          app.quit()
+  tray.on('click', togglePopover)
+  // Right-click gives an escape hatch to quit, since popover mode has no
+  // dock icon or window chrome.
+  tray.on('right-click', () => {
+    tray?.popUpContextMenu(
+      Menu.buildFromTemplate([
+        { label: 'Show Todo Today', click: showPopover },
+        { type: 'separator' },
+        {
+          label: 'Quit',
+          click: () => {
+            app.quit()
+          },
         },
-      },
-    ]),
-  )
-  // Clicking the tray icon itself restores the window.
-  tray.on('click', showMainWindow)
+      ]),
+    )
+  })
+}
+
+const destroyTray = () => {
+  tray?.destroy()
+  tray = null
 }
 
 const createWindow = () => {
@@ -100,24 +113,40 @@ const createWindow = () => {
     iconPath = path.join(__dirname, '../../public/icons/icon.png')
   }
 
+  const popover = isPopoverMode()
+
   mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
     icon: iconPath,
+    // A popover is a frameless, non-taskbar window that starts hidden until
+    // the tray icon is clicked and floats above other windows.
+    show: !popover,
+    frame: !popover,
+    skipTaskbar: popover,
+    resizable: !popover,
+    alwaysOnTop: popover,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
     },
   })
 
-  // When "minimize to status bar" is enabled, closing the window hides it to
-  // the tray instead of quitting. A real quit (menu → Quit, tray → Quit,
-  // app.quit()) sets isQuitting and falls through to the default behavior.
-  mainWindow.on('close', (event) => {
-    if (!isQuitting && getStore().minimizeToTray) {
-      event.preventDefault()
-      hideToTray()
-    }
-  })
+  if (popover) {
+    void app.dock?.hide()
+    // Let the popover appear over full-screen apps and on every Space.
+    mainWindow.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })
+    ensureTray()
+    // Clicking anywhere outside the window hides it — the core "glance and go"
+    // behavior. Keep it open while devtools are focused so debugging works.
+    mainWindow.on('blur', () => {
+      if (mainWindow?.webContents.isDevToolsOpened()) return
+      mainWindow?.hide()
+      lastBlurHideAt = Date.now()
+    })
+  } else {
+    void app.dock?.show()
+    destroyTray()
+  }
 
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
     mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL)
@@ -126,15 +155,35 @@ const createWindow = () => {
   }
 
   if (isDev) {
-    mainWindow.webContents.openDevTools()
+    mainWindow.webContents.openDevTools({ mode: 'detach' })
   }
+}
+
+// Tear down the current window and rebuild it in the mode the setting now
+// dictates. Renderer state lives in IndexedDB, so a reload loses nothing.
+const rebuildWindowForMode = () => {
+  isSwitchingMode = true
+  const previous = mainWindow
+  mainWindow = null
+  previous?.destroy()
+  createWindow()
+  isSwitchingMode = false
 }
 
 app.on('ready', createWindow)
 
+// Apply the popover/window choice immediately when it's toggled in Settings,
+// without requiring a restart.
+store.onDidChange('showInMenuBar', () => {
+  if (!isMac) return
+  rebuildWindowForMode()
+})
+
 app.on('window-all-closed', () => {
-  // With minimize-to-tray the window is hidden (not destroyed), so this only
-  // fires on a genuine close. Keep the macOS convention of staying alive.
+  // In popover mode the window is only ever hidden (not destroyed) during
+  // normal use, and mode switches set isSwitchingMode, so a real
+  // window-all-closed here means the user is done.
+  if (isSwitchingMode) return
   if (process.platform !== 'darwin') {
     app.quit()
   }
@@ -143,7 +192,10 @@ app.on('window-all-closed', () => {
 app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow()
+  } else if (isPopoverMode()) {
+    showPopover()
   } else {
-    showMainWindow()
+    mainWindow?.show()
+    mainWindow?.focus()
   }
 })

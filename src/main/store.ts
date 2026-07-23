@@ -3,7 +3,7 @@ import type { StoreSchema } from '../shared/types/store'
 
 const defaults: StoreSchema = {
   changelogLastSeenVersion: null,
-  minimizeToTray: false,
+  showInMenuBar: false,
 }
 
 const store = new Store<StoreSchema>({ defaults })
@@ -12,7 +12,7 @@ const store = new Store<StoreSchema>({ defaults })
 export const getStore = () => {
   const data = {
     changelogLastSeenVersion: store.get('changelogLastSeenVersion'),
-    minimizeToTray: store.get('minimizeToTray'),
+    showInMenuBar: store.get('showInMenuBar'),
   }
   return data
 }

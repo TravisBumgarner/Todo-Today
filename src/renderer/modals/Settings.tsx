@@ -22,20 +22,21 @@ const copyIndexedDBToObject = async () => {
 
 const Settings = () => {
   const [restoreFile, setRestoreFile] = useState<File | null>(null);
-  const [minimizeToTray, setMinimizeToTray] = useState(false);
+  const [showInMenuBar, setShowInMenuBar] = useState(false);
+  const isMac = navigator.userAgent.includes("Macintosh");
 
   useEffect(() => {
     ipcMessenger
       .invoke(CHANNEL_INVOKES.STORE.GET, undefined)
-      .then(({ minimizeToTray }) => {
-        setMinimizeToTray(minimizeToTray);
+      .then(({ showInMenuBar }) => {
+        setShowInMenuBar(showInMenuBar);
       });
   }, []);
 
-  const handleMinimizeToTrayChange = useCallback((value: boolean) => {
-    setMinimizeToTray(value);
+  const handleShowInMenuBarChange = useCallback((value: boolean) => {
+    setShowInMenuBar(value);
     void ipcMessenger.invoke(CHANNEL_INVOKES.STORE.SET, {
-      minimizeToTray: value,
+      showInMenuBar: value,
     });
   }, []);
 
@@ -119,19 +120,21 @@ const Settings = () => {
             Window
           </Typography>
           <FormControlLabel
+            disabled={!isMac}
             control={
               <Switch
-                checked={minimizeToTray}
+                checked={showInMenuBar}
                 onChange={(event) =>
-                  handleMinimizeToTrayChange(event.target.checked)
+                  handleShowInMenuBarChange(event.target.checked)
                 }
               />
             }
-            label="Minimize to status bar"
+            label="Show in menu bar"
           />
           <Typography variant="body1">
-            Closing the window keeps Todo Today running in the status bar instead
-            of the dock.
+            {isMac
+              ? "Run Todo Today from the macOS menu bar. Click the status-bar icon to pop it open, then click anywhere else to hide it."
+              : "Only available on macOS."}
           </Typography>
         </Box>
 
