@@ -73,9 +73,11 @@ const togglePopover = () => {
 
 const ensureTray = () => {
   if (tray) return
+  // Use the actual (color) app icon in the menu bar rather than a monochrome
+  // template. It won't auto-invert for light/dark menu bars, but it stays
+  // recognizably Todo Today. Swap in a dedicated template asset + setTemplateImage
+  // if the native monochrome look is preferred later.
   const image = nativeImage.createFromPath(trayIconPath()).resize({ width: 16, height: 16 })
-  // Template images adapt to light/dark menu bars on macOS.
-  image.setTemplateImage(true)
   tray = new Tray(image)
   tray.setToolTip('Todo Today')
   tray.on('click', togglePopover)
