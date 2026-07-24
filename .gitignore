@@ -92,3 +92,7 @@ typings/
 out/
 
 data.sqlite
+
+# DevTools performance traces
+Trace-*.json.gz
+Trace-*.json
