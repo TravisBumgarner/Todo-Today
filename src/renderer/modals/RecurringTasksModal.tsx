@@ -1,20 +1,17 @@
 import AddIcon from "@mui/icons-material/Add";
-import DeleteIcon from "@mui/icons-material/Delete";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import {
-    Box,
-    Button,
-    Checkbox,
-    IconButton,
-    MenuItem,
-    Select,
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableRow,
-    TextField,
-    Typography,
+  Box,
+  Button,
+  IconButton,
+  MenuItem,
+  Select,
+  type SxProps,
+  TextField,
+  Tooltip,
+  Typography,
 } from "@mui/material";
+import type { Theme } from "@mui/material/styles";
 import { useLiveQuery } from "dexie-react-hooks";
 import { useCallback, useState } from "react";
 import { v4 as uuid4 } from "uuid";
@@ -24,176 +21,205 @@ import db from "../database/database";
 import { activeModalSignal } from "../signals";
 import { SPACING } from "../styles/consts";
 import type {
-    EDayOfWeek,
-    ERecurringFrequency,
-    TRecurringTask,
+  EDayOfWeek,
+  ERecurringFrequency,
+  TRecurringTask,
 } from "../types";
 import { ETaskStatus, ERecurringFrequency as RecurringFrequency } from "../types";
 import Modal from "./Modal";
 
 const DAY_ABBREV = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+const DAYS: EDayOfWeek[] = [0, 1, 2, 3, 4, 5, 6];
 
 const FREQUENCY_LABELS = {
-    [RecurringFrequency.EVERY_WEEK]: "Weekly",
-    [RecurringFrequency.EVERY_OTHER_WEEK]: "Bi-weekly (1st / 3rd week)",
-    [RecurringFrequency.MONTHLY]: "Monthly (1st week of month)",
+  [RecurringFrequency.EVERY_WEEK]: "Weekly",
+  [RecurringFrequency.EVERY_OTHER_WEEK]: "Every other week (1st / 3rd)",
+  [RecurringFrequency.MONTHLY]: "Monthly (1st week)",
 };
-
 
 const RecurringTasksModal = () => {
-    const recurringTasks = useLiveQuery(() => db.recurringTasks.toArray()) || [];
-    const [newTitle, setNewTitle] = useState("");
-    const [newFrequency, setNewFrequency] = useState<ERecurringFrequency>(
-        RecurringFrequency.EVERY_WEEK
-    );
-    const [newDays, setNewDays] = useState<Set<EDayOfWeek>>(new Set());
+  const recurringTasks = useLiveQuery(() => db.recurringTasks.toArray()) || [];
+  const [newTitle, setNewTitle] = useState("");
+  const [newFrequency, setNewFrequency] = useState<ERecurringFrequency>(
+    RecurringFrequency.EVERY_WEEK
+  );
+  const [newDays, setNewDays] = useState<Set<EDayOfWeek>>(new Set());
 
-    const handleClose = useCallback(() => {
-        activeModalSignal.value = null;
-    }, []);
+  const handleClose = useCallback(() => {
+    activeModalSignal.value = null;
+  }, []);
 
-    const handleAddTask = async () => {
-        if (newTitle.trim() === "" || newDays.size === 0) return;
+  const canAdd = newTitle.trim() !== "" && newDays.size > 0;
 
-        const task: TRecurringTask = {
-            id: uuid4(),
-            title: newTitle.trim(),
-            frequency: newFrequency,
-            daysOfWeek: Array.from(newDays).sort(),
-            details: "",
-            status: ETaskStatus.NEW,
-        };
+  const handleAddTask = async () => {
+    if (!canAdd) return;
 
-        await db.recurringTasks.add(task);
-
-        // Process this recurring task immediately to add it to today if applicable
-        await queries.processRecurringTasksForToday(task.id);
-
-        setNewTitle("");
-        setNewDays(new Set());
+    const task: TRecurringTask = {
+      id: uuid4(),
+      title: newTitle.trim(),
+      frequency: newFrequency,
+      daysOfWeek: Array.from(newDays).sort(),
+      details: "",
+      status: ETaskStatus.NEW,
     };
 
-    const handleDeleteTask = async (id: string) => {
-        await db.recurringTasks.delete(id);
-    };
+    await db.recurringTasks.add(task);
+    // Add it to today straight away if it applies.
+    await queries.processRecurringTasksForToday(task.id);
 
-    const toggleDay = (day: EDayOfWeek) => {
-        setNewDays((prev) => {
-            const next = new Set(prev);
-            if (next.has(day)) {
-                next.delete(day);
-            } else {
-                next.add(day);
+    setNewTitle("");
+    setNewDays(new Set());
+  };
+
+  const handleDeleteTask = async (id: string) => {
+    await db.recurringTasks.delete(id);
+  };
+
+  const toggleDay = (day: EDayOfWeek) => {
+    setNewDays((prev) => {
+      const next = new Set(prev);
+      if (next.has(day)) next.delete(day);
+      else next.add(day);
+      return next;
+    });
+  };
+
+  const formatDays = (days: EDayOfWeek[]) =>
+    days.length === 7 ? "Every day" : days.map((d) => DAY_ABBREV[d]).join(" · ");
+
+  return (
+    <Modal title="Recurring Tasks" showModal={true} styles={{ width: 460 }}>
+      {/* Create */}
+      <Box sx={createCardSx}>
+        <TextField
+          size="small"
+          fullWidth
+          placeholder="Add a recurring task…"
+          value={newTitle}
+          spellCheck
+          onChange={(e) => setNewTitle(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") handleAddTask();
+          }}
+        />
+
+        <Box sx={{ display: "flex", gap: SPACING.TINY.PX, flexWrap: "wrap" }}>
+          {DAYS.map((day) => {
+            const selected = newDays.has(day);
+            return (
+              <Button
+                key={day}
+                size="small"
+                variant={selected ? "contained" : "outlined"}
+                onClick={() => toggleDay(day)}
+                sx={dayChipSx}
+              >
+                {DAY_ABBREV[day]}
+              </Button>
+            );
+          })}
+        </Box>
+
+        <Box sx={{ display: "flex", gap: SPACING.SMALL.PX }}>
+          <Select
+            size="small"
+            fullWidth
+            value={newFrequency}
+            onChange={(e) =>
+              setNewFrequency(e.target.value as ERecurringFrequency)
             }
-            return next;
-        });
-    };
+          >
+            <MenuItem value={RecurringFrequency.EVERY_WEEK}>
+              {FREQUENCY_LABELS[RecurringFrequency.EVERY_WEEK]}
+            </MenuItem>
+            <MenuItem value={RecurringFrequency.EVERY_OTHER_WEEK}>
+              {FREQUENCY_LABELS[RecurringFrequency.EVERY_OTHER_WEEK]}
+            </MenuItem>
+            <MenuItem value={RecurringFrequency.MONTHLY}>
+              {FREQUENCY_LABELS[RecurringFrequency.MONTHLY]}
+            </MenuItem>
+          </Select>
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            disabled={!canAdd}
+            onClick={handleAddTask}
+          >
+            Add
+          </Button>
+        </Box>
+      </Box>
 
-    const formatDays = (days: EDayOfWeek[]) => {
-        return days.map((d) => DAY_ABBREV[d]).join(", ");
-    };
+      {/* Browse existing */}
+      <Typography variant="h3" sx={{ mt: SPACING.MEDIUM.PX, mb: SPACING.SMALL.PX }}>
+        {recurringTasks.length > 0
+          ? `Existing (${recurringTasks.length})`
+          : "Existing"}
+      </Typography>
 
-    return (
-        <Modal title="Recurring Tasks" showModal={true} styles={{ width: '800px' }}>
-            <Table size="small">
-                <TableHead>
-                    <TableRow>
-                        <TableCell sx={{ p: SPACING.TINY.PX }}>Title</TableCell>
-                        <TableCell sx={{ p: SPACING.TINY.PX }} width="120px">Frequency</TableCell>
-                        <TableCell sx={{ p: SPACING.TINY.PX }} width="160px">Days</TableCell>
-                        <TableCell sx={{ p: SPACING.TINY.PX }} width="50px"></TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    <TableRow>
-                        <TableCell sx={{ p: SPACING.TINY.PX }}>
-                            <TextField
-                                size="small"
-                                fullWidth
-                                placeholder="New task..."
-                                value={newTitle}
-                                onChange={(e) => setNewTitle(e.target.value)}
-                                onKeyDown={(e) => {
-                                    if (e.key === "Enter") handleAddTask();
-                                }}
-                            />
-                        </TableCell>
-                        <TableCell sx={{ p: SPACING.TINY.PX }}>
-                            <Select
-                                size="small"
-                                fullWidth
-                                value={newFrequency}
-                                onChange={(e) =>
-                                    setNewFrequency(e.target.value as ERecurringFrequency)
-                                }
-                            >
-                                <MenuItem value={RecurringFrequency.EVERY_WEEK}>
-                                    {FREQUENCY_LABELS[RecurringFrequency.EVERY_WEEK]}
-                                </MenuItem>
-                                <MenuItem value={RecurringFrequency.EVERY_OTHER_WEEK}>
-                                    {FREQUENCY_LABELS[RecurringFrequency.EVERY_OTHER_WEEK]}
-                                </MenuItem>
-                                <MenuItem value={RecurringFrequency.MONTHLY}>
-                                    {FREQUENCY_LABELS[RecurringFrequency.MONTHLY]}
-                                </MenuItem>
-                            </Select>
-                        </TableCell>
-                        <TableCell sx={{ p: SPACING.TINY.PX }}>
-                            <Box sx={{ display: "flex", gap: 0.5 }}>
-                                {[0, 1, 2, 3, 4, 5, 6].map((i) => (
-                                    <>
-                                        <Checkbox
-                                            key={DAY_ABBREV[i]}
-                                            size="small"
-                                            checked={newDays.has(i)}
-                                            onChange={() => toggleDay(i)}
-                                            sx={{ padding: "2px" }}
-                                        />
-                                        <Typography>{DAY_ABBREV[i]}</Typography>
-                                    </>
-                                ))}
-                            </Box>
-                            {/* <Typography variant="caption" display="block">
-                                {DAY_ABBREV.join(" ")}
-                            </Typography> */}
-                        </TableCell>
-                        <TableCell sx={{ p: SPACING.TINY.PX }}>
-                            <IconButton
-                                size="small"
-                                onClick={handleAddTask}
-                                disabled={newTitle.trim() === "" || newDays.size === 0}
-                                color="primary"
-                            >
-                                <AddIcon fontSize="medium" />
-                            </IconButton>
-                        </TableCell>
-                    </TableRow>
-                    {recurringTasks.map((task) => (
-                        <TableRow key={task.id}>
-                            <TableCell sx={{ p: SPACING.TINY.PX }}>{task.title}</TableCell>
-                            <TableCell sx={{ p: SPACING.TINY.PX }}>
-                                <span>{FREQUENCY_LABELS[task.frequency]}</span>
-                            </TableCell >
-                            <TableCell sx={{ p: SPACING.TINY.PX }}>{formatDays(task.daysOfWeek)}</TableCell>
-                            <TableCell sx={{ p: SPACING.TINY.PX }}>
-                                <IconButton
-                                    size="small"
-                                    onClick={() => handleDeleteTask(task.id)}
-                                >
-                                    <DeleteIcon fontSize="small" />
-                                </IconButton>
-                            </TableCell>
-                        </TableRow>
-                    ))}
-
-                </TableBody>
-            </Table>
-
-            <Box sx={{ mt: 2, display: "flex", justifyContent: "flex-end" }}>
-                <Button onClick={handleClose}>Close</Button>
+      {recurringTasks.length === 0 ? (
+        <Typography variant="body2" sx={{ color: "text.secondary", pb: SPACING.SMALL.PX }}>
+          No recurring tasks yet. Add one above and it will show up on the days
+          you pick.
+        </Typography>
+      ) : (
+        <Box sx={{ display: "flex", flexDirection: "column", gap: SPACING.TINY.PX }}>
+          {recurringTasks.map((task) => (
+            <Box key={task.id} sx={taskRowSx}>
+              <Box sx={{ minWidth: 0, flex: 1 }}>
+                <Typography
+                  sx={{ fontWeight: 600, fontSize: "14px" }}
+                  noWrap
+                >
+                  {task.title}
+                </Typography>
+                <Typography variant="body2" sx={{ color: "text.secondary" }} noWrap>
+                  {FREQUENCY_LABELS[task.frequency]} · {formatDays(task.daysOfWeek)}
+                </Typography>
+              </Box>
+              <Tooltip title="Delete">
+                <IconButton size="small" onClick={() => handleDeleteTask(task.id)}>
+                  <DeleteOutlineIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
             </Box>
-        </Modal>
-    );
+          ))}
+        </Box>
+      )}
+
+      <Box sx={{ mt: SPACING.MEDIUM.PX, display: "flex", justifyContent: "flex-end" }}>
+        <Button variant="outlined" onClick={handleClose}>
+          Close
+        </Button>
+      </Box>
+    </Modal>
+  );
 };
+
+const createCardSx: SxProps<Theme> = (theme) => ({
+  display: "flex",
+  flexDirection: "column",
+  gap: SPACING.SMALL.PX,
+  padding: SPACING.SMALL.PX,
+  borderRadius: `${theme.shape.borderRadius}px`,
+  bgcolor: theme.app.panel,
+  border: `1px solid ${theme.palette.divider}`,
+});
+
+const dayChipSx: SxProps = {
+  minWidth: 38,
+  px: 0.5,
+  fontSize: "12px",
+};
+
+const taskRowSx: SxProps<Theme> = (theme) => ({
+  display: "flex",
+  alignItems: "center",
+  gap: SPACING.SMALL.PX,
+  padding: `6px ${SPACING.SMALL.PX}`,
+  borderRadius: `${theme.shape.borderRadius}px`,
+  bgcolor: "background.paper",
+  border: theme.app.border,
+});
 
 export default RecurringTasksModal;
