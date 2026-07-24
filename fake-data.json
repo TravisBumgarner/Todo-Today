@@ -1,0 +1,179 @@
+{
+  "tasks": [
+    {
+      "id": "t-0001",
+      "title": "Refactor the menu-bar tray icon",
+      "status": "IN_PROGRESS",
+      "type": "regular",
+      "details": "Swap the template image for the <b>color icon</b> and resize to 16px — see the <a href=\"https://www.electronjs.org/docs/latest/api/tray\">tray docs</a>.<ul><li>Template mode drops all color</li><li>16px keeps it crisp on retina</li></ul>",
+      "subtasks": [
+        { "id": "s-0001", "title": "Resize icon to 16px", "checked": true },
+        { "id": "s-0002", "title": "Set template image = <b>false</b>", "checked": false },
+        { "id": "s-0003", "title": "Test in light + dark menu bar", "checked": false }
+      ]
+    },
+    {
+      "id": "t-0002",
+      "title": "Review PR #124 — Electron 43 upgrade",
+      "status": "BLOCKED",
+      "type": "regular",
+      "details": "Waiting on CI. Blocked until the <b>native rebuild</b> passes.<ul><li>node-abi override landed</li><li>better-sqlite3 bumped to 13</li></ul>",
+      "subtasks": [
+        { "id": "s-0004", "title": "Check the audit output", "checked": true },
+        { "id": "s-0005", "title": "Verify better-sqlite3 rebuild", "checked": false }
+      ]
+    },
+    {
+      "id": "t-0003",
+      "title": "Write standup notes",
+      "status": "COMPLETED",
+      "type": "regular",
+      "details": "",
+      "subtasks": []
+    },
+    {
+      "id": "t-0004",
+      "title": "Water the office plant 🌱",
+      "status": "NEW",
+      "type": "regular",
+      "details": "The one by the window, <b>not</b> the fake one.",
+      "subtasks": []
+    },
+    {
+      "id": "t-0005",
+      "title": "Book the dentist (for real this time)",
+      "status": "NEW",
+      "type": "regular",
+      "details": "",
+      "subtasks": []
+    },
+    {
+      "id": "t-0006",
+      "title": "Sit in on the optional sync",
+      "status": "CANCELED",
+      "type": "regular",
+      "details": "Skipped — notes were posted afterward.",
+      "subtasks": []
+    },
+    {
+      "id": "t-0007",
+      "title": "Ship v3.4 release",
+      "status": "IN_PROGRESS",
+      "type": "regular",
+      "details": "Release checklist:<ul><li>Bump version in <b>package.json</b></li><li>Update changelog.ts to match</li><li>Tag and push</li><li>Verify the GitHub release artifacts</li></ul>",
+      "subtasks": [
+        { "id": "s-0006", "title": "Bump version", "checked": true },
+        { "id": "s-0007", "title": "Update changelog", "checked": true },
+        { "id": "s-0008", "title": "Tag release", "checked": false },
+        { "id": "s-0009", "title": "Verify installers on macOS + Linux", "checked": false }
+      ]
+    },
+    {
+      "id": "t-0008",
+      "title": "Reply to the email you've been avoiding",
+      "status": "BLOCKED",
+      "type": "regular",
+      "details": "Need the numbers from Sam first.",
+      "subtasks": []
+    },
+    {
+      "id": "t-0009",
+      "title": "Plan the Q3 roadmap and write up a summary long enough to check how a very long task title behaves inside the card",
+      "status": "NEW",
+      "type": "regular",
+      "details": "Deliberately long title to test truncation and wrapping.",
+      "subtasks": []
+    },
+    {
+      "id": "t-0010",
+      "title": "Fix the link popover clamping bug",
+      "status": "COMPLETED",
+      "type": "regular",
+      "details": "Clamp to viewport and flip below when there's no room above.",
+      "subtasks": [
+        { "id": "s-0010", "title": "Clamp horizontally", "checked": true },
+        { "id": "s-0011", "title": "Flip below near the top edge", "checked": true }
+      ]
+    },
+    {
+      "id": "t-0011",
+      "title": "Groceries",
+      "status": "NEW",
+      "type": "regular",
+      "details": "<ul><li>Coffee beans</li><li>Oat milk</li><li>Something green</li></ul>",
+      "subtasks": [
+        { "id": "s-0012", "title": "Coffee beans", "checked": false },
+        { "id": "s-0013", "title": "Oat milk", "checked": false },
+        { "id": "s-0014", "title": "Something green", "checked": true }
+      ]
+    },
+    {
+      "id": "t-0012",
+      "title": "Read 10 pages",
+      "status": "COMPLETED",
+      "type": "regular",
+      "details": "",
+      "subtasks": []
+    },
+    {
+      "id": "t-0013",
+      "title": "Renew the domain before it lapses",
+      "status": "NEW",
+      "type": "regular",
+      "details": "Expires next month. Renew at <a href=\"https://example.com/domains\">the registrar</a>.",
+      "subtasks": []
+    },
+    {
+      "id": "t-0014",
+      "title": "Debug the quota database warning",
+      "status": "IN_PROGRESS",
+      "type": "regular",
+      "details": "Benign Chromium warning on fresh launches — confirm it's harmless and silence it if possible.",
+      "subtasks": []
+    },
+    {
+      "id": "t-0015",
+      "title": "Sketch the settings redesign",
+      "status": "COMPLETED",
+      "type": "regular",
+      "details": "Sections got a calmer panel surface and tighter spacing.",
+      "subtasks": []
+    },
+    {
+      "id": "t-0016",
+      "title": "Clear the download folder",
+      "status": "CANCELED",
+      "type": "regular",
+      "details": "",
+      "subtasks": []
+    }
+  ],
+  "todoLists": [
+    {
+      "date": "2026-07-21",
+      "taskIds": ["t-0012", "t-0015", "t-0008", "t-0013"],
+      "processedRecurringTasks": true
+    },
+    {
+      "date": "2026-07-22",
+      "taskIds": ["t-0010", "t-0016", "t-0007", "t-0011", "t-0005"],
+      "processedRecurringTasks": true
+    },
+    {
+      "date": "2026-07-23",
+      "taskIds": [
+        "t-0001",
+        "t-0007",
+        "t-0002",
+        "t-0008",
+        "t-0004",
+        "t-0011",
+        "t-0009",
+        "t-0014",
+        "t-0003",
+        "t-0006"
+      ],
+      "processedRecurringTasks": true
+    }
+  ]
+}
