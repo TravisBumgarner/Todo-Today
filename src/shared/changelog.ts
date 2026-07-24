@@ -8,6 +8,16 @@ export interface ChangelogEntry {
 }
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '4.0.2',
+    date: '2026-07-24',
+    changes: [
+      {
+        category: 'Fixed',
+        description: 'The window scrollbar no longer flickers when opening a modal, menu, or dropdown',
+      },
+    ],
+  },
+  {
     version: '4.0.1',
     date: '2026-07-24',
     changes: [
