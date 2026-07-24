@@ -6,9 +6,9 @@ import {
   ButtonGroup,
   IconButton,
   type SxProps,
-  Tooltip,
 } from "@mui/material";
 import { useSignals } from "@preact/signals-react/runtime";
+import Tooltip from "./Tooltip";
 import { useLiveQuery } from "dexie-react-hooks";
 import { Reorder } from "framer-motion";
 import moment from "moment";

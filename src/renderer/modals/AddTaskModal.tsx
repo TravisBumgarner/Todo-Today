@@ -11,10 +11,10 @@ import {
   TextField,
   ToggleButton,
   ToggleButtonGroup,
-  Tooltip,
 } from "@mui/material";
 import { useCallback, useState } from "react";
 import { v4 as uuid4 } from "uuid";
+import Tooltip from "../components/Tooltip";
 
 import RichTextEditor from "../components/RichTextEditor";
 import TaskStatusSelector from "../components/TaskStatusSelector";

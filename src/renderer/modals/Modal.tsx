@@ -1,5 +1,6 @@
 import CloseIcon from "@mui/icons-material/CloseOutlined";
-import { IconButton, Tooltip, Typography } from "@mui/material";
+import { IconButton, Typography } from "@mui/material";
+import Tooltip from "../components/Tooltip";
 import Box from "@mui/material/Box";
 import MUIModal from "@mui/material/Modal";
 import { motion } from "framer-motion";

@@ -10,9 +10,9 @@ import {
   MenuItem,
   Select,
   SvgIcon,
-  Tooltip,
 } from "@mui/material";
 import { useCallback, useState } from "react";
+import Tooltip from "./Tooltip";
 import { SPACING } from "../styles/consts";
 import { ETaskStatus } from "../types";
 import { taskStatusIcon, taskStatusLookup } from "../utilities";

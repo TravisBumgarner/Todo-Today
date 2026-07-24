@@ -15,6 +15,10 @@ export const CHANGELOG: ChangelogEntry[] = [
         category: 'Fixed',
         description: 'The window scrollbar no longer flickers when opening a modal, menu, or dropdown',
       },
+      {
+        category: 'Improved',
+        description: 'Tooltips now dismiss themselves after a short delay instead of lingering while hovered',
+      },
     ],
   },
   {

@@ -1,5 +1,6 @@
 import CheckIcon from "@mui/icons-material/Check";
-import { Box, Button, IconButton, Tooltip, Typography } from "@mui/material";
+import { Box, Button, IconButton, Typography } from "@mui/material";
+import Tooltip from "../components/Tooltip";
 import { useSignals } from "@preact/signals-react/runtime";
 import { useLiveQuery } from "dexie-react-hooks";
 import { useCallback, useEffect, useMemo } from "react";
