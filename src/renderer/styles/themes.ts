@@ -336,6 +336,16 @@ export const buildTheme = (spec: ThemeSpec, density: EDensity): Theme => {
       body2: { fontSize: "12px", color: c.muted },
     },
     components: {
+      // The app keeps a permanent scrollbar (`overflowY: scroll`) with a stable
+      // gutter, so MUI's default scroll lock — which flips the body to
+      // `overflow: hidden` and pads it — only makes the scrollbar flicker away
+      // and back every time any overlay opens (modal, menu, select, tooltip).
+      // Disable it everywhere; the reserved gutter already prevents reflow.
+      MuiModal: { defaultProps: { disableScrollLock: true } },
+      MuiPopover: { defaultProps: { disableScrollLock: true } },
+      MuiMenu: { defaultProps: { disableScrollLock: true } },
+      MuiDialog: { defaultProps: { disableScrollLock: true } },
+      MuiDrawer: { defaultProps: { disableScrollLock: true } },
       MuiButton: {
         defaultProps: { size: "small", disableElevation: true },
         styleOverrides: {

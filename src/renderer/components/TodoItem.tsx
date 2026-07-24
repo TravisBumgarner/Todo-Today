@@ -7,7 +7,8 @@ import {
 } from "@mui/icons-material";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/CloseOutlined";
-import { Box, css, IconButton, TextField, Tooltip } from "@mui/material";
+import { Box, css, IconButton, TextField } from "@mui/material";
+import Tooltip from "./Tooltip";
 import ToggleButton from "@mui/material/ToggleButton";
 import { type Theme, useTheme } from "@mui/material/styles";
 import { useLiveQuery } from "dexie-react-hooks";

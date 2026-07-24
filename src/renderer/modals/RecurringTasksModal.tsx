@@ -8,10 +8,10 @@ import {
   Select,
   type SxProps,
   TextField,
-  Tooltip,
   Typography,
 } from "@mui/material";
 import type { Theme } from "@mui/material/styles";
+import Tooltip from "../components/Tooltip";
 import { useLiveQuery } from "dexie-react-hooks";
 import { useCallback, useState } from "react";
 import { v4 as uuid4 } from "uuid";
