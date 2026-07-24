@@ -1,4 +1,4 @@
-import { app, BrowserWindow, Menu, nativeImage, Tray } from 'electron'
+import { app, BrowserWindow, Menu, nativeImage, shell, Tray } from 'electron'
 import log from 'electron-log/main'
 import started from 'electron-squirrel-startup'
 import path from 'node:path'
@@ -39,7 +39,9 @@ let lastBlurHideAt = 0
 // the app stays a normal window.
 const isPopoverMode = () => isMac && getStore().showInMenuBar
 
-const trayIconPath = () => path.join(__dirname, '../../public/icons/icon.png')
+// A simple "TO" glyph sized for the menu bar. Electron picks up the matching
+// @2x file automatically for retina displays.
+const trayIconPath = () => path.join(__dirname, '../../public/icons/trayTemplate.png')
 
 // Position the popover horizontally centred under the tray icon, just below
 // the menu bar.
@@ -73,11 +75,12 @@ const togglePopover = () => {
 
 const ensureTray = () => {
   if (tray) return
-  // Use the actual (color) app icon in the menu bar rather than a monochrome
-  // template. It won't auto-invert for light/dark menu bars, but it stays
-  // recognizably Todo Today. Swap in a dedicated template asset + setTemplateImage
-  // if the native monochrome look is preferred later.
-  const image = nativeImage.createFromPath(trayIconPath()).resize({ width: 16, height: 16 })
+  const image = nativeImage.createFromPath(trayIconPath())
+  // On macOS a template image is drawn black on a light menu bar and white on
+  // a dark one, so the OS handles both variants from the single black asset.
+  if (isMac) {
+    image.setTemplateImage(true)
+  }
   tray = new Tray(image)
   tray.setToolTip('Todo Today')
   tray.on('click', togglePopover)
@@ -131,6 +134,15 @@ const createWindow = () => {
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
     },
+  })
+
+  // Open external links (e.g. from task details) in the default browser rather
+  // than navigating the app window or spawning an Electron window.
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    if (/^https?:\/\//i.test(url)) {
+      void shell.openExternal(url)
+    }
+    return { action: 'deny' }
   })
 
   if (popover) {
