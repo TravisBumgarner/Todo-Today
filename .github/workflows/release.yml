@@ -12,7 +12,7 @@ jobs:
       matrix:
         os:
           [
-            { name: 'windows', image: 'windows-latest' },
+            { name: 'windows', image: 'windows-2022' },
             { name: 'linux', image: 'ubuntu-latest' },
             { name: 'macos', image: 'macos-latest' }
           ]
