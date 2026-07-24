@@ -23,7 +23,7 @@ export const AppGlobalStyles = () => {
           maxWidth: "800px",
           margin: "0px auto",
           boxSizing: "border-box",
-          padding: SPACING.MEDIUM.PX,
+          padding: SPACING.TINY.PX,
         },
         "*::-webkit-scrollbar": {
           width: SCROLLBAR_WIDTH_PX,

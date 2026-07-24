@@ -1,9 +1,9 @@
+import ContentCopyIcon from "@mui/icons-material/ContentCopyOutlined";
 import SettingsIcon from "@mui/icons-material/Settings";
 import {
   Box,
   Button,
   ButtonGroup,
-  css,
   IconButton,
   type SxProps,
   Tooltip,
@@ -15,6 +15,7 @@ import moment from "moment";
 import { useCallback } from "react";
 
 import { database, queries } from "../database";
+import { useCopyPreviousDay } from "../hooks/useCopyPreviousDay";
 import { ModalID } from "../modals";
 import { activeModalSignal, selectedDateSignal } from "../signals";
 import { SPACING } from "../styles/consts";
@@ -101,6 +102,8 @@ const TodoList = () => {
     activeModalSignal.value = { id: ModalID.SETTINGS_MODAL };
   }, []);
 
+  const copyPreviousDay = useCopyPreviousDay();
+
   if (!taskIds) {
     return null; // or a loading spinner
   }
@@ -136,6 +139,11 @@ const TodoList = () => {
             </Button>
             <Button onClick={getNextDate}>&gt;</Button>
           </ButtonGroup>
+          <IconButton size="small" onClick={copyPreviousDay}>
+            <Tooltip title="Copy previous day">
+              <ContentCopyIcon fontSize="small" />
+            </Tooltip>
+          </IconButton>
           <IconButton size="small" onClick={handleSettings}>
             <Tooltip title="Settings">
               <SettingsIcon />
@@ -149,7 +157,7 @@ const TodoList = () => {
           display: "flex",
           flexDirection: "column",
           height: "100%",
-          padding: SPACING.SMALL.PX,
+          padding: SPACING.TINY.PX,
         }}
       >
         {taskIds.length === 0 && <EmptyTodoList />}
@@ -170,6 +178,8 @@ const TodoList = () => {
                   if (
                     target.tagName === "INPUT" ||
                     target.tagName === "TEXTAREA" ||
+                    target.isContentEditable ||
+                    target.closest('[contenteditable="true"]') ||
                     target.closest(".MuiTextField-root")
                   ) {
                     e.stopPropagation();
@@ -198,15 +208,19 @@ export const buttonWrapperCSS: SxProps = {
   alignItems: "center",
 };
 
-const todayButtonCSS = css`
-  width: 150px;
-  &:hover span {
-    display: none;
-  }
-
-  :hover:before {
-    content: "Go to Today";
-  }
-`;
+// In a ButtonGroup the middle button's side borders overlap its neighbors, so
+// on hover we raise it above them (zIndex) and force all four borders to the
+// accent color — otherwise only the top/bottom edges appear to change.
+const todayButtonCSS: SxProps = {
+  width: 150,
+  "&:hover span": { display: "none" },
+  "&:hover::before": { content: '"Go to Today"' },
+  "&:hover": {
+    zIndex: 1,
+    borderColor: "primary.main",
+    borderLeftColor: "primary.main",
+    borderRightColor: "primary.main",
+  },
+};
 
 export default TodoList;
