@@ -9,13 +9,16 @@ import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/CloseOutlined";
 import { Box, css, IconButton, TextField, Tooltip } from "@mui/material";
 import ToggleButton from "@mui/material/ToggleButton";
+import { type Theme, useTheme } from "@mui/material/styles";
 import { useLiveQuery } from "dexie-react-hooks";
 import { type ChangeEvent, useCallback, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { database, queries } from "../database";
+import { useDebouncedPersist } from "../hooks/useDebouncedPersist";
 import { selectedDateSignal } from "../signals";
-import { BORDER_RADIUS, SPACING } from "../styles/consts";
+import { SPACING } from "../styles/consts";
 import { ETaskStatus } from "../types";
+import RichTextEditor from "./RichTextEditor";
 import TaskStatusSelector from "./TaskStatusSelector";
 
 
@@ -32,13 +35,6 @@ const Subtask = ({
 }) => {
   const [localTitle, setLocalTitle] = useState("");
 
-  const handleTitleChange = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => {
-      setLocalTitle(event.target.value);
-    },
-    []
-  );
-
   const subtask = useLiveQuery(async () => {
     const fetchedSubtask = await queries.getSubtask(taskId, subtaskId);
     setLocalTitle(fetchedSubtask?.title ?? "");
@@ -51,10 +47,22 @@ const Subtask = ({
     });
   }, [taskId, subtaskId, subtask]);
 
-  const handleSaveTitle = useCallback(async () => {
-    if (localTitle.trim().length === 0) return;
-    await queries.updateSubtask(taskId, subtaskId, { title: localTitle });
-  }, [taskId, subtaskId, localTitle]);
+  const persistTitle = useDebouncedPersist<string>(
+    useCallback(
+      (html: string) => {
+        void queries.updateSubtask(taskId, subtaskId, { title: html });
+      },
+      [taskId, subtaskId]
+    )
+  );
+
+  const handleTitleSave = useCallback(
+    (html: string) => {
+      setLocalTitle(html);
+      persistTitle(html);
+    },
+    [persistTitle]
+  );
 
   const handleDeleteSubtask = useCallback(async () => {
     await queries.deleteSubtask(taskId, subtaskId);
@@ -77,25 +85,27 @@ const Subtask = ({
           </IconButton>
         </Tooltip>
       )}
-      <TextField
-        multiline
-        onChange={handleTitleChange}
-        onBlur={handleSaveTitle}
-        value={localTitle}
+      <Box
         sx={{
           flexGrow: 1,
-          textDecoration: subtask.checked ? "line-through" : "none",
-          "& .MuiOutlinedInput-root": {
-            padding: 0,
-            "& fieldset": {
-              border: "none",
-            },
-            "& input": {
-              padding: 0,
-            },
-          },
+          minWidth: 0,
+          ...(subtask.checked
+            ? {
+                "& [contenteditable]": {
+                  textDecoration: "line-through",
+                  color: "text.secondary",
+                },
+              }
+            : {}),
         }}
-      />
+      >
+        <RichTextEditor
+          plain
+          value={localTitle}
+          placeholder="Subtask"
+          onChange={handleTitleSave}
+        />
+      </Box>
       <Box sx={{ display: "flex" }}>
         <Tooltip title="Delete subtask">
           <IconButton size="small" onClick={handleDeleteSubtask}>
@@ -116,6 +126,8 @@ const subtaskWrapperCSS = css`
 `;
 
 const TodoItem = ({ taskId }: TTodoItem) => {
+  const theme = useTheme();
+  const density = theme.app.density;
   const [showContent, setShowContent] = useState(false);
   const [localDetails, setLocalDetails] = useState("");
   const [localTitle, setLocalTitle] = useState("");
@@ -192,19 +204,22 @@ const TodoItem = ({ taskId }: TTodoItem) => {
       .modify({ title: localTitle });
   }, [taskId, localTitle]);
 
-  const handleDetailsChange = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => {
-      setLocalDetails(event.target.value);
-    },
-    []
+  const persistDetails = useDebouncedPersist<string>(
+    useCallback(
+      (html: string) => {
+        void database.tasks.where("id").equals(taskId).modify({ details: html });
+      },
+      [taskId]
+    )
   );
 
-  const handleSaveDetails = useCallback(async () => {
-    await database.tasks
-      .where("id")
-      .equals(taskId)
-      .modify({ details: localDetails });
-  }, [taskId, localDetails]);
+  const handleDetailsSave = useCallback(
+    (html: string) => {
+      setLocalDetails(html);
+      persistDetails(html);
+    },
+    [persistDetails]
+  );
 
   const handleAddSubtask = useCallback(async () => {
     await queries.insertSubtask(taskId, {
@@ -216,131 +231,116 @@ const TodoItem = ({ taskId }: TTodoItem) => {
   }, [taskId, subtaskTitle]);
 
   return (
-    <Box sx={{ display: "flex", alignItems: "center", gap: SPACING.SMALL.PX }}>
-      <DragIndicator style={{ cursor: "grab" }} />
-      <Box sx={wrapperCSS}>
-        <Box sx={headerCSS(showContent)}>
-          <Box sx={leftHeaderCSS}>
-            <Box>
-              <TaskStatusSelector
-                handleStatusChangeCallback={handleStatusChange}
-                taskStatus={status}
-                showLabel={false}
-              />
-            </Box>
-            <TextField
-              size="small"
-              fullWidth
-              placeholder="Task"
-              value={localTitle}
-              onBlur={handleSaveTitle}
-              onChange={handleTitleChange}
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  padding: 0,
-                  pointerEvents: "auto",
-                  "& fieldset": {
-                    border: "none",
-                  },
-                  "& input": {
-                    fontSize: "24px",
-                    pointerEvents: "auto",
-                    padding: 0,
-                  },
-                },
-              }}
+    <Box sx={cardSx(theme, status)}>
+      <Box sx={headerRowSx}>
+        <DragIndicator sx={dragHandleSx} />
+        <TaskStatusSelector
+          handleStatusChangeCallback={handleStatusChange}
+          taskStatus={status}
+          showLabel={false}
+        />
+        <TextField
+          size="small"
+          placeholder="Task"
+          value={localTitle}
+          onBlur={handleSaveTitle}
+          onChange={handleTitleChange}
+          sx={{
+            flex: 1,
+            minWidth: 0,
+            "& .MuiOutlinedInput-root": {
+              padding: 0,
+              pointerEvents: "auto",
+              "& fieldset": { border: "none" },
+              "& input": {
+                fontSize: `${density.titleSize}px`,
+                fontWeight: 600,
+                textDecoration:
+                  status === ETaskStatus.COMPLETED ||
+                  status === ETaskStatus.CANCELED
+                    ? "line-through"
+                    : "none",
+                pointerEvents: "auto",
+                padding: 0,
+              },
+            },
+          }}
+        />
+        <ToggleButton
+          size="small"
+          value="text"
+          onChange={toggleContent}
+          sx={{ backgroundColor: "transparent" }}
+        >
+          <Tooltip title={showContent ? "Hide details" : "Show details"}>
+            <ChevronRight
+              color="info"
+              fontSize="small"
+              sx={{ transform: `rotate(${showContent ? "90deg" : "0deg"})` }}
             />
-          </Box>
-          <Box sx={rightHeaderCSS}>
-            <ToggleButton
-              size="small"
-              value="text"
-              onChange={toggleContent}
-              sx={{
-                backgroundColor: "background.paper",
-              }}
-            >
-              <Tooltip title={showContent ? "Hide Details" : "Show details"}>
-                <ChevronRight
-                  color="info"
-                  fontSize="small"
-                  sx={{ transform: `rotate(${showContent ? "90deg" : "0deg"})` }}
-                />
-              </Tooltip>
-            </ToggleButton>
+          </Tooltip>
+        </ToggleButton>
+        <Tooltip title="Remove from today">
+          <IconButton size="small" onClick={handleRemoveFromToday}>
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+      </Box>
 
-            <Tooltip title="Remove from today">
-              <IconButton
-                onClick={handleRemoveFromToday}
-                sx={{ marginLeft: "0.5rem" }}
-              >
-                <CloseIcon fontSize="small" />
-              </IconButton>
-            </Tooltip>
-          </Box>
-        </Box>
-        {showContent && (
-          <Box sx={contentWrapperCSS}>
-            <TextField
-              placeholder="Add notes"
-              fullWidth
-              multiline
-              size="small"
+      {showContent && (
+        <Box sx={contentWrapperSx(theme)}>
+            <RichTextEditor
               value={localDetails}
-              onBlur={handleSaveDetails}
-              onChange={handleDetailsChange}
+              placeholder="Add notes"
+              onChange={handleDetailsSave}
             />
             <Box>
-              <Box>
-                <Box sx={subtaskInputWrapperCSS}>
-                  <TextField
-                    sx={{ flexGrow: 1 }}
-                    size="small"
-                    fullWidth
-                    type="text"
-                    placeholder="Add subtask"
-                    value={subtaskTitle}
-                    multiline
-                    onChange={handleSubtaskTitleChange}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" && !e.shiftKey) {
-                        e.preventDefault();
-                        handleAddSubtask();
-                      }
-                    }}
-                  />
-                  <Tooltip title="Add subtask">
-                    <span>
-                      <IconButton
-                        sx={{ cursor: "pointer" }}
-                        color={subtaskTitle.length === 0 ? "info" : "primary"}
-                        disabled={subtaskTitle.length === 0}
-                        onClick={handleAddSubtask}
-                      >
-                        <Add fontSize="small" />
-                      </IconButton>
-                    </span>
-                  </Tooltip>
+              <Box sx={subtaskInputWrapperCSS}>
+                <TextField
+                  sx={{ flexGrow: 1 }}
+                  size="small"
+                  type="text"
+                  placeholder="Add a subtask"
+                  value={subtaskTitle}
+                  onChange={handleSubtaskTitleChange}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.shiftKey) {
+                      e.preventDefault();
+                      handleAddSubtask();
+                    }
+                  }}
+                />
+                <Tooltip title="Add subtask">
+                  <span>
+                    <IconButton
+                      size="small"
+                      sx={{ cursor: "pointer" }}
+                      color={subtaskTitle.length === 0 ? "info" : "primary"}
+                      disabled={subtaskTitle.length === 0}
+                      onClick={handleAddSubtask}
+                    >
+                      <Add fontSize="small" />
+                    </IconButton>
+                  </span>
+                </Tooltip>
+              </Box>
+              {subtaskIds.length > 0 && (
+                <Box sx={{ marginTop: SPACING.TINY.PX }}>
+                  {subtaskIds.map((subtaskId) => (
+                    <Subtask
+                      key={subtaskId}
+                      taskId={taskId}
+                      subtaskId={subtaskId}
+                    />
+                  ))}
                 </Box>
-              </Box>
-              <Box sx={subtaskListCSS}>
-                {subtaskIds.map((subtaskId) => (
-                  <Subtask
-                    key={subtaskId}
-                    taskId={taskId}
-                    subtaskId={subtaskId}
-                  />
-                ))}
-              </Box>
+              )}
             </Box>
           </Box>
         )}
-      </Box>
     </Box>
   );
 };
-
-const subtaskListCSS = css``;
 
 const subtaskInputWrapperCSS = css`
       display: flex;
@@ -349,49 +349,45 @@ const subtaskInputWrapperCSS = css`
       align-items: center;
       `;
 
-const contentWrapperCSS = css`
-      display: flex;
-      flex-direction: row;
-      gap: ${SPACING.SMALL.PX};
-
-  & > div {
-        flex: 1;
-  }
-      `;
-
-const rightHeaderCSS = css`
-      display: flex;
-      align-items: center;
-      flex-shrink: 0;
-      `;
-
-const headerCSS = (showDetails: boolean) => css`
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: ${showDetails ? SPACING.SMALL.PX : "0"};
-      `;
-
-const leftHeaderCSS = css`
-      display: flex;
-      flex-grow: 1;
-      align-items: center;
-      `;
-
-const wrapperCSS = {
-  bgcolor: "background.paper",
-  flexGrow: 1,
-  borderRadius: BORDER_RADIUS.ZERO.PX,
-  padding: SPACING.SMALL.PX,
-  marginBottom: SPACING.SMALL.PX,
-  cursor: "grab",
-  "& input, & textarea": {
-    cursor: "text",
-    pointerEvents: "auto",
-  },
-  "&:active": {
-    cursor: "grabbing",
-  },
+const headerRowSx = {
+  display: "flex",
+  alignItems: "center",
+  gap: SPACING.TINY.PX,
 };
+
+const dragHandleSx = {
+  cursor: "grab",
+  color: "text.secondary",
+  opacity: 0.4,
+  fontSize: "18px",
+  flexShrink: 0,
+  "&:active": { cursor: "grabbing" },
+};
+
+// Status Rail: a colored left border encodes status; the rest of the card
+// stays neutral.
+const cardSx = (theme: Theme, status: ETaskStatus) => ({
+  display: "flex",
+  flexDirection: "column" as const,
+  bgcolor: "background.paper",
+  border: theme.app.border,
+  borderLeft: `3px solid ${theme.app.statusColors[status]}`,
+  borderRadius: `${theme.shape.borderRadius}px`,
+  boxShadow: theme.app.cardShadow,
+  padding: `${theme.app.density.rowPadY}px ${SPACING.SMALL.PX}`,
+  marginBottom: `${theme.app.density.itemGap}px`,
+  cursor: "grab",
+  "& input, & textarea, & [contenteditable]": { cursor: "text" },
+  "&:active": { cursor: "grabbing" },
+});
+
+const contentWrapperSx = (theme: Theme) => ({
+  display: "flex",
+  flexDirection: "column" as const,
+  gap: SPACING.TINY.PX,
+  marginTop: SPACING.TINY.PX,
+  paddingTop: SPACING.TINY.PX,
+  borderTop: `1px dashed ${theme.palette.divider}`,
+});
 
 export default TodoItem;

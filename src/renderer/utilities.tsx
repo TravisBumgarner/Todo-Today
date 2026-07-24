@@ -72,18 +72,18 @@ const saveFile = async (fileName: string, jsonData: unknown) => {
   a.click();
 };
 
-const taskStatusIcon = (taskStatus: ETaskStatus) => {
+const taskStatusIcon = (taskStatus: ETaskStatus, color?: string) => {
   switch (taskStatus) {
     case ETaskStatus.CANCELED:
-      return <Icon.CanceledIcon />;
+      return <Icon.CanceledIcon color={color} />;
     case ETaskStatus.BLOCKED:
-      return <Icon.BlockedIcon />;
+      return <Icon.BlockedIcon color={color} />;
     case ETaskStatus.NEW:
-      return <Icon.NewIcon />;
+      return <Icon.NewIcon color={color} />;
     case ETaskStatus.IN_PROGRESS:
-      return <Icon.InProgressIcon />;
+      return <Icon.InProgressIcon color={color} />;
     case ETaskStatus.COMPLETED:
-      return <Icon.CompletedIcon />;
+      return <Icon.CompletedIcon color={color} />;
   }
 };
 

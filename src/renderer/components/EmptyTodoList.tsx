@@ -2,35 +2,14 @@ import { Box, Button, css, Typography } from "@mui/material";
 import { useCallback } from "react";
 
 import { useSignals } from "@preact/signals-react/runtime";
-import { queries } from "../database";
 import { ModalID } from "../modals";
-import {
-  activeModalSignal,
-  messageSignal,
-  selectedDateSignal,
-} from "../signals";
+import { activeModalSignal } from "../signals";
 import { SPACING } from "../styles/consts";
+import { useCopyPreviousDay } from "../hooks/useCopyPreviousDay";
 
 const EmptyTodoList = () => {
   useSignals();
-  const getPreviousDatesTasks = useCallback(async () => {
-    const previousDayActiveTasks = await queries.getPreviousDayActiveTasks(
-      selectedDateSignal.value
-    );
-    if (!previousDayActiveTasks || previousDayActiveTasks.length === 0) {
-      messageSignal.value = {
-        severity: "error",
-        text: "No tasks to copy from previous day",
-      };
-      return;
-    }
-    // debugger
-    await queries.getAndCreateIfNotExistsTodoList(selectedDateSignal.value);
-    await queries.upsertTodoList(
-      selectedDateSignal.value,
-      previousDayActiveTasks
-    );
-  }, []);
+  const getPreviousDatesTasks = useCopyPreviousDay();
 
   const showManagementModal = useCallback(() => {
     activeModalSignal.value = { id: ModalID.SELECT_TASKS_MODAL };
