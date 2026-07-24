@@ -1,8 +1,8 @@
+import path from 'node:path'
 import { app, BrowserWindow, Menu, nativeImage, shell, Tray } from 'electron'
 import log from 'electron-log/main'
 import started from 'electron-squirrel-startup'
-import path from 'node:path'
-import { updateElectronApp } from 'update-electron-app'
+import { UpdateSourceType, updateElectronApp } from 'update-electron-app'
 import { isDev, isMac } from './config'
 import menu from './menu'
 import './messages/messages'
@@ -12,6 +12,14 @@ log.initialize()
 Menu.setApplicationMenu(menu)
 
 updateElectronApp({
+  // update.electronjs.org matches the owner/repo path case-sensitively and only
+  // serves the all-lowercase form. Inferring the repo from package.json's
+  // repository URL yields "TravisBumgarner/todo-today", which the service answers
+  // with 204 (no update) — silently breaking auto-update. Pin the lowercase path.
+  updateSource: {
+    type: UpdateSourceType.ElectronPublicUpdateService,
+    repo: 'travisbumgarner/todo-today',
+  },
   logger: {
     log: log.log,
     info: log.info,
