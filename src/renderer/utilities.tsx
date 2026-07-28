@@ -57,6 +57,25 @@ const sumArray = (arr: number[]) =>
 export const sortStrings = (a: string, b: string) =>
   a.toLocaleLowerCase() > b.toLocaleLowerCase() ? 1 : -1;
 
+/**
+ * Tally the "[]" checkboxes RichTextEditor writes into a task's details, so a
+ * collapsed task can still show how far along its checklist is.
+ */
+export const countChecklist = (details: string) => {
+  if (!details.includes("rte-check")) return { total: 0, checked: 0 };
+
+  const boxes = new DOMParser()
+    .parseFromString(details, "text/html")
+    .querySelectorAll(".rte-check");
+
+  let checked = 0;
+  boxes.forEach((box) => {
+    if (box.getAttribute("data-checked") === "true") checked += 1;
+  });
+
+  return { total: boxes.length, checked };
+};
+
 const saveFile = async (fileName: string, jsonData: unknown) => {
   const blob = new Blob([JSON.stringify(jsonData, null, 2)], {
     type: "application/json",

@@ -4,13 +4,13 @@ import Tooltip from "../components/Tooltip";
 import { useSignals } from "@preact/signals-react/runtime";
 import { useLiveQuery } from "dexie-react-hooks";
 import { useCallback, useEffect, useMemo } from "react";
+import { openNewTaskModal } from "../actions";
 import { database, queries } from "../database";
 import { activeModalSignal, selectedDateSignal } from "../signals";
 import { SPACING } from "../styles/consts";
 import type { ETaskStatus, TTask } from "../types";
 import { sortStrings } from "../utilities";
 import Modal, { MODAL_MAX_HEIGHT } from "./Modal";
-import { ModalID } from "./RenderModal";
 import TaskStatusSelector from "../components/TaskStatusSelector";
 
 interface TaskProps {
@@ -79,10 +79,6 @@ const SelectTasksModal = () => {
     database.todoList.where("date").equals(selectedDateSignal.value).first()
   );
 
-  const showAddNewTaskModal = useCallback(() => {
-    activeModalSignal.value = { id: ModalID.ADD_TASK_MODAL };
-  }, []);
-
   const handleClose = useCallback(() => {
     activeModalSignal.value = null;
   }, []);
@@ -101,8 +97,8 @@ const SelectTasksModal = () => {
             There are no Tasks to Work On
           </Typography>
           <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-            <Button onClick={showAddNewTaskModal} variant="contained">
-              Add New Task
+            <Button onClick={openNewTaskModal} variant="contained">
+              New Task
             </Button>
           </Box>
         </Box>
@@ -148,7 +144,7 @@ const SelectTasksModal = () => {
         </Box>
       </Box>
     );
-  }, [tasks, todoList, showAddNewTaskModal, handleClose]);
+  }, [tasks, todoList, handleClose]);
 
   return (
     <Modal title="Select Tasks" showModal={true}>

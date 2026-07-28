@@ -7,6 +7,7 @@ import AppThemeProvider from "./styles/Theme";
 import { useSignals } from "@preact/signals-react/runtime";
 import useShowChangelog from "./hooks/useShowChangelog";
 import { useProcessRecurringTasks } from "./hooks/useProcessRecurringTasks";
+import useKeyboardShortcuts from "./hooks/useKeyboardShortcuts";
 import { isRestoringSignal } from "./signals";
 
 declare global {
@@ -19,6 +20,7 @@ function App() {
   useSignals();
   useShowChangelog()
   useProcessRecurringTasks()
+  useKeyboardShortcuts()
 
   if (isRestoringSignal.value) {
     return <p>Loading...</p>;

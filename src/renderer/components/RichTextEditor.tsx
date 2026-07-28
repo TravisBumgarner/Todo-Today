@@ -15,8 +15,6 @@ interface Props {
   value: string;
   onChange: (html: string) => void;
   placeholder?: string;
-  /** Inline style with no box border/padding — used for subtask titles. */
-  plain?: boolean;
 }
 
 // execCommand is deprecated on paper but the lightest way to get bold / lists /
@@ -87,7 +85,7 @@ const normalizeUrl = (url: string) => {
   return /^(https?:|mailto:)/i.test(t) ? t : `https://${t}`;
 };
 
-const RichTextEditor = ({ value, onChange, placeholder, plain }: Props) => {
+const RichTextEditor = ({ value, onChange, placeholder }: Props) => {
   const ref = useRef<HTMLDivElement>(null);
   const popRef = useRef<HTMLDivElement>(null);
   const savedRange = useRef<Range | null>(null);
@@ -368,7 +366,7 @@ const RichTextEditor = ({ value, onChange, placeholder, plain }: Props) => {
         onKeyUp={refreshPopover}
         onKeyDown={handleKeyDown}
         onClick={handleClick}
-        sx={plain ? plainEditorSx : editorSx}
+        sx={editorSx}
       />
 
       {pop ? (
@@ -482,12 +480,6 @@ const editorSx: SxProps<Theme> = (theme) => ({
   borderRadius: `${theme.shape.borderRadius}px`,
   border: `1px solid ${theme.palette.divider}`,
   "&:focus-within, &:focus": { borderColor: theme.palette.primary.main },
-});
-
-const plainEditorSx: SxProps<Theme> = (theme) => ({
-  ...baseEditor(theme),
-  minHeight: "18px",
-  padding: 0,
 });
 
 const popoverSx: SxProps<Theme> = (theme) => ({

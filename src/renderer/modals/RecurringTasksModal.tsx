@@ -94,7 +94,7 @@ const RecurringTasksModal = () => {
         <TextField
           size="small"
           fullWidth
-          placeholder="Add a recurring task…"
+          placeholder="New recurring task…"
           value={newTitle}
           spellCheck
           onChange={(e) => setNewTitle(e.target.value)}
@@ -145,7 +145,7 @@ const RecurringTasksModal = () => {
             disabled={!canAdd}
             onClick={handleAddTask}
           >
-            Add
+            New
           </Button>
         </Box>
       </Box>
@@ -159,8 +159,8 @@ const RecurringTasksModal = () => {
 
       {recurringTasks.length === 0 ? (
         <Typography variant="body2" sx={{ color: "text.secondary", pb: SPACING.SMALL.PX }}>
-          No recurring tasks yet. Add one above and it will show up on the days
-          you pick.
+          No recurring tasks yet. Create one above and it will show up on the
+          days you pick.
         </Typography>
       ) : (
         <Box sx={{ display: "flex", flexDirection: "column", gap: SPACING.TINY.PX }}>

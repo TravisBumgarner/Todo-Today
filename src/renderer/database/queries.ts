@@ -1,7 +1,7 @@
 import moment from 'moment'
 import { v4 as uuid } from 'uuid'
 import { DATE_ISO_DATE_MOMENT_STRING, EDayOfWeek, ERecurringFrequency, ETaskStatus } from '../types'
-import type { TDateISODate, TRecurringTask, TSubtask, TTask, TTodoList } from '../types'
+import type { TDateISODate, TRecurringTask, TTask, TTodoList } from '../types'
 import database from './database'
 
 export const getTodoList = async (date: TDateISODate) => {
@@ -80,41 +80,6 @@ export const reorderTasks = async (date: TDateISODate, taskIds: string[]) => {
   await database.todoList.where('date').equals(date).modify({ taskIds })
 }
 
-export const insertSubtask = async (taskId: string, subtask: TSubtask) => {
-  const task = await database.tasks.where('id').equals(taskId).first()
-  await database.tasks
-    .where('id')
-    .equals(taskId)
-    .modify({ subtasks: [...(task?.subtasks ?? []), subtask] })
-}
-
-export const updateSubtask = async (taskId: string, subtaskId: string, subtaskUpdate: Partial<TSubtask>) => {
-  const task = await database.tasks.where('id').equals(taskId).first()
-  await database.tasks
-    .where('id')
-    .equals(taskId)
-    .modify({
-      subtasks: task?.subtasks.map((subtask) =>
-        subtask.id === subtaskId ? { ...subtask, ...subtaskUpdate } : subtask,
-      ),
-    })
-}
-
-export const deleteSubtask = async (taskId: string, subtaskId: string) => {
-  const task = await database.tasks.where('id').equals(taskId).first()
-  await database.tasks
-    .where('id')
-    .equals(taskId)
-    .modify({
-      subtasks: task?.subtasks.filter((subtask) => subtask.id !== subtaskId),
-    })
-}
-
-export const getSubtask = async (taskId: string, subtaskId: string) => {
-  const task = await database.tasks.where('id').equals(taskId).first()
-  return task?.subtasks.find((subtask) => subtask.id === subtaskId)
-}
-
 export const processRecurringTasksForToday = async (recurringTaskId?: string) => {
   const today = moment().format(DATE_ISO_DATE_MOMENT_STRING) as TDateISODate
   const todoList = await getAndCreateIfNotExistsTodoList(today)
@@ -174,7 +139,6 @@ export const processRecurringTasksForToday = async (recurringTaskId?: string) =>
       title: recurringTask.title,
       status: recurringTask.status,
       details: recurringTask.details,
-      subtasks: [],
       type: 'recurring',
       recurringTaskId: recurringTask.id,
     }

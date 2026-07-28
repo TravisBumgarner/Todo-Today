@@ -1,23 +1,17 @@
 import { Box, Button, css, Typography } from "@mui/material";
-import { useCallback } from "react";
 
 import { useSignals } from "@preact/signals-react/runtime";
-import { ModalID } from "../modals";
-import { activeModalSignal } from "../signals";
+import {
+  copyPreviousDay,
+  openNewTaskModal,
+  openSelectTasksModal,
+} from "../actions";
+import { MOD } from "../hooks/useKeyboardShortcuts";
 import { SPACING } from "../styles/consts";
-import { useCopyPreviousDay } from "../hooks/useCopyPreviousDay";
+import Tooltip from "./Tooltip";
 
 const EmptyTodoList = () => {
   useSignals();
-  const getPreviousDatesTasks = useCopyPreviousDay();
-
-  const showManagementModal = useCallback(() => {
-    activeModalSignal.value = { id: ModalID.SELECT_TASKS_MODAL };
-  }, []);
-
-  const showAddNewTaskModal = useCallback(() => {
-    activeModalSignal.value = { id: ModalID.ADD_TASK_MODAL };
-  }, []);
 
   return (
     <Box sx={emptyTodoListCSS}>
@@ -35,15 +29,21 @@ const EmptyTodoList = () => {
             justifyContent: "center",
           }}
         >
-          <Button variant="outlined" onClick={getPreviousDatesTasks}>
-            Copy Previous Day
-          </Button>
-          <Button variant="outlined" onClick={showManagementModal}>
-            Select Tasks
-          </Button>
-          <Button variant="outlined" onClick={showAddNewTaskModal}>
-            Add New Task
-          </Button>
+          <Tooltip title={`Copy Previous Day (${MOD}P)`}>
+            <Button variant="outlined" onClick={copyPreviousDay}>
+              Copy Previous Day
+            </Button>
+          </Tooltip>
+          <Tooltip title={`Select Tasks (${MOD}S)`}>
+            <Button variant="outlined" onClick={openSelectTasksModal}>
+              Select Tasks
+            </Button>
+          </Tooltip>
+          <Tooltip title={`New Task (${MOD}N)`}>
+            <Button variant="outlined" onClick={openNewTaskModal}>
+              New Task
+            </Button>
+          </Tooltip>
         </Box>
       </Box>
     </Box>

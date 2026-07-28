@@ -61,7 +61,10 @@ const template = [
   {
     label: 'Window',
     submenu: [
-      { role: 'minimize' },
+      // Minimize normally owns Cmd+M, and a menu accelerator wins before the
+      // renderer ever sees the key. Shift it so Cmd+M can open Recurring Tasks
+      // (see useKeyboardShortcuts).
+      { role: 'minimize', accelerator: 'CmdOrCtrl+Shift+M' },
       { role: 'zoom' },
       ...(isMac
         ? [{ type: 'separator' }, { role: 'front' }, { type: 'separator' }, { role: 'window' }]

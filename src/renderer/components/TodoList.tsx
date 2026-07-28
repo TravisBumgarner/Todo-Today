@@ -11,16 +11,24 @@ import { useSignals } from "@preact/signals-react/runtime";
 import Tooltip from "./Tooltip";
 import { useLiveQuery } from "dexie-react-hooks";
 import { Reorder } from "framer-motion";
-import moment from "moment";
 import { useCallback } from "react";
 
+import {
+  copyPreviousDay,
+  goToNextDay,
+  goToPreviousDay,
+  goToToday,
+  openNewTaskModal,
+  openRecurringTasksModal,
+  openSelectTasksModal,
+  openSettingsModal,
+} from "../actions";
 import { database, queries } from "../database";
-import { useCopyPreviousDay } from "../hooks/useCopyPreviousDay";
-import { ModalID } from "../modals";
-import { activeModalSignal, selectedDateSignal } from "../signals";
+import { MOD } from "../hooks/useKeyboardShortcuts";
+import { selectedDateSignal } from "../signals";
 import { SPACING } from "../styles/consts";
-import { DATE_ISO_DATE_MOMENT_STRING, ETaskStatus } from "../types";
-import { formatDateDisplayString, formatDateKeyLookup } from "../utilities";
+import { ETaskStatus } from "../types";
+import { formatDateDisplayString } from "../utilities";
 import EmptyTodoList from "./EmptyTodoList";
 import TodoItem from "./TodoItem";
 
@@ -64,46 +72,6 @@ const TodoList = () => {
     await queries.reorderTasks(selectedDateSignal.value, newTaskIds);
   }, []);
 
-  const showManagementModal = useCallback(() => {
-    activeModalSignal.value = { id: ModalID.SELECT_TASKS_MODAL };
-  }, []);
-
-  const showRecurringTasksModal = useCallback(() => {
-    activeModalSignal.value = { id: ModalID.RECURRING_TASKS_MODAL };
-  }, []);
-
-  const showAddNewTaskModal = useCallback(() => {
-    activeModalSignal.value = { id: ModalID.ADD_TASK_MODAL };
-  }, []);
-
-  const setPreviousDate = useCallback(() => {
-    selectedDateSignal.value = formatDateKeyLookup(
-      moment(selectedDateSignal.value, DATE_ISO_DATE_MOMENT_STRING).subtract(
-        1,
-        "day"
-      )
-    );
-  }, []);
-
-  const getNextDate = useCallback(() => {
-    selectedDateSignal.value = formatDateKeyLookup(
-      moment(selectedDateSignal.value, DATE_ISO_DATE_MOMENT_STRING).add(
-        1,
-        "day"
-      )
-    );
-  }, []);
-
-  const getToday = useCallback(() => {
-    selectedDateSignal.value = formatDateKeyLookup(moment());
-  }, []);
-
-  const handleSettings = useCallback(() => {
-    activeModalSignal.value = { id: ModalID.SETTINGS_MODAL };
-  }, []);
-
-  const copyPreviousDay = useCopyPreviousDay();
-
   if (!taskIds) {
     return null; // or a loading spinner
   }
@@ -119,32 +87,44 @@ const TodoList = () => {
     >
       <Box sx={buttonWrapperCSS}>
         <Box sx={{ display: "flex", gap: SPACING.TINY.PX }}>
-          <Button variant="outlined" onClick={showAddNewTaskModal}>
-            Add
-          </Button>
-          <Button variant="outlined" onClick={showManagementModal}>
-            Select Tasks
-          </Button>
-          <Button variant="outlined" onClick={showRecurringTasksModal}>
-            Manage Recurring
-          </Button>
+          <Tooltip title={`New Task (${MOD}N)`}>
+            <Button variant="outlined" onClick={openNewTaskModal}>
+              New Task
+            </Button>
+          </Tooltip>
+          <Tooltip title={`Select Tasks (${MOD}S)`}>
+            <Button variant="outlined" onClick={openSelectTasksModal}>
+              Select Tasks
+            </Button>
+          </Tooltip>
+          <Tooltip title={`Manage Recurring (${MOD}M)`}>
+            <Button variant="outlined" onClick={openRecurringTasksModal}>
+              Manage Recurring
+            </Button>
+          </Tooltip>
         </Box>
         <Box
           sx={{ display: "flex", alignItems: "center", gap: SPACING.SMALL.PX }}
         >
           <ButtonGroup variant="outlined">
-            <Button onClick={setPreviousDate}>&lt;</Button>
-            <Button sx={todayButtonCSS} onClick={getToday}>
-              <span>{formatDateDisplayString(selectedDateSignal.value)}</span>
-            </Button>
-            <Button onClick={getNextDate}>&gt;</Button>
+            <Tooltip title={`Previous day (${MOD}←)`}>
+              <Button onClick={goToPreviousDay}>&lt;</Button>
+            </Tooltip>
+            <Tooltip title={`Today (${MOD}T)`}>
+              <Button sx={todayButtonCSS} onClick={goToToday}>
+                <span>{formatDateDisplayString(selectedDateSignal.value)}</span>
+              </Button>
+            </Tooltip>
+            <Tooltip title={`Next day (${MOD}→)`}>
+              <Button onClick={goToNextDay}>&gt;</Button>
+            </Tooltip>
           </ButtonGroup>
           <IconButton size="small" onClick={copyPreviousDay}>
-            <Tooltip title="Copy previous day">
+            <Tooltip title={`Copy previous day (${MOD}P)`}>
               <ContentCopyIcon fontSize="small" />
             </Tooltip>
           </IconButton>
-          <IconButton size="small" onClick={handleSettings}>
+          <IconButton size="small" onClick={openSettingsModal}>
             <Tooltip title="Settings">
               <SettingsIcon />
             </Tooltip>
@@ -214,7 +194,7 @@ export const buttonWrapperCSS: SxProps = {
 const todayButtonCSS: SxProps = {
   width: 150,
   "&:hover span": { display: "none" },
-  "&:hover::before": { content: '"Go to Today"' },
+  "&:hover::before": { content: '"Today"' },
   "&:hover": {
     zIndex: 1,
     borderColor: "primary.main",
