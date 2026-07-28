@@ -1,13 +1,51 @@
 name: Release app Windows/Linux/macOS
 
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
+  # A merge to main only cuts a release when it actually bumps the version --
+  # otherwise every unrelated merge would try to republish the current one.
+  # Running the workflow by hand always releases.
+  check-version:
+    runs-on: ubuntu-latest
+    outputs:
+      should-release: ${{ steps.check.outputs.should-release }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Has the version changed?
+        id: check
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "Manual run, releasing."
+            echo "should-release=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          current=$(jq -r .version package.json)
+          previous=$(git show HEAD~1:package.json 2>/dev/null | jq -r .version || echo none)
+          echo "previous=$previous current=$current"
+
+          if [ "$current" != "$previous" ]; then
+            echo "should-release=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Version unchanged, skipping release."
+            echo "should-release=false" >> "$GITHUB_OUTPUT"
+          fi
+
   build:
+    needs: check-version
+    if: needs.check-version.outputs.should-release == 'true'
+
     strategy:
       matrix:
         os:
