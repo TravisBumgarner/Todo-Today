@@ -1,130 +1,23 @@
-import {
-  Add,
-  CheckBox,
-  ChevronRight,
-  DeleteOutline,
-  DragIndicator,
-} from "@mui/icons-material";
-import CheckIcon from "@mui/icons-material/Check";
+import { ChevronRight, DragIndicator } from "@mui/icons-material";
 import CloseIcon from "@mui/icons-material/CloseOutlined";
-import { Box, css, IconButton, TextField } from "@mui/material";
+import { Box, IconButton, type SxProps, TextField, Typography } from "@mui/material";
 import Tooltip from "./Tooltip";
 import ToggleButton from "@mui/material/ToggleButton";
 import { type Theme, useTheme } from "@mui/material/styles";
 import { useLiveQuery } from "dexie-react-hooks";
-import { type ChangeEvent, useCallback, useState } from "react";
-import { v4 as uuidv4 } from "uuid";
-import { database, queries } from "../database";
+import { type ChangeEvent, useCallback, useMemo, useRef, useState } from "react";
+import { database } from "../database";
 import { useDebouncedPersist } from "../hooks/useDebouncedPersist";
 import { selectedDateSignal } from "../signals";
 import { SPACING } from "../styles/consts";
 import { ETaskStatus } from "../types";
+import { countChecklist } from "../utilities";
 import RichTextEditor from "./RichTextEditor";
 import TaskStatusSelector from "./TaskStatusSelector";
-
 
 export interface TTodoItem {
   taskId: string;
 }
-
-const Subtask = ({
-  taskId,
-  subtaskId,
-}: {
-  taskId: string;
-  subtaskId: string;
-}) => {
-  const [localTitle, setLocalTitle] = useState("");
-
-  const subtask = useLiveQuery(async () => {
-    const fetchedSubtask = await queries.getSubtask(taskId, subtaskId);
-    setLocalTitle(fetchedSubtask?.title ?? "");
-    return fetchedSubtask;
-  });
-
-  const handleSubtaskChange = useCallback(async () => {
-    await queries.updateSubtask(taskId, subtaskId, {
-      checked: !subtask?.checked,
-    });
-  }, [taskId, subtaskId, subtask]);
-
-  const persistTitle = useDebouncedPersist<string>(
-    useCallback(
-      (html: string) => {
-        void queries.updateSubtask(taskId, subtaskId, { title: html });
-      },
-      [taskId, subtaskId]
-    )
-  );
-
-  const handleTitleSave = useCallback(
-    (html: string) => {
-      setLocalTitle(html);
-      persistTitle(html);
-    },
-    [persistTitle]
-  );
-
-  const handleDeleteSubtask = useCallback(async () => {
-    await queries.deleteSubtask(taskId, subtaskId);
-  }, [taskId, subtaskId]);
-
-  if (!subtask) return null;
-
-  return (
-    <Box sx={subtaskWrapperCSS}>
-      {subtask.checked ? (
-        <Tooltip title="Mark as incomplete">
-          <IconButton size="small" onClick={handleSubtaskChange}>
-            <CheckBox fontSize="small" />
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <Tooltip title="Mark as complete">
-          <IconButton size="small" onClick={handleSubtaskChange}>
-            <CheckIcon fontSize="small" />
-          </IconButton>
-        </Tooltip>
-      )}
-      <Box
-        sx={{
-          flexGrow: 1,
-          minWidth: 0,
-          ...(subtask.checked
-            ? {
-                "& [contenteditable]": {
-                  textDecoration: "line-through",
-                  color: "text.secondary",
-                },
-              }
-            : {}),
-        }}
-      >
-        <RichTextEditor
-          plain
-          value={localTitle}
-          placeholder="Subtask"
-          onChange={handleTitleSave}
-        />
-      </Box>
-      <Box sx={{ display: "flex" }}>
-        <Tooltip title="Delete subtask">
-          <IconButton size="small" onClick={handleDeleteSubtask}>
-            <DeleteOutline color="info" fontSize="small" />
-          </IconButton>
-        </Tooltip>
-      </Box>
-    </Box>
-  );
-};
-
-const subtaskWrapperCSS = css`
-  display: flex;
-  gap: ${SPACING.TINY.PX};
-  justify-content: space-between;
-  align-items: center;
-  margin-top: ${SPACING.TINY.PX};
-`;
 
 const TodoItem = ({ taskId }: TTodoItem) => {
   const theme = useTheme();
@@ -133,8 +26,10 @@ const TodoItem = ({ taskId }: TTodoItem) => {
   const [localDetails, setLocalDetails] = useState("");
   const [localTitle, setLocalTitle] = useState("");
   const [status, setStatus] = useState(ETaskStatus.NEW);
-  const [subtaskIds, setSubtaskIds] = useState<string[]>([]);
-  const [subtaskTitle, setSubtaskTitle] = useState("");
+  // Whether a task starts expanded is decided once, on load. Re-deciding it on
+  // every write would slam the details shut the moment you backspace the last
+  // character out of them.
+  const hasLoaded = useRef(false);
 
   useLiveQuery(() => {
     void database.tasks
@@ -145,30 +40,26 @@ const TodoItem = ({ taskId }: TTodoItem) => {
         setLocalTitle(task?.title ?? "");
         setStatus(task?.status ?? ETaskStatus.NEW);
         setLocalDetails(task?.details ?? "");
-        const hasTasksOrDetails =
-          !!task?.details || (task?.subtasks?.length ?? 0) > 0;
+
+        if (hasLoaded.current) return;
+        hasLoaded.current = true;
+
         const isActive = [
           ETaskStatus.IN_PROGRESS,
           ETaskStatus.NEW,
           ETaskStatus.BLOCKED,
         ].includes(task?.status ?? ETaskStatus.NEW);
-        setShowContent(hasTasksOrDetails && isActive);
-        setSubtaskIds(task?.subtasks?.map((subtask) => subtask.id) ?? []);
+        setShowContent(!!task?.details && isActive);
       });
   });
+
+  const checklist = useMemo(() => countChecklist(localDetails), [localDetails]);
 
   const toggleContent = useCallback(() => {
     setShowContent((prev) => {
       return !prev;
     });
   }, []);
-
-  const handleSubtaskTitleChange = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => {
-      setSubtaskTitle(event.target.value);
-    },
-    []
-  );
 
   const handleStatusChange = useCallback(
     async (status: ETaskStatus) => {
@@ -222,15 +113,6 @@ const TodoItem = ({ taskId }: TTodoItem) => {
     [persistDetails]
   );
 
-  const handleAddSubtask = useCallback(async () => {
-    await queries.insertSubtask(taskId, {
-      id: uuidv4(),
-      title: subtaskTitle,
-      checked: false,
-    });
-    setSubtaskTitle("");
-  }, [taskId, subtaskTitle]);
-
   return (
     <Box sx={cardSx(theme, status)}>
       <Box sx={headerRowSx}>
@@ -267,6 +149,12 @@ const TodoItem = ({ taskId }: TTodoItem) => {
             },
           }}
         />
+        {!showContent && checklist.total > 0 && (
+          <ChecklistProgress
+            checked={checklist.checked}
+            total={checklist.total}
+          />
+        )}
         <ToggleButton
           size="small"
           value="text"
@@ -290,65 +178,82 @@ const TodoItem = ({ taskId }: TTodoItem) => {
 
       {showContent && (
         <Box sx={contentWrapperSx(theme)}>
-            <RichTextEditor
-              value={localDetails}
-              placeholder="Add notes"
-              onChange={handleDetailsSave}
-            />
-            <Box>
-              <Box sx={subtaskInputWrapperCSS}>
-                <TextField
-                  sx={{ flexGrow: 1 }}
-                  size="small"
-                  type="text"
-                  placeholder="Add a subtask"
-                  value={subtaskTitle}
-                  onChange={handleSubtaskTitleChange}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && !e.shiftKey) {
-                      e.preventDefault();
-                      handleAddSubtask();
-                    }
-                  }}
-                />
-                <Tooltip title="Add subtask">
-                  <span>
-                    <IconButton
-                      size="small"
-                      sx={{ cursor: "pointer" }}
-                      color={subtaskTitle.length === 0 ? "info" : "primary"}
-                      disabled={subtaskTitle.length === 0}
-                      onClick={handleAddSubtask}
-                    >
-                      <Add fontSize="small" />
-                    </IconButton>
-                  </span>
-                </Tooltip>
-              </Box>
-              {subtaskIds.length > 0 && (
-                <Box sx={{ marginTop: SPACING.TINY.PX }}>
-                  {subtaskIds.map((subtaskId) => (
-                    <Subtask
-                      key={subtaskId}
-                      taskId={taskId}
-                      subtaskId={subtaskId}
-                    />
-                  ))}
-                </Box>
-              )}
-            </Box>
-          </Box>
-        )}
+          <RichTextEditor
+            value={localDetails}
+            placeholder="Add notes — type [] for a checklist item"
+            onChange={handleDetailsSave}
+          />
+        </Box>
+      )}
     </Box>
   );
 };
 
-const subtaskInputWrapperCSS = css`
-      display: flex;
-      flex-direction: row;
-      gap: ${SPACING.TINY.PX};
-      align-items: center;
-      `;
+/**
+ * Collapsed-view summary of the checklist buried in a task's details, so you
+ * can see progress without expanding the card.
+ */
+const ChecklistProgress = ({
+  checked,
+  total,
+}: {
+  checked: number;
+  total: number;
+}) => {
+  const done = checked === total;
+
+  return (
+    <Tooltip title={`${checked} of ${total} checklist items done`}>
+      <Box sx={progressWrapperSx}>
+        <Box sx={progressTrackSx}>
+          <Box sx={progressFillSx(checked / total, done)} />
+        </Box>
+        <Typography sx={progressLabelSx(done)}>
+          {checked}/{total}
+        </Typography>
+      </Box>
+    </Tooltip>
+  );
+};
+
+const progressWrapperSx: SxProps = {
+  display: "flex",
+  alignItems: "center",
+  gap: "6px",
+  flexShrink: 0,
+  paddingRight: "2px",
+};
+
+const progressTrackSx: SxProps<Theme> = (theme) => ({
+  width: 44,
+  height: 4,
+  borderRadius: "2px",
+  overflow: "hidden",
+  backgroundColor: theme.palette.action.disabledBackground,
+});
+
+const progressFillSx =
+  (ratio: number, done: boolean): SxProps<Theme> =>
+  (theme) => ({
+    width: `${Math.round(ratio * 100)}%`,
+    height: "100%",
+    borderRadius: "2px",
+    transition: "width 160ms ease-out",
+    backgroundColor: done
+      ? theme.app.statusColors[ETaskStatus.COMPLETED]
+      : theme.palette.primary.main,
+  });
+
+const progressLabelSx =
+  (done: boolean): SxProps<Theme> =>
+  (theme) => ({
+    fontSize: "11px",
+    fontVariantNumeric: "tabular-nums",
+    lineHeight: 1,
+    color: done
+      ? theme.app.statusColors[ETaskStatus.COMPLETED]
+      : theme.palette.text.secondary,
+  });
 
 const headerRowSx = {
   display: "flex",

@@ -8,6 +8,34 @@ export interface ChangelogEntry {
 }
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '4.1.0',
+    date: '2026-07-27',
+    changes: [
+      {
+        category: 'New',
+        description:
+          'Keyboard shortcuts: ⌘N new task, ⌘← / ⌘→ previous / next day, ⌘T today, ⌘S select tasks, ⌘M manage recurring, ⌘P copy previous day',
+      },
+      {
+        category: 'New',
+        description: 'A collapsed task now shows how far along its checklist is',
+      },
+      {
+        category: 'Improved',
+        description:
+          'Subtasks have been replaced by checklists in a task\'s details — type "[]" to make one. Existing subtasks were moved over automatically',
+      },
+      {
+        category: 'Improved',
+        description: 'The new task form opens with the cursor already in the task field',
+      },
+      {
+        category: 'Fixed',
+        description: 'Clearing a task\'s details no longer collapses it while you are still typing',
+      },
+    ],
+  },
+  {
     version: '4.0.2',
     date: '2026-07-24',
     changes: [
