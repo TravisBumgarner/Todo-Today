@@ -417,10 +417,10 @@ const RichTextEditor = ({ value, onChange, placeholder }: Props) => {
   );
 };
 
-const baseEditor = (theme: Theme) => ({
+const baseEditor = (theme: Theme, interactive = true) => ({
   fontSize: "13px",
   lineHeight: 1.4,
-  cursor: "text",
+  cursor: interactive ? "text" : "default",
   outline: "none",
   overflowWrap: "anywhere" as const,
   "&:empty::before": {
@@ -447,7 +447,7 @@ const baseEditor = (theme: Theme) => ({
     verticalAlign: "-2px",
     borderRadius: "3px",
     border: `1.6px solid ${theme.palette.text.disabled}`,
-    cursor: "pointer",
+    cursor: interactive ? "pointer" : "default",
     userSelect: "none",
   },
   "& .rte-check[data-checked='true']": {
@@ -472,6 +472,13 @@ const baseEditor = (theme: Theme) => ({
     color: theme.palette.text.secondary,
   },
 });
+
+/**
+ * The editor's own typography and checkbox rules, minus the editing affordances
+ * — for read-only renders of a task's details elsewhere (the history view), so
+ * checklists and links look the same there as they do in the editor.
+ */
+export const richTextViewSx: SxProps<Theme> = (theme) => baseEditor(theme, false);
 
 const editorSx: SxProps<Theme> = (theme) => ({
   ...baseEditor(theme),

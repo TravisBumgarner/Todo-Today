@@ -1,4 +1,5 @@
 import ContentCopyIcon from "@mui/icons-material/ContentCopyOutlined";
+import HistoryIcon from "@mui/icons-material/HistoryOutlined";
 import SettingsIcon from "@mui/icons-material/Settings";
 import {
   Box,
@@ -18,6 +19,7 @@ import {
   goToNextDay,
   goToPreviousDay,
   goToToday,
+  openHistoryModal,
   openNewTaskModal,
   openRecurringTasksModal,
   openSelectTasksModal,
@@ -87,19 +89,21 @@ const TodoList = () => {
     >
       <Box sx={buttonWrapperCSS}>
         <Box sx={{ display: "flex", gap: SPACING.TINY.PX }}>
+          {/* Labels stay short so the row never wraps — the tooltips carry the
+              full name and the shortcut. */}
           <Tooltip title={`New Task (${MOD}N)`}>
             <Button variant="outlined" onClick={openNewTaskModal}>
-              New Task
+              New
             </Button>
           </Tooltip>
           <Tooltip title={`Select Tasks (${MOD}S)`}>
             <Button variant="outlined" onClick={openSelectTasksModal}>
-              Select Tasks
+              Select
             </Button>
           </Tooltip>
           <Tooltip title={`Manage Recurring (${MOD}M)`}>
             <Button variant="outlined" onClick={openRecurringTasksModal}>
-              Manage Recurring
+              Recurring
             </Button>
           </Tooltip>
         </Box>
@@ -122,6 +126,11 @@ const TodoList = () => {
           <IconButton size="small" onClick={copyPreviousDay}>
             <Tooltip title={`Copy previous day (${MOD}P)`}>
               <ContentCopyIcon fontSize="small" />
+            </Tooltip>
+          </IconButton>
+          <IconButton size="small" onClick={openHistoryModal}>
+            <Tooltip title={`History (${MOD}Y)`}>
+              <HistoryIcon fontSize="small" />
             </Tooltip>
           </IconButton>
           <IconButton size="small" onClick={openSettingsModal}>

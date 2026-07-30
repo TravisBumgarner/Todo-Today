@@ -8,6 +8,21 @@ export interface ChangelogEntry {
 }
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '4.2.0',
+    date: '2026-07-29',
+    changes: [
+      {
+        category: 'New',
+        description:
+          'History (⌘Y): search everything you have ever worked on by title or details, filter by status and time range, and see how many days each task was on your list',
+      },
+      {
+        category: 'New',
+        description: 'Click any day in a task\'s history to jump the todo list straight to it',
+      },
+    ],
+  },
+  {
     version: '4.1.0',
     date: '2026-07-27',
     changes: [

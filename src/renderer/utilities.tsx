@@ -76,6 +76,58 @@ export const countChecklist = (details: string) => {
   return { total: boxes.length, checked };
 };
 
+/**
+ * The visible text of a details blob, for searching over and for one-line
+ * previews. Checkbox spans carry their state in an attribute rather than in
+ * text, so they contribute nothing here — which is what we want.
+ */
+export const htmlToPlainText = (html: string) => {
+  if (!html) return ''
+
+  const text = new DOMParser().parseFromString(html, 'text/html').body.textContent ?? ''
+  return text.replace(/\s+/g, ' ').trim()
+}
+
+// The tags and attributes RichTextEditor actually produces. Everything else
+// gets unwrapped or dropped.
+const ALLOWED_TAGS = new Set(['A', 'B', 'BR', 'DIV', 'EM', 'I', 'LI', 'OL', 'P', 'SPAN', 'STRONG', 'U', 'UL'])
+const ALLOWED_ATTRIBUTES: Record<string, Set<string>> = {
+  A: new Set(['href']),
+  SPAN: new Set(['class', 'data-checked']),
+}
+const NO_ATTRIBUTES = new Set<string>()
+
+/**
+ * Reduce a details blob to the small subset of HTML the editor writes, for
+ * places that render it as markup rather than editing it. Details are
+ * app-authored, but they also round-trip through the backup files Settings can
+ * restore from, so nothing in them is taken on faith.
+ */
+export const sanitizeDetailsHtml = (html: string) => {
+  if (!html) return ''
+
+  const doc = new DOMParser().parseFromString(html, 'text/html')
+
+  // querySelectorAll is a static snapshot in document order, so unwrapping an
+  // element still leaves its children to be visited on a later iteration.
+  for (const element of Array.from(doc.body.querySelectorAll('*'))) {
+    if (!ALLOWED_TAGS.has(element.tagName)) {
+      element.replaceWith(...Array.from(element.childNodes))
+      continue
+    }
+
+    const allowed = ALLOWED_ATTRIBUTES[element.tagName] ?? NO_ATTRIBUTES
+    for (const name of element.getAttributeNames()) {
+      if (!allowed.has(name)) element.removeAttribute(name)
+    }
+
+    const href = element.getAttribute('href')
+    if (href !== null && !/^https?:\/\//i.test(href)) element.removeAttribute('href')
+  }
+
+  return doc.body.innerHTML
+}
+
 const saveFile = async (fileName: string, jsonData: unknown) => {
   const blob = new Blob([JSON.stringify(jsonData, null, 2)], {
     type: "application/json",

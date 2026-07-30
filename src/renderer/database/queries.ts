@@ -80,6 +80,35 @@ export const reorderTasks = async (date: TDateISODate, taskIds: string[]) => {
   await database.todoList.where('date').equals(date).modify({ taskIds })
 }
 
+export interface TTaskHistoryEntry {
+  task: TTask
+  /** Every day this task sat on a todo list, oldest first. Empty means it was
+   * created but never scheduled. */
+  dates: TDateISODate[]
+}
+
+/**
+ * The join the history view needs: every task paired with the days it appeared
+ * on a todo list. Nothing records when a task was worked on beyond its
+ * membership in each day's list, so that membership *is* the history.
+ */
+export const getTaskHistory = async (): Promise<TTaskHistoryEntry[]> => {
+  const [tasks, todoLists] = await Promise.all([database.tasks.toArray(), database.todoList.toArray()])
+
+  const datesByTaskId = new Map<string, TDateISODate[]>()
+  // ISO dates sort lexicographically, so walking the lists in date order leaves
+  // each task's dates oldest-first for free.
+  for (const todoList of todoLists.sort((a, b) => (a.date < b.date ? -1 : 1))) {
+    for (const taskId of todoList.taskIds ?? []) {
+      const dates = datesByTaskId.get(taskId)
+      if (!dates) datesByTaskId.set(taskId, [todoList.date])
+      else if (dates[dates.length - 1] !== todoList.date) dates.push(todoList.date)
+    }
+  }
+
+  return tasks.map((task) => ({ task, dates: datesByTaskId.get(task.id) ?? [] }))
+}
+
 export const processRecurringTasksForToday = async (recurringTaskId?: string) => {
   const today = moment().format(DATE_ISO_DATE_MOMENT_STRING) as TDateISODate
   const todoList = await getAndCreateIfNotExistsTodoList(today)
