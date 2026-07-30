@@ -4,6 +4,7 @@ import {
   goToNextDay,
   goToPreviousDay,
   goToToday,
+  openHistoryModal,
   openNewTaskModal,
   openRecurringTasksModal,
   openSelectTasksModal,
@@ -43,6 +44,10 @@ export const useKeyboardShortcuts = () => {
           break
         case 'm':
           openRecurringTasksModal()
+          break
+        // ⌘Y for history, matching the browsers.
+        case 'y':
+          openHistoryModal()
           break
         case 'p':
           void copyPreviousDay()

@@ -2,7 +2,7 @@ import moment from 'moment'
 import { queries } from './database'
 import { ModalID } from './modals/ids'
 import { activeModalSignal, messageSignal, selectedDateSignal } from './signals'
-import { DATE_ISO_DATE_MOMENT_STRING } from './types'
+import { DATE_ISO_DATE_MOMENT_STRING, type TDateISODate } from './types'
 import { formatDateKeyLookup } from './utilities'
 
 // The toolbar buttons and the keyboard shortcuts both go through here so the
@@ -38,6 +38,16 @@ export const openRecurringTasksModal = () => {
 
 export const openSettingsModal = () => {
   activeModalSignal.value = { id: ModalID.SETTINGS_MODAL }
+}
+
+export const openHistoryModal = () => {
+  activeModalSignal.value = { id: ModalID.HISTORY_MODAL }
+}
+
+/** Jump the todo list to a specific day and get out of the way. */
+export const goToDate = (date: TDateISODate) => {
+  selectedDateSignal.value = date
+  activeModalSignal.value = null
 }
 
 /**
