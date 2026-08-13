@@ -47,9 +47,16 @@ let lastBlurHideAt = 0
 // the app stays a normal window.
 const isPopoverMode = () => isMac && getStore().showInMenuBar
 
+// Where the icon PNGs live at runtime. In dev `__dirname` is `.vite/build`, so
+// they're read straight out of the repo's `public/`. Packaged, `public/` isn't
+// in the asar at all (the Vite plugin only packages `.vite/`), so they're copied
+// in via forge's `extraResource` and read from the resources directory instead.
+const iconsDir = () =>
+  app.isPackaged ? path.join(process.resourcesPath, 'icons') : path.join(__dirname, '../../public/icons')
+
 // A simple "TO" glyph sized for the menu bar. Electron picks up the matching
 // @2x file automatically for retina displays.
-const trayIconPath = () => path.join(__dirname, '../../public/icons/trayTemplate.png')
+const trayIconPath = () => path.join(iconsDir(), 'trayTemplate.png')
 
 // Position the popover horizontally centred under the tray icon, just below
 // the menu bar.
@@ -84,6 +91,11 @@ const togglePopover = () => {
 const ensureTray = () => {
   if (tray) return
   const image = nativeImage.createFromPath(trayIconPath())
+  // A missing file yields an empty image and an invisible-but-clickable tray
+  // slot, which is near-impossible to spot in a built app. Say so in the log.
+  if (image.isEmpty()) {
+    log.error(`Tray icon missing or unreadable at ${trayIconPath()}`)
+  }
   // On macOS a template image is drawn black on a light menu bar and white on
   // a dark one, so the OS handles both variants from the single black asset.
   if (isMac) {
@@ -119,11 +131,11 @@ const createWindow = () => {
   // Platform-specific icon paths
   let iconPath: string
   if (process.platform === 'darwin') {
-    iconPath = path.join(__dirname, '../../public/icons/icon.icns')
+    iconPath = path.join(iconsDir(), 'icon.icns')
   } else if (process.platform === 'win32') {
-    iconPath = path.join(__dirname, '../../public/icons/icon.ico')
+    iconPath = path.join(iconsDir(), 'icon.ico')
   } else {
-    iconPath = path.join(__dirname, '../../public/icons/icon.png')
+    iconPath = path.join(iconsDir(), 'icon.png')
   }
 
   const popover = isPopoverMode()
