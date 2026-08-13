@@ -8,6 +8,16 @@ export interface ChangelogEntry {
 }
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '4.3.0',
+    date: '2026-08-13',
+    changes: [
+      {
+        category: 'Fixed',
+        description: 'The menu bar icon now shows up in the installed app instead of leaving an invisible gap',
+      },
+    ],
+  },
+  {
     version: '4.2.0',
     date: '2026-07-29',
     changes: [
