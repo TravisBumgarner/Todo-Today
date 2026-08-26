@@ -8,6 +8,47 @@ export interface ChangelogEntry {
 }
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '4.4.0',
+    date: '2026-08-26',
+    changes: [
+      {
+        category: 'New',
+        description:
+          "Undo and redo (⌘Z / ⇧⌘Z) now cover everything in a task's details, checkboxes included — ticking one, adding one and deleting one can all be taken back",
+      },
+      {
+        category: 'Improved',
+        description:
+          'Pasting into details keeps the text and its links, and drops the headings, fonts, colors and tables that came with it',
+      },
+      {
+        category: 'Fixed',
+        description: 'Adding a link to selected text no longer deletes the text',
+      },
+      {
+        category: 'Fixed',
+        description:
+          'Ticking the first checklist item in a task now strikes it through, the same as every item below it',
+      },
+      {
+        category: 'Fixed',
+        description: 'Checkboxes in details show a pointer rather than a text cursor',
+      },
+      {
+        category: 'Fixed',
+        description: 'Typing "[]" on a line that already has a checkbox no longer adds a second one',
+      },
+      {
+        category: 'Fixed',
+        description: 'Details no longer get overwritten by an older copy while you are still typing in them',
+      },
+      {
+        category: 'Fixed',
+        description: 'An email address linked in details now opens your mail app instead of doing nothing',
+      },
+    ],
+  },
+  {
     version: '4.3.0',
     date: '2026-08-13',
     changes: [
