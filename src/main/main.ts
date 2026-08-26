@@ -159,7 +159,7 @@ const createWindow = () => {
   // Open external links (e.g. from task details) in the default browser rather
   // than navigating the app window or spawning an Electron window.
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
-    if (/^https?:\/\//i.test(url)) {
+    if (/^(https?:\/\/|mailto:)/i.test(url)) {
       void shell.openExternal(url)
     }
     return { action: 'deny' }
