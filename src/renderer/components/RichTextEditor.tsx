@@ -10,6 +10,8 @@ import {
   useRef,
   useState,
 } from "react";
+import { sanitizeDetailsHtml, wrapCheckboxLines } from "../utilities";
+import { changeKind, useRichTextHistory } from "./richTextHistory";
 
 interface Props {
   value: string;
@@ -31,7 +33,7 @@ const exec = (command: string, arg?: string) =>
  * A checkbox is a non-editable span whose state lives in a data attribute, so
  * it serializes into innerHTML for free (no separate persistence needed).
  */
-const insertCheckboxAtCaret = () => {
+const insertCheckboxAtCaret = (root: HTMLElement) => {
   const sel = window.getSelection();
   if (!sel || sel.rangeCount === 0) return;
   const range = sel.getRangeAt(0);
@@ -41,11 +43,16 @@ const insertCheckboxAtCaret = () => {
   span.className = "rte-check";
   span.setAttribute("contenteditable", "false");
   span.setAttribute("data-checked", "false");
-  const pad = document.createTextNode(" ");
+  const pad = document.createTextNode(" ");
 
   // insertNode puts each node at the range start, so insert pad first.
   range.insertNode(pad);
   range.insertNode(span);
+
+  // A checkbox typed on the editor's first line lands unwrapped, with no
+  // element standing for "that line" — give it one before placing the caret,
+  // so ticking the box can strike the line through.
+  wrapCheckboxLines(root);
 
   const after = document.createRange();
   after.setStart(pad, 1);
@@ -54,7 +61,15 @@ const insertCheckboxAtCaret = () => {
   sel.addRange(after);
 };
 
-const NBSP = / /g;
+/** Wrap loose checkbox lines in a stored details blob, without touching the DOM. */
+const normalizeStoredHtml = (html: string) => {
+  if (!html.includes("rte-check")) return html;
+  const doc = new DOMParser().parseFromString(html, "text/html");
+  wrapCheckboxLines(doc.body);
+  return doc.body.innerHTML;
+};
+
+const NBSP = / /g;
 const isBlank = (s: string | null | undefined) => !(s ?? "").replace(NBSP, "").trim();
 
 /** Text sitting after a checkbox on its own line (stops at a <br> or block end). */
@@ -89,6 +104,11 @@ const RichTextEditor = ({ value, onChange, placeholder }: Props) => {
   const ref = useRef<HTMLDivElement>(null);
   const popRef = useRef<HTMLDivElement>(null);
   const savedRange = useRef<Range | null>(null);
+  // The last HTML this editor handed upwards. Anything else arriving as `value`
+  // came from outside and is worth seeding; our own echo is not.
+  const lastEmitted = useRef<string | null>(null);
+  // True while an IME is mid-word (dead keys, pinyin, etc).
+  const composing = useRef(false);
   const [pop, setPop] = useState<{
     top: number;
     left: number;
@@ -97,19 +117,82 @@ const RichTextEditor = ({ value, onChange, placeholder }: Props) => {
   const [linkMode, setLinkMode] = useState(false);
   const [linkUrl, setLinkUrl] = useState("");
 
-  // Seed the editor from stored value when it changes externally, but never
-  // while the user is typing — that would jump the caret.
+  // Hand the current markup upwards without touching the undo stack — used by
+  // undo/redo themselves, which have already moved the stack where they want it.
+  const emit = useCallback(() => {
+    const html = ref.current?.innerHTML ?? "";
+    lastEmitted.current = html;
+    onChange(html);
+  }, [onChange]);
+
+  const { reset, record, undo, redo } = useRichTextHistory(ref, emit);
+
+  /** Record an edit as an undo step and persist it. */
+  const save = useCallback(
+    (kind: string | null = null) => {
+      record(kind);
+      emit();
+    },
+    [record, emit]
+  );
+
+  const handleInput = useCallback(
+    (e: React.FormEvent<HTMLDivElement>) => {
+      // Mid-composition the text is still in flux and the DOM is not ours to
+      // tidy — persist it, but leave the undo step until the IME commits.
+      if (composing.current) {
+        emit();
+        return;
+      }
+      save(changeKind(e.nativeEvent as InputEvent));
+    },
+    [save, emit]
+  );
+
+  const handleCompositionEnd = useCallback(() => {
+    composing.current = false;
+    save();
+  }, [save]);
+
+  // Seed the editor from stored value when it changes externally. Never while
+  // the user is mid-edit — replacing innerHTML would jump the caret, and it
+  // would also detach the range a half-finished link is waiting on.
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    if (document.activeElement !== el && el.innerHTML !== (value ?? "")) {
-      el.innerHTML = value ?? "";
-    }
-  }, [value]);
+    if (value === lastEmitted.current) return;
+    if (document.activeElement === el) return;
+    if (popRef.current?.contains(document.activeElement)) return;
 
-  const save = useCallback(() => {
-    onChange(ref.current?.innerHTML ?? "");
-  }, [onChange]);
+    const next = normalizeStoredHtml(value ?? "");
+    if (el.innerHTML !== next) el.innerHTML = next;
+    // Remember what the DOM now reflects, so a later update back to a value the
+    // user once typed still seeds instead of being mistaken for our own echo.
+    lastEmitted.current = value ?? "";
+    // A load from outside is a different document — there is nothing sensible
+    // to undo back to.
+    reset();
+  }, [value, reset]);
+
+  // The Edit menu's Undo/Redo reach the renderer as a beforeinput event rather
+  // than a keystroke, so they need catching here too. (Chromium only fires it
+  // when its own stack is non-empty, which is why the keydown handler carries
+  // the load — this is the menu's path in.)
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const onHistoryInput = (e: InputEvent) => {
+      if (e.inputType === "historyUndo") {
+        e.preventDefault();
+        undo();
+      } else if (e.inputType === "historyRedo") {
+        e.preventDefault();
+        redo();
+      }
+    };
+    el.addEventListener("beforeinput", onHistoryInput);
+    return () => el.removeEventListener("beforeinput", onHistoryInput);
+  }, [undo, redo]);
 
   // Show a floating toolbar above the current selection (if any).
   const refreshPopover = useCallback(() => {
@@ -174,6 +257,17 @@ const RichTextEditor = ({ value, onChange, placeholder }: Props) => {
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent<HTMLDivElement>) => {
+      const root = ref.current;
+      if (!root) return;
+
+      // Undo / redo. The editor keeps its own stack (see richTextHistory), so
+      // these must never reach Chromium's.
+      if ((e.metaKey || e.ctrlKey) && !e.altKey && (e.key === "z" || e.key === "Z")) {
+        e.preventDefault();
+        if (e.shiftKey) redo();
+        else undo();
+        return;
+      }
       // Bold — Cmd/Ctrl+B
       if ((e.metaKey || e.ctrlKey) && (e.key === "b" || e.key === "B")) {
         e.preventDefault();
@@ -196,10 +290,14 @@ const RichTextEditor = ({ value, onChange, placeholder }: Props) => {
           const before = node.textContent?.slice(0, sel.anchorOffset) ?? "";
           if (before === "[") {
             e.preventDefault();
+            // A line only ever carries one checkbox. Enter already puts one on
+            // the new line, so typing "[]" there out of habit should quietly
+            // come to nothing rather than stack up a second box.
+            const already = checkboxOnCurrentLine();
             const range = sel.getRangeAt(0);
             range.setStart(node, sel.anchorOffset - 1);
             range.deleteContents();
-            insertCheckboxAtCaret();
+            if (!already) insertCheckboxAtCaret(root);
             save();
             return;
           }
@@ -257,7 +355,7 @@ const RichTextEditor = ({ value, onChange, placeholder }: Props) => {
             return;
           }
           exec("insertParagraph");
-          insertCheckboxAtCaret();
+          insertCheckboxAtCaret(root);
           save();
           return;
         }
@@ -280,7 +378,28 @@ const RichTextEditor = ({ value, onChange, placeholder }: Props) => {
         }
       }
     },
-    [save, checkboxOnCurrentLine]
+    [save, checkboxOnCurrentLine, undo, redo]
+  );
+
+  // Paste through the same filter the rest of the app renders details with, so
+  // copying out of a browser brings the text and its links, not headings,
+  // colours and tables that nothing else in the app knows how to display.
+  const handlePaste = useCallback(
+    (e: React.ClipboardEvent<HTMLDivElement>) => {
+      const root = ref.current;
+      if (!root) return;
+      e.preventDefault();
+
+      const html = e.clipboardData.getData("text/html");
+      if (html) {
+        exec("insertHTML", sanitizeDetailsHtml(html));
+        wrapCheckboxLines(root);
+      } else {
+        exec("insertText", e.clipboardData.getData("text/plain"));
+      }
+      save();
+    },
+    [save]
   );
 
   const boldSelection = useCallback(
@@ -302,21 +421,38 @@ const RichTextEditor = ({ value, onChange, placeholder }: Props) => {
     setLinkMode(true);
   }, []);
 
-  const applyLink = useCallback(() => {
-    const el = ref.current;
-    const href = normalizeUrl(linkUrl);
-    if (el && href && savedRange.current) {
-      el.focus();
-      const sel = window.getSelection();
-      sel?.removeAllRanges();
-      sel?.addRange(savedRange.current);
-      exec("createLink", href);
-      save();
-    }
+  const closeLink = useCallback(() => {
+    savedRange.current = null;
     setLinkMode(false);
     setLinkUrl("");
     setPop(null);
-  }, [linkUrl, save]);
+  }, []);
+
+  const applyLink = useCallback(() => {
+    const el = ref.current;
+    const range = savedRange.current;
+    const href = normalizeUrl(linkUrl);
+    // The range is only good while the nodes it points at are still in the
+    // editor; anything else would make createLink a no-op on nothing.
+    if (el && href && range && el.contains(range.commonAncestorContainer)) {
+      el.focus();
+      const sel = window.getSelection();
+      sel?.removeAllRanges();
+      sel?.addRange(range);
+      exec("createLink", href);
+      // Leave the caret after the new link rather than on top of it, so the
+      // next keystroke doesn't replace the text that was just linked.
+      const after = window.getSelection();
+      if (after && after.rangeCount > 0) {
+        const collapsed = after.getRangeAt(0);
+        collapsed.collapse(false);
+        after.removeAllRanges();
+        after.addRange(collapsed);
+      }
+      save();
+    }
+    closeLink();
+  }, [linkUrl, save, closeLink]);
 
   const handleBlur = useCallback(
     (e: React.FocusEvent<HTMLDivElement>) => {
@@ -360,11 +496,16 @@ const RichTextEditor = ({ value, onChange, placeholder }: Props) => {
         contentEditable
         suppressContentEditableWarning
         data-placeholder={placeholder ?? "Add notes"}
-        onInput={save}
+        onInput={handleInput}
+        onCompositionStart={() => {
+          composing.current = true;
+        }}
+        onCompositionEnd={handleCompositionEnd}
         onBlur={handleBlur}
         onMouseUp={refreshPopover}
         onKeyUp={refreshPopover}
         onKeyDown={handleKeyDown}
+        onPaste={handlePaste}
         onClick={handleClick}
         sx={editorSx}
       />
@@ -393,10 +534,16 @@ const RichTextEditor = ({ value, onChange, placeholder }: Props) => {
                 setLinkUrl(e.target.value)
               }
               onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
-                if (e.key === "Enter") applyLink();
+                // Both branches hand focus back to the editor, so the key's
+                // default action has to be stopped here — otherwise Enter lands
+                // in the editor and replaces the very text being linked.
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  applyLink();
+                }
                 if (e.key === "Escape") {
-                  setLinkMode(false);
-                  setPop(null);
+                  e.preventDefault();
+                  closeLink();
                 }
               }}
               sx={linkInputSx}
@@ -466,7 +613,9 @@ const baseEditor = (theme: Theme, interactive = true) => ({
     lineHeight: 1,
     color: theme.palette.primary.contrastText,
   },
-  // strike the whole line once its checkbox is ticked
+  // Strike the whole line once its checkbox is ticked. Only a checkbox with a
+  // block of its own is matched here, which is why the editor keeps every
+  // checkbox line wrapped (see wrapCheckboxLines).
   "& *:has(> .rte-check[data-checked='true'])": {
     textDecoration: "line-through",
     color: theme.palette.text.secondary,
