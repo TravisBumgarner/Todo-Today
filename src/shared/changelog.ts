@@ -8,6 +8,16 @@ export interface ChangelogEntry {
 }
 export const CHANGELOG: ChangelogEntry[] = [
   {
+    version: '4.5.0',
+    date: '2026-11-16',
+    changes: [
+      {
+        category: 'New',
+        description: 'Other apps can add a task to today by opening todo-today://add?title=Your%20task',
+      },
+    ],
+  },
+  {
     version: '4.4.0',
     date: '2026-08-26',
     changes: [
