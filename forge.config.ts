@@ -18,6 +18,11 @@ const config: ForgeConfig = {
     executableName: 'todo-today',
     protocols: [{ name: 'Todo Today', schemes: ['todo-today'] }],
     icon: 'public/icons/icon', // Electron Forge will automatically append .icns/.ico/.png based on platform
+    // The Vite plugin's packager ignore keeps only `.vite/`, so nothing under
+    // `public/` survives into the asar. The tray and window icons are read at
+    // runtime, so ship them alongside the app instead — this lands them in
+    // `Contents/Resources/icons` (and the equivalent on Windows/Linux).
+    extraResource: ['public/icons'],
     osxSign:
       process.env.SHOULD_APPLE_SIGN === '1'
         ? {

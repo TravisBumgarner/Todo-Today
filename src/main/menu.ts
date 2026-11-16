@@ -25,8 +25,11 @@ const template = [
   {
     label: 'Edit',
     submenu: [
-      { role: 'undo' },
-      { role: 'redo' },
+      // The details editor keeps its own undo stack (Chromium's loses track of
+      // the checkboxes it edits by hand), so Cmd+Z has to reach the renderer
+      // instead of being swallowed by the menu. The shortcut still shows here.
+      { role: 'undo', registerAccelerator: false },
+      { role: 'redo', registerAccelerator: false },
       { type: 'separator' },
       { role: 'cut' },
       { role: 'copy' },

@@ -89,13 +89,96 @@ export const htmlToPlainText = (html: string) => {
 }
 
 // The tags and attributes RichTextEditor actually produces. Everything else
-// gets unwrapped or dropped.
+// gets turned into a plain <div> (block-level markup, so pasted paragraphs and
+// table rows keep their line breaks) or unwrapped.
 const ALLOWED_TAGS = new Set(['A', 'B', 'BR', 'DIV', 'EM', 'I', 'LI', 'OL', 'P', 'SPAN', 'STRONG', 'U', 'UL'])
+const BLOCK_TAGS = new Set([
+  'ADDRESS',
+  'ARTICLE',
+  'ASIDE',
+  'BLOCKQUOTE',
+  'DD',
+  'DL',
+  'DT',
+  'FIGCAPTION',
+  'FIGURE',
+  'FOOTER',
+  'H1',
+  'H2',
+  'H3',
+  'H4',
+  'H5',
+  'H6',
+  'HEADER',
+  'MAIN',
+  'NAV',
+  'PRE',
+  'SECTION',
+  'TABLE',
+  'TD',
+  'TH',
+  'TR',
+])
 const ALLOWED_ATTRIBUTES: Record<string, Set<string>> = {
   A: new Set(['href']),
   SPAN: new Set(['class', 'data-checked']),
 }
 const NO_ATTRIBUTES = new Set<string>()
+// The schemes the main process is willing to hand to the OS, so an href that
+// would silently do nothing when clicked never survives sanitizing.
+const SAFE_HREF = /^(https?:\/\/|mailto:)/i
+
+const LINE_BLOCKS = new Set(['DIV', 'LI', 'OL', 'P', 'UL'])
+
+/**
+ * Put every checkbox line inside a block element.
+ *
+ * Chromium leaves the first line of a contenteditable unwrapped, so a checkbox
+ * typed there is a direct child of the editor root with its text as a bare
+ * sibling text node. Nothing then describes "that line", and line-level styling
+ * (the strike-through on a ticked item) has nothing to hang on. Wrapping the run
+ * of nodes that makes up the line gives it a home.
+ *
+ * Safe to run on a live editor: it only moves nodes, so a Range or caret sitting
+ * in one of them survives.
+ */
+export const wrapCheckboxLines = (root: HTMLElement) => {
+  const doc = root.ownerDocument
+  const lines: Array<{ nodes: ChildNode[]; br: ChildNode | null }> = []
+  let current: ChildNode[] = []
+
+  for (const node of Array.from(root.childNodes)) {
+    const isElement = node.nodeType === Node.ELEMENT_NODE
+    const tagName = isElement ? (node as HTMLElement).tagName : ''
+
+    if (tagName === 'BR') {
+      lines.push({ nodes: current, br: node })
+      current = []
+    } else if (LINE_BLOCKS.has(tagName)) {
+      // Already a block of its own — flush whatever preceded it and skip.
+      if (current.length > 0) lines.push({ nodes: current, br: null })
+      current = []
+    } else {
+      current.push(node)
+    }
+  }
+  if (current.length > 0) lines.push({ nodes: current, br: null })
+
+  for (const line of lines) {
+    const hasCheckbox = line.nodes.some(
+      (node) =>
+        node.nodeType === Node.ELEMENT_NODE &&
+        (node as HTMLElement).classList.contains('rte-check')
+    )
+    if (!hasCheckbox) continue
+
+    const wrapper = doc.createElement('div')
+    line.nodes[0].parentNode?.insertBefore(wrapper, line.nodes[0])
+    for (const node of line.nodes) wrapper.appendChild(node)
+    // The <div> is its own line break now, so the separator would double it up.
+    line.br?.remove()
+  }
+}
 
 /**
  * Reduce a details blob to the small subset of HTML the editor writes, for
@@ -112,7 +195,13 @@ export const sanitizeDetailsHtml = (html: string) => {
   // element still leaves its children to be visited on a later iteration.
   for (const element of Array.from(doc.body.querySelectorAll('*'))) {
     if (!ALLOWED_TAGS.has(element.tagName)) {
-      element.replaceWith(...Array.from(element.childNodes))
+      if (BLOCK_TAGS.has(element.tagName)) {
+        const div = doc.createElement('div')
+        div.append(...Array.from(element.childNodes))
+        element.replaceWith(div)
+      } else {
+        element.replaceWith(...Array.from(element.childNodes))
+      }
       continue
     }
 
@@ -122,8 +211,10 @@ export const sanitizeDetailsHtml = (html: string) => {
     }
 
     const href = element.getAttribute('href')
-    if (href !== null && !/^https?:\/\//i.test(href)) element.removeAttribute('href')
+    if (href !== null && !SAFE_HREF.test(href)) element.removeAttribute('href')
   }
+
+  wrapCheckboxLines(doc.body)
 
   return doc.body.innerHTML
 }

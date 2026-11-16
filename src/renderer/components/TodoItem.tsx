@@ -283,7 +283,11 @@ const cardSx = (theme: Theme, status: ETaskStatus) => ({
   padding: `${theme.app.density.rowPadY}px ${SPACING.SMALL.PX}`,
   marginBottom: `${theme.app.density.itemGap}px`,
   cursor: "grab",
-  "& input, & textarea, & [contenteditable]": { cursor: "text" },
+  // Only the editable surfaces get a text cursor. A bare [contenteditable]
+  // selector also matches contenteditable="false" nodes — the details editor's
+  // checkboxes — and ties on specificity with the rule that makes those a
+  // pointer, so whichever emotion injected last would win.
+  "& input, & textarea, & [contenteditable='true']": { cursor: "text" },
   "&:active": { cursor: "grabbing" },
 });
 
