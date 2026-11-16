@@ -51,7 +51,7 @@ jobs:
         os:
           [
             { name: 'windows', image: 'windows-2022' },
-            { name: 'linux', image: 'ubuntu-latest' },
+            { name: 'linux', image: 'ubuntu-22.04' },
             { name: 'macos', image: 'macos-latest' }
           ]
 
