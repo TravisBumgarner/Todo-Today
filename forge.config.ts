@@ -16,6 +16,7 @@ const config: ForgeConfig = {
   packagerConfig: {
     asar: true,
     executableName: 'todo-today',
+    protocols: [{ name: 'Todo Today', schemes: ['todo-today'] }],
     icon: 'public/icons/icon', // Electron Forge will automatically append .icns/.ico/.png based on platform
     osxSign:
       process.env.SHOULD_APPLE_SIGN === '1'

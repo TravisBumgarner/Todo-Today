@@ -34,6 +34,10 @@ if (started) {
 }
 
 let mainWindow: BrowserWindow | null = null
+// todo-today://add?title=… URLs that arrived before the renderer was ready to
+// receive them (e.g. the URL is what launched the app).
+let pendingTaskTitles: string[] = []
+let rendererReady = false
 let tray: Tray | null = null
 // Set while we're recreating the window to switch modes, so window-all-closed
 // doesn't misread the brief windowless moment as the app being done.
@@ -187,12 +191,56 @@ const rebuildWindowForMode = () => {
   isSwitchingMode = true
   const previous = mainWindow
   mainWindow = null
+  rendererReady = false
   previous?.destroy()
   createWindow()
+  mainWindow?.webContents.on('did-finish-load', () => {
+    rendererReady = true
+    flushPendingTasks()
+  })
   isSwitchingMode = false
 }
 
-app.on('ready', createWindow)
+// External apps (e.g. a launcher) can add a task with todo-today://add?title=…
+if (process.defaultApp && process.argv[1]) {
+  app.setAsDefaultProtocolClient('todo-today', process.execPath, [path.resolve(process.argv[1])])
+} else {
+  app.setAsDefaultProtocolClient('todo-today')
+}
+
+const flushPendingTasks = () => {
+  if (!mainWindow || !rendererReady) return
+  for (const title of pendingTaskTitles) {
+    mainWindow.webContents.send('add-task', title)
+  }
+  pendingTaskTitles = []
+}
+
+const handleUrl = (raw: string) => {
+  try {
+    const url = new URL(raw)
+    if (url.protocol !== 'todo-today:' || url.hostname !== 'add') return
+    const title = url.searchParams.get('title')?.trim()
+    if (!title) return
+    pendingTaskTitles.push(title)
+    flushPendingTasks()
+  } catch (error) {
+    log.warn('Ignoring malformed todo-today URL', raw, error)
+  }
+}
+
+app.on('open-url', (event, url) => {
+  event.preventDefault()
+  handleUrl(url)
+})
+
+app.on('ready', () => {
+  createWindow()
+  mainWindow?.webContents.on('did-finish-load', () => {
+    rendererReady = true
+    flushPendingTasks()
+  })
+})
 
 // Apply the popover/window choice immediately when it's toggled in Settings,
 // without requiring a restart.
