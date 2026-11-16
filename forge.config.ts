@@ -16,6 +16,7 @@ const config: ForgeConfig = {
   packagerConfig: {
     asar: true,
     executableName: 'todo-today',
+    protocols: [{ name: 'Todo Today', schemes: ['todo-today'] }],
     icon: 'public/icons/icon', // Electron Forge will automatically append .icns/.ico/.png based on platform
     // The Vite plugin's packager ignore keeps only `.vite/`, so nothing under
     // `public/` survives into the asar. The tray and window icons are read at

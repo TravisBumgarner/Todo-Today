@@ -95,6 +95,14 @@ window.onmessage = (ev) => {
 setTimeout(removeLoading, 4999)
 
 const electronHandler = {
+  // Fired when another app opens todo-today://add?title=…
+  onAddTask(listener: (title: string) => void) {
+    const subscription = (_event: unknown, title: string) => listener(title)
+    ipcRenderer.on('add-task', subscription)
+    return () => {
+      ipcRenderer.removeListener('add-task', subscription)
+    }
+  },
   ipcRenderer: {
     // // Renderer → Main (fire and forget)
     // send<T extends keyof FromRenderer>(channel: T, params: FromRenderer[T]) {

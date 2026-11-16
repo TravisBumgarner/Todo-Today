@@ -8,6 +8,7 @@ import { useSignals } from "@preact/signals-react/runtime";
 import useShowChangelog from "./hooks/useShowChangelog";
 import { useProcessRecurringTasks } from "./hooks/useProcessRecurringTasks";
 import useKeyboardShortcuts from "./hooks/useKeyboardShortcuts";
+import useAddTaskFromUrl from "./hooks/useAddTaskFromUrl";
 import { isRestoringSignal } from "./signals";
 
 declare global {
@@ -21,6 +22,7 @@ function App() {
   useShowChangelog()
   useProcessRecurringTasks()
   useKeyboardShortcuts()
+  useAddTaskFromUrl()
 
   if (isRestoringSignal.value) {
     return <p>Loading...</p>;
